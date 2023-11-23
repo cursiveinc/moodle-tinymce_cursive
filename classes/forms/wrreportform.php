@@ -10,7 +10,7 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->libdir . '/formslib.php');
 
-class userreportform extends moodleform
+class wrreportform extends moodleform
 {
     public function definition()
     {
@@ -20,20 +20,13 @@ class userreportform extends moodleform
         $mform = &$this->_form;
         $attributes = '';
         $courseid = $this->_customdata['coursename'];
-        $username = $this->_customdata['username'];
+       // $username = $this->_customdata['username'];
         //$quizzes = self::get_quiz($courseid);
-        $users = self::get_user($courseid);
+        //$users = self::get_user($courseid);
         $modules = self::get_modules($courseid);
         $options = array('multiple' => false, 'includefrontpage' => false);
         $mform->addElement('course', 'coursename', get_string('coursename', 'tiny_cursive'), $options);
         $mform->addRule('coursename', null, 'required', null, 'client');  
-        $mform->addElement('select', 'modulename', get_string('modulename', 'tiny_cursive'), $modules, $attributes);
-        $mform->setType('modulename', PARAM_RAW);
-
-        $mform->addElement('select', 'username', get_string('userename', 'tiny_cursive'), $users, $attributes);
-        
-        $mform->setType('username', PARAM_RAW);
-
         $options = array(
            'id' => 'ID',
            'name' => 'Name',
@@ -41,8 +34,6 @@ class userreportform extends moodleform
            'date' => 'Date',
         );
         $mform->addElement('select', 'orderby', get_string('orderby', 'tiny_cursive'), $options, $attributes);
-
-        
         $mform->setType('orderby', PARAM_RAW);
         // $mform->addRule('username', null, 'required', null, 'client');
         $this->add_action_buttons(false, get_string('submit'));
@@ -63,14 +54,10 @@ class userreportform extends moodleform
             if (!empty($mform->_submitValues['modulename'])) {
                 $data->modulename = $mform->_submitValues['modulename'];
             }
-            if (!empty($mform->_submitValues['orderby'])) {
-                $data->orderby = $mform->_submitValues['orderby'];
-            }
         }
-
-        //exit("dfgdfg");
         return $data;
     }
+
     public function get_modules($courseid)
     {   // Get users dropdown.
         global $DB;

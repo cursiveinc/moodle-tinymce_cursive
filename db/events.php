@@ -38,7 +38,8 @@ $observers  = array(
         'callback' => '\tiny_cursive\observers::assessable_submitted',
         'internal'    => true,
         'priority'    => 9999,
-    )
+    ),
+
     
 );
 

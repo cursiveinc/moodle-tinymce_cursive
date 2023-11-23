@@ -14,25 +14,26 @@ import {render} from 'core/templates';
 import {save,cancel,hidden} from 'core/modal_events';//hidden
 import jQuery from 'jquery';
 export const register = (editor) => {
-    jQuery(function () {
-    });
     const postOne = (methodname, args) => call([{
         methodname,
         args,
     }])[0];
+    var is_student=!(jQuery('#body').hasClass('teacher_admin'));
+    var intervention=jQuery('#body').hasClass('intervention');
     const showLog=()=>{
-        window.console.log(editor.id);
+        window.console.log(editor);
     };
     const getModal = (e) => {
         return create({
             type:'SAVE_CANCEL',
-            title: getString('quizname','tiny_cursive'),
+            title: getString('tiny_cursive','tiny_cursive'),
             body:  render("tiny_cursive/popup_form", ""),
             removeOnClose: true,
         },showLog())
         .done(modal => {
             modal.getRoot().append('<style>.close{ display: none ! important; }</style>');
               modal.show();
+              var lastEvent='';
               modal.getRoot().on(save, function() {
                 var number=document.getElementById("inputUrl").value;
                 //var pastedtext=document.getElementById("pastetext").value;
@@ -79,14 +80,16 @@ export const register = (editor) => {
                     usercomment:number,
                     timemodified:"1121232"
                 });
+                lastEvent='save';
                 modal.destroy();
               });
                 modal.getRoot().on(cancel, function() {
                         editor.execCommand('Undo');
-                        alert("You cannot paste text without providing source");
+                        lastEvent='cancel';
+                       // alert("You cannot paste text without providing source");
                     });
-                modal.getRoot().on(hidden, function(e) {
-                        window.console.log(e);
+                modal.getRoot().on(hidden, function() {
+                        if(lastEvent!='cancel'&& lastEvent!='save'){editor.execCommand('Undo');}
                     });
             return modal;
         });
@@ -135,11 +138,15 @@ export const register = (editor) => {
     });
     editor.on('Paste', async (e) => {
         //e.preventDefault();
-        getModal(e);
+        if(is_student && intervention){
+            getModal(e);
+        }
     });
     editor.on('Redo', async (e) => {
         //e.preventDefault();
-        getModal(e);
+        if(is_student  && intervention){
+            getModal(e);
+        }
     });
     editor.on('keyDown', (editor) => {
         sendKeyEvent("keyDown", editor);

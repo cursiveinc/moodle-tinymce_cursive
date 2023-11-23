@@ -7,7 +7,7 @@
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  */
 
-$linktext = get_string('questimereport', 'tiny_cursive'); 
+$linktext = get_string('tiny_cursive', 'tiny_cursive'); 
 defined('MOODLE_INTERNAL') || die();
 global $CFG,$PAGE;
 $PAGE->requires->js_call_amd('tiny_cursive/token_approve', 'init', array(1));
@@ -29,14 +29,21 @@ if (is_siteadmin()) {
     ));
     $settings->add(new admin_setting_configtext(
         'tiny_cursive/python_server',
-        'tiny_cursive',
-        'python_server',
+        'API URL',
+        'API address URL',
+        '',
+        PARAM_TEXT
+    ));
+    $settings->add(new admin_setting_configtext(
+        'tiny_cursive/confidence_threshold',
+        'Confidence Threshold',
+        'Each site may set its threshold for providing the successful match “green check” to the TypeID column for student submissions. We recommend .65. However, there may be arguments for lower or higher thresholds depending on your experience or academic honesty policy.',
         '',
         PARAM_TEXT
     ));
     $settings->add(new admin_setting_configcheckbox(
         'tiny_cursive/showcomments',
-        'showcomments',
+        'Show Comments',
         'Show comments under post when enabled',
         1
     ));

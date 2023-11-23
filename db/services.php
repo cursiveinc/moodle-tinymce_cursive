@@ -74,6 +74,15 @@ $functions = array(
         'type'        => 'write',
         'ajax'        => true
     ) ,
+    
+    'cursive_get_assign_grade_comment' => array(
+        'classname'   => 'cursive_json_func_data',
+        'methodname'  => 'get_assign_grade_comment',
+        'classpath'   => '/lib/editor/tiny/plugins/cursive/externallib.php',
+        'description' => ' Comments Links',
+        'type'        => 'write',
+        'ajax'        => true
+    ) ,
     'cursive_user_list_submission_stats' => array(
         'classname'   => 'cursive_json_func_data',
         'methodname'  => 'get_user_list_submission_stats',
@@ -81,7 +90,16 @@ $functions = array(
         'description' => ' Comments Links',
         'type'        => 'write',
         'ajax'        => true
-    )
+    ),
+
+    'cursive_filtered_writing' => array(
+        'classname'   => 'cursive_json_func_data',
+        'methodname'  => 'cursive_filtered_writing_func',
+        'classpath'   => '/lib/editor/tiny/plugins/cursive/externallib.php',
+        'description' => 'generate Reports for download',
+        'type'        => 'read',
+        'ajax'        => true
+    ),
 
 );
 
@@ -97,7 +115,9 @@ $services = array(
             'cursive_user_comments',
             'cursive_get_comment_link',
             'cursive_user_list_submission_stats',
-            'cursive_approve_token'
+            'cursive_approve_token',
+            'cursive_get_assign_comment_link',
+            'cursive_get_assign_grade_comment'
         ),
         'restrictedusers' => 0,
         'enabled'=>1

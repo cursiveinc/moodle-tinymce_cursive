@@ -16,10 +16,9 @@ define(["jquery", "core/ajax", "core/str", "core/templates"], function (
     init: function (page) {
       str
         .get_strings([
-          { key: "field_require", component: "tiny_cursive" }
+          { key: "field_require", component: "tiny_cursive" },
         ])
-        .done(function (s) {
-          window.console.log(s);
+        .done(function () {
           $(document).ready(function($) {
             $(".popup_item").on('click',function () {
               var mid=$(this).data("id");
@@ -37,7 +36,6 @@ define(["jquery", "core/ajax", "core/str", "core/templates"], function (
     },
 
     getusers: function (page) {
-      $("#fgroup_id_buttonar").hide();
       $("#id_coursename").change(function () {
         var courseid = $(this).val();
         var promise1 = AJAX.call([
@@ -59,7 +57,6 @@ define(["jquery", "core/ajax", "core/str", "core/templates"], function (
             .then(function (html, js) {
               window.console.log(js);
               var filtered_user = $("#id_username");
-
               filtered_user.html(html);
             });
         });
@@ -79,11 +76,10 @@ define(["jquery", "core/ajax", "core/str", "core/templates"], function (
             page: page,
           };
           templates
-            .render("tiny_cursive/module_list", context)
+            .render("tiny_cursive/user_list", context)
             .then(function (html, js) {
               window.console.log(js);
               var filtered_user = $("#id_modulename");
-
               filtered_user.html(html);
             });
         });

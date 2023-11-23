@@ -2,7 +2,7 @@
 /**
  * @package tiny_cursive
  * @category TinyMCE Editor
- * @copyright  CTI <info@cursivetechnology.com>
+ * @copyright  ELS <admin@elearningstack.com>
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  */
 
@@ -35,13 +35,16 @@ $PAGE->requires->jquery_plugin('jquery');
 $orderby  = optional_param('orderby', 'id', PARAM_RAW);
 $order  = optional_param('order', 'ASC', PARAM_RAW);
 $page = optional_param('page', 0, PARAM_INT);
+$courseid = optional_param('courseid', 0, PARAM_INT);
 $limit = 5;
 $perpage = $page * $limit;
 $user = $DB->get_record('user', array('id'=>$userid), '*', MUST_EXIST);
 //$personalcontext = context_user::instance($user->id);
 $systemcontext = context_system::instance();
-$linkurl = new moodle_url('/lib/editor/tiny/plugins/cursive/my_writing_report.php');
-$linktext = get_string('questimereport', 'tiny_cursive'); 
+$linkurl = new moodle_url("/lib/editor/tiny/plugins/cursive/my_writing_report.php?userid=".$userid);
+//$siteurl=$CFG->wwwroot."/lib/editor/tiny/plugins/cursive/my_writing_report.php?userid=".$userid;
+
+$linktext = get_string('tiny_cursive', 'tiny_cursive'); 
 $PAGE->set_context($systemcontext);
 $PAGE->set_url($linkurl);
 $PAGE->set_title($linktext);
@@ -55,8 +58,9 @@ $PAGE->navbar->add($struser);
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('student_writing_statics', 'tiny_cursive'));
 $renderer = $PAGE->get_renderer('tiny_cursive');
-$users=get_user_writing_data($username, null, null, $orderby, $order, $perpage, $limit );
-$user_profile=get_user_profile_data($username);
-echo $renderer->user_writing_report($users,$user_profile,$page, $limit, $linkurl);
+$attempts=get_user_attempts_data($username, $courseid, null, $orderby, $order, $perpage, $limit );
+$user_profile=get_user_profile_data($username,$courseid);
+echo $renderer->user_writing_report($attempts,$user_profile,$page, $limit, $linkurl,$username);
 echo $OUTPUT->footer();
 ?>
+

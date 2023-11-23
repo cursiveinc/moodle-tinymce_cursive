@@ -12,58 +12,56 @@ define(["jquery", "core/ajax", "core/str","core/templates"], function (
     templates
   ) {
     var usersTable = {
-      init: function (page) {
+      init: function (score_setting,showcomment) {
         str
           .get_strings([
-            { key: "field_require", component: "tiny_cursive" },
-          ])
-          .done(function () {
-            usersTable.appendTable(page);
+            { key: "confidence_threshold", component: "tiny_cursive" },
+          ]).done(function () {
+            usersTable.appendTable(score_setting,showcomment);
           });
       },
-      appendTable: function (page) {
+      appendTable: function(score_setting){
+        let sub_url= window.location.href;
+        let parm = new URL(sub_url);
         let h_tr=$('thead').find('tr').get()[0];
-        $(h_tr).find('th').eq(8).after('<th>Stats</th><th>TypeID</th>');
+        $(h_tr).find('th').eq(3).after('<th>TypeID</th><th>Stats</th>');
         $('tbody').find( "tr" ).get().forEach(function(tr) {
-          let td_a=$(tr).find("td").get()[8];
-          let a_id=$(td_a).find("a").get()[0];
           let td_user=$(tr).find("td").get()[0];
-          let userid=$(td_user).find("input").get()[0].value;
-          let parm = new URL($(a_id).attr('href'));
+         let userid=$(td_user).find("input[type='checkbox']").get()[0].value;
           let cmid=parm.searchParams.get('id');
-          let thunder_icon='<td><a href="#" data-id='+userid+' class="fa fa-bolt popup_item" style="font-size:24px"></a></td>';
-          $(tr).find('td').eq(8).after(thunder_icon);
+          var chart="fa fa-area-chart popup_item";
+          var st="font-size:24px;color:black;border:none";
+          let thunder_icon='<td><button  data-id='+userid+' class="'+chart+'" style="'+st+'"></button></td>';
+          $(tr).find('td').eq(3).after(thunder_icon);
           let args={id: userid,modulename:"assign",cmid:cmid} ;
           let methodname='cursive_user_list_submission_stats';
           let com=AJAX.call([{ methodname ,args }]);
-          window.console.log("reached here");
           try {
           com[0].done(function (json) {
             var data = JSON.parse(json);
           var score=data.score;
-          var icon='fa fa-close';
-          var color='font-size:36px;color:red';
-          if(score>0.65){
-              icon='fa fa-check-square';
-              color='font-size:36px;color:green';
-          }else if(score>=0.35){
-              icon='fa fa-question';
-              color='font-size:36px;color:orange';
+         var icon='fa fa-circle-o';
+         var color='font-size:24px;color:black';
+          if(score>=score_setting){
+              icon='fa fa-check-circle typeid';
+              color='font-size:24px;color:green';
+          }else if(score<score_setting){
+              icon='fa fa-question-circle typeid';
+              color='font-size:24px;color:#A9A9A9';
           }else{
-              icon='fa fa-close';
-              color='font-size:36px;color:red';
+              icon='fa fa-circle-o typeid';
+              color='font-size:24px;color:black';
             }
-          let close_icon='<td><a href="#" class="'+icon+'" style="'+color+';"></a></td>';
-          $(tr).find('td').eq(9).after(close_icon);
+          let close_icon='<td><button  data-id='+userid+' class=" '+icon+' " style="border:none; '+color+';"></button></td>';
+          $(tr).find('td').eq(3).after(close_icon);
             var context = {
               tabledata: data,
-              page: page,
+              page: score_setting,
             };
             templates
               .render("tiny_cursive/pop_modal", context)
-              .then(function (html,js) {
-                window.console.log(js);
-                $(tr).find('td').eq(9).after(html);
+              .then(function (html) {
+                $("body").append(html);
               }).catch(e=>window.console.log(e));
           });
         } catch (error) {
@@ -72,8 +70,12 @@ define(["jquery", "core/ajax", "core/str","core/templates"], function (
           $(".popup_item").on('click',function () {
             $(".modal").hide();
             let mid =$(this).data('id');
-            window.console.log('userid'+mid);
           $("#"+mid).show();
+          });
+          $(".typeid").on('click',function () {
+            $(".modal").hide();
+            let mid =$(this).data('id');
+          $("#typeid"+mid).show();
           });
           $(window).on('click',function (e) {
             if(e.target.id=='modal-close'+userid){

@@ -35,7 +35,6 @@ define(["jquery", "core/ajax", "core/str"], function (
           ]);
           promise1[0].done(function (json) {
             var data = JSON.parse(json);
-            window.console.log(data.status);
             var message_alert='';
             if(data.status==true){
               message_alert="<span class='alert alert-success' role='alert'>"+data.message+"</span>";
