@@ -12,9 +12,9 @@
 function tiny_cursive_extend_navigation_course(\navigation_node $navigation, \stdClass $course, \context $context) {
     global $CFG, $PAGE, $SESSION;
     
-$url = new moodle_url('login/', ['courseid' => $course->id]);
+$url = new moodle_url($CFG->wwwroot .'/lib/editor/tiny/plugins/cursive/tiny_cursive_report.php/', ['courseid' => $course->id]);
     $navigation->add(
-        "Test",
+        "Writing Activity Report",
         $url,
         navigation_node::TYPE_SETTING,
         null,
@@ -30,6 +30,7 @@ function tiny_cursive_extend_navigation(global_navigation $navigation) {
     }
   
 }
+
 
 function tiny_cursive_myprofile_navigation(core_user\output\myprofile\tree $tree, $user, $iscurrentuser, $course) {
     global $USER;
@@ -94,22 +95,43 @@ function upload_multipart_record($file_record,$file_name_with_full_path,$remote_
 
 function tiny_cursive_before_footer() {
     
-    global $PAGE;
-    if(get_config('tiny_cursive','showcomments')){
+    global $PAGE,$COURSE, $USER;
+    $confidence_threshold= get_config('tiny_cursive','confidence_threshold');
+    $showcomments= get_config('tiny_cursive','showcomments');
+    ////////////////
+    $context = get_context_instance(CONTEXT_COURSE,$COURSE->id);
+    $user_role='';
+    if (has_capability('report/courseoverview:view', $context, $USER->id, false)) {
+   // echo "<br/><br/><br/><br/><br/><br/><br/>is Teacher<br/>";
+    $user_role='teacher_admin'; 
+    }
+    $PAGE->requires->js_call_amd('tiny_cursive/settings', 'init', array($showcomments,$user_role));
+   //&&  !is_siteadmin()
+    if(get_config('tiny_cursive','showcomments') ){
+
     if($PAGE->bodyid=='page-mod-forum-discuss'||$PAGE->bodyid=='page-mod-forum-view'){
-        $PAGE->requires->js_call_amd('tiny_cursive/append_fourm_post', 'init', array(1));
+        $PAGE->requires->js_call_amd('tiny_cursive/append_fourm_post', 'init', array($confidence_threshold,$showcomments));
+    }
+    if($PAGE->bodyid=='page-mod-assign-grader'){
+        
+        $PAGE->requires->js_call_amd('tiny_cursive/show_url_in_submission_grade', 'init', array($confidence_threshold,$showcomments));
+    }
+    if($PAGE->bodyid=='page-mod-assign-viewpluginassignsubmission'){
+        
+        $PAGE->requires->js_call_amd('tiny_cursive/show_url_in_submission_detail', 'init', array($confidence_threshold,$showcomments));
     }
     }
     if($PAGE->bodyid=='page-mod-assign-grading'){
-        $PAGE->requires->js_call_amd('tiny_cursive/append_submissions_table', 'init', array(1));
+       
+        $PAGE->requires->js_call_amd('tiny_cursive/append_submissions_table', 'init', array($confidence_threshold,$showcomments));
     }
-    // if($PAGE->bodyid=='page-mod-assign-viewpluginassignsubmission'){
-    //     $PAGE->requires->js_call_amd('tiny_cursive/show_url_in_submission_detail', 'init', array(1));
-    // }
-    // if($PAGE->bodyid=='page-mod-quiz-review'){
-    //     $PAGE->requires->js_call_amd('tiny_cursive/show_url_in_quiz_detail', 'init', array(1));
-    // }
+
+    if($PAGE->bodyid=='page-mod-quiz-review'){
+        $PAGE->requires->js_call_amd('tiny_cursive/show_url_in_quiz_detail', 'init', array($confidence_threshold,$showcomments));
+    }
     if($PAGE->bodyid=='page-course-view-participants'){
-        $PAGE->requires->js_call_amd('tiny_cursive/append_participants_table', 'init', array(1));
+        $PAGE->requires->js_call_amd('tiny_cursive/append_participants_table', 'init', array($confidence_threshold,$showcomments));
     }
+    
+    
 }

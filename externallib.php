@@ -373,6 +373,55 @@ public static function get_assign_comment_link($id,$modulename,$cmid) {
     }
 }
 // submissions stats modal get_user_submissions_data
+
+public static function get_assign_grade_comment_is_allowed_from_ajax() {
+    return true;
+}
+
+public static function get_assign_grade_comment_returns() {
+    return new external_value(PARAM_RAW, 'Comment Link');
+}
+
+public static function get_assign_grade_comment_parameters() {
+    return new external_function_parameters(
+        array(
+            'id' => new external_value(PARAM_INT, 'id', false, 'course_detail'),
+            'modulename' => new external_value(PARAM_TEXT, 'modulename', false, 'modulename'),
+            'cmid' => new external_value(PARAM_INT, 'cmid', false, 'course_detail'),
+        )
+    );
+}
+
+public static function get_assign_grade_comment($id,$modulename,$cmid) {
+    global  $DB;
+    require_login();
+    $params = self::validate_parameters(
+        self::get_assign_comment_link_parameters(),
+        array(
+            'id'=>$id,
+           'modulename'=>$modulename,
+           'cmid'=>$cmid
+        )
+    );
+    // $rec_assign_submission=$DB->get_record('assign_submission',array('id'=>$id),'*',false);
+    // $userid=$rec_assign_submission->userid;
+    //echo $userid;
+    $conditions=array("userid"=>$id,'modulename'=>$modulename,'cmid'=>$cmid);
+    $table = 'tiny_cursive_comments';
+    $recs=	$DB->get_records($table,$conditions);
+    $usercomment=[];
+    if($recs){
+        foreach ($recs as $rec) {
+            array_push($usercomment,$rec);
+        }
+        return json_encode($usercomment);
+
+    }else{
+        return json_encode(array(array('usercomment'=>'comments')));
+    }
+}
+
+// submition grade
 public static function get_user_list_submission_stats_is_allowed_from_ajax() {
     return true;
 }
@@ -407,8 +456,57 @@ public static function get_user_list_submission_stats($id,$modulename,$cmid) {
     $rec=	get_user_submissions_data($id,$modulename,$cmid);
     return json_encode($rec);
 }
+///////////////////////////////////
+public static function cursive_filtered_writing_func_is_allowed_from_ajax() {
+    return true;
 }
-//18 	quiz
-//assignment 1
-//forum 10
+
+public static function cursive_filtered_writing_func_returns() {
+    return new external_value(PARAM_RAW, 'Comment Link');
+}
+
+public static function cursive_filtered_writing_func_parameters() {
+    return new external_function_parameters(
+        array(
+            'id' => new external_value(PARAM_TEXT, 'id', false, 'id'),
+        )
+    );
+}
+
+public static function cursive_filtered_writing_func($id) {
+    global  $DB,$USER;
+    require_login();
+    $userid=$USER->id;
+    $params = self::validate_parameters(
+        self::cursive_filtered_writing_func_parameters(),
+        array(
+            'id'=>$id,
+        )
+    );
+    $attempts = "SELECT qa.resourceid as attemptid,qa.timemodified,uw.score,uw.copy_behavior, u.id as userid, u.firstname, u.lastname, u.email,  qa.cmid as cmid ,qa.courseid,qa.filename,uw.word_count
+    , uw.words_per_minute , uw.total_time_seconds ,uw.backspace_percent FROM {user} u 
+        INNER JOIN {tiny_cursive_files} qa ON u.id = qa.userid 
+        LEFT JOIN {tiny_cursive_user_writing} uw ON qa.id = uw.file_id  
+        WHERE qa.userid!=1";
+        
+         if($userid != 0){
+            $attempts .= " AND  qa.userid = $userid";
+         }
+         if ($id != 0) {
+            $attempts .= "  AND qa.courseid=$id";
+        }
+    $res = $DB->get_records_sql($attempts);
+    $recs=array();
+    foreach ($res as $key => $value) {
+        $value->timemodified=  date("l jS \of F Y h:i:s A",$value->timemodified);
+       // $value->attemptid= '';
+       $value->icon='fa fa-circle-o';
+       $value->color='grey';
+        array_push($recs,$value);
+    }
+   // print_r( $recs);
+    $res_n_count=array('count'=>$totalcount,'data'=>$recs);
+    return json_encode($res_n_count);   
+}
+}
 ?>

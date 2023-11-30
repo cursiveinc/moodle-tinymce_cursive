@@ -12,7 +12,7 @@ error_reporting(E_ALL);
 require(__DIR__ . '/../../../../../config.php');
 require_once($CFG->dirroot . '/mod/quiz/lib.php');
 require_once($CFG->dirroot . '/mod/quiz/locallib.php');
-require_once('classes/forms/userreportform.php');
+require_once('classes/forms/wrreportform.php');
 require_once('locallib.php');
 global $CFG, $DB, $USER, $PAGE,$USERS;
 require_login(null, false);
@@ -29,8 +29,9 @@ if (\core\session\manager::is_loggedinas()) {
 }
 
 $userid   = optional_param('userid', 0, PARAM_INT);//$USER->id;
+$courseid = optional_param('courseid', 0, PARAM_INT);
 $username   =$userid ;// $USER->id;
-$PAGE->requires->js_call_amd('tiny_cursive/key_logger', 'init', array(1));
+$PAGE->requires->js_call_amd('tiny_cursive/cursive_writing_reports', 'init', array(1));
 $PAGE->requires->jquery_plugin('jquery');
 $orderby  = optional_param('orderby', 'id', PARAM_RAW);
 $order  = optional_param('order', 'ASC', PARAM_RAW);
@@ -41,7 +42,7 @@ $user = $DB->get_record('user', array('id'=>$userid), '*', MUST_EXIST);
 //$personalcontext = context_user::instance($user->id);
 $systemcontext = context_system::instance();
 $linkurl = new moodle_url('/lib/editor/tiny/plugins/cursive/writing_report.php?userid='.$userid);
-$linktext = get_string('questimereport', 'tiny_cursive'); 
+$linktext = get_string('tiny_cursive', 'tiny_cursive'); 
 $PAGE->set_context($systemcontext);
 $PAGE->set_url($linkurl);
 $PAGE->set_title($linktext);
@@ -54,9 +55,14 @@ $PAGE->set_url('/user/profile.php', array('id' => $userid));
 $PAGE->navbar->add($struser);
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('student_writing_statics', 'tiny_cursive'));
+// $mform = new wrreportform(null, array(
+//     'coursename' => $courseid,
+//     'username' => $username,
+// ), 'post', '', ['class' => 'timer_report','id' => 'elstimerreport']);
+// $mform->display();
 $renderer = $PAGE->get_renderer('tiny_cursive');
-$users=get_user_writing_data($username, null, null, $orderby, $order, $perpage, $limit );
-$user_profile=get_user_profile_data($username);
-echo $renderer->user_writing_report($users,$user_profile,$page, $limit, $linkurl);
+$users=get_user_attempts_data($username, $courseid, null, $orderby, $order, $perpage, $limit );
+$user_profile=get_user_profile_data($username,$courseid);
+echo $renderer->user_writing_report($users,$user_profile,$page, $limit, $linkurl,$username);
 echo $OUTPUT->footer();
 ?>

@@ -15,7 +15,6 @@ define(["jquery", "core/ajax", "core/str"], function (
       },
       getToken: function () {
         //$("#fgroup_id_buttonar").hide();
-        window.console.log("Page fourm post");
         $('#page-mod-forum-discuss').find( "article" ).get().forEach(function(entry) {
           var ids=$("#"+entry.id).data("post-id");
           let args={id: ids,modulename:"forum"} ;
@@ -25,17 +24,12 @@ define(["jquery", "core/ajax", "core/str"], function (
             var data = JSON.parse(json);
             if (data[0].usercomment!='comments') {
                 $("#"+entry.id).find('#post-content-'+ids).append('<div class="dropdown">');
-            //  var tx1='<button class="btn dropdown-toggle" type="button" data-toggle="dropdown">Content Sources</button>';
-             // var tx2='<ul class="dropdown-menu">' ;
               var tt='';
               data.forEach(element => {
                 tt+='<li>'+element.usercomment +'</li>';
-             // $("#"+entry.id).find('#post-content-'+ids).append( '<li>'+element.usercomment +'</li>' );
-              tt+='<li>'+element.usercomment +'</li>';
             });
-            $("#"+entry.id).find('#post-content-'+ids).append('<details><summary>Content Sources</summary>'+tt+'</details>');
-            //$("#"+entry.id).find('#post-content-'+ids).append(tx1+tx2+tt+'</ul></div>');
-           // $("#"+entry.id).find('#post-content-'+ids).append( '</ul></div>');
+            var p1='<div class="border alert alert-warning"><details><summary>Content Sources Provided by Student</summary>';
+            $("#"+entry.id).find('#post-content-'+ids).append(p1+' '+tt+'</details></div></div>');
           }
           });
           return com.usercomment;
@@ -47,8 +41,8 @@ define(["jquery", "core/ajax", "core/str"], function (
         let com=AJAX.call([{ methodname ,args }]);
         com[0].done(function (json) {
           var data = JSON.parse(json);
-          window.console.log(data);
-          $("#"+entry.id).find('#post-content-'+ids).append( "<p><a class='post-link' href='#'>"+data.usercomment+ids+"</a></p>" );
+          var p1='<div class="border alert alert-warning"><summary>Content Sources Provided by Student</summary>';
+          $("#"+entry.id).find('#post-content-'+ids).append( p1+" <p>"+data.usercomment+ids+"</p></div>" );
         });
         return com.usercomment;
     });
