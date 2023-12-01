@@ -22,6 +22,7 @@ define(["jquery", "core/ajax", "core/str","core/config"], function (
           });
       },
       appendSubmissionDetail: function () {
+        $(document).ready(function($) {
        let sub_url= window.location.href;
           let parm = new URL(sub_url);
           let userid=parm.searchParams.get('userid');
@@ -31,6 +32,7 @@ define(["jquery", "core/ajax", "core/str","core/config"], function (
           let com=AJAX.call([{ methodname ,args }]);
           com[0].done(function (json) {
             var data = JSON.parse(json);
+            $('.alert').remove();
             if (data[0].usercomment!='comments') {$('.activity-header').append('<div class="dropdown">');
             var tt='';
             data.forEach(element => {
@@ -39,9 +41,18 @@ define(["jquery", "core/ajax", "core/str","core/config"], function (
             var head="<summary>Content Sources Provided by Student</summary>";
             $('.fullwidth').append('<div class="border alert alert-warning"><details>'+head+' '+tt+'</details></div></div>');
           }
-          });
+              });
           return com.usercomment;
+        });
       },
     };
+    $(document).on('click',function (e) {
+      let tagName = e.target.tagName;
+      if((tagName=="SMALL")||(tagName=="SPAN")||(tagName=="LI")||(tagName=="A")){
+      setTimeout(() => {
+        window.console.log(tagName);
+         usersTable.init();}, 1000);
+        }
+       });
    return usersTable;
   });

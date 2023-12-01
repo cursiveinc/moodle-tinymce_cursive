@@ -51,7 +51,7 @@ function tiny_cursive_myprofile_navigation(core_user\output\myprofile\tree $tree
         $node = new core_user\output\myprofile\node('reports', 'cursive', get_string('writing', 'tiny_cursive'), null, $url);
         $tree->add_node($node);          
 }
-function upload_multipart_record($file_record,$file_name_with_full_path,$remote_url){ 
+function upload_multipart_record($file_record,$file_name_with_full_path){ 
     global $CFG;
     // if (function_exists('curl_file_create')) { 
     //     $cFile = curl_file_create($file_name_with_full_path);
@@ -61,10 +61,11 @@ function upload_multipart_record($file_record,$file_name_with_full_path,$remote_
     $moodle_Url=$CFG->wwwroot;
     //print_r($moodle_Url=$CFG->wwwroot);
       try {
-      $token=get_config('tiny_cursive','secretkey');
+    $token=get_config('tiny_cursive','secretkey');
+    
      $remote_url=get_config('tiny_cursive','python_server');
-     $remote_url=$remote_url."/upload_file";
-     echo $remote_url;
+    $remote_url=$remote_url."/upload_file";
+   
       $ch = curl_init();
       curl_setopt($ch, CURLOPT_URL,$remote_url);
       curl_setopt($ch, CURLOPT_POST,true);
