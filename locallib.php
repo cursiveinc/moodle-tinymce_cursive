@@ -57,8 +57,7 @@ LEFT JOIN {tiny_cursive_user_writing} uw ON uw.file_id =uf.id
     if ($limit) {
         $get_detail_count=$DB->get_records_sql($attempts);     
        $totalcount = count($get_detail_count);
-        $attempts .= " LIMIT $perpage , $limit ";
-       
+        $attempts .= " LIMIT $perpage , $limit ";      
     } 
      $attempts;
   //  exit();

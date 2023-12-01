@@ -25,18 +25,18 @@ class upload_student_json_cron extends \core\task\scheduled_task {
         $table='tiny_cursive_files';
         $sql= "select * from mdl_tiny_cursive_files where timemodified>uploaded";
         $file_records = $DB->get_records_sql($sql);
-        $remote_url='http://52.205.247.22/upload_file'; //pythone server
-        $dirname = $CFG->dirroot.'/lib/editor/tiny/plugins/cursive' .'/userdata/';       
+        $dirname = $CFG->dirroot.'/lib/editor/tiny/plugins/cursive/userdata/';       
         require_once($CFG->dirroot.'/lib/editor/tiny/plugins/cursive/lib.php');
         foreach($file_records as $file_record){
                 $file_path=$dirname.$file_record->filename;
-                $uploaded=upload_multipart_record($file_record,$file_path,$remote_url);
+                 $uploaded=upload_multipart_record($file_record,$file_path);
                // echo '$uploaded'.$uploaded;
                 if($uploaded){
                     $file_record->uploaded= strtotime(date('Y-m-d H:i:s'));
                     $DB->update_record($table, $file_record);
                     $uploaded=false;
                 }
+ 
         } 
     }
 
