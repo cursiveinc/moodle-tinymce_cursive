@@ -99,15 +99,12 @@ function tiny_cursive_before_footer() {
     global $PAGE,$COURSE, $USER;
     $confidence_threshold= get_config('tiny_cursive','confidence_threshold');
     $showcomments= get_config('tiny_cursive','showcomments');
-    ////////////////
     $context = get_context_instance(CONTEXT_COURSE,$COURSE->id);
     $user_role='';
-    if (has_capability('report/courseoverview:view', $context, $USER->id, false)) {
-   // echo "<br/><br/><br/><br/><br/><br/><br/>is Teacher<br/>";
-    $user_role='teacher_admin'; 
-    }
+    if (has_capability('report/courseoverview:view', $context, $USER->id, false) || is_siteadmin()) {
+            $user_role='teacher_admin'; 
+         }
     $PAGE->requires->js_call_amd('tiny_cursive/settings', 'init', array($showcomments,$user_role));
-   //&&  !is_siteadmin()
     if(get_config('tiny_cursive','showcomments') ){
 
     if($PAGE->bodyid=='page-mod-forum-discuss'||$PAGE->bodyid=='page-mod-forum-view'){
