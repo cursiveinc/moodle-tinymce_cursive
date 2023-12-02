@@ -123,13 +123,17 @@ $row[] = "<a href=" .$CFG->wwwroot. '/lib/editor/tiny/plugins/cursive/download_j
         echo html_writer::table($table);
         echo $OUTPUT->paging_bar($totalcount, $page, $limit, $baseurl);
     }
+
     public function user_writing_report($users, $user_profile,$page=0, $limit=5, $baseurl='',$username)
     {
         global $CFG,$OUTPUT,$DB;
        echo "Total Words: $user_profile->word_count</br>";
-       
-       echo "Total Time Writing:". sprintf('%02dh %02dm %02ds', ($user_profile->total_time/ 60*60 % 60),($user_profile->total_time/ 60 % 60), $user->total_time% 60)."</br>";
-       $avg_words=0;
+       $seconds=$user_profile->total_time;
+       $secs = $seconds % 60;
+        $hrs = $seconds / 60;
+        $mins = $hrs % 60;
+        $hrs = $hrs / 60;
+         print ( "Total Time Writing:".(int)$hrs . "h:" . (int)$mins . "m:" . (int)$secs)."s</br>";       $avg_words=0;
        if($user_profile->total_time>0){
 
        $avg_words=round($user_profile->word_count/($user_profile->total_time/60));
