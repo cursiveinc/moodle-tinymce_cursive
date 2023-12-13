@@ -21,14 +21,9 @@ function get_user_attempts_data($userid, $courseid, $moduleid, $orderby='id', $o
     if($orderby == 'date'){
         $odby = 'uf.timemodified';
     }
-    // $attempts = "SELECT qa.resourceid as attemptid,qa.timemodified,uw.score, uw.copy_behavior,u.id as userid,
-    // u.firstname, u.lastname, u.email,  qa.cmid as cmid ,qa.courseid,qa.filename,uw.word_count
-    // , uw.words_per_minute , uw.total_time_seconds ,uw.backspace_percent FROM {user} u 
-    //     INNER JOIN {tiny_cursive_files} qa ON u.id = qa.userid 
-    //     LEFT JOIN {tiny_cursive_user_writing} uw ON qa.id = uw.file_id  
-    //     WHERE qa.userid!=1";
+
     $attempts = " SELECT uf.id as fileid, u.id as usrid,uw.id as uniqueid, u.firstname,u.email,uf.courseid,
-    uf.resourceid as attemptid,uf.timemodified, uf.cmid as cmid,
+    uf.id as attemptid,uf.timemodified, uf.cmid as cmid,
     uf.filename,uf.id as fileid, uw.total_time_seconds as total_time_seconds, 
     uw.key_count as key_count, uw.keys_per_minute as keys_per_minute, 
     uw.character_count as character_count, 
@@ -60,18 +55,11 @@ LEFT JOIN {tiny_cursive_user_writing} uw ON uw.file_id =uf.id
         $attempts .= " LIMIT $perpage , $limit ";      
     } 
      $attempts;
-  //  exit();
     $res = $DB->get_records_sql($attempts);
-
     $res_n_count=array('count'=>$totalcount,'data'=>$res);
-    // echo"<pre>";
-    // print_r( $res);
-    // echo "</pre>";
     return $res_n_count;
         
 }
-//'&_qf__userreportform=1&coursename=10&modulename=0&username=0&orderby=ASC&submitbutton=Submit&page=1'
-//'&_qf__userreportform=1&coursename=10&modulename=0&username=0&orderby=id&submitbutton=Submit'
 function get_user_writing_data($userid, $courseid, $moduleid, $orderby='id', $order='ASC',$perpage = '',$limit = '') { 
     $attempts=[];   
     global $DB;
@@ -87,15 +75,9 @@ function get_user_writing_data($userid, $courseid, $moduleid, $orderby='id', $or
     if($orderby == 'date'){
         $odby = 'uf.timemodified';
     }
-    // $attempts = "SELECT qa.resourceid as attemptid,qa.timemodified,uw.score,uw.copy_behavior,
-    // u.id as userid, 
-    //u.firstname, u.lastname, u.email,  qa.cmid as cmid ,qa.courseid,qa.filename,uw.word_count
-    // , uw.words_per_minute , uw.total_time_seconds ,uw.backspace_percent FROM {user} u 
-    //     INNER JOIN {tiny_cursive_files} uf ON u.id = qa.userid 
-    //     LEFT JOIN {tiny_cursive_user_writing} uw ON qa.id = uw.file_id  
-    //     WHERE qa.userid!=1";
+
     $attempts = "  SELECT uf.id as fileid, u.id as usrid,uw.id as uniqueid,
- u.firstname,u.email,uf.courseid,uf.resourceid as attemptid,uf.timemodified,
+ u.firstname,u.email,uf.courseid,uf.id as attemptid,uf.timemodified,
  uf.cmid as cmid,uf.filename,
   uw.total_time_seconds as total_time_seconds, 
   uw.key_count as key_count,
@@ -160,7 +142,7 @@ function get_user_submissions_data($resourceid,$modulename,$cmid,$courseid=0) {
     
     $attempts = "SELECT  uw.total_time_seconds ,uw.word_count ,uw.words_per_minute,uw.backspace_percent,uw.score,uw.copy_behavior,uf.resourceid , uf.modulename,uf.userid FROM {tiny_cursive_user_writing} uw
         INNER JOIN {tiny_cursive_files} uf ON uw.file_id =uf.id where uf.userid =$resourceid AND uf.cmid =$cmid AND uf.modulename='".$modulename."'";
-   //courseid
+
    if ($courseid != 0) {
     $attempts .= "  AND uf.courseid=$courseid";
 }
