@@ -35,7 +35,6 @@ define(["jquery", "core/ajax", "core/str", "core/templates"], function (
           usersTable.getusers(page);
         });
     },
-
     getusers: function (page) {
       $("#fgroup_id_buttonar").hide();
       $("#id_coursename").change(function () {

@@ -11,7 +11,7 @@ import { call } from 'core/ajax';
 import { create } from 'core/modal_factory';
 import {get_string as getString} from 'core/str';
 import {render} from 'core/templates';
-import {save,cancel,hidden} from 'core/modal_events';//hidden
+import {save,cancel,hidden} from 'core/modal_events';
 import jQuery from 'jquery';
 export const register = (editor) => {
     const postOne = (methodname, args) => call([{
@@ -36,7 +36,6 @@ export const register = (editor) => {
               var lastEvent='';
               modal.getRoot().on(save, function() {
                 var number=document.getElementById("inputUrl").value;
-                //var pastedtext=document.getElementById("pastetext").value;
                 if (number === "" || number === null || number === undefined) {
                     editor.execCommand('Undo');
                     alert("You cannot paste text without providing source");
@@ -48,9 +47,8 @@ export const register = (editor) => {
                 let recourceId=0;
                 let cmid=0;
                 let modulename="";
-                if (ur.includes("attempt.php")||ur.includes("forum")||ur.includes("assign")){
-                    //return true;
-                }else{
+                let editorid=editor?.id;
+                if (ur.includes("attempt.php")||ur.includes("forum")||ur.includes("assign")){ }else{
                     return false;
                 }
                 if (ur.includes("forum")||ur.includes("assign")) {
@@ -78,7 +76,8 @@ export const register = (editor) => {
                     resourceid: recourceId,
                     courseid: 0,
                     usercomment:number,
-                    timemodified:"1121232"
+                    timemodified:"1121232",
+                    editorid:editorid?editorid:""
                 });
                 lastEvent='save';
                 modal.destroy();
@@ -86,7 +85,6 @@ export const register = (editor) => {
                 modal.getRoot().on(cancel, function() {
                         editor.execCommand('Undo');
                         lastEvent='cancel';
-                       // alert("You cannot paste text without providing source");
                     });
                 modal.getRoot().on(hidden, function() {
                         if(lastEvent!='cancel'&& lastEvent!='save'){editor.execCommand('Undo');}
@@ -100,9 +98,7 @@ export const register = (editor) => {
          let recourceId=0;
          let modulename="";
         let cmid=0;
-         if (ur.includes("attempt.php")||ur.includes("forum")||ur.includes("assign")){
-            //return true;
-         }else{
+         if (ur.includes("attempt.php")||ur.includes("forum")||ur.includes("assign")){}else{
             return false;
          }
          if (ur.includes("forum")||ur.includes("assign")) {
@@ -130,20 +126,18 @@ export const register = (editor) => {
             keyCode: ed.keyCode,
             resourceId: recourceId,
             cmid:cmid,
-            modulename:modulename
+            modulename:modulename,
         });
     };
     editor.on('keyUp', (editor) => {
         sendKeyEvent("keyUp", editor);
     });
     editor.on('Paste', async (e) => {
-        //e.preventDefault();
         if(is_student && intervention){
             getModal(e);
         }
     });
     editor.on('Redo', async (e) => {
-        //e.preventDefault();
         if(is_student  && intervention){
             getModal(e);
         }
@@ -152,7 +146,5 @@ export const register = (editor) => {
         sendKeyEvent("keyDown", editor);
     });
     editor.on('init', () => {
-        // Setup the Undo handler.
     });
-
 };

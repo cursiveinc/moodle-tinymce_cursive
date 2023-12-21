@@ -40,7 +40,6 @@ define(["jquery", "core/ajax", "core/templates"], function (
         $(window).on('click', function (e) {
           var mid = $(e.target.parentNode).data("id");
           $("#score" + mid).show();
-          //var mid = $(e.target).data("id");
           $("#" + mid).show();
           if ($(e.target).hasClass('modal-close')) {
             $(".modal").hide();
