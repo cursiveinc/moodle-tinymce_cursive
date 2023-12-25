@@ -29,6 +29,7 @@
         <FIELD NAME="resourceid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="The page number that this questions appears on. If the question in slot n appears on page p, then the question in slot n+1 must appear on page p or p+1. Well, except that when a quiz is being created, there may be empty pages, which would cause the page number to jump here."/>
         <FIELD NAME="courseid" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Set to 1 when current question requires previous one to be answered first."/>
         <FIELD NAME="usercomment" TYPE="text"  NOTNULL="true"  SEQUENCE="false"  COMMENT="How many marks this question contributes to quiz.sumgrades."/>
+        <FIELD NAME="questionid" TYPE="int"  NOTNULL="false"  SEQUENCE="false"  COMMENT="question id"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Last modified time."/>    
       </FIELDS>
       <KEYS>
