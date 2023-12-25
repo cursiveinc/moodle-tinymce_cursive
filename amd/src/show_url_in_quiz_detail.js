@@ -31,6 +31,11 @@ define(["jquery", "core/ajax", "core/str"], function (
           let com=AJAX.call([{ methodname ,args }]);
           com[0].done(function (json) {
             var data = JSON.parse(json);
+            let ss = $("input[value*=779]").parent().parent().parent().find('.qtext');
+            let txt='Content Sources Provided by Student';
+            var p1='<div class="border alert alert-warning"><details><summary>'+txt+'</summary>';
+            ss.append( p1+' ');
+            window.console.log(ss);
             var p1='<div class="border alert alert-warning"><details><summary>Content Sources Provided by Student</summary>';
             if (data[0].usercomment!='comments') {$('.qtext').append( p1+' ' );
             data.forEach(element => {

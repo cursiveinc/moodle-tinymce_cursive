@@ -21,21 +21,17 @@ $url = new moodle_url($CFG->wwwroot .'/lib/editor/tiny/plugins/cursive/tiny_curs
         null,
         new pix_icon('i/report', '')
     );
-
 }
 function tiny_cursive_extend_navigation(global_navigation $navigation) {
     global $CFG, $PAGE;
     if ($home = $navigation->find('home', global_navigation::TYPE_SETTING)) {
         $home->remove();
     }
-  
 }
-
 
 function tiny_cursive_myprofile_navigation(core_user\output\myprofile\tree $tree, $user, $iscurrentuser, $course) {
     global $USER;
     if (empty($course)) {
-        // We want to display these reports under the site context.
         $course = get_fast_modinfo(SITEID)->get_course();
     } 
         
@@ -43,15 +39,14 @@ function tiny_cursive_myprofile_navigation(core_user\output\myprofile\tree $tree
         return;
     }
     if (\core\session\manager::is_loggedinas() or $USER->id != $user->id) {
-        // No peeking at somebody else's sessions!
-        return;
+       return;
     }  
         $url = new moodle_url('/lib/editor/tiny/plugins/cursive/my_writing_report.php',
                 array('id' => $user->id, 'course' => $course->id, 'mode' => 'cursive'));
         $node = new core_user\output\myprofile\node('reports', 'cursive', get_string('writing', 'tiny_cursive'), null, $url);
         $tree->add_node($node);          
 }
-function upload_multipart_record($file_record,$file_name_with_full_path){ 
+function upload_multipart_record($file_record,$file_name_with_full_path,$remote_url){ 
     global $CFG;
     // if (function_exists('curl_file_create')) { 
     //     $cFile = curl_file_create($file_name_with_full_path);
@@ -59,13 +54,11 @@ function upload_multipart_record($file_record,$file_name_with_full_path){
     //     $cFile = '@' . realpath($file_name_with_full_path);
     //   }
     $moodle_Url=$CFG->wwwroot;
-    //print_r($moodle_Url=$CFG->wwwroot);
       try {
-    $token=get_config('tiny_cursive','secretkey');
-    
+      $token=get_config('tiny_cursive','secretkey');
      $remote_url=get_config('tiny_cursive','python_server');
-    $remote_url=$remote_url."/upload_file";
-   
+     $remote_url=$remote_url."/upload_file";
+     echo $remote_url;
       $ch = curl_init();
       curl_setopt($ch, CURLOPT_URL,$remote_url);
       curl_setopt($ch, CURLOPT_POST,true);
@@ -84,7 +77,6 @@ function upload_multipart_record($file_record,$file_name_with_full_path){
       curl_close ($ch);
     } catch (Exception $e) {
         print_r($e->getMessage());
-        //$result=false;
       }
       $uploaded=false;
       if($httpcode==200){
@@ -93,7 +85,6 @@ function upload_multipart_record($file_record,$file_name_with_full_path){
       return $result;
     }
     
-
 function tiny_cursive_before_footer() {
     
     global $PAGE,$COURSE, $USER;
@@ -102,34 +93,28 @@ function tiny_cursive_before_footer() {
     $context = get_context_instance(CONTEXT_COURSE,$COURSE->id);
     $user_role='';
     if (has_capability('report/courseoverview:view', $context, $USER->id, false) || is_siteadmin()) {
-            $user_role='teacher_admin'; 
-         }
+        $user_role='teacher_admin'; 
+     }
     $PAGE->requires->js_call_amd('tiny_cursive/settings', 'init', array($showcomments,$user_role));
+   //&&  !is_siteadmin()
     if(get_config('tiny_cursive','showcomments') ){
-
     if($PAGE->bodyid=='page-mod-forum-discuss'||$PAGE->bodyid=='page-mod-forum-view'){
         $PAGE->requires->js_call_amd('tiny_cursive/append_fourm_post', 'init', array($confidence_threshold,$showcomments));
     }
     if($PAGE->bodyid=='page-mod-assign-grader'){
-        
         $PAGE->requires->js_call_amd('tiny_cursive/show_url_in_submission_grade', 'init', array($confidence_threshold,$showcomments));
     }
-    if($PAGE->bodyid=='page-mod-assign-viewpluginassignsubmission'){
-        
+    if($PAGE->bodyid=='page-mod-assign-viewpluginassignsubmission'){  
         $PAGE->requires->js_call_amd('tiny_cursive/show_url_in_submission_detail', 'init', array($confidence_threshold,$showcomments));
     }
     }
     if($PAGE->bodyid=='page-mod-assign-grading'){
-       
         $PAGE->requires->js_call_amd('tiny_cursive/append_submissions_table', 'init', array($confidence_threshold,$showcomments));
     }
-
     if($PAGE->bodyid=='page-mod-quiz-review'){
         $PAGE->requires->js_call_amd('tiny_cursive/show_url_in_quiz_detail', 'init', array($confidence_threshold,$showcomments));
     }
     if($PAGE->bodyid=='page-course-view-participants'){
         $PAGE->requires->js_call_amd('tiny_cursive/append_participants_table', 'init', array($confidence_threshold,$showcomments));
-    }
-    
-    
+    }   
 }

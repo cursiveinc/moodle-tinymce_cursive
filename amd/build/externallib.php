@@ -7,7 +7,6 @@
  */
 
 require_once("$CFG->libdir/externallib.php");
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 require_once('locallib.php');
 use tiny_cursive\tiny_cursive_data;
 
@@ -136,9 +135,14 @@ class cursive_json_func_data extends external_api {
             $user_data["courseId"]=  0; 
         }
 
+        //$user_data['unixTimestamp']=time(); //13 digit time 13 digits ("the number of milliseconds since the epoch").
+        // list($microseconds, $seconds) = explode(' ', microtime());
+        // $milliseconds = sprintf('%03d', round($microseconds * 1000));
+        // $timestamp_in_milliseconds = $seconds . $milliseconds;
+        //echo $timestamp_in_milliseconds; //int value
         $time_arr= explode('.', microtime("now")*1000);
         $timestamp_in_milliseconds =  $time_arr[0];
-        $user_data['unixTimestamp']= $timestamp_in_milliseconds; 
+        $user_data['unixTimestamp']= $timestamp_in_milliseconds; //13 digit time 13 digits ("the number of milliseconds since the epoch").
 
         $user_data["clientId"]= "2df2e6fc-dac2-4706-ac1b-992fb3019343";
         $user_data["personId"]=  $USER->id;
@@ -163,6 +167,7 @@ class cursive_json_func_data extends external_api {
         array_push($tempArray, $user_data);
         $file_rec = $DB->get_record($table, array('cmid'=> $cmid,'modulename'=>$modulename,'userid'=>$USER->id)); 
         $file_rec->uploaded =0;
+       // print_r($file_rec);
         $DB->update_record($table, $file_rec);
     }else{
             $tempArray[] = $user_data;
@@ -174,14 +179,18 @@ class cursive_json_func_data extends external_api {
             $dataObj->courseid = $courseId;
             $dataObj->timemodified = time();
             $dataObj->filename = $fname;
-            $dataObj->uploaded = 0;       
+            $dataObj->uploaded = 0;
+           
             $DB->insert_record($table, $dataObj);
         }
+
 
         $jsonData = json_encode($tempArray);
 
         if(is_array($tempArray)){
             file_put_contents($filename, $jsonData);
+        }else{
+        // echo "not an array".$jsonData;
         }
         return $filename;
     }
@@ -202,6 +211,7 @@ class cursive_json_func_data extends external_api {
 public static function cursive_user_comments_func_is_allowed_from_ajax() {
         return true;
 }
+     
 
 public static function cursive_user_comments_func_returns() {
         return new external_value(PARAM_RAW, 'All User Comments');
@@ -215,36 +225,23 @@ public static function cursive_user_comments_func_parameters() {
                 'resourceid' => new external_value(PARAM_INT, 'resourceid'),
                 'courseid' => new external_value(PARAM_INT, 'courseid'),
                 'usercomment' => new external_value(PARAM_TEXT, 'usercomment'),
-                'timemodified' => new external_value(PARAM_INT, 'timemodified'),
-                'editorid' => new external_value(PARAM_TEXT, 'editorid'),
+                'timemodified' => new external_value(PARAM_INT, 'timemodified')
             )
         );
 }
 
-public static function cursive_user_comments_func($modulename, $cmid,$resourceid,$courseid,$usercomment,$timemodified,$editorid) {
+public static function cursive_user_comments_func($modulename, $cmid,$resourceid,$courseid,$usercomment,$timemodified) {
     global  $DB,$USER;
         require_login();
         $userid=$USER->id;
-        $editorid;
-        $editorid_arr= explode(':',$editorid);
-        if(count($editorid_arr)>1){
-             $uniqueid= substr( $editorid_arr[0]."\n", 1);
-            $slot= substr( $editorid_arr[1]."\n", 0,-11);
-             $quba = question_engine::load_questions_usage_by_activity($uniqueid);
-            $question = $quba->get_question($slot, false);
-            $questionid=$question->id;
-            $questionid;
-        }
         $dataobject = new stdClass();
-        $dataobject->userid = $userid;
-        $dataobject->cmid = $cmid;
+        $dataobject->userid = $userid ;
+        $dataobject->cmid = $cmid ;
         $dataobject->modulename= $modulename;
-        $dataobject->resourceid = $resourceid;
-        $dataobject->courseid = $courseid;
-        $dataobject->questionid = $questionid;
-        $dataobject->usercomment = $usercomment;
-        $dataobject->timemodified = $timemodified;
-        
+        $dataobject->resourceid = $resourceid ;
+        $dataobject->courseid = $courseid ;
+        $dataobject->usercomment = $usercomment ;
+        $dataobject->timemodified = $timemodified ;
         try{
              $DB->insert_record('tiny_cursive_comments',$dataobject);
         }catch(Exception $e){
@@ -269,6 +266,7 @@ public static function cursive_approve_token_func_parameters() {
 public static function cursive_approve_token_func($token) {
     global  $DB,$CFG;
         require_login();
+        // $remote_url="http://52.205.247.22/verify-token";
          $remote_url=get_config('tiny_cursive','python_server');
          $remote_url=$remote_url.'/verify-token';
          $moodle_url=$CFG->wwwroot;
@@ -375,51 +373,6 @@ public static function get_assign_comment_link($id,$modulename,$cmid) {
     }
 }
 // submissions stats modal get_user_submissions_data
-
-public static function get_assign_grade_comment_is_allowed_from_ajax() {
-    return true;
-}
-
-public static function get_assign_grade_comment_returns() {
-    return new external_value(PARAM_RAW, 'Comment Link');
-}
-
-public static function get_assign_grade_comment_parameters() {
-    return new external_function_parameters(
-        array(
-            'id' => new external_value(PARAM_INT, 'id', false, 'course_detail'),
-            'modulename' => new external_value(PARAM_TEXT, 'modulename', false, 'modulename'),
-            'cmid' => new external_value(PARAM_INT, 'cmid', false, 'course_detail'),
-        )
-    );
-}
-
-public static function get_assign_grade_comment($id,$modulename,$cmid) {
-    global  $DB;
-    require_login();
-    $params = self::validate_parameters(
-        self::get_assign_comment_link_parameters(),
-        array(
-            'id'=>$id,
-           'modulename'=>$modulename,
-           'cmid'=>$cmid
-        )
-    );
-    
-    $conditions=array("userid"=>$id,'modulename'=>$modulename,'cmid'=>$cmid);
-    $table = 'tiny_cursive_comments';
-    $recs=	$DB->get_records($table,$conditions);
-    $usercomment=[];
-    if($recs){
-        foreach ($recs as $rec) {
-            array_push($usercomment,$rec);
-        }
-        return json_encode($usercomment);
-
-    }else{
-        return json_encode(array(array('usercomment'=>'comments')));
-    }
-}
 public static function get_user_list_submission_stats_is_allowed_from_ajax() {
     return true;
 }
@@ -449,10 +402,12 @@ public static function get_user_list_submission_stats($id,$modulename,$cmid) {
            'cmid'=>$cmid
         )
     );
-    
+    //$conditions=array("resourceid"=>$id);
+    //$table = 'tiny_cursive_comments';
     $rec=	get_user_submissions_data($id,$modulename,$cmid);
     return json_encode($rec);
 }
+///////////////////////////////////
 public static function cursive_filtered_writing_func_is_allowed_from_ajax() {
     return true;
 }
@@ -495,10 +450,12 @@ public static function cursive_filtered_writing_func($id) {
     $recs=array();
     foreach ($res as $key => $value) {
         $value->timemodified=  date("l jS \of F Y h:i:s A",$value->timemodified);
+       // $value->attemptid= '';
        $value->icon='fa fa-circle-o';
        $value->color='grey';
         array_push($recs,$value);
     }
+   // print_r( $recs);
     $res_n_count=array('count'=>$totalcount,'data'=>$recs);
     return json_encode($res_n_count);   
 }
