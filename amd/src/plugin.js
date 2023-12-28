@@ -22,6 +22,5 @@ export default new Promise(async(resolve) => {
         Autosaver.register(editor);
         return pluginMetadata;
     });
-
     resolve(pluginName);
 });

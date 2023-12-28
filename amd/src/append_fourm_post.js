@@ -14,7 +14,7 @@ define(["jquery", "core/ajax", "core/str"], function (
           });
       },
       getToken: function () {
-        //$("#fgroup_id_buttonar").hide();
+        //$("#fgroup_id_buttonar")
         $('#page-mod-forum-discuss').find( "article" ).get().forEach(function(entry) {
           var ids=$("#"+entry.id).data("post-id");
           let args={id: ids,modulename:"forum"} ;

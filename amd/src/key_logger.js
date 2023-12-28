@@ -35,7 +35,6 @@ define(["jquery", "core/ajax", "core/str", "core/templates"], function (
           usersTable.getusers(page);
         });
     },
-
     getusers: function (page) {
       $("#fgroup_id_buttonar").hide();
       $("#id_coursename").change(function () {
@@ -59,7 +58,6 @@ define(["jquery", "core/ajax", "core/str", "core/templates"], function (
             .then(function (html, js) {
               window.console.log(js);
               var filtered_user = $("#id_username");
-
               filtered_user.html(html);
             });
         });
@@ -83,7 +81,6 @@ define(["jquery", "core/ajax", "core/str", "core/templates"], function (
             .then(function (html, js) {
               window.console.log(js);
               var filtered_user = $("#id_modulename");
-
               filtered_user.html(html);
             });
         });

@@ -23,7 +23,6 @@ define(["jquery", "core/ajax", "core/str"], function (
       },
       getToken: function () {
         $("#approve_token").click(function () {
-           // window.console.log($('#id_s_tiny_cursive_secretkey').val());
           var token = $('#id_s_tiny_cursive_secretkey').val();
           var promise1 = AJAX.call([
             {

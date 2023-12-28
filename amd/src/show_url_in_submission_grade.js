@@ -50,7 +50,6 @@ define(["jquery", "core/ajax", "core/str","core/config"], function (
       let tagName = e.target.tagName;
       if((tagName=="SMALL")||(tagName=="SPAN")||(tagName=="LI")||(tagName=="A")){
       setTimeout(() => {
-        window.console.log(tagName);
          usersTable.init();}, 1000);
         }
        });
