@@ -25,8 +25,6 @@ define(["jquery", "core/str"], function (
           var html="<div id='body' class='body'>";
           $("body").append(html);
           $('#body').prop("class", user_role);
-         window.console.log("Settings showcomment",showcomments);
-         window.console.log(" Settings user_role ",user_role);
           if(showcomments==1){
             $('#body').prop("class", 'intervention '+user_role);
           }

@@ -7,7 +7,7 @@
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  */
 
-$linktext = get_string('tiny_cursive', 'tiny_cursive'); 
+$linktext = get_string('questimereport', 'tiny_cursive'); 
 defined('MOODLE_INTERNAL') || die();
 global $CFG,$PAGE;
 $PAGE->requires->js_call_amd('tiny_cursive/token_approve', 'init', array(1));
@@ -32,6 +32,13 @@ if (is_siteadmin()) {
         'API URL',
         'API address URL',
         '',
+        PARAM_TEXT
+    ));
+    $settings->add(new admin_setting_configtext(
+        'tiny_cursive/host_url',
+        'Moodle Host',
+        'You Host domain.',
+        $CFG->wwwroot,
         PARAM_TEXT
     ));
     $settings->add(new admin_setting_configtext(

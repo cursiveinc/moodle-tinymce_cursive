@@ -53,7 +53,9 @@ function upload_multipart_record($file_record,$file_name_with_full_path,$remote_
     //   } else { // 
     //     $cFile = '@' . realpath($file_name_with_full_path);
     //   }
-    $moodle_Url=$CFG->wwwroot;
+    $moodle_Url=get_config('tiny_cursive','host_url');//$CFG->wwwroot;
+    $moodle_Url = preg_replace("(^https?://)", "", $moodle_Url );
+    $moodle_Url='https://'.$moodle_Url;
       try {
       $token=get_config('tiny_cursive','secretkey');
      $remote_url=get_config('tiny_cursive','python_server');

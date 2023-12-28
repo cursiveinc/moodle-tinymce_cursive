@@ -10,7 +10,7 @@
 import { call } from 'core/ajax';
 import { create } from 'core/modal_factory';
 import {get_string as getString} from 'core/str';
-import {render} from 'core/templates';
+//import {render} from 'core/templates';
 import {save,cancel,hidden} from 'core/modal_events';
 import jQuery from 'jquery';
 export const register = (editor) => {
@@ -27,7 +27,8 @@ export const register = (editor) => {
         return create({
             type:'SAVE_CANCEL',
             title: getString('tiny_cursive','tiny_cursive'),
-            body:  render("tiny_cursive/popup_form", ""),
+            body: '<textarea  class="form-control inputUrl" value="" id="inputUrl" placeholder="sourceurl"></textarea>',
+            // render("tiny_cursive/popup_form", ""),
             removeOnClose: true,
         },showLog())
         .done(modal => {
