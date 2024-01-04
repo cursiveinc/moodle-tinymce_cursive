@@ -20,21 +20,29 @@ $payload =json_decode($payload, true);
 
 try {
     $dataObj = (object) $payload;
-    error_log($payload, 3,$err_file );
+	$dataObj->backspace_percent=round($dataObj->backspace_percent,4);
     $table = 'tiny_cursive_user_writing';
     $DB->insert_record($table, $dataObj);
 } catch(Exception $e) {
     error_log($e, 3,$err_file );
+    exit();
+}
+try{
+    error_log("\n ==================== data ==============", 3,$err_file );
+    error_log("\n encoded".json_encode($payload), 3,$err_file );
+    error_log("\n plain implode".implode(',', $payload), 3,$err_file );
+    error_log("\n =============== end=================", 3,$err_file );
+}catch(Exception $e) {
+    error_log($e, 3,$err_file );
    // http_response_code(500);
     exit();
 }
-
 $responseData = array(
     'status' => 'success',
     'message'=>"Data saved successfully",
 );
 
-// $responseJson = json_encode($responseData);
+ $responseJson = json_encode($responseData);
 
 http_response_code(200);
 header('Content-Type: application/json');
