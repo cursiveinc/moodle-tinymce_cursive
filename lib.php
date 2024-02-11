@@ -46,7 +46,7 @@ function tiny_cursive_myprofile_navigation(core_user\output\myprofile\tree $tree
         $node = new core_user\output\myprofile\node('reports', 'cursive', get_string('writing', 'tiny_cursive'), null, $url);
         $tree->add_node($node);          
 }
-function upload_multipart_record($file_record,$file_name_with_full_path,$remote_url){ 
+function upload_multipart_record($file_record,$file_name_with_full_path){ 
     global $CFG;
     // if (function_exists('curl_file_create')) { 
     //     $cFile = curl_file_create($file_name_with_full_path);
