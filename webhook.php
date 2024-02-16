@@ -19,8 +19,9 @@ $event = null;
 $payload =json_decode($payload, true);
 
 try {
+
     $dataObj = (object) $payload;
-    error_log($payload, 3,$err_file );
+    $dataObj->backspace_percent=round($dataObj->backspace_percent,4);
     $table = 'tiny_cursive_user_writing';
     $DB->insert_record($table, $dataObj);
 } catch(Exception $e) {
@@ -34,7 +35,7 @@ $responseData = array(
     'message'=>"Data saved successfully",
 );
 
-// $responseJson = json_encode($responseData);
+ $responseJson = json_encode($responseData);
 
 http_response_code(200);
 header('Content-Type: application/json');
