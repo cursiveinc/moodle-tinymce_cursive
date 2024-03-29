@@ -278,6 +278,12 @@ public static function cursive_approve_token_func($token) {
             curl_setopt($ch, CURLOPT_POST,true);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER,true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, array("token"=>$token,"moodle_url"=>$moodle_url));
+			curl_setopt($ch, CURLOPT_HTTPHEADER, [
+				'Authorization: Bearer ' . $token,
+				'X-Moodle-Url:'.$moodle_Url,
+				'Content-Type: multipart/form-data',
+				'Accept:application/json',
+			]);
             $result=curl_exec($ch);
             curl_close ($ch);
          } catch (Exception $e) {
