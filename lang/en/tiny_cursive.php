@@ -1,4 +1,19 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
  * @package tiny_cursive
  * @category TinyMCE Editor
@@ -20,6 +35,7 @@ $string['username'] = 'User name';
 $string['userename'] = 'User name';
 $string['serialno'] = 'Sr. No';
 $string['questionname'] = 'Question';
+$string['questimereport'] = 'Question Report';
 $string['attemptid'] = 'Attempt id';
 $string['selectcourse'] = 'Select a Course';
 $string['selectuser'] = 'Select a User';
@@ -39,3 +55,17 @@ $string["writing"] = "Writing Report";
 $string["all_writing"] = "All writing";
 $string["confidence_threshold"] = "0.65";
 $string["student_writing_statics"] = "Writing Statistics";
+$string["download"] = "Download";
+$string["download_attempt_json"] = "Download Attempt JSON";
+$string["module_name"] = "Module Name";
+$string["last_modified"] = "Last modified";
+$string["analytics"] = "Analytics";
+$string["typeid"] = "TypeID";
+$string["learn_more"] = "Learn More";
+$string["close"] = "Close";
+$string["playback"] = "Play back video";
+$string["average_min"] = "Average Words Per minute:";
+$string["select_course"] = "Select Course";
+$string["all_course"] = "All Courses";
+$string["total_time"] = "Total Time Writing:";
+$string["total_word"] = "Total Words:";

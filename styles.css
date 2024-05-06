@@ -1,1 +1,43 @@
-#quiztimer_license_key{    width: 152px;    float: left;    margin-right: 16px;}.license_key{    float: left;    margin-top: 6px;    width: 118px;}.right-image{    height: 12px;}.notattempt-image{    height: 18px;}.wrong-image{    height: 12px;}.time_success{    display:none;}.time_successfull{    display:none;}
+#quiztimer_license_key {
+    width: 152px;
+    float: left;
+    margin-right: 16px;
+}
+
+.license_key {
+    float: left;
+    margin-top: 6px;
+    width: 118px;
+}
+
+.right-image {
+    height: 12px;
+}
+
+.notattempt-image {
+    height: 18px;
+}
+
+.wrong-image {
+    height: 12px;
+}
+
+.time_success {
+    display: none;
+}
+
+.time_successfull {
+    display: none;
+}
+
+/*.path-mod-assign [data-region="review-panel"]{*/
+/*    top: 255px !important;*/
+/*}*/
+/*.path-mod-assign [data-region="grade-panel"]{*/
+/*    top: 255px !important;*/
+/*}*/
+/*.path-mod .activity-header:not(:empty){*/
+/*    position: absolute;*/
+/*    top:140px;*/
+/*    z-index: 1000;*/
+/*}*/

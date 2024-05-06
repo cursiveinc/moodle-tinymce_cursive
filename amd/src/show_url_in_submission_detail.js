@@ -22,7 +22,7 @@ define(["jquery", "core/ajax", "core/str"], function (
           });
       },
       appendSubmissionDetail: function () {
-       let sub_url= window.location.href;
+            let sub_url= window.location.href;
           let parm = new URL(sub_url);
           let sid=parm.searchParams.get('sid');
           let cmid=parm.searchParams.get('id');

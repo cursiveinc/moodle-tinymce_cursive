@@ -1,4 +1,19 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
  * @package tiny_cursive
  * @category TinyMCE Editor
@@ -6,24 +21,26 @@
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  */
 
-$resourceId=$_GET['resourceId'];
-$user_id=$_GET['user_id'];
-$cmid=$_GET['cmid'];
-$fname=$_GET['fname'];
-$filename = '';
-        $dirname = __DIR__ .'/userdata/';    
-        if($fname){
-        $filename = $dirname.$fname;
-        }else{
-        $filename = $dirname. $user_id.'_'.$resourceId.'_'.$cmid.'_attempt'.'.json';
-        }
-        
-        header("Content-Description: File Transfer"); 
-        header("Content-Type: application/octet-stream"); 
-        header("Content-Disposition: attachment; filename=\"". basename($filename) ."\""); 
-        flush();
-        $inp = file_get_contents($filename);
-        echo $inp;
-        die();
+require(__DIR__ . '/../../../../../config.php');
+require_login();
 
-?>
+$resourceid = optional_param('resourceid', 0, PARAM_INT);
+$userid = optional_param('user_id', 0, PARAM_INT);
+$cmid = optional_param('cmid', 0, PARAM_INT);
+$fname = optional_param('fname', '', PARAM_RAW);
+
+$filename = '';
+$dirname = __DIR__ . '/userdata/';
+if ($fname) {
+    $filename = $dirname . $fname;
+} else {
+    $filename = $dirname . $userid . '_' . $resourceid . '_' . $cmid . '_attempt' . '.json';
+}
+
+header("Content-Description: File Transfer");
+header("Content-Type: application/octet-stream");
+header("Content-Disposition: attachment; filename=\"" . basename($filename) . "\"");
+flush();
+$inp = file_get_contents($filename);
+echo $inp;
+die();
