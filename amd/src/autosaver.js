@@ -71,6 +71,7 @@ export const register = (editor) => {
                     modulename="quiz";
                 }
                 if(cmid===null){ cmid=0;}
+
                 postOne('cursive_user_comments', {
                     modulename: modulename,
                     cmid: cmid,
@@ -99,6 +100,7 @@ export const register = (editor) => {
          let recourceId=0;
          let modulename="";
         let cmid=0;
+        let editorid=editor?.id;
          if (ur.includes("attempt.php")||ur.includes("forum")||ur.includes("assign")){}else{
             return false;
          }
@@ -128,6 +130,7 @@ export const register = (editor) => {
             resourceId: recourceId,
             cmid:cmid,
             modulename:modulename,
+            editorid:editorid?editorid:""
         });
     };
     editor.on('keyUp', (editor) => {

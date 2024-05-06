@@ -16,19 +16,24 @@
 
 /**
  * @package tiny_cursive
+ * @category tiny
  * @copyright  CTI <info@cursivetechnology.com>
  * @author eLearningstack
  */
 
-defined('MOODLE_INTERNAL') || die();
-$tasks = [
-    [
-        'classname' => 'tiny_cursive\task\upload_student_json_cron',
-        'blocking' => 0,
-        'minute' => '30',
-        'hour' => '0',
-        'day' => '1',
-        'month' => '0',
-        'dayofweek' => '0',
-    ],
-];
+namespace MoodleHQ\editor\tiny\plugins\cursive\classes\forms;
+use moodleform;
+
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->libdir . '/formslib.php');
+
+class fileupload extends moodleform {
+    public function definition() {
+        global $DB, $USER;
+
+        $mform = $this->_form; // Don't forget the underscore!
+
+        $mform->addElement('hidden', 'draftid', ''); // Add elements to your form.
+        $mform->addRule('draftid', get_string('maximumchars', '', 512), 'maxlength', 255, 'client');
+    }
+}

@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * @package tiny_cursive
@@ -10,37 +24,30 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->libdir . '/formslib.php');
 
-class wrreportform extends moodleform
-{
-    public function definition()
-    {
+class wrreportform extends moodleform {
+    public function definition() {
         global $DB, $USER;
-        //start dropdowns of course, quiz and user email search field in mform
+        // Start dropdowns of course, quiz and user email search field in mform.
 
         $mform = &$this->_form;
         $attributes = '';
         $courseid = $this->_customdata['coursename'];
-       // $username = $this->_customdata['username'];
-        //$quizzes = self::get_quiz($courseid);
-        //$users = self::get_user($courseid);
         $modules = self::get_modules($courseid);
-        $options = array('multiple' => false, 'includefrontpage' => false);
+        $options = ['multiple' => false, 'includefrontpage' => false];
         $mform->addElement('course', 'coursename', get_string('coursename', 'tiny_cursive'), $options);
-        $mform->addRule('coursename', null, 'required', null, 'client');  
-        $options = array(
-           'id' => 'ID',
-           'name' => 'Name',
-           'email' => 'Email',
-           'date' => 'Date',
-        );
+        $mform->addRule('coursename', null, 'required', null, 'client');
+        $options = [
+            'id' => 'ID',
+            'name' => 'Name',
+            'email' => 'Email',
+            'date' => 'Date',
+        ];
         $mform->addElement('select', 'orderby', get_string('orderby', 'tiny_cursive'), $options, $attributes);
         $mform->setType('orderby', PARAM_RAW);
-        // $mform->addRule('username', null, 'required', null, 'client');
         $this->add_action_buttons(false, get_string('submit'));
     }
 
-    function get_data()
-    {
+    public function get_data() {
         $data = parent::get_data();
         if (!empty($data)) {
             $mform = &$this->_form;
@@ -58,39 +65,34 @@ class wrreportform extends moodleform
         return $data;
     }
 
-    public function get_modules($courseid)
-    {   // Get users dropdown.
+    public function get_modules($courseid) {
+        // Get users dropdown.
         global $DB;
-        $mdetail = array();
+        $mdetail = [];
         $mdetail[0] = 'All Modules';
-        if($courseid){
+        if ($courseid) {
             $modules = $DB->get_records_sql("SELECT id, instance  FROM {course_modules} WHERE course = $courseid ");
             foreach ($modules as $cm) {
                 $modinfo = get_fast_modinfo($courseid);
-                 $cm = $modinfo->get_cm($cm->id);
-                 $get_module_name = get_coursemodule_from_id($cm->modname, $cm->id, 0, false, MUST_EXIST);
-                  $mdetail[$cm->id] = $get_module_name->name;               
-            } 
-        }
-        /*if (!empty($courseid)) {
-            $modules = $DB->get_records_sql("SELECT id, instance  FROM {course_modules} WHERE course = $courseid ");
-            foreach ($modules as $module) {
-                $mdetail[$module->id] = $module->id;
+                $cm = $modinfo->get_cm($cm->id);
+                $getmodulename = get_coursemodule_from_id($cm->modname, $cm->id, 0, false, MUST_EXIST);
+                $mdetail[$cm->id] = $getmodulename->name;
             }
-        }*/
+        }
+
         return $mdetail;
     }
 
-        public function get_user($courseid)
-    {   // Get users dropdown.
+    public function get_user($courseid) {
+        // Get users dropdown.
         global $DB;
-        $udetail = array();
+        $udetail = [];
         $udetail[0] = 'All Users';
         if (!empty($courseid)) {
-            $users = $DB->get_records_sql("SELECT ue.id,u.id as userid,u.firstname,u.lastname FROM {enrol} e 
-            INNER JOIN {user_enrolments} ue ON e.id = ue.enrolid 
-            INNER JOIN {user} u ON u.id = ue.userid WHERE e.courseid = $courseid AND u.id != 1
-            ");
+            $users = $DB->get_records_sql("SELECT ue.id,u.id as userid,u.firstname,u.lastname FROM {enrol} e
+            INNER JOIN {user_enrolments} ue ON e.id = ue.enrolid
+            INNER JOIN {user} u ON u.id = ue.userid WHERE e.courseid = :courseid AND u.id != 1
+            ", ['courseid' => $courseid]);
             foreach ($users as $user) {
                 $udetail[$user->userid] = $user->firstname . ' ' . $user->lastname;
             }

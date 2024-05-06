@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="lib/editor/tiny/plugins/cursive/db" VERSION="20211019" COMMENT="XMLDB file for Moodle mod/quiz"
+<XMLDB PATH="lib/editor/tiny/plugins/cursive/db" VERSION="20240319" COMMENT="XMLDB file for Moodle mod/quiz"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
+    xsi:noNamespaceSchemaLocation="../../../../../../lib/xmldb/xmldb.xsd"
 >
   <TABLES>
     <TABLE NAME="tiny_cursive_files" COMMENT="Stores File names.">
@@ -9,12 +9,13 @@
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Where this question comes in order in the list of questions in this quiz. Like question_attempts.slot."/>
         <FIELD NAME="cmid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Foreign key references quiz.id."/>
-        <FIELD NAME="modulename" TYPE="char" LENGTH="255" NOTNULL="false"  COMMENT="How many marks this question contributes to quiz.sumgrades."/>
+        <FIELD NAME="modulename" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="How many marks this question contributes to quiz.sumgrades."/>
         <FIELD NAME="resourceid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="The page number that this questions appears on. If the question in slot n appears on page p, then the question in slot n+1 must appear on page p or p+1. Well, except that when a quiz is being created, there may be empty pages, which would cause the page number to jump here."/>
         <FIELD NAME="courseid" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Set to 1 when current question requires previous one to be answered first."/>
-        <FIELD NAME="filename" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT="0" SEQUENCE="false"  COMMENT="How many marks this question contributes to quiz.sumgrades."/>
-        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Last modified time."/>    
-         <FIELD NAME="uploaded" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="File upladed to api."/>    
+        <FIELD NAME="filename" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="How many marks this question contributes to quiz.sumgrades."/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Last modified time."/>
+        <FIELD NAME="uploaded" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="File upladed to api."/>
+        <FIELD NAME="questionid" TYPE="int" LENGTH="20" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -25,32 +26,31 @@
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Where this question comes in order in the list of questions in this quiz. Like question_attempts.slot."/>
         <FIELD NAME="cmid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Foreign key references quiz.id."/>
-        <FIELD NAME="modulename" TYPE="char" LENGTH="255" NOTNULL="false"  COMMENT="How many marks this question contributes to quiz.sumgrades."/>
+        <FIELD NAME="modulename" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="How many marks this question contributes to quiz.sumgrades."/>
         <FIELD NAME="resourceid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="The page number that this questions appears on. If the question in slot n appears on page p, then the question in slot n+1 must appear on page p or p+1. Well, except that when a quiz is being created, there may be empty pages, which would cause the page number to jump here."/>
         <FIELD NAME="courseid" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Set to 1 when current question requires previous one to be answered first."/>
-        <FIELD NAME="usercomment" TYPE="text"  NOTNULL="true"  SEQUENCE="false"  COMMENT="How many marks this question contributes to quiz.sumgrades."/>
-        <FIELD NAME="questionid" TYPE="int"  NOTNULL="false"  SEQUENCE="false"  COMMENT="question id"/>
-        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Last modified time."/>    
+        <FIELD NAME="usercomment" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="How many marks this question contributes to quiz.sumgrades."/>
+        <FIELD NAME="questionid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="question id"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Last modified time."/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
-     <TABLE NAME="tiny_cursive_user_writing" COMMENT="tiny_user_writing_statics.">
+    <TABLE NAME="tiny_cursive_user_writing" COMMENT="tiny_user_writing_statics.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="file_id" TYPE="int" LENGTH="10" NOTNULL="true" />
+        <FIELD NAME="file_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="total_time_seconds" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Where this question comes in order in the list of questions in this quiz. Like question_attempts.slot."/>
         <FIELD NAME="key_count" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Foreign key references quiz.id."/>
         <FIELD NAME="keys_per_minute" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="The page number that this questions appears on. If the question in slot n appears on page p, then the question in slot n+1 must appear on page p or p+1. Well, except that when a quiz is being created, there may be empty pages, which would cause the page number to jump here."/>
         <FIELD NAME="character_count" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Set to 1 when the current question requires the previous one to be answered first."/>
-        <FIELD NAME="characters_per_minute" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"  COMMENT="How many marks this question contributes to quiz.sumgrades."/>
-        <FIELD NAME="word_count" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Last modified time."/>    
-        <FIELD NAME="words_per_minute" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Last modified time."/>    
-        <FIELD NAME="backspace_percent" TYPE="float" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Last modified time."/>    
-        <FIELD NAME="score" TYPE="float" LENGTH="4" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="User score to show icons."/>    
-        <FIELD NAME="copy_behavior" TYPE="float" LENGTH="4" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="User score to show icons."/>    
-
+        <FIELD NAME="characters_per_minute" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="How many marks this question contributes to quiz.sumgrades."/>
+        <FIELD NAME="word_count" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Last modified time."/>
+        <FIELD NAME="words_per_minute" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Last modified time."/>
+        <FIELD NAME="backspace_percent" TYPE="float" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Last modified time."/>
+        <FIELD NAME="score" TYPE="float" LENGTH="4" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="User score to show icons."/>
+        <FIELD NAME="copy_behavior" TYPE="float" LENGTH="4" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="User score to show icons."/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
