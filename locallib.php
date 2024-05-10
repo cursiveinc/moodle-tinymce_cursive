@@ -172,32 +172,29 @@ function get_user_submissions_data($resourceid, $modulename, $cmid, $courseid = 
         $attempts .= "  AND uf.courseid = $courseid";
     }
     $data = $DB->get_record_sql($attempts);
-    if (!isset($data->filename)) {
-        $sql = 'SELECT id as fileid, userid,filename
+    $data = (array)$data;
+    if (!isset($data['filename'])) {
+        $sql = 'SELECT id as fileid, userid, filename
                 FROM {tiny_cursive_files} 
                 WHERE userid = '. $resourceid .' AND cmid = :cmid AND modulename = :modulename';
         $filename = $DB->get_record_sql( $sql, ['userid' => $resourceid, 'cmid' => $cmid, 'modulename' => $modulename]);
 
         if ($filename){
             $context = context_system::instance();
-//        $data['filename'] = file_urlcreate ($context, $filename);
-            $data->filename = $filename->filename ?? '';
+            $data['filename'] = $filename->filename ?? '';
         }
-
-
     }
-
-    if ($data->filename){
+    if ($data['filename']){
         $sql = 'SELECT id as fileid
                 FROM {tiny_cursive_files} 
                 WHERE userid = :userid ORDER BY id ASC';
         $ffile = $DB->get_record_sql( $sql, ['userid' => $data->userid]);
 
         if ($ffile->fileid == $data->file_id){
-            $data->first_file = 1;
+            $data['first_file'] = 1;
         }
         else{
-            $data->first_file = 0;
+            $data['first_file'] = 0;
         }
     }
     $res = $data;
