@@ -107,10 +107,9 @@ define(["jquery", "core/ajax", "core/str","core/templates", "./replay"], functio
                         if (data.data.filename){
                             var filepath = M.cfg.wwwroot+'/lib/editor/tiny/plugins/cursive/userdata/'+ data.data.filename;
                         }
-                        var score = data.data.score;
+                        var score = parseInt(data.data.score);
                         var icon = 'fa fa-circle-o';
                         var color = 'font-size:24px;color:black';
-                        console.log(data.data.first_file);
                         if(data.data.first_file){
                             icon = 'fa  fa fa-solid fa-info-circle typeid';
                             color = 'font-size:24px;color:#000000';
