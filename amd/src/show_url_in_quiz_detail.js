@@ -128,7 +128,7 @@ define(["jquery", "core/ajax", "core/str","core/templates", "./replay"], functio
                             }
                         }
                         html= '<div class="justify-content-center d-flex">' +
-                            '<button onclick="popup_item(' + userid + ')" data-id=' + userid + ' class="mr-2 ' + chart + '" style="' + st + '"></button>' +
+                            '<button onclick="popup_item(\'' + userid + "-" + questionid + '\')" data-id=' + userid + ' class="mr-2 ' + chart + '" style="' + st + '"></button>' +
                             '<a href="#" onclick="video_playback(' + userid + ', \'' + filepath + '\')" data-filepath="' + filepath + '" data-id="playback_' + userid + '" class="mr-2 video_playback_icon ' + video + '" style="' + st + '"></a>' +
                             '<button onclick="myFunction()" data-id=' + userid + ' class="' + icon + ' " style="border:none; ' + color + ';"></button>' +
                             '</div>';
@@ -137,17 +137,18 @@ define(["jquery", "core/ajax", "core/str","core/templates", "./replay"], functio
                             tabledata: data.data,
                             page: score_setting,
                             userid: userid,
+                            quizid: questionid,
                         };
                         templates
-                            .render("tiny_cursive/pop_modal", context)
+                            .render("tiny_cursive/quiz_pop_modal", context)
                             .then(function (html) {
                                 $("body").append(html);
                             }).catch(e => window.console.log(e));
                     }
                 });
                 $(window).on('click', function (e) {
-                    if (e.target.id == 'modal-close' + userid) {
-                        $("#" + userid).hide();
+                    if (e.target.id == 'modal-close' + userid+'-'+questionid) {
+                        $("#" + userid+"-"+questionid).hide();
                     }
                     if (e.target.id == 'modal-close-playback' + userid) {
                         $("#playback" + userid).hide();
