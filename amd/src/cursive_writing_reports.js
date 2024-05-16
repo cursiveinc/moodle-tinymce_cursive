@@ -93,7 +93,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                         page: page,
                     };
                     templates
-                        .render("tiny_cursive/user_list", context)
+                        .render("tiny_cursive/module_list", context)
                         .then(function (html, js) {
                             window.console.log(js);
                             var filtered_user = $("#id_modulename");
