@@ -66,7 +66,8 @@ echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('student_writing_statics', 'tiny_cursive'));
 $renderer = $PAGE->get_renderer('tiny_cursive');
 $attempts = get_user_attempts_data($username, $courseid, null, $orderby, $order, $perpage, $limit);
-echo $renderer->user_writing_report($attempts, $USER, $username, $page, $limit, $linkurl);
+$userprofile = get_user_profile_data($username, $courseid);
+echo $renderer->user_writing_report($attempts, $userprofile, $username, $page, $limit, $linkurl);
 echo $OUTPUT->footer();
 
 
