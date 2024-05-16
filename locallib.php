@@ -150,6 +150,7 @@ function get_user_submissions_data($resourceid, $modulename, $cmid, $courseid = 
     require_once($CFG->dirroot."/lib/editor/tiny/plugins/cursive/lib.php");
 
     $attempts = [];
+    $userid= $resourceid;
     $attempts = "SELECT  uw.total_time_seconds ,uw.word_count ,uw.words_per_minute,
                          uw.backspace_percent,uw.score,uw.copy_behavior,uf.resourceid , uf.modulename,uf.userid, uf.filename
                  FROM {tiny_cursive_user_writing} uw
@@ -182,14 +183,16 @@ function get_user_submissions_data($resourceid, $modulename, $cmid, $courseid = 
         if ($filename){
             $context = context_system::instance();
             $data['filename'] = $filename->filename ?? '';
+            $data['file_id'] = $filename->fileid ?? '';
         }
     }
+
+    $data = (array)$data;
     if ($data['filename']){
         $sql = 'SELECT id as fileid
                 FROM {tiny_cursive_files} 
                 WHERE userid = :userid ORDER BY id ASC';
-        $ffile = $DB->get_record_sql( $sql, ['userid' => $data->userid]);
-
+        $ffile = $DB->get_record_sql( $sql, ['userid' => $userid]);
         if ($ffile->fileid == $data->file_id){
             $data['first_file'] = 1;
         }
