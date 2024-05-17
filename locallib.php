@@ -188,12 +188,15 @@ function get_user_submissions_data($resourceid, $modulename, $cmid, $courseid = 
     }
 
     $data = (array)$data;
+
     if ($data['filename']){
         $sql = 'SELECT id as fileid
                 FROM {tiny_cursive_files} 
                 WHERE userid = :userid ORDER BY id ASC';
+
         $ffile = $DB->get_record_sql( $sql, ['userid' => $userid]);
-        if ($ffile->fileid == $data->file_id){
+        $ffile = (array)$ffile;
+        if ($ffile['fileid'] == $data['file_id']){
             $data['first_file'] = 1;
         }
         else{
