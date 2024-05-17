@@ -128,7 +128,7 @@ define(["jquery", "core/ajax", "core/str","core/templates", "./replay"], functio
                         }
                         html= '<div class="justify-content-center d-flex">' +
                             '<button onclick="popup_item(\'' + userid + "-" + questionid + '\')" data-id=' + userid + ' class="mr-2 ' + chart + '" style="' + st + '"></button>' +
-                            '<a href="#" onclick="video_playback(' + userid + ', \'' + filepath + '\')" data-filepath="' + filepath + '" data-id="playback_' + userid + '" class="mr-2 video_playback_icon ' + video + '" style="' + st + '"></a>' +
+                            '<a href="#" onclick="video_playback(' + questionid + ', \'' + filepath + '\')" data-filepath="' + filepath + '" data-id="playback_' + questionid + '" class="mr-2 video_playback_icon ' + video + '" style="' + st + '"></a>' +
                             '<button onclick="myFunction()" data-id=' + userid + ' class="' + icon + ' " style="border:none; ' + color + ';"></button>' +
                             '</div>';
                         content.parent().parent().parent().find('.qtext').append(html);
@@ -149,8 +149,8 @@ define(["jquery", "core/ajax", "core/str","core/templates", "./replay"], functio
                     if (e.target.id == 'modal-close' + userid+'-'+questionid) {
                         $("#" + userid+"-"+questionid).hide();
                     }
-                    if (e.target.id == 'modal-close-playback' + userid) {
-                        $("#playback" + userid).hide();
+                    if (e.target.id == 'modal-close-playback' + questionid) {
+                        $("#playback" + questionid).hide();
                     }
                 });
                 return com.usercomment;
