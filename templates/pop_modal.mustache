@@ -5,10 +5,34 @@
                 <h4 class="modal-title">{{tabledata.modulename}}</h4>
             </div>
             <div class="modal-body">
-                <div class="position"><p>Time Writing:{{tabledata.total_time_seconds}} </p><span></span></div>
-                <div class="position"><p>Words per minute: {{tabledata.words_per_minute}} </p><span></span></div>
-                <div class="position"><p>Total Words:{{tabledata.word_count}} </p><span></span></div>
-                <div class="position"><p>Backspace %: {{tabledata.backspace_percent}}</p><span></span></div>
+                {{#tabledata.total_time_seconds}}
+                    {{#tabledata.word_count}}
+                        <div class="position">
+                            <p>Time Writing: {{tabledata.total_time_seconds}}</p>
+                            <span></span>
+                        </div>
+                        <div class="position">
+                            <p>Words per minute: {{tabledata.words_per_minute}}</p>
+                            <span></span>
+                        </div>
+                        <div class="position">
+                            <p>Total Words: {{tabledata.word_count}}</p>
+                            <span></span>
+                        </div>
+                        <div class="position">
+                            <p>Backspace %: {{tabledata.backspace_percent}}</p>
+                            <span></span>
+                        </div>
+                    {{/tabledata.word_count}}
+                {{/tabledata.total_time_seconds}}
+                {{^tabledata.total_time_seconds}}
+                    <p>No payload data received yet</p>
+                {{/tabledata.total_time_seconds}}
+                {{#tabledata.total_time_seconds}}
+                    {{^tabledata.word_count}}
+                        <p>No payload data received yet</p>
+                    {{/tabledata.word_count}}
+                {{/tabledata.total_time_seconds}}
             </div>
             <div class="modal-footer">
                 <button type="button" id="modal-close{{userid}}" data-resource="{{userid}}"
