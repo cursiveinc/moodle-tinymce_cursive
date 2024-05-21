@@ -13,6 +13,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
     templates,
     Replay
 ) {
+    const replayInstances = {};
     window.myFunction = function() {
         let mid = $(this).data('id');
         $("#typeid" + mid).show();
@@ -21,13 +22,14 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
     window.video_playback = function(mid, filepath) {
         if (filepath !== ''){
             $("#playback"+mid).show();
-            new Replay(
+            const replay = new Replay(
                 elementId = 'output_playback_'+mid,
                 filePath = filepath,
                 speed = 10,
                 loop = false,
                 controllerId = 'player_'+mid
             );
+            replayInstances[mid] = replay;
         }
         else {
             alert('No submission');
@@ -126,6 +128,9 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                     }
                     if (e.target.id == 'modal-close-playback' + userid) {
                         $("#playback" + userid).hide();
+                        if (replayInstances[userid]) {
+                            replayInstances[userid].stopReplay();
+                        }
                     }
                 });
                 return com.usercomment;

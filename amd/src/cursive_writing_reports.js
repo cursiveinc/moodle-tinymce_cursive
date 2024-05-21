@@ -12,6 +12,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
     templates,
     Replay
 ) {
+    const replayInstances = {};
     var usersTable = {
         init: function (page) {
             str
@@ -36,16 +37,22 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                             var filepath = $(this).data("filepath");
 
                             $("#" + mid).show();
-                            new Replay(
+                            const replay = new Replay(
                                 elementId = 'output_'+mid,
                                 filePath = decodeURIComponent(filepath),
                                 speed = 10,
                                 loop = false,
-                                controllerId = 'player_'+mid
+                                controllerId = 'player_' + mid
                             );
+                            replayInstances[mid] = replay;
                         });
                         $(".modal-close ").on('click', function () {
                             $(".modal").hide();
+                            var mid = $(this).data("id");
+                            if (replayInstances[mid]) {
+                                replayInstances[mid].stopReplay();
+                                delete replayInstances[mid];  // Clean up the instance
+                            }
                         });
                     });
                     usersTable.getusers(page);
