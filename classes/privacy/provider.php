@@ -14,6 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Tiny cursive plugin.
+ *
+ * @package tiny_cursive
+ * @copyright  CTI <info@cursivetechnology.com>
+ * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 namespace tiny_cursive\privacy;
 
 use core_privacy\local\request\approved_contextlist;
@@ -89,7 +97,7 @@ class provider implements
         $context = $userlist->get_context();
 
         $params = [
-            'cmid' => $context->id
+            'cmid' => $context->id,
         ];
 
         $sql = "SELECT userid
@@ -134,39 +142,6 @@ class provider implements
         $autosaves = $DB->get_recordset_sql($sql, $contextparams);
         self::export_autosaves($user, $autosaves);
     }
-
-    /**
-     * Export all autosave records in the recordset, and close the recordset when finished.
-     *
-     * @param   stdClass   $user The user whose data is to be exported
-     * @param   \moodle_recordset $autosaves The recordset containing the data to export
-     */
-//    protected static function export_autosaves(stdClass $user, \moodle_recordset $autosaves) {
-//        foreach ($autosaves as $autosave) {
-//            $context = \context::instance_by_id($autosave->contextid);
-//            $subcontext = [
-//                get_string('pluginname', 'tiny_cursive'),
-//                $autosave->id,
-//            ];
-//
-//            $html = writer::with_context($context)
-//                ->rewrite_pluginfile_urls($subcontext, 'user', 'draft', $autosave->draftid, $autosave->drafttext);
-//
-//            $data = (object) [
-//                'drafttext' => format_text($html, FORMAT_HTML, static::get_filter_options()),
-//                'timemodified' => \core_privacy\local\request\transform::datetime($autosave->timemodified),
-//            ];
-//
-//            if ($autosave->userid != $user->id) {
-//                $data->author = \core_privacy\local\request\transform::user($autosave->userid);
-//            }
-//
-//            writer::with_context($context)
-//                ->export_data($subcontext, $data)
-//                ->export_area_files($subcontext, 'user', 'draft', $autosave->draftid);
-//        }
-//        $autosaves->close();
-//    }
 
     /**
      * Delete all data for all users in the specified context.

@@ -15,16 +15,29 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Tiny cursive plugin.
+ *
  * @package tiny_cursive
- * @category tiny
  * @copyright  CTI <info@cursivetechnology.com>
  * @author eLearningstack
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->libdir . '/formslib.php');
 
+/**
+ * Tiny cursive plugin.
+ *
+ * @package tiny_cursive
+ * @copyright  CTI <info@cursivetechnology.com>
+ * @author eLearningstack
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class userreportform extends moodleform {
+    /**
+     * Tiny cursive plugin user report form.
+     */
     public function definition() {
         global $DB, $USER;
         // Start dropdowns of course, quiz and user email search field in mform.
@@ -53,6 +66,11 @@ class userreportform extends moodleform {
         $this->add_action_buttons(false, get_string('submit'));
     }
 
+    /**
+     * Tiny cursive plugin user report form data.
+     *
+     * @return object
+     */
     public function get_data() {
         $data = parent::get_data();
         if (!empty($data)) {
@@ -74,6 +92,12 @@ class userreportform extends moodleform {
         return $data;
     }
 
+    /**
+     * Tiny cursive plugin get all modules.
+     *
+     * @param integer $courseid
+     * @return array
+     */
     public function get_modules($courseid) {
         // Get users dropdown.
         global $DB;
@@ -92,6 +116,12 @@ class userreportform extends moodleform {
         return $mdetail;
     }
 
+    /**
+     * Tiny cursive plugin get all users.
+     *
+     * @param integer $courseid
+     * @return array
+     */
     public function get_user($courseid) {
         global $DB;
         $udetail = [];

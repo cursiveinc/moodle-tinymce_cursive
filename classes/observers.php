@@ -15,10 +15,12 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Tiny cursive plugin observer.
+ *
  * @package tiny_cursive
- * @category TinyMCE Editor
  * @copyright  CTI <info@cursivetechnology.com>
- * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
+ * @author eLearningstack
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace tiny_cursive;
@@ -27,7 +29,23 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/config.php');
 
 require_login();
+
+/**
+ * Tiny cursive plugin observer class.
+ *
+ * @package tiny_cursive
+ * @copyright  CTI <info@cursivetechnology.com>
+ * @author eLearningstack
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class observers {
+    /**
+     * Tiny cursive plugin update comment observer.
+     *
+     * @param $event
+     * @return void
+     * @throws \dml_exception
+     */
     public static function update_comment($event) {
         global $DB;
         $eventdata = $event->get_data();
@@ -47,6 +65,13 @@ class observers {
         }
     }
 
+    /**
+     * Tiny cursive plugin update cursive files observer.
+     *
+     * @param $event
+     * @return void
+     * @throws \dml_exception
+     */
     public static function update_cursive_files($event) {
         global $DB, $CFG;
         $eventdata = $event->get_data();
@@ -90,16 +115,37 @@ class observers {
         }
     }
 
+    /**
+     * Tiny cursive plugin login observer.
+     *
+     * @param \mod_forum\event\post_created $event
+     * @return void
+     * @throws \dml_exception
+     */
     public static function observer_login(\mod_forum\event\post_created $event) {
         self::update_comment($event);
         self::update_cursive_files($event);
     }
 
+    /**
+     * Tiny cursive plugin post updated observer.
+     *
+     * @param \mod_forum\event\post_updated $event
+     * @return void
+     * @throws \dml_exception
+     */
     public static function post_updated(\mod_forum\event\post_updated $event) {
         self::update_comment($event);
         self::update_cursive_files($event);
     }
 
+    /**
+     * Tiny cursive plugin discussion created observer.
+     *
+     * @param \mod_forum\event\discussion_created $event
+     * @return void
+     * @throws \dml_exception
+     */
     public static function discussion_created(\mod_forum\event\discussion_created $event) {
 
         global $DB;
@@ -127,12 +173,24 @@ class observers {
         }
     }
 
+    /**
+     * Tiny cursive plugin submission created observer.
+     *
+     * @param \mod_assign\event\submission_created $event
+     * @return void
+     */
     public static function submission_created(\mod_assign\event\submission_created $event) {
         global $DB, $CFG, $PAGE, $USER;
         $eventdata = $event->get_data();
 
     }
 
+    /**
+     * Tiny cursive plugin assessable observer.
+     *
+     * @param \mod_assign\event\assessable_submitted $event
+     * @return void
+     */
     public static function assessable_submitted(\mod_assign\event\assessable_submitted $event) {
         global $DB, $CFG, $PAGE, $USER;
         $eventdata = $event->get_data();

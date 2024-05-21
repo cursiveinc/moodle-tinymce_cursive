@@ -15,10 +15,12 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Tiny cursive plugin.
+ *
  * @package tiny_cursive
- * @category TinyMCE Editor
  * @copyright  CTI <info@cursivetechnology.com>
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 use tiny_cursive\tiny_cursive_data;
@@ -29,25 +31,58 @@ require_once("$CFG->libdir/externallib.php");
 require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 require_once('locallib.php');
 
-
-
+/**
+ * Tiny cursive plugin.
+ *
+ * @package tiny_cursive
+ * @copyright  CTI <info@cursivetechnology.com>
+ * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class cursive_json_func_data extends external_api {
+    /**
+     * cursive_json_func_is_allowed_from_ajax
+     *
+     * @return true
+     */
     public static function cursive_json_func_is_allowed_from_ajax() {
         return true;
     }
 
+    /**
+     * cursive_reports_func_is_allowed_from_ajax
+     *
+     * @return true
+     */
     public static function cursive_reports_func_is_allowed_from_ajax() {
         return true;
     }
 
     // Service for quizzes list.
+
+    /**
+     * get_user_list_is_allowed_from_ajax
+     *
+     * @return true
+     */
     public static function get_user_list_is_allowed_from_ajax() {
         return true;
     }
+
+    /**
+     * get_user_list_returns
+     *
+     * @return external_value
+     */
     public static function get_user_list_returns() {
         return new external_value(PARAM_RAW, 'All quizzes');
     }
 
+    /**
+     * get_user_list_parameters
+     *
+     * @return external_function_parameters
+     */
     public static function get_user_list_parameters() {
         return new external_function_parameters(
             [
@@ -57,6 +92,17 @@ class cursive_json_func_data extends external_api {
         );
     }
 
+    /**
+     * get_user_list
+     *
+     * @param $page
+     * @param $courseid
+     * @return false|string
+     * @throws coding_exception
+     * @throws invalid_parameter_exception
+     * @throws moodle_exception
+     * @throws require_login_exception
+     */
     public static function get_user_list($page, $courseid) {
         require_login();
         $params = self::validate_parameters(
@@ -70,14 +116,30 @@ class cursive_json_func_data extends external_api {
     }
 
     // Service for quizzes list.
+
+    /**
+     * get_module_list_is_allowed_from_ajax
+     *
+     * @return true
+     */
     public static function get_module_list_is_allowed_from_ajax() {
         return true;
     }
 
+    /**
+     * get_module_list_returns
+     *
+     * @return external_value
+     */
     public static function get_module_list_returns() {
         return new external_value(PARAM_RAW, 'All quizzes');
     }
 
+    /**
+     * get_module_list_parameters
+     *
+     * @return external_function_parameters
+     */
     public static function get_module_list_parameters() {
         return new external_function_parameters(
             [
@@ -87,6 +149,17 @@ class cursive_json_func_data extends external_api {
         );
     }
 
+    /**
+     * get_module_list
+     *
+     * @param $page
+     * @param $courseid
+     * @return false|string
+     * @throws coding_exception
+     * @throws invalid_parameter_exception
+     * @throws moodle_exception
+     * @throws require_login_exception
+     */
     public static function get_module_list($page, $courseid) {
         require_login();
         $params = self::validate_parameters(
@@ -99,15 +172,29 @@ class cursive_json_func_data extends external_api {
         return json_encode(tiny_cursive_data::get_courses_modules($params));
     }
 
-
+    /**
+     * cursive_json_func_returns
+     *
+     * @return external_value
+     */
     public static function cursive_json_func_returns() {
         return new external_value(PARAM_RAW, 'result');
     }
 
+    /**
+     * cursive_reports_func_returns
+     *
+     * @return external_value
+     */
     public static function cursive_reports_func_returns() {
         return new external_value(PARAM_RAW, 'result');
     }
 
+    /**
+     * cursive_json_func_parameters
+     *
+     * @return external_function_parameters
+     */
     public static function cursive_json_func_parameters() {
         return new external_function_parameters(
             [
@@ -122,6 +209,11 @@ class cursive_json_func_data extends external_api {
         );
     }
 
+    /**
+     * cursive_reports_func_parameters
+     *
+     * @return external_function_parameters
+     */
     public static function cursive_reports_func_parameters() {
         return new external_function_parameters(
             [
@@ -132,7 +224,26 @@ class cursive_json_func_data extends external_api {
         );
     }
 
-    public static function cursive_json_func (
+    /**
+     * cursive_json_func
+     *
+     * @param $resourceid
+     * @param $key
+     * @param $keycode
+     * @param $event
+     * @param $cmid
+     * @param $modulename
+     * @param $editorid
+     * @return string
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws file_exception
+     * @throws invalid_parameter_exception
+     * @throws moodle_exception
+     * @throws require_login_exception
+     * @throws stored_file_creation_exception
+     */
+    public static function cursive_json_func(
         $resourceid = 0,
         $key = null,
         $keycode = null,
@@ -241,18 +352,56 @@ class cursive_json_func_data extends external_api {
         $context = context_system::instance();
         $fs = get_file_storage();
         if ($fs->file_exists($context->id, 'tiny_cursive', 'attachment', $filerec->id, '/', $fname)) {
-            $file_get_from_moodledata = $fs->get_file($context->id, 'tiny_cursive',
-                'attachment', $filerec->id, '/', $fname);
+            $filegetfrommoodledata = $fs->get_file(
+                $context->id,
+                'tiny_cursive',
+                'attachment',
+                $filerec->id,
+                '/',
+                $fname
+            );
 
             $fs->delete_area_files($context->id, 'tiny_cursive', 'attachment', $filerec->id);
-            //delete then update
 
-            $savefile = $fs->create_file_from_pathname(array('contextid' => $context->id, 'component' => 'tiny_cursive', 'filearea' => 'attachment', 'itemid' => $filerec->id, 'filepath' => '/', 'filename' => $fname), $filename);
+            $savefile = $fs->create_file_from_pathname(
+                [
+                    'contextid' => $context->id,
+                    'component' => 'tiny_cursive',
+                    'filearea' => 'attachment',
+                    'itemid' => $filerec->id,
+                    'filepath' => '/',
+                    'filename' => $fname,
+                ],
+                $filename
+            );
         } else {
-            $savefile = $fs->create_file_from_pathname(array('contextid' => $context->id, 'component' => 'tiny_cursive', 'filearea' => 'attachment', 'itemid' => $filerec->id, 'filepath' => '/', 'filename' => $fname), $filename);
+            $savefile = $fs->create_file_from_pathname(
+                [
+                    'contextid' => $context->id,
+                    'component' => 'tiny_cursive',
+                    'filearea' => 'attachment',
+                    'itemid' => $filerec->id,
+                    'filepath' => '/',
+                    'filename' => $fname,
+                ],
+                $filename
+            );
         }
-            return $filename;
+        return $filename;
     }
+
+    /**
+     * cursive_reports_func
+     *
+     * @param $coursename
+     * @param $quizname
+     * @param $username
+     * @return string
+     * @throws coding_exception
+     * @throws invalid_parameter_exception
+     * @throws moodle_exception
+     * @throws require_login_exception
+     */
     public static function cursive_reports_func($coursename = 0, $quizname = null, $username = 'keyUp') {
         require_login();
         global $USER, $SESSION, $DB;
@@ -268,14 +417,30 @@ class cursive_json_func_data extends external_api {
     }
 
     // User comments store.
+
+    /**
+     * cursive_user_comments_func_is_allowed_from_ajax
+     *
+     * @return true
+     */
     public static function cursive_user_comments_func_is_allowed_from_ajax() {
         return true;
     }
 
+    /**
+     * cursive_user_comments_func_returns
+     *
+     * @return external_value
+     */
     public static function cursive_user_comments_func_returns() {
         return new external_value(PARAM_RAW, 'All User Comments');
     }
 
+    /**
+     * cursive_user_comments_func_parameters
+     *
+     * @return external_function_parameters
+     */
     public static function cursive_user_comments_func_parameters() {
         return new external_function_parameters(
             [
@@ -290,6 +455,21 @@ class cursive_json_func_data extends external_api {
         );
     }
 
+    /**
+     * cursive_user_comments_func
+     *
+     * @param $modulename
+     * @param $cmid
+     * @param $resourceid
+     * @param $courseid
+     * @param $usercomment
+     * @param $timemodified
+     * @param $editorid
+     * @return void
+     * @throws coding_exception
+     * @throws moodle_exception
+     * @throws require_login_exception
+     */
     public static function cursive_user_comments_func(
         $modulename,
         $cmid,
@@ -330,14 +510,29 @@ class cursive_json_func_data extends external_api {
         }
     }
 
+    /**
+     * cursive_approve_token_func_is_allowed_from_ajax
+     *
+     * @return true
+     */
     public static function cursive_approve_token_func_is_allowed_from_ajax() {
         return true;
     }
 
+    /**
+     * cursive_approve_token_func_returns
+     *
+     * @return external_value
+     */
     public static function cursive_approve_token_func_returns() {
         return new external_value(PARAM_RAW, 'Token Approved');
     }
 
+    /**
+     * cursive_approve_token_func_parameters
+     *
+     * @return external_function_parameters
+     */
     public static function cursive_approve_token_func_parameters() {
         return new external_function_parameters(
             [
@@ -346,6 +541,16 @@ class cursive_json_func_data extends external_api {
         );
     }
 
+    /**
+     * cursive_approve_token_func
+     *
+     * @param $token
+     * @return bool|string
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws moodle_exception
+     * @throws require_login_exception
+     */
     public static function cursive_approve_token_func($token) {
         global $DB, $CFG;
         require_login();
@@ -373,14 +578,30 @@ class cursive_json_func_data extends external_api {
     }
 
     // Service for assignment comment list.
+
+    /**
+     * get_comment_link_is_allowed_from_ajax
+     *
+     * @return true
+     */
     public static function get_comment_link_is_allowed_from_ajax() {
         return true;
     }
 
+    /**
+     * get_comment_link_returns
+     *
+     * @return external_value
+     */
     public static function get_comment_link_returns() {
         return new external_value(PARAM_RAW, 'Comment Link');
     }
 
+    /**
+     * get_comment_link_parameters
+     *
+     * @return external_function_parameters
+     */
     public static function get_comment_link_parameters() {
         return new external_function_parameters(
             [
@@ -393,6 +614,21 @@ class cursive_json_func_data extends external_api {
         );
     }
 
+    /**
+     * get_comment_link
+     *
+     * @param $id
+     * @param $modulename
+     * @param $cmid
+     * @param $questionid
+     * @param $userid
+     * @return false|string
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws invalid_parameter_exception
+     * @throws moodle_exception
+     * @throws require_login_exception
+     */
     public static function get_comment_link($id, $modulename, $cmid = null, $questionid = null, $userid = null) {
         require_once('../../config.php');
         global $DB, $CFG;
@@ -415,54 +651,51 @@ class cursive_json_func_data extends external_api {
             $table = 'tiny_cursive_comments';
             $recs = $DB->get_records($table, $conditions);
 
-            $filename = $DB->get_record_sql('select filename, userid, id as file_id from {tiny_cursive_files} where resourceid = :resourceid
-AND cmid = :cmid
+            $filename = $DB->get_record_sql('select filename, userid, id as file_id
+from {tiny_cursive_files} where resourceid = :resourceid AND cmid = :cmid
 AND modulename = :modulename AND questionid=:questionid AND userid=:userid ',
                 [
                     'resourceid' => $id,
                     'cmid' => $cmid,
                     'modulename' => $modulename,
-                    'questionid' => $questionid, "userid" => $userid
+                    'questionid' => $questionid,
+                    "userid" => $userid,
                 ]);
 
             $data['filename'] = $filename->filename;
             $data['questionid'] = $questionid;
 
-            if ($data['filename']){
-                $sql = 'SELECT id as fileid
-                FROM {tiny_cursive_files} 
-                WHERE userid = :userid ORDER BY id ASC';
-                $ffile = $DB->get_record_sql( $sql, ['userid' => $filename->userid]);
+            if ($data['filename']) {
+                $sql = 'SELECT id as fileid FROM {tiny_cursive_files}
+                    WHERE userid = :userid ORDER BY id ASC';
+                $ffile = $DB->get_record_sql($sql, ['userid' => $filename->userid]);
 
-                if ($ffile->fileid == $filename->file_id){
+                if ($ffile->fileid == $filename->file_id) {
                     $data['first_file'] = 1;
-                }
-                else{
+                } else {
                     $data['first_file'] = 0;
                 }
             }
 
-            if ($filename->file_id){
-                $report = $DB->get_record_sql('select * from {tiny_cursive_user_writing} where file_id = :fileid',
+            if ($filename->file_id) {
+                $report = $DB->get_record_sql(
+                    'select * from {tiny_cursive_user_writing} where file_id = :fileid',
                     [
                         'fileid' => $filename->file_id,
-                    ]);
-                $data['score'] =$report->score;
-                $data['total_time_seconds'] =$report->total_time_seconds;
-                $data['word_count'] =$report->word_count;
-                $data['words_per_minute'] =$report->words_per_minute;
-                $data['backspace_percent'] =$report->backspace_percent;
-                $data['copy_behavior'] =$report->copy_behavior;
-                $data['key_count'] =$report->key_count;
-                $data['file_id'] =$report->file_id;
-                $data['character_count'] =$report->character_count;
-                $data['characters_per_minute'] =$report->characters_per_minute;
-                $data['keys_per_minute'] =$report->keys_per_minute;
+                    ]
+                );
+                $data['score'] = $report->score;
+                $data['total_time_seconds'] = $report->total_time_seconds;
+                $data['word_count'] = $report->word_count;
+                $data['words_per_minute'] = $report->words_per_minute;
+                $data['backspace_percent'] = $report->backspace_percent;
+                $data['copy_behavior'] = $report->copy_behavior;
+                $data['key_count'] = $report->key_count;
+                $data['file_id'] = $report->file_id;
+                $data['character_count'] = $report->character_count;
+                $data['characters_per_minute'] = $report->characters_per_minute;
+                $data['keys_per_minute'] = $report->keys_per_minute;
             }
-
-
-
-
             $usercomment = [];
             if ($recs) {
                 foreach ($recs as $key => $rec) {
@@ -509,15 +742,29 @@ where uf.resourceid = $id
         }
     }
 
-
+    /**
+     * get_forum_comment_link_is_allowed_from_ajax
+     *
+     * @return true
+     */
     public static function get_forum_comment_link_is_allowed_from_ajax() {
         return true;
     }
 
+    /**
+     * get_forum_comment_link_returns
+     *
+     * @return external_value
+     */
     public static function get_forum_comment_link_returns() {
         return new external_value(PARAM_RAW, 'Comment Link');
     }
 
+    /**
+     * get_forum_comment_link_parameters
+     *
+     * @return external_function_parameters
+     */
     public static function get_forum_comment_link_parameters() {
         return new external_function_parameters(
             [
@@ -528,6 +775,18 @@ where uf.resourceid = $id
         );
     }
 
+    /**
+     * get_forum_comment_link
+     *
+     * @param $id
+     * @param $modulename
+     * @param $cmid
+     * @return void
+     * @throws coding_exception
+     * @throws invalid_parameter_exception
+     * @throws moodle_exception
+     * @throws require_login_exception
+     */
     public static function get_forum_comment_link($id, $modulename, $cmid = null) {
         require_once('../../config.php');
         global $DB, $CFG;
@@ -542,10 +801,7 @@ where uf.resourceid = $id
                 'cmid' => $cmid,
             ]
         );
-var_dump(222);
-die;
         $context = context_module::instance($cmid);
-        $hasCapabilityEditTest = has_capability('tiny_cursive/cursive:view', $context);
 
         $conditions = ["resourceid" => $id];
         $table = 'tiny_cursive_comments';
@@ -568,14 +824,16 @@ AND cmid = :cmid
 AND modulename = :modulename', ['resourceid' => $id, 'cmid' => $cmid, 'modulename' => $modulename]);
 
             $data['filename'] = $filename->filename;
-            $first_file = $DB->get_record_sql('select * from {tiny_cursive_files} where userid = :userid ORDER BY id ASC LIMIT 1', ['userid' => $filename->userid]);
-            if($first_file == $filename->file_id ){
+            $firstfile = $DB->get_record_sql('select * from {tiny_cursive_files}
+         where userid = :userid ORDER BY id ASC LIMIT 1', ['userid' => $filename->userid]);
+            if ($firstfile == $filename->file_id) {
                 $data['first_file'] = 1;
             }
         }
 
-        $first_file = $DB->get_record_sql('select * from {tiny_cursive_files} where userid = :userid ORDER BY id ASC LIMIT 1', ['userid' => $filename->userid]);
-        if($first_file == $filename->file_id ){
+        $firstfile = $DB->get_record_sql('select * from {tiny_cursive_files}
+         where userid = :userid ORDER BY id ASC LIMIT 1', ['userid' => $filename->userid]);
+        if ($firstfile == $filename->file_id) {
             $data['first_file'] = 1;
         }
 
@@ -591,14 +849,29 @@ AND modulename = :modulename', ['resourceid' => $id, 'cmid' => $cmid, 'modulenam
 
     }
 
+    /**
+     * get_quiz_comment_link_is_allowed_from_ajax
+     *
+     * @return true
+     */
     public static function get_quiz_comment_link_is_allowed_from_ajax() {
         return true;
     }
 
+    /**
+     * get_quiz_comment_link_returns
+     *
+     * @return external_value
+     */
     public static function get_quiz_comment_link_returns() {
         return new external_value(PARAM_RAW, 'Comment Link');
     }
 
+    /**
+     * get_quiz_comment_link_parameters
+     *
+     * @return external_function_parameters
+     */
     public static function get_quiz_comment_link_parameters() {
         return new external_function_parameters(
             [
@@ -610,6 +883,20 @@ AND modulename = :modulename', ['resourceid' => $id, 'cmid' => $cmid, 'modulenam
         );
     }
 
+    /**
+     * get_quiz_comment_link
+     *
+     * @param $id
+     * @param $modulename
+     * @param $cmid
+     * @param $questionid
+     * @return false|string
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws invalid_parameter_exception
+     * @throws moodle_exception
+     * @throws require_login_exception
+     */
     public static function get_quiz_comment_link(
         $id,
         $modulename,
@@ -687,15 +974,29 @@ where uf.resourceid = $id
         }
     }
 
-
+    /**
+     * get_assign_comment_link_is_allowed_from_ajax
+     *
+     * @return true
+     */
     public static function get_assign_comment_link_is_allowed_from_ajax() {
         return true;
     }
 
+    /**
+     * get_assign_comment_link_returns
+     *
+     * @return external_value
+     */
     public static function get_assign_comment_link_returns() {
         return new external_value(PARAM_RAW, 'Comment Link');
     }
 
+    /**
+     * get_assign_comment_link_parameters
+     *
+     * @return external_function_parameters
+     */
     public static function get_assign_comment_link_parameters() {
         return new external_function_parameters(
             [
@@ -706,6 +1007,19 @@ where uf.resourceid = $id
         );
     }
 
+    /**
+     * get_assign_comment_link
+     *
+     * @param $id
+     * @param $modulename
+     * @param $cmid
+     * @return false|string
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws invalid_parameter_exception
+     * @throws moodle_exception
+     * @throws require_login_exception
+     */
     public static function get_assign_comment_link($id, $modulename, $cmid) {
         global $DB;
         require_login();
@@ -734,15 +1048,30 @@ where uf.resourceid = $id
         }
     }
 
-    // Submissions stats modal get_user_submissions_data.
+
+    /**
+     * get_assign_grade_comment_is_allowed_from_ajax
+     *
+     * @return true
+     */
     public static function get_assign_grade_comment_is_allowed_from_ajax() {
         return true;
     }
 
+    /**
+     * get_assign_grade_comment_returns
+     *
+     * @return external_value
+     */
     public static function get_assign_grade_comment_returns() {
         return new external_value(PARAM_RAW, 'Comment Link');
     }
 
+    /**
+     * get_assign_grade_comment_parameters
+     *
+     * @return external_function_parameters
+     */
     public static function get_assign_grade_comment_parameters() {
         return new external_function_parameters(
             [
@@ -753,6 +1082,19 @@ where uf.resourceid = $id
         );
     }
 
+    /**
+     * get_assign_grade_comment
+     *
+     * @param $id
+     * @param $modulename
+     * @param $cmid
+     * @return false|string
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws invalid_parameter_exception
+     * @throws moodle_exception
+     * @throws require_login_exception
+     */
     public static function get_assign_grade_comment($id, $modulename, $cmid) {
         global $DB;
         require_login();
@@ -785,16 +1127,14 @@ where uf.userid = $id
             $data['filename'] = $filename->filename;
             $data['userid'] = $filename->userid;
         }
-        if ($data->filename){
-            $sql = 'SELECT id as fileid
-                FROM {tiny_cursive_files} 
-                WHERE userid = :userid ORDER BY id ASC';
+        if ($data->filename) {
+            $sql = 'SELECT id as fileid FROM {tiny_cursive_files}
+                    WHERE userid = :userid ORDER BY id ASC';
             $ffile = $DB->get_record_sql( $sql, ['userid' => $data->userid]);
 
-            if ($ffile->fileid == $data->file_id){
+            if ($ffile->fileid == $data->file_id) {
                 $data->first_file = 1;
-            }
-            else{
+            } else {
                 $data->first_file = 0;
             }
         }
@@ -811,14 +1151,29 @@ where uf.userid = $id
         }
     }
 
+    /**
+     * get_user_list_submission_stats_is_allowed_from_ajax
+     *
+     * @return true
+     */
     public static function get_user_list_submission_stats_is_allowed_from_ajax() {
         return true;
     }
 
+    /**
+     * get_user_list_submission_stats_returns
+     *
+     * @return external_value
+     */
     public static function get_user_list_submission_stats_returns() {
         return new external_value(PARAM_RAW, 'Comment Link');
     }
 
+    /**
+     * get_user_list_submission_stats_parameters
+     *
+     * @return external_function_parameters
+     */
     public static function get_user_list_submission_stats_parameters() {
         return new external_function_parameters(
             [
@@ -830,6 +1185,18 @@ where uf.userid = $id
         );
     }
 
+    /**
+     * get_user_list_submission_stats
+     *
+     * @param $id
+     * @param $modulename
+     * @param $cmid
+     * @return false|string
+     * @throws coding_exception
+     * @throws invalid_parameter_exception
+     * @throws moodle_exception
+     * @throws require_login_exception
+     */
     public static function get_user_list_submission_stats($id, $modulename, $cmid) {
         global $DB;
         require_login();
@@ -847,14 +1214,29 @@ where uf.userid = $id
         return json_encode($rec);
     }
 
+    /**
+     * cursive_filtered_writing_func_is_allowed_from_ajax
+     *
+     * @return true
+     */
     public static function cursive_filtered_writing_func_is_allowed_from_ajax() {
         return true;
     }
 
+    /**
+     * cursive_filtered_writing_func_returns
+     *
+     * @return external_value
+     */
     public static function cursive_filtered_writing_func_returns() {
         return new external_value(PARAM_RAW, 'Comment Link');
     }
 
+    /**
+     * cursive_filtered_writing_func_parameters
+     *
+     * @return external_function_parameters
+     */
     public static function cursive_filtered_writing_func_parameters() {
         return new external_function_parameters(
             [
@@ -863,6 +1245,17 @@ where uf.userid = $id
         );
     }
 
+    /**
+     * cursive_filtered_writing_func
+     *
+     * @param $id
+     * @return false|string
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws invalid_parameter_exception
+     * @throws moodle_exception
+     * @throws require_login_exception
+     */
     public static function cursive_filtered_writing_func($id) {
         global $DB, $USER;
         require_login();

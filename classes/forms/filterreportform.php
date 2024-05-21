@@ -15,16 +15,33 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Tiny cursive plugin.
+ *
  * @package tiny_cursive
- * @category tiny
  * @copyright  CTI <info@cursivetechnology.com>
  * @author eLearningstack
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->libdir . '/formslib.php');
 
+/**
+ * Tiny cursive plugin.
+ *
+ * @package tiny_cursive
+ * @copyright  CTI <info@cursivetechnology.com>
+ * @author eLearningstack
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class filterreportform extends moodleform {
+    /**
+     * Tiny cursive plugin.
+     *
+     * @package tiny_cursive
+     * @copyright  CTI <info@cursivetechnology.com>
+     * @author eLearningstack
+     */
     public function definition() {
         global $DB, $USER;
         $courses = $DB->get_records('course');

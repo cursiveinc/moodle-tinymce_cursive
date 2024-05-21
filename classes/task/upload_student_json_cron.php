@@ -15,14 +15,24 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Tiny cursive plugin upload file using cron to the api server.
+ *
  * @package tiny_cursive
- * @category TinyMCE Editor
  * @copyright  CTI <info@cursivetechnology.com>
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace tiny_cursive\task;
 
+/**
+ * Tiny cursive plugin upload file using cron to the api server.
+ *
+ * @package tiny_cursive
+ * @copyright  CTI <info@cursivetechnology.com>
+ * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class upload_student_json_cron extends \core\task\scheduled_task {
     /**
      * Return the task's name as shown in admin screens.
@@ -33,6 +43,12 @@ class upload_student_json_cron extends \core\task\scheduled_task {
         return get_string('pluginname', 'tiny_cursive');
     }
 
+    /**
+     * Execution function
+     *
+     * @return void
+     * @throws \dml_exception
+     */
     public function execute() {
         global $CFG, $DB;
         $table = 'tiny_cursive_files';
