@@ -1,38 +1,32 @@
-/**
- * @module     tiny_cursive/plugin
- * @category TinyMCE Editor
- * @copyright  CTI <info@cursivetechnology.com>
- * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
- */
-
-define(["jquery", "core/ajax", "core/str","core/templates", "./replay"], function (
+define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], function (
     $,
     AJAX,
     str,
     templates,
     Replay
 ) {
+    const replayInstances = {};
+
     window.myFunction = function() {
         let mid = $(this).data('id');
         $("#typeid" + mid).show();
     };
 
     window.video_playback = function(mid, filepath) {
-        if (filepath !== ''){
-            $("#playback"+mid).show();
-            new Replay(
-                elementId = 'output_playback_'+mid,
+        if (filepath !== '') {
+            $("#playback" + mid).show();
+            const replay = new Replay(
+                elementId = 'output_playback_' + mid,
                 filePath = filepath,
                 speed = 10,
                 loop = false,
-                controllerId = 'player_'+mid
+                controllerId = 'player_' + mid
             );
-        }
-        else {
+            replayInstances[mid] = replay;
+        } else {
             alert('No submission');
         }
         return false;
-
     };
 
     window.popup_item = function(mid) {
@@ -40,25 +34,24 @@ define(["jquery", "core/ajax", "core/str","core/templates", "./replay"], functio
     };
 
     var usersTable = {
-        init: function (score_setting, showcomment) {
+        init: function(score_setting, showcomment) {
             str
                 .get_strings([
-                    {key: "field_require", component: "tiny_cursive"},
+                    { key: "field_require", component: "tiny_cursive" },
                 ])
-                .done(function () {
+                .done(function() {
                     usersTable.appendSubmissionDetail(score_setting, showcomment);
                 });
         },
-        appendSubmissionDetail: function (score_setting, showcomment) {
-
+        appendSubmissionDetail: function(score_setting, showcomment) {
             let sub_url = window.location.href;
             let parm = new URL(sub_url);
             let attempt_id = parm.searchParams.get('attempt');
 
             let cmid = parm.searchParams.get('cmid');
-            if (!cmid){
+            if (!cmid) {
                 var firstHref = $('a[href*="/mod/quiz/review.php"]').first().attr('href');
-                if (firstHref.length > 0 ) {
+                if (firstHref.length > 0) {
                     cmid = firstHref.match(/cmid=(\d+)/)[1];
                 }
             }
@@ -85,15 +78,15 @@ define(["jquery", "core/ajax", "core/str","core/templates", "./replay"], functio
                     var questionid = editQuestionLink.match(/&id=(\d+)/)[1];
                 }
 
-                let args = {id: attempt_id, modulename: "quiz","cmid":cmid,"questionid":questionid,"userid":userid};
+                let args = { id: attempt_id, modulename: "quiz", "cmid": cmid, "questionid": questionid, "userid": userid };
                 let methodname = 'cursive_get_comment_link';
-                let com = AJAX.call([{methodname, args}]);
-                com[0].done(function (json) {
+                let com = AJAX.call([{ methodname, args }]);
+                com[0].done(function(json) {
                     var data = JSON.parse(json);
 
-                    if (data.data.filename){
-                        var html= '';
-                        var content = $('.que.essay .editquestion a[href*="question/bank/editquestion/question.php"][href*="&id='+data.data.questionid+'"]');
+                    if (data.data.filename) {
+                        var html = '';
+                        var content = $('.que.essay .editquestion a[href*="question/bank/editquestion/question.php"][href*="&id=' + data.data.questionid + '"]');
                         if (data.usercomment != 'comments') {
                             content.parent().parent().parent().find('.qtext').append('<div class="dropdown">');
                             var tt = '';
@@ -103,18 +96,17 @@ define(["jquery", "core/ajax", "core/str","core/templates", "./replay"], functio
                             var p1 = '<div class="border alert alert-warning"><details><summary>Content Sources Provided by Student</summary>';
                             content.parent().parent().parent().find('.qtext').append(p1 + ' ' + tt + '</details></div></div>');
                         }
-                        var filepath ='';
-                        if (data.data.filename){
-                            var filepath = M.cfg.wwwroot+'/lib/editor/tiny/plugins/cursive/userdata/'+ data.data.filename;
+                        var filepath = '';
+                        if (data.data.filename) {
+                            filepath = M.cfg.wwwroot + '/lib/editor/tiny/plugins/cursive/userdata/' + data.data.filename;
                         }
                         var score = parseInt(data.data.score);
                         var icon = 'fa fa-circle-o';
                         var color = 'font-size:24px;color:black';
-                        if(data.data.first_file){
+                        if (data.data.first_file) {
                             icon = 'fa  fa fa-solid fa-info-circle typeid';
                             color = 'font-size:24px;color:#000000';
-                        }
-                        else{
+                        } else {
                             if (score >= score_setting) {
                                 icon = 'fa fa-check-circle typeid';
                                 color = 'font-size:24px;color:green';
@@ -126,7 +118,7 @@ define(["jquery", "core/ajax", "core/str","core/templates", "./replay"], functio
                                 color = 'font-size:24px;color:black';
                             }
                         }
-                        html= '<div class="justify-content-center d-flex">' +
+                        html = '<div class="justify-content-center d-flex">' +
                             '<button onclick="popup_item(\'' + userid + "-" + questionid + '\')" data-id=' + userid + ' class="mr-2 ' + chart + '" style="' + st + '"></button>' +
                             '<a href="#" onclick="video_playback(' + questionid + ', \'' + filepath + '\')" data-filepath="' + filepath + '" data-id="playback_' + questionid + '" class="mr-2 video_playback_icon ' + video + '" style="' + st + '"></a>' +
                             '<button onclick="myFunction()" data-id=' + userid + ' class="' + icon + ' " style="border:none; ' + color + ';"></button>' +
@@ -140,17 +132,21 @@ define(["jquery", "core/ajax", "core/str","core/templates", "./replay"], functio
                         };
                         templates
                             .render("tiny_cursive/quiz_pop_modal", context)
-                            .then(function (html) {
+                            .then(function(html) {
                                 $("body").append(html);
                             }).catch(e => window.console.log(e));
                     }
                 });
-                $(window).on('click', function (e) {
-                    if (e.target.id == 'modal-close' + userid+'-'+questionid) {
-                        $("#" + userid+"-"+questionid).hide();
+                $(window).on('click', function(e) {
+                    const targetId = e.target.id;
+                    if (targetId.startsWith('modal-close' + userid + '-' + questionid)) {
+                        $("#" + userid + "-" + questionid).hide();
                     }
-                    if (e.target.id == 'modal-close-playback' + questionid) {
+                    if (targetId.startsWith('modal-close-playback' + questionid)) {
                         $("#playback" + questionid).hide();
+                        if (replayInstances[questionid]) {
+                            replayInstances[questionid].stopReplay();
+                        }
                     }
                 });
                 return com.usercomment;

@@ -34,6 +34,12 @@ export default class Replay {
             });
     }
 
+    stopReplay() {
+        if (this.replayInProgress) {
+            clearTimeout(this.replayTimeout);
+            this.replayInProgress = false;
+        }
+    }
     constructController(controllerId) {
         const controller = document.getElementById(controllerId);
         console.log(controller);
