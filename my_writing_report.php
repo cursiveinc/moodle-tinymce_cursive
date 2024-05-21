@@ -15,10 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package tiny_cursive
- * @category TinyMCE Editor
- * @copyright  ELS <admin@elearningstack.com>
- * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
+ * Plugin functions for individual student report.
+ *
+ * @package   tiny_cursive
+ * @copyright Year, You Name <your@email.address>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require(__DIR__ . '/../../../../../config.php');

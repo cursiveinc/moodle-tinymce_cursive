@@ -15,14 +15,15 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * ClamAV antivirus plugin upgrade script.
+ * Tiny cursive plugin upgrade script.
  *
- * @package    antivirus_clamav
- * @copyright  2015 Ruslan Kabalin, Lancaster University.
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package tiny_cursive
+ * @copyright  CTI <info@cursivetechnology.com>
+ * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+
 /**
  * Run all ClamAV plugin upgrade steps between the current DB version and the current version on disk.
  *

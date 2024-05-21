@@ -15,11 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Tiny cursive plugin.
+ *
  * @package tiny_cursive
- * @category TinyMCE Editor
  * @copyright  CTI <info@cursivetechnology.com>
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 
 namespace tiny_cursive;
 
@@ -35,8 +38,23 @@ require_once($CFG->dirroot . '/mod/quiz/attemptlib.php');
 use quiz;
 use stdClass;
 
+/**
+ * Tiny cursive plugin.
+ *
+ * @package tiny_cursive
+ * @copyright  CTI <info@cursivetechnology.com>
+ * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class tiny_cursive_data {
 
+    /**
+     * get_courses_users
+     *
+     * @param $params
+     * @return stdClass
+     * @throws \dml_exception
+     */
     public static function get_courses_users($params) {
         global $DB;
         $allusers = new stdClass();
@@ -62,6 +80,15 @@ class tiny_cursive_data {
         return $allusers;
     }
 
+    /**
+     * get_courses_modules
+     *
+     * @param $params
+     * @return stdClass
+     * @throws \coding_exception
+     * @throws \dml_exception
+     * @throws \moodle_exception
+     */
     public static function get_courses_modules($params) {
 
         global $DB;

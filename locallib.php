@@ -15,12 +15,24 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package tiny_cursive
- * @category TinyMCE Editor
- * @copyright  CTI <info@cursivetechnology.com>
- * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
+ * Plugin functions for the tiny_cursive plugin.
+ *
+ * @package   tiny_cursive
+ * @copyright Year, You Name <your@email.address>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+/**
+ * get_user_attempts_data
+ *
+ * @param $userid
+ * @param $courseid
+ * @param $moduleid
+ * @param $orderby
+ * @param $order
+ * @param $perpage
+ * @param $limit
+ * */
 function get_user_attempts_data($userid, $courseid, $moduleid, $orderby = 'id', $order = 'ASC', $perpage = 1, $limit = 5) {
     $attempts = [];
     global $DB;
@@ -74,6 +86,19 @@ LEFT JOIN {tiny_cursive_user_writing} uw ON uw.file_id =uf.id
     return $resncount;
 }
 
+/**
+ * get_user_writing_data
+ *
+ * @param $userid
+ * @param $courseid
+ * @param $moduleid
+ * @param $orderby
+ * @param $order
+ * @param $perpage
+ * @param $limit
+ * @return array
+ * @throws dml_exception
+ */
 function get_user_writing_data($userid, $courseid, $moduleid, $orderby = 'id', $order = 'ASC', $perpage = '', $limit = '') {
     $attempts = [];
     global $DB;
@@ -130,6 +155,14 @@ function get_user_writing_data($userid, $courseid, $moduleid, $orderby = 'id', $
     return $resncount;
 }
 
+/**
+ * get_user_profile_data
+ *
+ * @param $userid
+ * @param $courseid
+ * @return false|mixed
+ * @throws dml_exception
+ */
 function get_user_profile_data($userid, $courseid = 0) {
     $attempts = [];
     global $DB;
@@ -145,12 +178,22 @@ FROM {tiny_cursive_user_writing} uw
 
 }
 
+/**
+ * get_user_submissions_data
+ *
+ * @param $resourceid
+ * @param $modulename
+ * @param $cmid
+ * @param $courseid
+ * @return array[]
+ * @throws dml_exception
+ */
 function get_user_submissions_data($resourceid, $modulename, $cmid, $courseid = 0) {
     global $CFG, $DB, $OUTPUT;
     require_once($CFG->dirroot."/lib/editor/tiny/plugins/cursive/lib.php");
 
     $attempts = [];
-    $userid= $resourceid;
+    $userid = $resourceid;
     $attempts = "SELECT  uw.total_time_seconds ,uw.word_count ,uw.words_per_minute,
                          uw.backspace_percent,uw.score,uw.copy_behavior,uf.resourceid , uf.modulename,uf.userid, uf.filename
                  FROM {tiny_cursive_user_writing} uw
@@ -164,10 +207,10 @@ function get_user_submissions_data($resourceid, $modulename, $cmid, $courseid = 
     $res = $DB->get_record_sql($attempts);
 
     $attempts = "SELECT  uw.total_time_seconds ,uw.word_count ,uw.words_per_minute,
-                        uw.backspace_percent,uw.score,uw.copy_behavior,uf.resourceid , uf.modulename,uf.userid, uw.file_id, uf.filename
-                 FROM {tiny_cursive_user_writing} uw
-                    INNER JOIN {tiny_cursive_files} uf ON uw.file_id =uf.id
-                 WHERE uf.userid = ". $resourceid ." AND uf.cmid = ".$cmid. " AND uf.modulename='" . $modulename . "'";
+        uw.backspace_percent,uw.score,uw.copy_behavior,uf.resourceid , uf.modulename,uf.userid, uw.file_id, uf.filename
+FROM {tiny_cursive_user_writing} uw
+    INNER JOIN {tiny_cursive_files} uf ON uw.file_id =uf.id
+WHERE uf.userid = ". $resourceid ." AND uf.cmid = ".$cmid. " AND uf.modulename='" . $modulename . "'";
 
     if ($courseid != 0) {
         $attempts .= "  AND uf.courseid = $courseid";
@@ -176,11 +219,11 @@ function get_user_submissions_data($resourceid, $modulename, $cmid, $courseid = 
     $data = (array)$data;
     if (!isset($data['filename'])) {
         $sql = 'SELECT id as fileid, userid, filename
-                FROM {tiny_cursive_files} 
-                WHERE userid = '. $resourceid .' AND cmid = :cmid AND modulename = :modulename';
-        $filename = $DB->get_record_sql( $sql, ['userid' => $resourceid, 'cmid' => $cmid, 'modulename' => $modulename]);
+FROM {tiny_cursive_files}
+WHERE userid = ' . $resourceid . ' AND cmid = :cmid AND modulename = :modulename';
+        $filename = $DB->get_record_sql($sql, ['userid' => $resourceid, 'cmid' => $cmid, 'modulename' => $modulename]);
 
-        if ($filename){
+        if ($filename) {
             $context = context_system::instance();
             $data['filename'] = $filename->filename ?? '';
             $data['file_id'] = $filename->fileid ?? '';
@@ -189,17 +232,15 @@ function get_user_submissions_data($resourceid, $modulename, $cmid, $courseid = 
 
     $data = (array)$data;
 
-    if ($data['filename']){
+    if ($data['filename']) {
         $sql = 'SELECT id as fileid
-                FROM {tiny_cursive_files} 
-                WHERE userid = :userid ORDER BY id ASC';
+FROM {tiny_cursive_files} WHERE userid = :userid ORDER BY id ASC';
 
-        $ffile = $DB->get_record_sql( $sql, ['userid' => $userid]);
+        $ffile = $DB->get_record_sql($sql, ['userid' => $userid]);
         $ffile = (array)$ffile;
-        if ($ffile['fileid'] == $data['file_id']){
+        if ($ffile['fileid'] == $data['file_id']) {
             $data['first_file'] = 1;
-        }
-        else{
+        } else {
             $data['first_file'] = 0;
         }
     }

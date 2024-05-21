@@ -15,12 +15,18 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Tiny cursive plugin.
+ *
  * @package tiny_cursive
- * @category TinyMCE Editor
  * @copyright  CTI <info@cursivetechnology.com>
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+
+/**
+ * Tiny cursive uninstall.
+ */
 function xmldb_tiny_cursive_uninstall() {
     return true;
 }

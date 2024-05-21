@@ -32,7 +32,7 @@ use MoodleHQ\editor\tiny\plugins\cursive\classes\forms\fileupload;
  * @param  array  $args The path (the part after the filearea and before the filename).
  * @return array The itemid and the filepath inside the $args path, for the defined filearea.
  */
-function tiny_cursive_get_path_from_pluginfile(string $filearea, array $args) : array {
+function tiny_cursive_get_path_from_pluginfile(string $filearea, array $args): array {
     // Cursive never has an itemid (the number represents the revision but it's not stored in database).
     array_shift($args);
 
@@ -82,6 +82,16 @@ function tiny_cursive_pluginfile($course, $cm, $context, $filearea, $args, $forc
     }
     send_stored_file($file, 0, 0, $forcedownload, $options);
 }
+
+/**
+ * tiny_cursive_extend_navigation_course
+ *
+ * @param navigation_node $navigation
+ * @param stdClass $course
+ * @param context $context
+ * @return void
+ * @throws moodle_exception
+ */
 function tiny_cursive_extend_navigation_course(\navigation_node $navigation, \stdClass $course, \context $context) {
     global $CFG, $PAGE, $SESSION;
 
@@ -96,6 +106,12 @@ function tiny_cursive_extend_navigation_course(\navigation_node $navigation, \st
     );
 }
 
+/**
+ * tiny_cursive_extend_navigation
+ *
+ * @param global_navigation $navigation
+ * @return void
+ */
 function tiny_cursive_extend_navigation(global_navigation $navigation) {
     global $CFG, $PAGE;
     if ($home = $navigation->find('home', global_navigation::TYPE_SETTING)) {
@@ -103,6 +119,17 @@ function tiny_cursive_extend_navigation(global_navigation $navigation) {
     }
 }
 
+/**
+ * tiny_cursive_myprofile_navigation
+ *
+ * @param \core_user\output\myprofile\tree $tree
+ * @param $user
+ * @param $iscurrentuser
+ * @param $course
+ * @return void
+ * @throws coding_exception
+ * @throws moodle_exception
+ */
 function tiny_cursive_myprofile_navigation(core_user\output\myprofile\tree $tree, $user, $iscurrentuser, $course) {
     global $USER;
     if (empty($course)) {
@@ -121,6 +148,14 @@ function tiny_cursive_myprofile_navigation(core_user\output\myprofile\tree $tree
     $tree->add_node($node);
 }
 
+/**
+ * upload_multipart_record
+ *
+ * @param $filerecord
+ * @param $filenamewithfullpath
+ * @return bool|string
+ * @throws dml_exception
+ */
 function upload_multipart_record($filerecord, $filenamewithfullpath) {
     global $CFG;
 
@@ -158,10 +193,17 @@ function upload_multipart_record($filerecord, $filenamewithfullpath) {
     return $result;
 }
 
+/**
+ * tiny_cursive_before_footer
+ *
+ * @return void
+ * @throws coding_exception
+ * @throws dml_exception
+ */
 function tiny_cursive_before_footer() {
     global $PAGE, $COURSE, $USER, $DB, $CFG;
     $confidencethreshold = get_config('tiny_cursive', 'confidence_threshold');
-    $confidencethreshold = !empty($confidencethreshold) ?  $confidencethreshold : .65;
+    $confidencethreshold = !empty($confidencethreshold) ? $confidencethreshold : .65;
     $showcomments = get_config('tiny_cursive', 'showcomments');
     $context = context_course::instance($COURSE->id);
     $userrole = '';
@@ -195,16 +237,33 @@ function tiny_cursive_before_footer() {
     }
 }
 
-
+/**
+ * file_urlcreate
+ *
+ * @param $context
+ * @param $user
+ * @return false|string
+ * @throws coding_exception
+ */
 function file_urlcreate ($context, $user) {
     $fs = get_file_storage();
     $files = $fs->get_area_files($context->id, 'tiny_cursive', 'attachment', $user->fileid, 'sortorder', false);
 
     foreach ($files as $file) {
         if ($file->get_filename() != '.') {
-            $fileurl = moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(), $file->get_filearea(), $file->get_itemid(), $file->get_filepath(), $file->get_filename(), true);
+            $fileurl = moodle_url::make_pluginfile_url(
+                $file->get_contextid(),
+                $file->get_component(),
+                $file->get_filearea(),
+                $file->get_itemid(),
+                $file->get_filepath(),
+                $file->get_filename(),
+                true
+            );
             // Display the image.
-            $downloadurl = $fileurl->get_port() ? $fileurl->get_scheme() . '://' . $fileurl->get_host() . ':' . $fileurl->get_port() . $fileurl->get_path() : $fileurl->get_scheme() . '://' . $fileurl->get_host() . $fileurl->get_path();
+            $downloadurl = $fileurl->get_port() ?
+                $fileurl->get_scheme() . '://' . $fileurl->get_host() . ':' . $fileurl->get_port() . $fileurl->get_path() :
+                $fileurl->get_scheme() . '://' . $fileurl->get_host() . $fileurl->get_path();
             return $downloadurl;
         }
     }
