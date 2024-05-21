@@ -194,17 +194,17 @@ function get_user_submissions_data($resourceid, $modulename, $cmid, $courseid = 
 
     $attempts = [];
     $userid = $resourceid;
-    $attempts = "SELECT  uw.total_time_seconds ,uw.word_count ,uw.words_per_minute,
-                         uw.backspace_percent,uw.score,uw.copy_behavior,uf.resourceid , uf.modulename,uf.userid, uf.filename
-                 FROM {tiny_cursive_user_writing} uw
-                      INNER JOIN {tiny_cursive_files} uf ON uw.file_id = uf.id
-                 WHERE uf.userid = ". $resourceid ." AND uf.cmid = " . $cmid ." AND uf.modulename = '" . $modulename . "'";
+    // $attempts = "SELECT  uw.total_time_seconds ,uw.word_count ,uw.words_per_minute,
+    //                      uw.backspace_percent,uw.score,uw.copy_behavior,uf.resourceid , uf.modulename,uf.userid, uf.filename
+    //              FROM {tiny_cursive_user_writing} uw
+    //                   INNER JOIN {tiny_cursive_files} uf ON uw.file_id = uf.id
+    //              WHERE uf.userid = ". $resourceid ." AND uf.cmid = " . $cmid ." AND uf.modulename = '" . $modulename . "'";
 
-    if ($courseid != 0) {
-        $attempts .= "  AND uf.courseid=$courseid";
-    }
+    // if ($courseid != 0) {
+    //     $attempts .= "  AND uf.courseid=$courseid";
+    // }
 
-    $res = $DB->get_record_sql($attempts);
+    // $res = $DB->get_record_sql($attempts);
 
     $attempts = "SELECT  uw.total_time_seconds ,uw.word_count ,uw.words_per_minute,
         uw.backspace_percent,uw.score,uw.copy_behavior,uf.resourceid , uf.modulename,uf.userid, uw.file_id, uf.filename
