@@ -18,8 +18,8 @@
  * Tiny cursive plugin version.
  *
  * @package tiny_cursive
- * @copyright  CTI <info@cursivetechnology.com>
- * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
+ * @copyright  Cursive Technology, Inc. <info@cursivetechnology.com>
+ * @author kuldeep singh & Brainstation23 
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
