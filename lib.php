@@ -204,6 +204,7 @@ function tiny_cursive_before_footer() {
     global $PAGE, $COURSE, $USER, $DB, $CFG;
     $confidencethreshold = get_config('tiny_cursive', 'confidence_threshold');
     $confidencethreshold = !empty($confidencethreshold) ? $confidencethreshold : .65;
+    $confidencethreshold = floatval($confidencethreshold);
     $showcomments = get_config('tiny_cursive', 'showcomments');
     $context = context_course::instance($COURSE->id);
     $userrole = '';

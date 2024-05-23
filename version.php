@@ -19,7 +19,7 @@
  *
  * @package tiny_cursive
  * @copyright  Cursive Technology, Inc. <info@cursivetechnology.com>
- * @author kuldeep singh & Brainstation23 
+ * @author kuldeep singh & Brainstation23
  *
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -29,6 +29,6 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'tiny_cursive';
 $plugin->release = '0.1.0';
-$plugin->version = 2023041940;
-$plugin->requires = 2022030000;
+$plugin->version = 2024060200;
+$plugin->requires = 2024041600;
 $plugin->maturity = MATURITY_STABLE;
