@@ -77,7 +77,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                             var filepath = M.cfg.wwwroot+'/lib/editor/tiny/plugins/cursive/userdata/'+ data.res.filename;
                             // var filepath = data.res.filename;
                         }
-                        var score = data.res.score;
+                        var score = parseFloat(data.res.score);
                         var icon = 'fa fa-circle-o';
                         var color = 'font-size:24px;color:black';
                         if(data.res.first_file){

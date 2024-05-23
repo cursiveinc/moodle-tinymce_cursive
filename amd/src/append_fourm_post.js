@@ -87,7 +87,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                         var filepath = M.cfg.wwwroot+'/lib/editor/tiny/plugins/cursive/userdata/'+ data.data.filename;
                     }
                     if (filepath){
-                        var score = data.data.score;
+                        var score = parseFloat(data.data.score);
                         var icon = 'fa fa-circle-o';
                         var color = 'font-size:24px;color:black';
                         if (score >= score_setting) {
