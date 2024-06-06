@@ -44,25 +44,26 @@ class tiny_cursive_renderer extends plugin_renderer_base {
      * @return string
      * @throws dml_exception
      */
-    public function get_link_icon($score = 0) {
+    public function get_link_icon($score,$firstfile = 0) {
         $scoresetting = get_config('tiny_cursive', 'confidence_threshold');
         $scoresetting = $scoresetting ? $scoresetting : 0.65;
-
         $icon = 'fa fa-circle-o';
         $color = 'font-size:24px;color:black';
-        if ($score == 200) {
-            $icon = 'fa fa-info-circle';
-            $color = 'font-size:24px;color:black';
-        } else if ($score >= $scoresetting) {
-            $icon = 'fa fa-check-circle';
-            $color = 'font-size:24px;color:green';
-        } else if ($score >= -1) {
-            $icon = 'fa fa-question-circle';
-            $color = 'font-size:24px;color:#A9A9A9';
-        } else {
-            $icon = 'fa fa-circle-o';
-            $color = 'font-size:24px;color:black';
-        }
+        if ($firstfile) {
+            $icon = 'fa  fa fa-solid fa-info-circle typeid';
+            $color = 'font-size:24px;color:#000000';
+        }else {
+            if ($score >= $scoresetting && $score != null) {
+                $icon = 'fa fa-check-circle typeid';
+                $color = 'font-size:24px;color:green';
+            } else if ($score < $scoresetting && $score != null) {
+                $icon = 'fa fa-question-circle typeid';
+                $color = 'font-size:24px;color:#A9A9A9';
+            } else {
+                $icon = 'fa fa-circle-o typeid';
+                $color = 'font-size:24px;color:black';
+            }
+    }
         return '<i  class="' . $icon . '"' . ' style="' . $color . '";></i>';
     }
 
@@ -205,9 +206,10 @@ class tiny_cursive_renderer extends plugin_renderer_base {
      * @throws moodle_exception
      */
     public function timer_report($users, $courseid, $page = 0, $limit = 10, $baseurl = '') {
-        global $CFG;
+        global $CFG, $DB;
         $totalcount = $users['count'];
         $data = $users['data'];
+
         $table = new html_table();
         $table->head = [
             'Attemptid',
@@ -223,7 +225,18 @@ class tiny_cursive_renderer extends plugin_renderer_base {
 
         $sr = 1;
         foreach ($data as $user) {
-            $linkicon = $this->get_link_icon($user->score);
+            $sql = 'SELECT id as fileid
+            FROM {tiny_cursive_files} WHERE userid = :userid ORDER BY id ASC Limit 1';
+        
+                $ffile = $DB->get_record_sql($sql, ['userid' => $user->usrid]);
+                $ffile = (array)$ffile;
+                if ($ffile['fileid'] == $user->fileid) {
+                    $firstfile= 1;
+                } else {
+                    $firstfile = 0;
+                }
+            
+            $linkicon = $this->get_link_icon($user->score,$firstfile);
             $modinfo = get_fast_modinfo($courseid);
             $cm = $modinfo->get_cm($user->cmid);
             $getmodulename = get_coursemodule_from_id($cm?->modname, $user->cmid, 0, false, MUST_EXIST);
@@ -233,7 +246,7 @@ class tiny_cursive_renderer extends plugin_renderer_base {
             $filepath = file_exists($CFG->dataroot . '/temp/userdata/' . $user->filename)?urlencode($CFG->dataroot . '/temp/userdata/' . $user->filename):null;
             $row = [];
             $row[] = $user->fileid;
-            $row[] = $user->firstname ?? '' . ' ' . $user->lastname ?? '';
+            $row[] = $user->firstname . ' ' . $user->lastname ?? '';
             $row[] = $user->email;
             $row[] = $getmodulename->name;
             $row[] = date("l jS \of F Y h:i:s A", $user->timemodified);
@@ -244,7 +257,7 @@ class tiny_cursive_renderer extends plugin_renderer_base {
             style = "padding-left:25px; font-size:x-large;"></i>
             </a>' . $playbackcontent;
 
-                        $row[] = '<a data-id=' . $user->attemptid . ' href = "#" class="popup_item">
+            $row[] = '<a data-id=' . $user->attemptid . ' href = "#" class="popup_item">
             <i class="fa fa-area-chart" style="font-size:24px;color:black"
             aria-hidden="true" style = "padding-left:25px; font-size:x-large;"></i>
             </a>' . $content;

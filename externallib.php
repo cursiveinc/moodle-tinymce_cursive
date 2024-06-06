@@ -255,10 +255,6 @@ class cursive_json_func_data extends external_api
         }
         // File path.
         $filename = $dirname . '/' . $fname;
-     
-        // Insert in database.
-        // var_dump($filename);
-        // die;
 
         $table = 'tiny_cursive_files';
 
@@ -777,8 +773,7 @@ class cursive_json_func_data extends external_api
         $data = $DB->get_record_sql($attempts);
    
         $data['first_file'] = 0;
-        // var_dump($id,$cmid,$modulename);
-        // die;
+
         if (!isset($data->filename)) {
         $filename = $DB->get_record_sql('select filename,userid from {tiny_cursive_files} where resourceid = :resourceid
         AND cmid = :cmid
@@ -1256,7 +1251,7 @@ class cursive_json_func_data extends external_api
         global $DB;
 
         try {
-
+            $apiEnd=get_config('tiny_cursive','python_server'); 
             $backspace_percent = round($backspace_percent, 4);
             $sql = "INSERT INTO {tiny_cursive_user_writing}
         (file_id, total_time_seconds, key_count, keys_per_minute,character_count,characters_per_minute,

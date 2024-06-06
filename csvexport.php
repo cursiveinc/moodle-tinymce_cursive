@@ -64,7 +64,7 @@ $exportcsv->add_data($headers); // Add Header Row.
 if ($courseid != 0) {
     $attempts = "SELECT
         uf.id as fileid, u.id as usrid,
- u.firstname,u.email,uf.courseid,
+ u.firstname, u.lastname, u.email,uf.courseid,
   sum(uw.total_time_seconds) as total_time,
   sum(uw.key_count) as key_count,
   avg(uw.keys_per_minute) as keys_per_minute,
@@ -79,6 +79,7 @@ if ($courseid != 0) {
    INNER JOIN {user} u ON uf.userid =u.id
    LEFT JOIN {tiny_cursive_user_writing} uw ON uw.file_id =uf.id
    WHERE uf.userid!=1 ";
+   
     if ($userid != 0) {
         $attempts .= " AND  uf.userid = $userid";
     }
@@ -107,7 +108,6 @@ if ($courseid != 0) {
                 $res->backspace_percent,
                 $res->score,
                 $res->copybehavior,
-                $usercourse->fullname,
             ];
             $exportcsv->add_data($userrow);
         }

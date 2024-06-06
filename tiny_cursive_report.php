@@ -31,7 +31,7 @@ require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 require_once('classes/forms/userreportform.php');
 require_once('locallib.php');
 
-require_login();
+require_login(); // Teacher and admin can see this page.
 $context = \CONTEXT_SYSTEM::instance();
 $haseditcapability = has_capability('tiny/cursive:view', $context);
 
@@ -60,7 +60,7 @@ $PAGE->set_title($linktext);
 $PAGE->set_title($linktext);
 $PAGE->set_url($linkurl);
 $PAGE->set_heading(get_string('tiny_cursive', 'tiny_cursive'));
-require_login(); // Teacher and admin can see this page.
+
 $PAGE->requires->jquery_plugin('jquery');
 $PAGE->requires->jquery_plugin('ui');
 $PAGE->requires->js_call_amd('tiny_cursive/cursive_writing_reports', 'init', []);

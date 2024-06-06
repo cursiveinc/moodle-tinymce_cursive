@@ -98,15 +98,20 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                         var score = parseFloat(data.data.score);
                         var icon = 'fa fa-circle-o';
                         var color = 'font-size:24px;color:black';
-                        if (score >= score_setting) {
-                            icon = 'fa fa-check-circle typeid';
-                            color = 'font-size:24px;color:green';
-                        } else if (score < score_setting) {
-                            icon = 'fa fa-question-circle typeid';
-                            color = 'font-size:24px;color:#A9A9A9';
+                        if (data.data.first_file) {
+                            icon = 'fa  fa fa-solid fa-info-circle typeid';
+                            color = 'font-size:24px;color:#000000';
                         } else {
-                            icon = 'fa fa-circle-o typeid';
-                            color = 'font-size:24px;color:black';
+                            if (score >= score_setting) {
+                                icon = 'fa fa-check-circle typeid';
+                                color = 'font-size:24px;color:green';
+                            } else if (score < score_setting) {
+                                icon = 'fa fa-question-circle typeid';
+                                color = 'font-size:24px;color:#A9A9A9';
+                            } else {
+                                icon = 'fa fa-circle-o typeid';
+                                color = 'font-size:24px;color:black';
+                            }
                         }
                         var html= '<div class="justify-content-center d-flex">' +
                             '<button onclick="popup_item(' + ids + ')" data-id=' + ids + ' class="mr-2 ' + chart + '" style="' + st + '"></button>' +

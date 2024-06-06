@@ -48,7 +48,7 @@ function get_user_attempts_data($userid, $courseid, $moduleid, $orderby = 'id', 
     if ($orderby == 'date') {
         $odby = 'uf.timemodified';
     }
-    $attempts = " SELECT uf.id as fileid, u.id as usrid,uw.id as uniqueid, u.firstname,u.email,uf.courseid,
+    $attempts = " SELECT uf.id as fileid, u.id as usrid,uw.id as uniqueid, u.firstname, u.lastname,u.email,uf.courseid,
     uf.id as attemptid,uf.timemodified, uf.cmid as cmid,
     uf.filename,uf.id as fileid, uw.total_time_seconds as total_time_seconds,
     uw.key_count as key_count, uw.keys_per_minute as keys_per_minute,
@@ -207,9 +207,9 @@ WHERE uf.userid = ". $resourceid ." AND uf.cmid = ".$cmid. " AND uf.modulename='
     $data = (array)$data;
     if (!isset($data['filename'])) {
         $sql = 'SELECT id as fileid, userid, filename
-FROM {tiny_cursive_files}
-WHERE userid = ' . $resourceid . ' AND cmid = :cmid AND modulename = :modulename';
-        $filename = $DB->get_record_sql($sql, ['userid' => $resourceid, 'cmid' => $cmid, 'modulename' => $modulename]);
+    FROM {tiny_cursive_files}
+    WHERE userid = ' . $resourceid . ' AND cmid = :cmid AND modulename = :modulename';
+            $filename = $DB->get_record_sql($sql, ['userid' => $resourceid, 'cmid' => $cmid, 'modulename' => $modulename]);
 
         if ($filename) {
             $context = context_system::instance();
@@ -225,7 +225,7 @@ WHERE userid = ' . $resourceid . ' AND cmid = :cmid AND modulename = :modulename
 
     if ($data['filename']) {
         $sql = 'SELECT id as fileid
-FROM {tiny_cursive_files} WHERE userid = :userid ORDER BY id ASC';
+    FROM {tiny_cursive_files} WHERE userid = :userid ORDER BY id ASC';
 
         $ffile = $DB->get_record_sql($sql, ['userid' => $userid]);
         $ffile = (array)$ffile;
