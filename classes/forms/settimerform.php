@@ -39,7 +39,6 @@ class settimerform extends moodleform {
      * Tiny cursive plugin settings form.
      */
     public function definition() {
-        global $DB, $USER;
 
         // Start dropdowns of course, quiz and set time search field in mform.
 

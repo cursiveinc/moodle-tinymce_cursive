@@ -87,7 +87,7 @@ class observers {
                 $userid = $eventdata['userid'];
                 $cmid = $eventdata['contextinstanceid'];
                 $resourceid = $eventdata['objectid'];
-                $dirname = $CFG->dirroot . '/lib/editor/tiny/plugins/cursive/userdata/';
+                $dirname = $CFG->dataroot . '/temp/userdata/';
                 $fname = $userid . '_' . $resourceid . '_' . $cmid . '_attempt' . '.json';
                 $sourcefile = $dirname . $rec->filename;
                 $desfilename = $dirname . $fname;
@@ -171,28 +171,5 @@ class observers {
                 $DB->update_record($table, $dataobj, true);
             }
         }
-    }
-
-    /**
-     * Tiny cursive plugin submission created observer.
-     *
-     * @param \mod_assign\event\submission_created $event
-     * @return void
-     */
-    public static function submission_created(\mod_assign\event\submission_created $event) {
-        global $DB, $CFG, $PAGE, $USER;
-        $eventdata = $event->get_data();
-
-    }
-
-    /**
-     * Tiny cursive plugin assessable observer.
-     *
-     * @param \mod_assign\event\assessable_submitted $event
-     * @return void
-     */
-    public static function assessable_submitted(\mod_assign\event\assessable_submitted $event) {
-        global $DB, $CFG, $PAGE, $USER;
-        $eventdata = $event->get_data();
     }
 }

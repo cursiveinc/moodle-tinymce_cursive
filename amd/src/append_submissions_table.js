@@ -1,10 +1,9 @@
 /**
- * @module     tiny_cursive/plugin
+ * @module     tiny_cursive/append_submissions_table
  * @category TinyMCE Editor
  * @copyright  CTI <info@cursivetechnology.com>
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  */
-
 
 define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], function (
     $,
@@ -20,6 +19,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
     };
 
     window.video_playback = function(mid, filepath) {
+        
         if (filepath !== ''){
             $("#playback"+mid).show();
             const replay = new Replay(
@@ -74,7 +74,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                         var data = JSON.parse(json);
                         var filepath ='';
                         if (data.res.filename){
-                            var filepath = M.cfg.wwwroot+'/lib/editor/tiny/plugins/cursive/userdata/'+ data.res.filename;
+                            var filepath =data.res.filename;
                             // var filepath = data.res.filename;
                         }
                         var score = parseFloat(data.res.score);

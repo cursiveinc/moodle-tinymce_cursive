@@ -28,7 +28,7 @@ require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 require_once('classes/forms/userreportform.php');
 require_once('locallib.php');
 global $CFG, $DB, $USER, $PAGE;
-require_login(null, false);
+require_login();
 
 if (isguestuser()) {
     redirect(new moodle_url('/'));
@@ -39,8 +39,15 @@ if (\core\session\manager::is_loggedinas()) {
     die;
 }
 
-$userid = $USER->id;
-$username = $USER->id;
+$context = \CONTEXT_SYSTEM::instance();
+$haseditcapability = has_capability('tiny/cursive:view', $context);
+
+if (!$haseditcapability) {
+    return redirect(new moodle_url('/course/index.php'), get_string('warning', 'tiny_cursive'));
+}
+
+$userid = optional_param('userid',$USER->id,PARAM_INT);
+
 $PAGE->requires->js_call_amd('tiny_cursive/key_logger', 'init', [1]);
 $PAGE->requires->jquery_plugin('jquery');
 $PAGE->requires->js_call_amd('tiny_cursive/cursive_writing_reports', 'init', []);
@@ -66,9 +73,9 @@ $PAGE->navbar->add($struser);
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('student_writing_statics', 'tiny_cursive'));
 $renderer = $PAGE->get_renderer('tiny_cursive');
-$attempts = get_user_attempts_data($username, $courseid, null, $orderby, $order, $perpage, $limit);
-$userprofile = get_user_profile_data($username, $courseid);
-echo $renderer->user_writing_report($attempts, $userprofile, $username, $page, $limit, $linkurl);
+$attempts = get_user_attempts_data($userid, $courseid, null, $orderby, $order, $perpage, $limit);
+$userprofile = get_user_profile_data($userid, $courseid);
+echo $renderer->user_writing_report($attempts, $userprofile, $userid, $page, $limit, $linkurl);
 echo $OUTPUT->footer();
 
 

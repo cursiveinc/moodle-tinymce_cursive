@@ -1,5 +1,5 @@
 /**
- * @module     tiny_cursive/plugin
+ * @module     tiny_cursive/cursive_writing_reports
  * @category TinyMCE Editor
  * @copyright  CTI <info@cursivetechnology.com>
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
@@ -35,7 +35,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
 
                             var mid = $(this).data("id");
                             var filepath = $(this).data("filepath");
-
+                            if(filepath){
                             $("#" + mid).show();
                             const replay = new Replay(
                                 elementId = 'output_'+mid,
@@ -45,6 +45,9 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                                 controllerId = 'player_' + mid
                             );
                             replayInstances[mid] = replay;
+                            } else {
+                                alert("File not found");
+                            }
                         });
                         $(".modal-close ").on('click', function () {
                             $(".modal").hide();

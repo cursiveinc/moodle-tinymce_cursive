@@ -39,44 +39,8 @@ require_once('locallib.php');
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class cursive_json_func_data extends external_api {
-    /**
-     * cursive_json_func_is_allowed_from_ajax
-     *
-     * @return true
-     */
-    public static function cursive_json_func_is_allowed_from_ajax() {
-        return true;
-    }
-
-    /**
-     * cursive_reports_func_is_allowed_from_ajax
-     *
-     * @return true
-     */
-    public static function cursive_reports_func_is_allowed_from_ajax() {
-        return true;
-    }
-
-    // Service for quizzes list.
-
-    /**
-     * get_user_list_is_allowed_from_ajax
-     *
-     * @return true
-     */
-    public static function get_user_list_is_allowed_from_ajax() {
-        return true;
-    }
-
-    /**
-     * get_user_list_returns
-     *
-     * @return external_value
-     */
-    public static function get_user_list_returns() {
-        return new external_value(PARAM_RAW, 'All quizzes');
-    }
+class cursive_json_func_data extends external_api
+{
 
     /**
      * get_user_list_parameters
@@ -115,25 +79,16 @@ class cursive_json_func_data extends external_api {
         return json_encode(tiny_cursive_data::get_courses_users($params));
     }
 
-    // Service for quizzes list.
-
     /**
-     * get_module_list_is_allowed_from_ajax
-     *
-     * @return true
-     */
-    public static function get_module_list_is_allowed_from_ajax() {
-        return true;
-    }
-
-    /**
-     * get_module_list_returns
+     * get_user_list_returns
      *
      * @return external_value
      */
-    public static function get_module_list_returns() {
+    public static function get_user_list_returns() {
         return new external_value(PARAM_RAW, 'All quizzes');
     }
+
+    // Service for quizzes list.
 
     /**
      * get_module_list_parameters
@@ -173,22 +128,14 @@ class cursive_json_func_data extends external_api {
     }
 
     /**
-     * cursive_json_func_returns
+     * get_module_list_returns
      *
      * @return external_value
      */
-    public static function cursive_json_func_returns() {
-        return new external_value(PARAM_RAW, 'result');
+    public static function get_module_list_returns() {
+        return new external_value(PARAM_RAW, 'All quizzes');
     }
 
-    /**
-     * cursive_reports_func_returns
-     *
-     * @return external_value
-     */
-    public static function cursive_reports_func_returns() {
-        return new external_value(PARAM_RAW, 'result');
-    }
 
     /**
      * cursive_json_func_parameters
@@ -209,20 +156,6 @@ class cursive_json_func_data extends external_api {
         );
     }
 
-    /**
-     * cursive_reports_func_parameters
-     *
-     * @return external_function_parameters
-     */
-    public static function cursive_reports_func_parameters() {
-        return new external_function_parameters(
-            [
-                'coursename' => new external_value(PARAM_INT, 0, 'coursename'),
-                'quizname' => new external_value(PARAM_RAW, 'quizname detail', false, 'quizname'),
-                'username' => new external_value(PARAM_RAW, 'username detail ', false, 'username'),
-            ]
-        );
-    }
 
     /**
      * cursive_json_func
@@ -253,9 +186,9 @@ class cursive_json_func_data extends external_api {
         $editorid = null
     ) {
         require_login();
-
+      
         global $USER, $SESSION, $DB, $CFG;
-        require_once($CFG->libdir . '/filestorage/file_storage.php');
+        require_once ($CFG->libdir . '/filestorage/file_storage.php');
 
         $params = self::validate_parameters(
             self::cursive_json_func_parameters(),
@@ -269,10 +202,29 @@ class cursive_json_func_data extends external_api {
                 'editorid' => $editorid,
             ]
         );
-        $courseid = 0;
-        if ($resourceid == 0) {
-            $resourceid = $cmid;
+        if($modulename==='forum') {
+            if(!empty($resourceid) && $resourceid != 0 ){
+
+                $parentData= $DB->get_record('tiny_cursive_files',['resourceid'=> $resourceid]);
+                $cmid=$parentData->cmid;
+            }else if(!empty($cmid) && $cmid != 0 && $resourceid == 0){
+                $parentData= $DB->get_record('tiny_cursive_files',['resourceid'=> $cmid]);
+                $cmid=$parentData->cmid ?? $cmid;
+                $sql="SELECT id from {forum_posts} ORDER BY id DESC";
+                
+                $resourceid=$DB->get_record_sql($sql);
+                $resourceid=$resourceid->id+1;
+            }
+        }else{
+            if ($resourceid == 0) {
+                     $resourceid = $cmid;
+             }
         }
+        
+        $courseid = 0;
+        // if ($resourceid == 0) {
+        //     $resourceid = $cmid;
+        // }
         $userdata = ['resourceId' => $resourceid, 'key' => $key, 'keyCode' => $keycode, 'event' => $event];
         if ($cmid) {
             $cm = $DB->get_record('course_modules', ['id' => $cmid]);
@@ -295,21 +247,26 @@ class cursive_json_func_data extends external_api {
             $question = $quba->get_question($slot, false);
             $questionid = $question->id;
         }
-        $dirname = __DIR__ . '/userdata/';
+        $dirname = make_temp_directory('userdata');
+
         $fname = $USER->id . '_' . $resourceid . '_' . $cmid . '_attempt' . '.json';
         if ($questionid) {
             $fname = $USER->id . '_' . $resourceid . '_' . $cmid . '_' . $questionid . '_attempt' . '.json';
         }
         // File path.
-        $filename = __DIR__ . '/userdata/' . $fname;
+        $filename = $dirname . '/' . $fname;
+     
         // Insert in database.
+        // var_dump($filename);
+        // die;
 
         $table = 'tiny_cursive_files';
 
-        if (!file_exists($dirname)) {
-            mkdir($dirname, 0755);
-        }
+        // if (!file_exists($dirname)) {
+        //     mkdir($dirname, 777);
+        // }
         $inp = file_get_contents($filename);
+
         $temparray = null;
         if ($inp) {
             $temparray = json_decode($inp, true);
@@ -326,6 +283,7 @@ class cursive_json_func_data extends external_api {
             $filerec->uploaded = 0;
             $DB->update_record($table, $filerec);
         } else {
+         
             $temparray[] = $userdata;
             $dataobj = new stdClass();
             $dataobj->userid = $USER->id;
@@ -391,6 +349,33 @@ class cursive_json_func_data extends external_api {
     }
 
     /**
+     * cursive_json_func_returns
+     *
+     * @return external_value
+     */
+    public static function cursive_json_func_returns()
+    {
+        return new external_value(PARAM_RAW, 'result');
+    }
+
+
+    /**
+     * cursive_reports_func_parameters
+     *
+     * @return external_function_parameters
+     */
+    public static function cursive_reports_func_parameters()
+    {
+        return new external_function_parameters(
+            [
+                'coursename' => new external_value(PARAM_INT, 0, 'coursename'),
+                'quizname' => new external_value(PARAM_RAW, 'quizname detail', false, 'quizname'),
+                'username' => new external_value(PARAM_RAW, 'username detail ', false, 'username'),
+            ]
+        );
+    }
+
+    /**
      * cursive_reports_func
      *
      * @param $coursename
@@ -416,25 +401,16 @@ class cursive_json_func_data extends external_api {
         return "cursive reports";
     }
 
-    // User comments store.
-
     /**
-     * cursive_user_comments_func_is_allowed_from_ajax
-     *
-     * @return true
-     */
-    public static function cursive_user_comments_func_is_allowed_from_ajax() {
-        return true;
-    }
-
-    /**
-     * cursive_user_comments_func_returns
+     * cursive_reports_func_returns
      *
      * @return external_value
      */
-    public static function cursive_user_comments_func_returns() {
-        return new external_value(PARAM_RAW, 'All User Comments');
+    public static function cursive_reports_func_returns() {
+        return new external_value(PARAM_RAW, 'result');
     }
+
+    // User comments store.
 
     /**
      * cursive_user_comments_func_parameters
@@ -511,22 +487,14 @@ class cursive_json_func_data extends external_api {
     }
 
     /**
-     * cursive_approve_token_func_is_allowed_from_ajax
-     *
-     * @return true
-     */
-    public static function cursive_approve_token_func_is_allowed_from_ajax() {
-        return true;
-    }
-
-    /**
-     * cursive_approve_token_func_returns
+     * cursive_user_comments_func_returns
      *
      * @return external_value
      */
-    public static function cursive_approve_token_func_returns() {
-        return new external_value(PARAM_RAW, 'Token Approved');
+    public static function cursive_user_comments_func_returns() {
+        return new external_value(PARAM_RAW, 'All User Comments');
     }
+
 
     /**
      * cursive_approve_token_func_parameters
@@ -577,25 +545,19 @@ class cursive_json_func_data extends external_api {
         return $result;
     }
 
-    // Service for assignment comment list.
-
     /**
-     * get_comment_link_is_allowed_from_ajax
-     *
-     * @return true
-     */
-    public static function get_comment_link_is_allowed_from_ajax() {
-        return true;
-    }
-
-    /**
-     * get_comment_link_returns
+     * cursive_approve_token_func_returns
      *
      * @return external_value
      */
-    public static function get_comment_link_returns() {
-        return new external_value(PARAM_RAW, 'Comment Link');
+    public static function cursive_approve_token_func_returns() {
+        return new external_value(PARAM_RAW, 'Token Approved');
     }
+
+
+
+    // Service for assignment comment list.
+
 
     /**
      * get_comment_link_parameters
@@ -630,10 +592,10 @@ class cursive_json_func_data extends external_api {
      * @throws require_login_exception
      */
     public static function get_comment_link($id, $modulename, $cmid = null, $questionid = null, $userid = null) {
-        require_once('../../config.php');
+        require_once ('../../config.php');
         global $DB, $CFG;
-        require_once($CFG->dirroot . '/lib/accesslib.php');
-        require_once($CFG->dirroot . '/question/lib.php');
+        require_once ($CFG->dirroot . '/lib/accesslib.php');
+        require_once ($CFG->dirroot . '/question/lib.php');
         require_login();
         $params = self::validate_parameters(
             self::get_comment_link_parameters(),
@@ -652,17 +614,18 @@ class cursive_json_func_data extends external_api {
             $recs = $DB->get_records($table, $conditions);
 
             $filename = $DB->get_record_sql('select filename, userid, id as file_id
-from {tiny_cursive_files} where resourceid = :resourceid AND cmid = :cmid
-AND modulename = :modulename AND questionid=:questionid AND userid=:userid ',
+            from {tiny_cursive_files} where resourceid = :resourceid AND cmid = :cmid
+            AND modulename = :modulename AND questionid=:questionid AND userid=:userid ',
                 [
                     'resourceid' => $id,
                     'cmid' => $cmid,
                     'modulename' => $modulename,
                     'questionid' => $questionid,
                     "userid" => $userid,
-                ]);
-
-            $data['filename'] = $filename->filename;
+                ]
+            );
+            $filep=$CFG->dataroot."/temp/userdata/".$filename->filename;
+            $data['filename'] = file_exists($filep)?$filep:null; 
             $data['questionid'] = $questionid;
 
             if ($data['filename']) {
@@ -713,20 +676,22 @@ AND modulename = :modulename AND questionid=:questionid AND userid=:userid ',
 
             $attempts = "SELECT  uw.total_time_seconds ,uw.word_count ,uw.words_per_minute,
         uw.backspace_percent,uw.score,uw.copy_behavior,uf.resourceid , uf.modulename,uf.userid, uf.filename
-FROM {tiny_cursive_user_writing} uw
-        INNER JOIN {tiny_cursive_files} uf
-            ON uw.file_id =uf.id
-where uf.resourceid = $id
-  AND uf.cmid = $cmid
-  AND uf.modulename='" . $modulename . "'";
-            $data = $DB->get_record_sql($attempts);
+        FROM {tiny_cursive_user_writing} uw
+                INNER JOIN {tiny_cursive_files} uf
+                    ON uw.file_id =uf.id
+        where uf.resourceid = $id
+        AND uf.cmid = $cmid
+        AND uf.modulename='" . $modulename . "'";
+                    $data = $DB->get_record_sql($attempts);
 
-            if (!isset($data->filename)) {
-                $filename = $DB->get_record_sql('select filename from {tiny_cursive_files} where resourceid = :resourceid
-  AND cmid = :cmid
-  AND modulename = :modulename', ['resourceid' => $id, 'cmid' => $cmid, 'modulename' => $modulename]);
+                    if (!isset($data->filename)) {
+                        $filename = $DB->get_record_sql('select filename from {tiny_cursive_files} where resourceid = :resourceid
+        AND cmid = :cmid
+        AND modulename = :modulename', ['resourceid' => $id, 'cmid' => $cmid, 'modulename' => $modulename]);
 
-                $data['filename'] = $filename->filename;
+                        $filep=$CFG->dataroot."/temp/userdata/".$filename->filename;
+                        $data['filename'] = file_exists($filep)?$filep:null; 
+                       
             }
 
             $usercomment = [];
@@ -742,21 +707,13 @@ where uf.resourceid = $id
         }
     }
 
-    /**
-     * get_forum_comment_link_is_allowed_from_ajax
-     *
-     * @return true
-     */
-    public static function get_forum_comment_link_is_allowed_from_ajax() {
-        return true;
-    }
 
     /**
-     * get_forum_comment_link_returns
+     * get_comment_link_returns
      *
      * @return external_value
      */
-    public static function get_forum_comment_link_returns() {
+    public static function get_comment_link_returns() {
         return new external_value(PARAM_RAW, 'Comment Link');
     }
 
@@ -788,10 +745,10 @@ where uf.resourceid = $id
      * @throws require_login_exception
      */
     public static function get_forum_comment_link($id, $modulename, $cmid = null) {
-        require_once('../../config.php');
+        require_once ('../../config.php');
         global $DB, $CFG;
-        require_once($CFG->dirroot . '/lib/accesslib.php');
-        require_once($CFG->dirroot . '/question/lib.php');
+        require_once ($CFG->dirroot . '/lib/accesslib.php');
+        require_once ($CFG->dirroot . '/question/lib.php');
         require_login();
         $params = self::validate_parameters(
             self::get_comment_link_parameters(),
@@ -801,6 +758,7 @@ where uf.resourceid = $id
                 'cmid' => $cmid,
             ]
         );
+        
         $context = context_module::instance($cmid);
 
         $conditions = ["resourceid" => $id];
@@ -808,29 +766,34 @@ where uf.resourceid = $id
         $recs = $DB->get_records($table, $conditions);
 
         $attempts = "SELECT  uw.total_time_seconds ,uw.word_count ,uw.words_per_minute,
-    uw.backspace_percent,uw.score,uw.copy_behavior,uf.resourceid , uf.modulename,uf.userid, uf.filename,uf.file_id
-FROM {tiny_cursive_user_writing} uw
-    INNER JOIN {tiny_cursive_files} uf
-        ON uw.file_id =uf.id
-where uf.resourceid = $id
-AND uf.cmid = $cmid
-AND uf.modulename='" . $modulename . "'";
+        uw.backspace_percent,uw.score,uw.copy_behavior,uf.resourceid , uf.modulename,uf.userid, uf.filename,uw.file_id
+        FROM {tiny_cursive_user_writing} uw
+            INNER JOIN {tiny_cursive_files} uf
+                ON uw.file_id =uf.id
+        where uf.resourceid = $id
+        AND uf.cmid = $cmid
+        AND uf.modulename='" . $modulename . "'";
+       
         $data = $DB->get_record_sql($attempts);
-
+   
         $data['first_file'] = 0;
+        // var_dump($id,$cmid,$modulename);
+        // die;
         if (!isset($data->filename)) {
-            $filename = $DB->get_record_sql('select filename,file_id,userid from {tiny_cursive_files} where resourceid = :resourceid
-AND cmid = :cmid
-AND modulename = :modulename', ['resourceid' => $id, 'cmid' => $cmid, 'modulename' => $modulename]);
+        $filename = $DB->get_record_sql('select filename,userid from {tiny_cursive_files} where resourceid = :resourceid
+        AND cmid = :cmid
+        AND modulename = :modulename', ['resourceid' => $id, 'cmid' => $cmid, 'modulename' => $modulename]);
 
-            $data['filename'] = $filename->filename;
+            $filep=$CFG->dataroot."/temp/userdata/".$filename->filename;
+           
+            $data['filename'] = file_exists($filep)?$filep:null; 
             $firstfile = $DB->get_record_sql('select * from {tiny_cursive_files}
          where userid = :userid ORDER BY id ASC LIMIT 1', ['userid' => $filename->userid]);
             if ($firstfile == $filename->file_id) {
                 $data['first_file'] = 1;
             }
         }
-
+  
         $firstfile = $DB->get_record_sql('select * from {tiny_cursive_files}
          where userid = :userid ORDER BY id ASC LIMIT 1', ['userid' => $filename->userid]);
         if ($firstfile == $filename->file_id) {
@@ -850,20 +813,11 @@ AND modulename = :modulename', ['resourceid' => $id, 'cmid' => $cmid, 'modulenam
     }
 
     /**
-     * get_quiz_comment_link_is_allowed_from_ajax
-     *
-     * @return true
-     */
-    public static function get_quiz_comment_link_is_allowed_from_ajax() {
-        return true;
-    }
-
-    /**
-     * get_quiz_comment_link_returns
+     * get_forum_comment_link_returns
      *
      * @return external_value
      */
-    public static function get_quiz_comment_link_returns() {
+    public static function get_forum_comment_link_returns() {
         return new external_value(PARAM_RAW, 'Comment Link');
     }
 
@@ -903,10 +857,10 @@ AND modulename = :modulename', ['resourceid' => $id, 'cmid' => $cmid, 'modulenam
         $cmid = null,
         $questionid = null
     ) {
-        require_once('../../config.php');
+        require_once ('../../config.php');
         global $DB, $CFG;
-        require_once($CFG->dirroot . '/lib/accesslib.php');
-        require_once($CFG->dirroot . '/question/lib.php');
+        require_once ($CFG->dirroot . '/lib/accesslib.php');
+        require_once ($CFG->dirroot . '/question/lib.php');
         require_login();
         $params = self::validate_parameters(
             self::get_comment_link_parameters(),
@@ -923,20 +877,21 @@ AND modulename = :modulename', ['resourceid' => $id, 'cmid' => $cmid, 'modulenam
 
             $attempts = "SELECT  uw.total_time_seconds ,uw.word_count ,uw.words_per_minute,
         uw.backspace_percent,uw.score,uw.copy_behavior,uf.resourceid , uf.modulename,uf.userid, uf.filename
-FROM {tiny_cursive_user_writing} uw
-        INNER JOIN {tiny_cursive_files} uf
-            ON uw.file_id =uf.id
-where uf.resourceid = $id
-  AND uf.cmid = $cmid
-  AND uf.modulename='" . $modulename . "'";
+        FROM {tiny_cursive_user_writing} uw
+                INNER JOIN {tiny_cursive_files} uf
+                    ON uw.file_id =uf.id
+        where uf.resourceid = $id
+        AND uf.cmid = $cmid
+        AND uf.modulename='" . $modulename . "'";
             $data = $DB->get_record_sql($attempts);
 
             if (!isset($data->filename)) {
                 $filename = $DB->get_record_sql('select filename from {tiny_cursive_files} where resourceid = :resourceid
-  AND cmid = :cmid
-  AND modulename = :modulename', ['resourceid' => $id, 'cmid' => $cmid, 'modulename' => $modulename]);
+            AND cmid = :cmid
+            AND modulename = :modulename', ['resourceid' => $id, 'cmid' => $cmid, 'modulename' => $modulename]);
 
-                $data['filename'] = $filename->filename;
+                $filep=$CFG->dataroot."/temp/userdata/".$filename->filename;
+                $data['filename'] = file_exists($filep)?$filep:null; 
             }
 
         } else {
@@ -946,12 +901,12 @@ where uf.resourceid = $id
 
             $attempts = "SELECT  uw.total_time_seconds ,uw.word_count ,uw.words_per_minute,
         uw.backspace_percent,uw.score,uw.copy_behavior,uf.resourceid , uf.modulename,uf.userid, uf.filename
-FROM {tiny_cursive_user_writing} uw
-        INNER JOIN {tiny_cursive_files} uf
-            ON uw.file_id =uf.id
-where uf.resourceid = $id
-  AND uf.cmid = $cmid
-  AND uf.modulename='" . $modulename . "'";
+        FROM {tiny_cursive_user_writing} uw
+                INNER JOIN {tiny_cursive_files} uf
+                    ON uw.file_id =uf.id
+        where uf.resourceid = $id
+        AND uf.cmid = $cmid
+        AND uf.modulename='" . $modulename . "'";
             $data = $DB->get_record_sql($attempts);
 
             if (!isset($data->filename)) {
@@ -959,7 +914,8 @@ where uf.resourceid = $id
   AND cmid = :cmid
   AND modulename = :modulename', ['resourceid' => $id, 'cmid' => $cmid, 'modulename' => $modulename]);
 
-                $data['filename'] = $filename->filename;
+                $filep=$CFG->dataroot."/temp/userdata/".$filename->filename;
+                $data['filename'] = file_exists($filep)?$filep:null; 
             }
         }
         $usercomment = [];
@@ -975,20 +931,11 @@ where uf.resourceid = $id
     }
 
     /**
-     * get_assign_comment_link_is_allowed_from_ajax
-     *
-     * @return true
-     */
-    public static function get_assign_comment_link_is_allowed_from_ajax() {
-        return true;
-    }
-
-    /**
-     * get_assign_comment_link_returns
+     * get_quiz_comment_link_returns
      *
      * @return external_value
      */
-    public static function get_assign_comment_link_returns() {
+    public static function get_quiz_comment_link_returns() {
         return new external_value(PARAM_RAW, 'Comment Link');
     }
 
@@ -1048,22 +995,12 @@ where uf.resourceid = $id
         }
     }
 
-
     /**
-     * get_assign_grade_comment_is_allowed_from_ajax
-     *
-     * @return true
-     */
-    public static function get_assign_grade_comment_is_allowed_from_ajax() {
-        return true;
-    }
-
-    /**
-     * get_assign_grade_comment_returns
+     * get_assign_comment_link_returns
      *
      * @return external_value
      */
-    public static function get_assign_grade_comment_returns() {
+    public static function get_assign_comment_link_returns() {
         return new external_value(PARAM_RAW, 'Comment Link');
     }
 
@@ -1096,7 +1033,7 @@ where uf.resourceid = $id
      * @throws require_login_exception
      */
     public static function get_assign_grade_comment($id, $modulename, $cmid) {
-        global $DB;
+        global $DB, $CFG;
         require_login();
         $params = self::validate_parameters(
             self::get_assign_comment_link_parameters(),
@@ -1112,27 +1049,28 @@ where uf.resourceid = $id
         $recs = $DB->get_records($table, $conditions);
         $attempts = "SELECT  uw.total_time_seconds ,uw.word_count ,uw.words_per_minute,
         uw.backspace_percent,uw.score,uw.copy_behavior,uf.resourceid , uf.modulename, uf.userid, uw.file_id, uf.filename
-FROM {tiny_cursive_user_writing} uw
-        INNER JOIN {tiny_cursive_files} uf
-            ON uw.file_id =uf.id
-where uf.userid = $id
-  AND uf.cmid = $cmid
-  AND uf.modulename='" . $modulename . "'";
+        FROM {tiny_cursive_user_writing} uw
+                INNER JOIN {tiny_cursive_files} uf
+                    ON uw.file_id =uf.id
+        where uf.userid = $id
+        AND uf.cmid = $cmid
+        AND uf.modulename='" . $modulename . "'";
         $data = $DB->get_record_sql($attempts);
-        $data = (array)$data;
+        $data = (array) $data;
         if (!isset($data['filename'])) {
             $filename = $DB->get_record_sql('select filename,id,userid from {tiny_cursive_files} where userid = :resourceid
-  AND cmid = :cmid
-  AND modulename = :modulename', ['resourceid' => $id, 'cmid' => $cmid, 'modulename' => $modulename]);
+        AND cmid = :cmid
+        AND modulename = :modulename', ['resourceid' => $id, 'cmid' => $cmid, 'modulename' => $modulename]);
 
-            $data['filename'] = $filename->filename;
+            $filep=$CFG->dataroot."/temp/userdata/".$filename->filename;
+            $data['filename'] = file_exists($filep)?$filep:null; 
             $data['file_id'] = $filename->id;
             $data['userid'] = $filename->userid;
         }
         if ($data['filename']) {
             $sql = 'SELECT id as fileid FROM {tiny_cursive_files}
                     WHERE userid = :userid ORDER BY id ASC';
-            $ffile = $DB->get_record_sql( $sql, ['userid' => $data['userid']]);
+            $ffile = $DB->get_record_sql($sql, ['userid' => $data['userid']]);
 
             if ($ffile->fileid == $data['file_id']) {
                 $data['first_file'] = 1;
@@ -1154,20 +1092,11 @@ where uf.userid = $id
     }
 
     /**
-     * get_user_list_submission_stats_is_allowed_from_ajax
-     *
-     * @return true
-     */
-    public static function get_user_list_submission_stats_is_allowed_from_ajax() {
-        return true;
-    }
-
-    /**
-     * get_user_list_submission_stats_returns
+     * get_assign_grade_comment_returns
      *
      * @return external_value
      */
-    public static function get_user_list_submission_stats_returns() {
+    public static function get_assign_grade_comment_returns() {
         return new external_value(PARAM_RAW, 'Comment Link');
     }
 
@@ -1217,20 +1146,11 @@ where uf.userid = $id
     }
 
     /**
-     * cursive_filtered_writing_func_is_allowed_from_ajax
-     *
-     * @return true
-     */
-    public static function cursive_filtered_writing_func_is_allowed_from_ajax() {
-        return true;
-    }
-
-    /**
-     * cursive_filtered_writing_func_returns
+     * get_user_list_submission_stats_returns
      *
      * @return external_value
      */
-    public static function cursive_filtered_writing_func_returns() {
+    public static function get_user_list_submission_stats_returns() {
         return new external_value(PARAM_RAW, 'Comment Link');
     }
 
@@ -1289,9 +1209,157 @@ where uf.userid = $id
             $value->color = 'grey';
             array_push($recs, $value);
         }
-        $resncount = ['count' => $totalcount, 'data' => $recs];
+        $resncount = ['count' => count($res), 'data' => $recs];
         return json_encode($resncount);
     }
+
+    /**
+     * cursive_filtered_writing_func_returns
+     *
+     * @return external_value
+     */
+    public static function cursive_filtered_writing_func_returns() {
+        return new external_value(PARAM_RAW, 'Comment Link');
+    }
+
+    
+       
+    /**
+     * Method store_user_writing_parameters
+     *
+     * @return object [explicite description]
+     */
+    public static function store_user_writing_parameters() {
+        return new external_function_parameters(self::storing_user_writing_param());
+    }
+    
+    /**
+     * Method store_user_writing
+     *
+     * @param $person_id $person_id [explicite description]
+     * @param $file_id $file_id [explicite description]
+     * @param $character_count $character_count [explicite description]
+     * @param $total_time_seconds $total_time_seconds [explicite description]
+     * @param $characters_per_minute $characters_per_minute [explicite description]
+     * @param $key_count $key_count [explicite description]
+     * @param $keys_per_minute $keys_per_minute [explicite description]
+     * @param $word_count $word_count [explicite description]
+     * @param $words_per_minute $words_per_minute [explicite description]
+     * @param $backspace_percent $backspace_percent [explicite description]
+     * @param $copy_behaviour $copy_behaviour [explicite description]
+     * @param $copy_behavior $copy_behavior [explicite description]
+     * @param $score $score [explicite description]
+     *
+     * @return array [explicite description]
+     */
+    public static function store_user_writing($person_id, $file_id, $character_count, $total_time_seconds, $characters_per_minute, $key_count, $keys_per_minute, $word_count, $words_per_minute, $backspace_percent, $copy_behaviour, $copy_behavior, $score) {
+        global $DB;
+
+        try {
+
+            $backspace_percent = round($backspace_percent, 4);
+            $sql = "INSERT INTO {tiny_cursive_user_writing}
+        (file_id, total_time_seconds, key_count, keys_per_minute,character_count,characters_per_minute,
+        word_count,words_per_minute,backspace_percent,score,copy_behavior)
+        VALUES ($file_id,$total_time_seconds,$key_count,
+        $keys_per_minute,$character_count,$characters_per_minute,
+        $word_count,$words_per_minute,$backspace_percent,
+        $score,$copy_behavior)";
+
+            $DB->execute($sql);
+            return [
+                'status' => 'success',
+                'message' => "Data saved successfully",
+            ];
+        } catch (Exception $e) {
+            return [
+                'status' => 'failed',
+                'message' => $e->getMessage()
+            ];
+        }
+
+    }
+    
+    /**
+     * Method store_user_writing_returns
+     *
+     * @return external_single_structure [explicite description]
+     */
+    public static function store_user_writing_returns() {
+        return new external_single_structure([
+            'status' => new external_value(PARAM_TEXT, 'status message'),
+            'message' => new external_value(PARAM_TEXT, 'message'),
+        ]);
+    }
+
+    
+    /**
+     * Method cursive_get_reply_json_parameters
+     *
+     * @return  external_single_structure [explicite description]
+     */
+    public static function cursive_get_reply_json_parameters() {
+        return new external_function_parameters([
+            'filepath' => new external_value(PARAM_TEXT, 'filepath', true),
+        ]);
+    }
+    
+    /**
+     * Method cursive_get_reply_json
+     *
+     * @param $filepath $filepath [explicite description]
+     *
+     * @return object [explicite description]
+     */
+    public static function cursive_get_reply_json($filepath) {
+        $data = new stdClass;
+        try {
+            if (!file_exists($filepath)) {
+                throw new Exception('File not found.');
+            }
+            $content = file_get_contents($filepath);
+            if ($content === false) {
+                throw new Exception('Failed to read file.');
+            }
+            $data->data = $content;
+        } catch (Exception $e) {
+            $data->data = $e->getMessage();
+        }
+        return $data;
+    }
+    
+    /**
+     * Method cursive_get_reply_json_returns
+     *
+     * @return external_single_structure [explicite description]
+     */
+    public static function cursive_get_reply_json_returns()
+    {
+        return new external_single_structure([
+            'data' => new external_value(PARAM_TEXT, 'Reply Json')
+        ]);
+    }
+    
+    /**
+     * Method storing_user_writing_param
+     *
+     * @return array [explicite description]
+     */
+    static function storing_user_writing_param() {
+        return [
+            'person_id' => new external_value(PARAM_INT, 'person or user id', true),
+            'file_id' => new external_value(PARAM_INT, 'file_id', true, 'course_detail'),
+            'character_count' => new external_value(PARAM_INT, 'character_count', true, 'course_detail'),
+            'total_time_seconds' => new external_value(PARAM_INT, 'total_time_seconds', true, 'course_detail'),
+            'characters_per_minute' => new external_value(PARAM_INT, 'characters_per_minute', true, 'course_detail'),
+            'key_count' => new external_value(PARAM_INT, 'key_count', true, 'course_detail'),
+            'keys_per_minute' => new external_value(PARAM_INT, 'keys per minutes', true),
+            'word_count' => new external_value(PARAM_INT, 'word_count', true, 'course_detail'),
+            'words_per_minute' => new external_value(PARAM_INT, 'words_per_minute', true, 'course_detail'),
+            'backspace_percent' => new external_value(PARAM_FLOAT, 'backspace_percent', true, 'course_detail'),
+            'copy_behaviour' => new external_value(PARAM_FLOAT, 'copy_behavior', true, 'course_detail'),
+            'copy_behavior' => new external_value(PARAM_FLOAT, 'copy_behavior', true, 'course_detail'),
+            'score' => new external_value(PARAM_FLOAT, 'score', true, 'course_detail'),
+        ];
+    }
 }
-
-

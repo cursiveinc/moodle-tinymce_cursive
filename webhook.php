@@ -25,12 +25,12 @@
 
 
 require(__DIR__ . '/../../../../../config.php');
-
+// require_login();
 // Set error log path.
 ini_set('error_log', __DIR__ . '/my-errors.log');
 
 ini_set('error_log', __DIR__ . '/my-errors.log');
-require(__DIR__ . '/../../../../../config.php');
+
 $errfile = __DIR__ . '/my-errors.log';
 
 file_put_contents($errfile, "Payload received" . PHP_EOL, FILE_APPEND);

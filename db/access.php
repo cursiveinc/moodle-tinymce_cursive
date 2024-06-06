@@ -25,19 +25,21 @@
 
 defined('MOODLE_INTERNAL') || die();
 $capabilities = [
-    'tiny_cursive/cursive:editsettings' => [
-        'captype' => 'read',
-        'contextlevel' => CONTEXT_MODULE,
+    'tiny/cursive:editsettings' => [
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_SYSTEM,
         'archetypes' => [
             'manager' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
         ],
 
     ],
-    'tiny_cursive/cursive:view' => [
+    'tiny/cursive:view' => [
         'captype' => 'read',
-        'contextlevel' => CONTEXT_MODULE,
+        'contextlevel' => CONTEXT_SYSTEM,
         'archetypes' => [
             'manager' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
         ],
 
     ],

@@ -43,18 +43,6 @@ $observers = [
         'callback' => '\tiny_cursive\observers::discussion_created',
         'internal' => true,
         'priority' => 9999,
-    ],
-    [
-        'eventname' => '\mod_assign\event\submission_created',
-        'callback' => '\tiny_cursive\observers::submission_created',
-        'internal' => true,
-        'priority' => 9999,
-    ],
-    [
-        'eventname' => '\mod_assign\event\assessable_submitted',
-        'callback' => '\tiny_cursive\observers::assessable_submitted',
-        'internal' => true,
-        'priority' => 9999,
-    ],
+    ]
 ];
 

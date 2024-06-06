@@ -39,7 +39,6 @@ class wrreportform extends moodleform {
      * Tiny cursive plugin report form.
      */
     public function definition() {
-        global $DB, $USER;
         // Start dropdowns of course, quiz and user email search field in mform.
 
         $mform = &$this->_form;
@@ -105,28 +104,5 @@ class wrreportform extends moodleform {
         }
 
         return $mdetail;
-    }
-
-    /**
-     * Tiny cursive plugin get all users.
-     *
-     * @param integer $courseid
-     * @return array
-     */
-    public function get_user($courseid) {
-        // Get users dropdown.
-        global $DB;
-        $udetail = [];
-        $udetail[0] = 'All Users';
-        if (!empty($courseid)) {
-            $users = $DB->get_records_sql("SELECT ue.id,u.id as userid,u.firstname,u.lastname FROM {enrol} e
-            INNER JOIN {user_enrolments} ue ON e.id = ue.enrolid
-            INNER JOIN {user} u ON u.id = ue.userid WHERE e.courseid = :courseid AND u.id != 1
-            ", ['courseid' => $courseid]);
-            foreach ($users as $user) {
-                $udetail[$user->userid] = $user->firstname . ' ' . $user->lastname;
-            }
-        }
-        return $udetail;
     }
 }

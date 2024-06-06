@@ -1,3 +1,10 @@
+/**
+ * @module     tiny_cursive/modal_functions
+ * @category TinyMCE Editor
+ * @copyright  CTI <info@cursivetechnology.com>
+ * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
+ */
+
 define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], function (
     $,
     AJAX,

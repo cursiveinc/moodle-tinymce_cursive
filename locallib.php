@@ -34,8 +34,8 @@
  * @param $limit
  * */
 function get_user_attempts_data($userid, $courseid, $moduleid, $orderby = 'id', $order = 'ASC', $perpage = 1, $limit = 5) {
-    $attempts = [];
     global $DB;
+    $attempts = [];
     if ($orderby == 'id') {
         $odby = 'u.id';
     }
@@ -80,7 +80,7 @@ LEFT JOIN {tiny_cursive_user_writing} uw ON uw.file_id =uf.id
         $totalcount = count($getdetailcount);
         $attempts .= " LIMIT $perpage , $limit ";
     }
-    $attempts;
+
     $res = $DB->get_records_sql($attempts);
     $resncount = ['count' => $totalcount, 'data' => $res];
     return $resncount;
@@ -100,8 +100,8 @@ LEFT JOIN {tiny_cursive_user_writing} uw ON uw.file_id =uf.id
  * @throws dml_exception
  */
 function get_user_writing_data($userid, $courseid, $moduleid, $orderby = 'id', $order = 'ASC', $perpage = '', $limit = '') {
-    $attempts = [];
     global $DB;
+    $attempts = [];
     if ($orderby == 'id') {
         $odby = 'u.id';
     }
@@ -164,8 +164,8 @@ function get_user_writing_data($userid, $courseid, $moduleid, $orderby = 'id', $
  * @throws dml_exception
  */
 function get_user_profile_data($userid, $courseid = 0) {
-    $attempts = [];
     global $DB;
+    $attempts = [];
     $attempts = "SELECT  sum(uw.total_time_seconds) as total_time,sum(uw.word_count) as word_count
 FROM {tiny_cursive_user_writing} uw
         INNER JOIN {tiny_cursive_files} uf
@@ -189,23 +189,11 @@ FROM {tiny_cursive_user_writing} uw
  * @throws dml_exception
  */
 function get_user_submissions_data($resourceid, $modulename, $cmid, $courseid = 0) {
-    global $CFG, $DB, $OUTPUT;
+    global $CFG, $DB;
     require_once($CFG->dirroot."/lib/editor/tiny/plugins/cursive/lib.php");
 
     $attempts = [];
     $userid = $resourceid;
-    // $attempts = "SELECT  uw.total_time_seconds ,uw.word_count ,uw.words_per_minute,
-    //                      uw.backspace_percent,uw.score,uw.copy_behavior,uf.resourceid , uf.modulename,uf.userid, uf.filename
-    //              FROM {tiny_cursive_user_writing} uw
-    //                   INNER JOIN {tiny_cursive_files} uf ON uw.file_id = uf.id
-    //              WHERE uf.userid = ". $resourceid ." AND uf.cmid = " . $cmid ." AND uf.modulename = '" . $modulename . "'";
-
-    // if ($courseid != 0) {
-    //     $attempts .= "  AND uf.courseid=$courseid";
-    // }
-
-    // $res = $DB->get_record_sql($attempts);
-
     $attempts = "SELECT  uw.total_time_seconds ,uw.word_count ,uw.words_per_minute,
         uw.backspace_percent,uw.score,uw.copy_behavior,uf.resourceid , uf.modulename,uf.userid, uw.file_id, uf.filename
 FROM {tiny_cursive_user_writing} uw
@@ -225,7 +213,8 @@ WHERE userid = ' . $resourceid . ' AND cmid = :cmid AND modulename = :modulename
 
         if ($filename) {
             $context = context_system::instance();
-            $data['filename'] = $filename->filename ?? '';
+            $filep=$CFG->dataroot."/temp/userdata/".$filename->filename;
+            $data['filename'] = file_exists($filep)?$filep:null; 
             $data['file_id'] = $filename->fileid ?? '';
         }
     }

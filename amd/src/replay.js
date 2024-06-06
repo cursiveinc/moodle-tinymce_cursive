@@ -1,3 +1,12 @@
+
+/**
+ * @module     tiny_cursive/replay
+ * @category TinyMCE Editor
+ * @copyright  CTI <info@cursivetechnology.com>
+ * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
+ */
+
+import {call as fetchJson} from 'core/ajax';
 export default class Replay {
     constructor(elementId, filePath, speed = 1, loop = false, controllerId) {
         console.log(filePath,elementId,controllerId);
@@ -16,7 +25,8 @@ export default class Replay {
         }
         this.loadJSON(filePath)
             .then((data) => {
-                this.logData = data;
+                var val=JSON.parse(data.data);
+                this.logData = val;
                 // support for Cursive Recorder extension files (and outdated Curisve file formats)
                 // logData should be a list of dictionaries for this to work properly
                 if ("data" in this.logData) {
@@ -67,20 +77,14 @@ export default class Replay {
     }
 
     loadJSON(filePath) {
-        return fetch(filePath)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to fetch JSON file');
-                }
-                if (response.headers.get('content-length') === '0') {
-                    throw new Error('Empty JSON response');
-                }
-                let response_json = response.json();
-                return response_json;
-            })
-            .catch(error => {
-                throw new Error('Error loading JSON file: ' + error.message);
-            });
+     return fetchJson([{
+            methodname: 'cursive_get_reply_json',
+            args: {
+                filepath: filePath,
+            },
+        }])[0].done(response=>{
+            return response;
+        }).fail(error =>  { throw new Error('Error loading JSON file: '+error.message); });
     }
 
     // call this to make a "start" or "start over" function

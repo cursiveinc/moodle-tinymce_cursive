@@ -51,11 +51,13 @@ class upload_student_json_cron extends \core\task\scheduled_task {
      */
     public function execute() {
         global $CFG, $DB;
+        require_once($CFG->dirroot . '/lib/editor/tiny/plugins/cursive/lib.php');
+      
         $table = 'tiny_cursive_files';
         $sql = "select * from {tiny_cursive_files} where timemodified > uploaded";
         $filerecords = $DB->get_records_sql($sql);
-        $dirname = $CFG->dirroot . '/lib/editor/tiny/plugins/cursive/userdata/';
-        require_once($CFG->dirroot . '/lib/editor/tiny/plugins/cursive/lib.php');
+        $dirname = $CFG->dataroot . '/temp/userdata/';
+       
         foreach ($filerecords as $filerecord) {
             $filepath = $dirname . $filerecord->filename;
             $uploaded = upload_multipart_record($filerecord, $filepath);

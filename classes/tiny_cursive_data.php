@@ -35,7 +35,6 @@ require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 require_once($CFG->dirroot . '/mod/quiz/attemptlib.php');
 
 
-use quiz;
 use stdClass;
 
 /**
@@ -62,7 +61,6 @@ class tiny_cursive_data {
         $udetail = [];
         $udetail2 = [];
         $courseid = (int)$params['courseid'];
-        $quizid = (int)$params['quizid'];
         $users = $DB->get_records_sql("SELECT ue.id as enrolid,u.id as id,u.firstname,u.lastname FROM {enrol} e
         INNER JOIN {user_enrolments} ue ON e.id = ue.enrolid
         INNER JOIN {user} u ON u.id = ue.userid WHERE e.courseid = :courseid AND u.id != 1", ['courseid' => $courseid]);

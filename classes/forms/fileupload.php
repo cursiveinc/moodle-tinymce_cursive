@@ -17,38 +17,33 @@
 /**
  * Tiny cursive plugin.
  *
- * @package tiny_cursive
- * @copyright  CTI <info@cursivetechnology.com>
- * @author eLearningstack
+ * @package   tiny_cursive
+ * @copyright CTI <info@cursivetechnology.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace MoodleHQ\editor\tiny\plugins\cursive\classes\forms;
+namespace editor_tiny\cursive\forms;
 use moodleform;
 
 defined('MOODLE_INTERNAL') || die;
+
 require_once($CFG->libdir . '/formslib.php');
 
 /**
- * Tiny cursive plugin.
+ * Form for file upload in Tiny cursive plugin.
  *
- * @package tiny_cursive
- * @copyright  CTI <info@cursivetechnology.com>
- * @author eLearningstack
+ * @package   editor_tiny
+ * @copyright CTI <info@cursivetechnology.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class fileupload extends moodleform {
+class FileUpload extends moodleform {
+
     /**
-     * Tiny cursive plugin.
+     * Form definition.
      *
-     * @package tiny_cursive
-     * @copyright  CTI <info@cursivetechnology.com>
-     * @author eLearningstack
-     * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+     * @return void
      */
     public function definition() {
-        global $DB, $USER;
-
         $mform = $this->_form; // Don't forget the underscore!
 
         $mform->addElement('hidden', 'draftid', ''); // Add elements to your form.

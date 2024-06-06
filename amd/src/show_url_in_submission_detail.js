@@ -1,6 +1,6 @@
 
 /**
- * @module     tiny_cursive/plugin
+ * @module     tiny_cursive/show_url_in_submission_detail
  * @category TinyMCE Editor
  * @copyright  CTI <info@cursivetechnology.com>
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>

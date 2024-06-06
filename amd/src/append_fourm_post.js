@@ -1,3 +1,10 @@
+/**
+ * @module     tiny_cursive/append_fourm_post
+ * @category TinyMCE Editor
+ * @copyright  CTI <info@cursivetechnology.com>
+ * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
+ */
+
 define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], function(
     $,
     AJAX,
@@ -84,7 +91,8 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                     }
                     var filepath ='';
                     if (data.data.filename){
-                        var filepath = M.cfg.wwwroot+'/lib/editor/tiny/plugins/cursive/userdata/'+ data.data.filename;
+                        var filepath = data.data.filename;
+                        console.log(filepath);
                     }
                     if (filepath){
                         var score = parseFloat(data.data.score);
@@ -134,6 +142,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
             });
             $('#page-mod-forum-view').find("article").get().forEach(function(entry) {
 
+              
 
                 var ids = $("#" + entry.id).data("post-id");
                 var cmid = 0;

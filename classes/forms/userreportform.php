@@ -39,7 +39,6 @@ class userreportform extends moodleform {
      * Tiny cursive plugin user report form.
      */
     public function definition() {
-        global $DB, $USER;
         // Start dropdowns of course, quiz and user email search field in mform.
 
         $mform = &$this->_form;

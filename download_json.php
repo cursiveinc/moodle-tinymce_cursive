@@ -32,17 +32,31 @@ $cmid = optional_param('cmid', 0, PARAM_INT);
 $fname = optional_param('fname', '', PARAM_RAW);
 
 $filename = '';
-$dirname = __DIR__ . '/userdata/';
+$dirname = $CFG->dataroot . '/temp/userdata/';
 if ($fname) {
     $filename = $dirname . $fname;
+    if(!file_exists($filename)){
+        $url = new moodle_url('/lib/editor/tiny/plugins/cursive/writing_report.php?userid='.$userid);
+        return redirect($url, get_string('filenotfound', 'tiny_cursive'));
+    }
 } else {
     $filename = $dirname . $userid . '_' . $resourceid . '_' . $cmid . '_attempt' . '.json';
 }
 
-header("Content-Description: File Transfer");
-header("Content-Type: application/octet-stream");
-header("Content-Disposition: attachment; filename=\"" . basename($filename) . "\"");
-flush();
-$inp = file_get_contents($filename);
-echo $inp;
-die();
+$context = \CONTEXT_SYSTEM::instance();
+// Use csv_export_writer.
+$haseditcapability = has_capability('tiny/cursive:view', $context);
+
+if ($haseditcapability) {
+
+    header("Content-Description: File Transfer");
+    header("Content-Type: application/octet-stream");
+    header("Content-Disposition: attachment; filename=\"" . basename($filename) . "\"");
+    flush();
+    $inp = file_get_contents($filename);
+    echo $inp;
+    die();
+} else {
+    $url = new moodle_url('/course/index.php');
+    return redirect($url, get_string('warning', 'tiny_cursive'));
+}

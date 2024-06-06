@@ -29,11 +29,17 @@ require_once($CFG->libdir . "/csvlib.class.php");
 
 require_once('lib.php');
 
-// Use csv_export_writer.
-
 $courseid = optional_param('courseid', 0, PARAM_INT);
 $userid = optional_param('userid', 0, PARAM_INT);
 $moduleid = optional_param('moduleid', 0, PARAM_INT);
+// Use csv_export_writer.
+$context = \CONTEXT_SYSTEM::instance();
+$haseditcapability = has_capability('tiny/cursive:view', $context);
+
+if (!$haseditcapability) {
+    return redirect(new moodle_url('/course/index.php'), get_string('warning', 'tiny_cursive'));
+}
+
 global $CFG, $DB, $OUTPUT;
 $report = [];
 $headers = [

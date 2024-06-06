@@ -1,5 +1,5 @@
 /**
- * @module     tiny_cursive/plugin
+ * @module     tiny_cursive/append_participants_table
  * @category TinyMCE Editor
  * @copyright  CTI <info@cursivetechnology.com>
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>

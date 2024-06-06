@@ -1,3 +1,10 @@
+/**
+ * @module     tiny_cursive/show_url_in_quiz_detail
+ * @category TinyMCE Editor
+ * @copyright  CTI <info@cursivetechnology.com>
+ * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
+ */
+
 define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], function (
     $,
     AJAX,
@@ -50,8 +57,8 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
 
             let cmid = parm.searchParams.get('cmid');
             if (!cmid) {
-                var firstHref = $('a[href*="/mod/quiz/review.php"]').first().attr('href');
-                if (firstHref.length > 0) {
+                var firstHref = $('a[href*="question/bank/editquestion/question.php"]').first().attr('href');
+                if (firstHref && firstHref.length > 0) {
                     cmid = firstHref.match(/cmid=(\d+)/)[1];
                 }
             }
@@ -98,7 +105,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                         }
                         var filepath = '';
                         if (data.data.filename) {
-                            filepath = M.cfg.wwwroot + '/lib/editor/tiny/plugins/cursive/userdata/' + data.data.filename;
+                            filepath = data.data.filename;
                         }
                         var score = parseInt(data.data.score);
                         var icon = 'fa fa-circle-o';

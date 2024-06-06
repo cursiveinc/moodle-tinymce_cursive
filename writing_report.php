@@ -43,8 +43,15 @@ if (\core\session\manager::is_loggedinas()) {
     die;
 }
 
+$context = \CONTEXT_SYSTEM::instance();
+$haseditcapability = has_capability('tiny/cursive:view', $context);
+
+if (!$haseditcapability) {
+    return redirect(new moodle_url('/course/index.php'), get_string('warning', 'tiny_cursive'));
+}
 $userid = optional_param('userid', 0, PARAM_INT);
 $courseid = optional_param('courseid', 0, PARAM_INT);
+
 $username = $userid;
 $PAGE->requires->jquery_plugin('jquery');
 $PAGE->requires->js_call_amd('tiny_cursive/cursive_writing_reports', 'init', []);

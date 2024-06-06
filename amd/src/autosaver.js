@@ -1,7 +1,5 @@
-
-
 /**
- * @module     tiny_cursive/plugin
+ * @module     tiny_cursive/autosaver
  * @category TinyMCE Editor
  * @copyright  CTI <info@cursivetechnology.com>
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
@@ -110,11 +108,18 @@ export const register = (editor) => {
             cmid=parm.searchParams.get('cmid');
             recourceId=parm.searchParams.get('attempt');
         }
-        if(recourceId===null){
-            recourceId=0;
-        }
+        // if(recourceId===null){
+        //     recourceId=0;
+        // }
         if(cmid===null){ cmid=0;}
         if (ur.includes("forum")){
+            if(reply=parm.searchParams.get('reply')){
+                cmid=reply; // Find cmid using reply id.
+            }else if(parm.searchParams.get('edit')){
+                recourceId=parm.searchParams.get('edit'); // Find cmid using resouceid id.
+                console.log("here: ", recourceId);           
+            };
+            
             modulename="forum";
         }
         if (ur.includes("assign")){

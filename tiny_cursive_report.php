@@ -31,6 +31,13 @@ require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 require_once('classes/forms/userreportform.php');
 require_once('locallib.php');
 
+require_login();
+$context = \CONTEXT_SYSTEM::instance();
+$haseditcapability = has_capability('tiny/cursive:view', $context);
+
+if (!$haseditcapability) {
+    return redirect(new moodle_url('/course/index.php'), get_string('warning', 'tiny_cursive'));
+}
 
 $courseid = optional_param('coursename', 0, PARAM_INT);
 $username = optional_param('username', 0, PARAM_INT);

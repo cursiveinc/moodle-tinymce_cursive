@@ -1,5 +1,5 @@
 /**
- * @module     tiny_cursive
+ * @module     tiny_cursive/filter_writing_report
  * @category TinyMCE Editor
  * @copyright  CTI <info@cursivetechnology.com>
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>

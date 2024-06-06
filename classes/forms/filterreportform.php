@@ -43,7 +43,7 @@ class filterreportform extends moodleform {
      * @author eLearningstack
      */
     public function definition() {
-        global $DB, $USER;
+        global $DB;
         $courses = $DB->get_records('course');
         $options = [];
 

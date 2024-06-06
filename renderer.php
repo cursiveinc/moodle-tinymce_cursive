@@ -88,14 +88,19 @@ class tiny_cursive_renderer extends plugin_renderer_base {
         // Modal body.
         $content .= html_writer::start_div('modal-body');
         $content .= html_writer::start_div('position');
+
+        if (isset($user->total_time_seconds) && $user->total_time_seconds > 0) {
+            // Format the time using the date function.
+            $formattedTime = date('H:i:s', mktime(0, 0, $user->total_time_seconds));
+        } else {
+            // Handle the case when there is no time data.
+            $formattedTime = '00:00:00';
+        }
+        
+        // Use html_writer::tag to create the content with the formatted time.
         $content .= html_writer::tag(
             'p',
-            ' ' . get_string('total_time', 'tiny_cursive') . '' .
-            sprintf(
-                '%02d:%02d',
-                ($user->total_time_seconds / 60 % 60),
-                $user->total_time_seconds % 60
-            )
+            ' ' . get_string('total_time', 'tiny_cursive') . ': ' . $formattedTime
         );
         $content .= html_writer::end_div();
         $content .= html_writer::start_div('position');
@@ -111,8 +116,11 @@ class tiny_cursive_renderer extends plugin_renderer_base {
 
         // Modal footer.
         $content .= html_writer::start_div('modal-footer');
-        $content .= html_writer::tag('button', get_string('close', 'tiny_cursive'),
-            ['class' => 'modal-close btn btn-primary', 'data-dismiss' => 'modal']);
+        $content .= html_writer::tag(
+            'button',
+            get_string('close', 'tiny_cursive'),
+            ['class' => 'modal-close btn btn-primary', 'data-dismiss' => 'modal']
+        );
         $content .= html_writer::end_div();
 
         // Close modal elements.
@@ -140,8 +148,11 @@ class tiny_cursive_renderer extends plugin_renderer_base {
         $content .= html_writer::tag('div', 'Copy Behavior: ' . $user->copy_behavior, ['class' => 'position']);
         $content .= html_writer::end_div();
         $content .= html_writer::start_div('modal-footer');
-        $content .= html_writer::tag('button', get_string('close', 'tiny_cursive'),
-            ['class' => 'modal-close btn btn-primary', 'data-dismiss' => 'modal']);
+        $content .= html_writer::tag(
+            'button',
+            get_string('close', 'tiny_cursive'),
+            ['class' => 'modal-close btn btn-primary', 'data-dismiss' => 'modal']
+        );
         $content .= html_writer::end_div();
         $content .= html_writer::end_div();
         $content .= html_writer::end_div();
@@ -163,12 +174,15 @@ class tiny_cursive_renderer extends plugin_renderer_base {
         $content .= html_writer::start_div('modal-content');
         $content .= html_writer::tag('div', 'Playback Video', ['class' => 'modal-header']);
         $content .= html_writer::start_div('modal-body');
-        $content .= html_writer::start_div('div', ['id' => 'output_playback_'.$user->attemptid]);
+        $content .= html_writer::start_div('div', ['id' => 'output_playback_' . $user->attemptid]);
         $content .= html_writer::end_div();
         $content .= html_writer::end_div();
         $content .= html_writer::start_div('modal-footer');
-        $content .= html_writer::tag('button', get_string('close', 'tiny_cursive'),
-            ['class' => 'modal-close btn btn-primary', 'data-dismiss' => 'modal']);
+        $content .= html_writer::tag(
+            'button',
+            get_string('close', 'tiny_cursive'),
+            ['class' => 'modal-close btn btn-primary', 'data-dismiss' => 'modal']
+        );
         $content .= html_writer::end_div();
         $content .= html_writer::end_div();
         $content .= html_writer::end_div();
@@ -191,7 +205,7 @@ class tiny_cursive_renderer extends plugin_renderer_base {
      * @throws moodle_exception
      */
     public function timer_report($users, $courseid, $page = 0, $limit = 10, $baseurl = '') {
-        global $CFG, $OUTPUT;
+        global $CFG;
         $totalcount = $users['count'];
         $data = $users['data'];
         $table = new html_table();
@@ -216,7 +230,7 @@ class tiny_cursive_renderer extends plugin_renderer_base {
             $content = $this->get_html_modal($user, $getmodulename->name);
             $scorecontent = $this->get_html_score_modal($user, $courseid > 0 ? $getmodulename->name : 'Score');
             $playbackcontent = $this->get_playback_modal($user, $courseid > 0 ? $getmodulename->name : 'Playback Video');
-            $filepath = urlencode($CFG->wwwroot . '/lib/editor/tiny/plugins/cursive/userdata/' . $user->filename);
+            $filepath = file_exists($CFG->dataroot . '/temp/userdata/' . $user->filename)?urlencode($CFG->dataroot . '/temp/userdata/' . $user->filename):null;
             $row = [];
             $row[] = $user->fileid;
             $row[] = $user->firstname ?? '' . ' ' . $user->lastname ?? '';
@@ -224,16 +238,16 @@ class tiny_cursive_renderer extends plugin_renderer_base {
             $row[] = $getmodulename->name;
             $row[] = date("l jS \of F Y h:i:s A", $user->timemodified);
             $row[] = '<a data-filepath ="' . $filepath . '" data-id=playback_' . $user->attemptid . '
-href ="#" class = "video_playback_icon">
-<i class="fa fa fa-circle-play"
-style="font-size:24px;color:black" aria-hidden="true"
-style = "padding-left:25px; font-size:x-large;"></i>
-</a>' . $playbackcontent;
+            href ="#" class = "video_playback_icon">
+            <i class="fa fa fa-circle-play"
+            style="font-size:24px;color:black" aria-hidden="true"
+            style = "padding-left:25px; font-size:x-large;"></i>
+            </a>' . $playbackcontent;
 
-            $row[] = '<a data-id=' . $user->attemptid . ' href = "#" class="popup_item">
-<i class="fa fa-area-chart" style="font-size:24px;color:black"
-aria-hidden="true" style = "padding-left:25px; font-size:x-large;"></i>
-</a>' . $content;
+                        $row[] = '<a data-id=' . $user->attemptid . ' href = "#" class="popup_item">
+            <i class="fa fa-area-chart" style="font-size:24px;color:black"
+            aria-hidden="true" style = "padding-left:25px; font-size:x-large;"></i>
+            </a>' . $content;
 
             $row[] = "<a data-id=score" . $user->attemptid . "
             href ='#' class = 'link_icon'>" . $linkicon . "</a>" . $scorecontent;
@@ -242,6 +256,7 @@ aria-hidden="true" style = "padding-left:25px; font-size:x-large;"></i>
                 new moodle_url('/lib/editor/tiny/plugins/cursive/download_json.php', [
                     'fname' => $user->filename,
                     'quizid' => 2,
+                    'user_id' => $user->usrid
                 ]),
                 get_string('download', 'tiny_cursive'),
                 [
@@ -254,7 +269,7 @@ aria-hidden="true" style = "padding-left:25px; font-size:x-large;"></i>
             $table->data[] = $row;
         };
         echo html_writer::table($table);
-        echo $OUTPUT->paging_bar($totalcount, $page, $limit, $baseurl);
+        echo $this->output->paging_bar($totalcount, $page, $limit, $baseurl);
     }
 
     /**
@@ -271,42 +286,59 @@ aria-hidden="true" style = "padding-left:25px; font-size:x-large;"></i>
      * @throws dml_exception
      * @throws moodle_exception
      */
-    public function user_writing_report($users, $userprofile, $username, $page = 0, $limit = 5, $baseurl = '') {
-        global $CFG, $DB, $OUTPUT;
-        require_once($CFG->dirroot."/lib/editor/tiny/plugins/cursive/lib.php");
+    public function user_writing_report($users, $userprofile, $userid, $page = 0, $limit = 5, $baseurl = '') {
+        global $CFG, $DB;
+        require_once ($CFG->dirroot . "/lib/editor/tiny/plugins/cursive/lib.php");
         echo get_string('total_word', 'tiny_cursive') . " $userprofile->word_count</br>";
-        $seconds = $userprofile->total_time;
-        $secs = $seconds % 60;
-        $hrs = $seconds / 60;
-        $mins = $hrs % 60;
-        $hrs = $hrs / 60;
-        print (get_string('total_time', 'tiny_cursive') . "" . (int)$hrs . "h:" . (int)$mins . "m:" . (int)$secs) . "s</br>";
-        $avgwords = 0;
-        if ($userprofile->total_time > 0) {
 
+        if (isset($userprofile->total_time) && $userprofile->total_time > 0) {
+            $seconds = $userprofile->total_time;
+        
+            // Create a DateInterval from the total seconds.
+            $interval = new DateInterval('PT' . $seconds . 'S');
+        
+            // Create a DateTime object and add the interval to it.
+            $datetime = new DateTime('@0');
+            $datetime->add($interval);
+        
+            // Extract hours, minutes, and seconds.
+            $hrs = $datetime->format('G'); // 'G' is used for 24-hour format without leading zeros.
+            $mins = $datetime->format('i'); // 'i' is used for minutes with leading zeros.
+            $secs = $datetime->format('s'); // 's' is used for seconds with leading zeros.
+        
+            print(get_string('total_time', 'tiny_cursive') . ": " . (int)$hrs . "h : " . (int)$mins . "m : " . (int)$secs . "s</br>");
+        
+            // Calculate average words per minute if total time is greater than zero.
             $avgwords = round($userprofile->word_count / ($userprofile->total_time / 60));
+        } else {
+            // Handle the case when there is no time data.
+            print(get_string('total_time', 'tiny_cursive') . " 0h:0m:0s</br>");
+            $avgwords = 0;
         }
 
         echo get_string('average_min', 'tiny_cursive') . " " . $avgwords . "</br></br>";
-        $courses = $DB->get_records_sql("select c.fullname,c.id from {course} c
-      INNER JOIN {enrol} en ON en.courseid=c.id
-      INNER JOIN {user_enrolments} ue ON ue.enrolid=en.id
-      where ue.userid=$username");
+        $courses = $DB->get_records_sql("
+        SELECT c.fullname, c.id, u.id AS userid, u.firstname, u.lastname
+        FROM {course} c
+        INNER JOIN {enrol} en ON en.courseid = c.id
+        INNER JOIN {user_enrolments} ue ON ue.enrolid = en.id
+        INNER JOIN {user} u ON u.id = ue.userid
+        WHERE ue.userid = :userid", ['userid' => $userid]);
         $options = [];
 
-        echo"<div class='dropdown mb-4' >";
+        echo "<div class='dropdown mb-4' >";
         echo '<button class="btn btn-secondary dropdown-toggle" type="button"
-id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-aria-expanded="false">Select Course</button>';
-        $userid = 0;
+        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+        aria-expanded="false">Select Course</button>';
+        
         echo '<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">';
-        $baseurl = $CFG->wwwroot . '/lib/editor/tiny/plugins/cursive/my_writing_report.php?userid=' . $userid . '&courseid=';
-        echo" <a class='dropdown-item' href=$baseurl>All Courses</a>";
+        $baseurl = $CFG->wwwroot . '/lib/editor/tiny/plugins/cursive/my_writing_report.php';
+        echo " <a class='dropdown-item' href=$baseurl?userid=$userid>All Courses</a>";
         foreach ($courses as $course) {
-            echo " <a class='dropdown-item' href=$baseurl&courseid=$course->id >$course->fullname</a>";
+            echo " <a class='dropdown-item' href=$baseurl?userid=$course->userid&courseid=$course->id>$course->fullname</a>";
         }
         echo '</div>';
-        echo"</div >";
+        echo "</div >";
         $table = new html_table();
         $table->id = 'writing_report_table';
 
@@ -322,66 +354,69 @@ aria-expanded="false">Select Course</button>';
             '',
         ];
         foreach ($data as $user) {
-            $firstfile = $DB->get_record_sql(
+
+            $firstfiles = $DB->get_records_sql(
                 'select id from {tiny_cursive_files} where userid =:userid ORDER BY id ASC',
                 ['userid' => $user->usrid]
             );
+            
+                $courseid = $user->courseid;
+                $courseid = $courseid > 0 ? $courseid : '';
+                $cm = null;
 
-            $courseid = $user->courseid;
-            $courseid = $courseid > 0 ? $courseid : '';
-            $cm = null;
+                $modinfo = ($courseid != '') ? get_fast_modinfo($courseid) : null;
+                $cm = $modinfo != null ? $modinfo->get_cm($user->cmid) : null;
+                $getmodulename = $cm != null ? get_coursemodule_from_id($cm->modname, $user->cmid, 0, false, MUST_EXIST) : 0;
 
-            $modinfo = ($courseid != '') ? get_fast_modinfo($courseid) : null;
-            $cm = $modinfo != null ? $modinfo->get_cm($user->cmid) : null;
-            $getmodulename = $cm != null ? get_coursemodule_from_id($cm->modname, $user->cmid, 0, false, MUST_EXIST) : 0;
+                $scorecontent = $this->get_html_score_modal($user, $courseid > 0 ? $getmodulename->name : 'Score');
+              foreach ($firstfiles as $firstfile) {
+                if ($firstfile->id == $user->fileid) {
+                    $linkicon = $this->get_link_icon(200);
+                } else {
+                    $linkicon = $this->get_link_icon($user->score);
+                }}
+                $row = [];
+                $content = $this->get_html_modal($user, $courseid > 0 ? $getmodulename->name : 'Stats');
+                $playbackcontent = $this->get_playback_modal($user, $courseid > 0 ? $getmodulename->name : 'Playback Video');
 
-            $scorecontent = $this->get_html_score_modal($user, $courseid > 0 ? $getmodulename->name : 'Score');
+                // Saving the file to moodledata.
+                $context = context_system::instance();
 
-            if ($firstfile->id == $user->fileid) {
-                $linkicon = $this->get_link_icon(200);
-            } else {
-                $linkicon = $this->get_link_icon($user->score);
-            }
-            $row = [];
-            $content = $this->get_html_modal($user, $courseid > 0 ? $getmodulename->name : 'Stats');
-            $playbackcontent = $this->get_playback_modal($user, $courseid > 0 ? $getmodulename->name : 'Playback Video');
+                // Creat URL of the json file from moodledata.
+                $filep=$CFG->dataroot . '/temp/userdata/' . $user->filename;
+                $filepath = file_exists($filep)?$filep:null;
+                $row[] = $getmodulename ? $getmodulename->name : '';
+                $row[] = date("l jS \of F Y h:i:s A", $user->timemodified);
+                $row[] = '<a data-filepath ="' . $filepath . '" data-id=playback_' . $user->attemptid . '
+                href ="#" class = "video_playback_icon">
+                <i class="fa fa fa-circle-play"
+                style="font-size:24px;color:black" aria-hidden="true"
+                style = "padding-left:25px; font-size:x-large;"></i>
+                </a>' . $playbackcontent;
 
-            // Saving the file to moodledata.
-            $context = context_system::instance();
+                                $row[] = '<a data-id=' . $user->attemptid . ' href = "#" class="popup_item">
+                <i class="fa fa-area-chart" style="font-size:24px;color:black"
+                aria-hidden="true" style = "padding-left:25px; font-size:x-large;"></i>
+                </a>' . $content;
 
-            // Creat URL of the json file from moodledata.
-            $filepath = $CFG->wwwroot. '/lib/editor/tiny/plugins/cursive/userdata/' . $user->filename;
-            $row[] = $getmodulename ? $getmodulename->name : '';
-            $row[] = date("l jS \of F Y h:i:s A", $user->timemodified);
-            $row[] = '<a data-filepath ="'.$filepath.'" data-id=playback_' . $user->attemptid . '
-href ="#" class = "video_playback_icon">
-<i class="fa fa fa-circle-play"
-style="font-size:24px;color:black" aria-hidden="true"
-style = "padding-left:25px; font-size:x-large;"></i>
-</a>' . $playbackcontent;
+                $row[] = "<a data-id=score" . $user->attemptid . "
+                href ='#' class = 'link_icon'>" . $linkicon . "</a>" . $scorecontent;
 
-            $row[] = '<a data-id=' . $user->attemptid . ' href = "#" class="popup_item">
-<i class="fa fa-area-chart" style="font-size:24px;color:black"
-aria-hidden="true" style = "padding-left:25px; font-size:x-large;"></i>
-</a>' . $content;
-
-            $row[] = "<a data-id=score" . $user->attemptid . "
-            href ='#' class = 'link_icon'>" . $linkicon . "</a>" . $scorecontent;
-
-            $row[] = html_writer::link(
-                new moodle_url('/lib/editor/tiny/plugins/cursive/download_json.php', [
-                    'fname' => $user->filename,
-                    'quizid' => 2,
-                ]),
-                get_string('download', 'tiny_cursive'),
-                [
-                    'class' => 'btn btn-primary',
-                    'style' => 'margin-right:50px;',
-                    'aria-describedby' => get_string('download_attempt_json', 'tiny_cursive'),
-                    'role' => 'button',
-                ]
-            );
-            $table->data[] = $row;
+                $row[] = html_writer::link(
+                    new moodle_url('/lib/editor/tiny/plugins/cursive/download_json.php', [
+                        'fname' => $user->filename,
+                        'quizid' => 2,
+                        'user_id' => $user->usrid
+                    ]),
+                    get_string('download', 'tiny_cursive'),
+                    [
+                        'class' => 'btn btn-primary',
+                        'style' => 'margin-right:50px;',
+                        'aria-describedby' => get_string('download_attempt_json', 'tiny_cursive'),
+                        'role' => 'button',
+                    ]
+                );
+                $table->data[] = $row;
         }
         echo html_writer::table($table);
 
@@ -424,7 +459,7 @@ aria-hidden="true" style = "padding-left:25px; font-size:x-large;"></i>
                     }
                 });
             </script>";
-        echo $OUTPUT->paging_bar($totalcount, $page, $limit, $baseurl);
+        $this->output->paging_bar($totalcount, $page, $limit, $baseurl);
     }
 }
 

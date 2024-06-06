@@ -1,5 +1,5 @@
 /**
- * @module     tiny_cursive/plugin
+ * @module     tiny_cursive/show_url_in_submission_grade
  * @category TinyMCE Editor
  * @copyright  CTI <info@cursivetechnology.com>
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
@@ -103,7 +103,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
 
                     var filepath ='';
                     if (data.data.filename){
-                        var filepath = M.cfg.wwwroot+'/lib/editor/tiny/plugins/cursive/userdata/'+ data.data.filename;
+                        var filepath =data.data.filename;
                     }
                     var score = parseFloat(data.data.score);
                     var icon = 'fa fa-circle-o';
@@ -125,7 +125,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                             color = 'font-size:24px;color:black';
                         }
                     }
-                    var html= '<div class="justify-content-center d-flex">' +
+                    var html= '<div class="justify-content-center d-flex py-3">' +
                         '<button onclick="popup_item(' + userid + ')" data-id=' + userid + ' class="mr-2 ' + chart + '" style="' + st + '"></button>' +
                         '<a href="#" onclick="video_playback(' + userid + ', \'' + filepath + '\')" data-filepath="' +
                             filepath + '" data-id="playback_' + userid + '" class="mr-2 video_playback_icon ' + video + '" style="' + st + '"></a>' +

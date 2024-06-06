@@ -125,6 +125,24 @@ $functions = [
         'type' => 'read',
         'ajax' => true,
     ],
+    'cursive_store_user_writing' => [
+        'classname' => 'cursive_json_func_data',
+        'methodname' => 'store_user_writing',
+        'classpath' => '/lib/editor/tiny/plugins/cursive/externallib.php',
+        'description' => 'Storing User Writings',
+        'type' => 'write',
+        'ajax' => true,
+        'services' => [MOODLE_OFFICIAL_MOBILE_SERVICE],
+    ],
+    'cursive_get_reply_json' => [
+        'classname' => 'cursive_json_func_data',
+        'methodname' => 'cursive_get_reply_json',
+        'classpath' => '/lib/editor/tiny/plugins/cursive/externallib.php',
+        'description' => 'return the stored json file',
+        'type' => 'read',
+        'ajax' => true,
+        'services' => [MOODLE_OFFICIAL_MOBILE_SERVICE],
+    ],
 ];
 
 // We define the services to install as pre-build services.
