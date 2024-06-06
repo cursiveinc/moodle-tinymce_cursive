@@ -217,6 +217,8 @@ WHERE userid = ' . $resourceid . ' AND cmid = :cmid AND modulename = :modulename
             $data['filename'] = file_exists($filep)?$filep:null; 
             $data['file_id'] = $filename->fileid ?? '';
         }
+    } else{
+        $data['filename'] = $CFG->dataroot."/temp/userdata/".$data['filename'];
     }
 
     $data = (array)$data;
