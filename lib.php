@@ -156,7 +156,7 @@ function tiny_cursive_myprofile_navigation(core_user\output\myprofile\tree $tree
  * @return bool|string
  * @throws dml_exception
  */
-function upload_multipart_record($filerecord, $filenamewithfullpath) {
+function upload_multipart_record($filerecord, $filenamewithfullpath,$wstoken) {
     global $CFG;
 
     $moodleurl = get_config('tiny_cursive', 'host_url');
@@ -174,6 +174,7 @@ function upload_multipart_record($filerecord, $filenamewithfullpath) {
             'file' => new CURLFILE($filenamewithfullpath),
             'resource_id' => $filerecord->id,
             'person_id' => $filerecord->userid,
+            'ws_token' => $wstoken,
         ]);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             'Authorization: Bearer ' . $token,
