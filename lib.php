@@ -139,7 +139,8 @@ function tiny_cursive_myprofile_navigation(core_user\output\myprofile\tree $tree
     if (isguestuser() || !isloggedin()) {
         return;
     }
-    if (\core\session\manager::is_loggedinas() || $USER->id != $user->id) {
+    // || $USER->id != $user->id
+    if (\core\session\manager::is_loggedinas() ) {
         return;
     }
     $url = new moodle_url('/lib/editor/tiny/plugins/cursive/my_writing_report.php',

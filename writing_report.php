@@ -46,11 +46,12 @@ if (\core\session\manager::is_loggedinas()) {
 $context = \CONTEXT_SYSTEM::instance();
 $haseditcapability = has_capability('tiny/cursive:view', $context);
 
-if (!$haseditcapability) {
-    return redirect(new moodle_url('/course/index.php'), get_string('warning', 'tiny_cursive'));
-}
 $userid = optional_param('userid', 0, PARAM_INT);
 $courseid = optional_param('courseid', 0, PARAM_INT);
+
+if (!$haseditcapability ) {
+    return redirect(new moodle_url('/course/index.php'), get_string('warning', 'tiny_cursive'));
+}
 
 $username = $userid;
 $PAGE->requires->jquery_plugin('jquery');

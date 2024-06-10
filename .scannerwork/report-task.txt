@@ -1,0 +1,6 @@
+projectKey=cursive
+serverUrl=http://localhost:9001
+serverVersion=10.5.1.90531
+dashboardUrl=http://localhost:9001/dashboard?id=cursive
+ceTaskId=506e0a25-345c-4838-ad1a-e653a7409134
+ceTaskUrl=http://localhost:9001/api/ce/task?id=506e0a25-345c-4838-ad1a-e653a7409134

@@ -39,23 +39,46 @@ if (\core\session\manager::is_loggedinas()) {
     die;
 }
 
-$context = \CONTEXT_SYSTEM::instance();
-$haseditcapability = has_capability('tiny/cursive:view', $context);
-
-if (!$haseditcapability) {
-    return redirect(new moodle_url('/course/index.php'), get_string('warning', 'tiny_cursive'));
+$userid = optional_param('userid',0,PARAM_INT);
+if(optional_param('id',0,PARAM_INT)) {
+    $userid=optional_param('id', 0, PARAM_INT);
 }
 
-$userid = optional_param('userid',$USER->id,PARAM_INT);
-
-$PAGE->requires->js_call_amd('tiny_cursive/key_logger', 'init', [1]);
-$PAGE->requires->jquery_plugin('jquery');
-$PAGE->requires->js_call_amd('tiny_cursive/cursive_writing_reports', 'init', []);
 $orderby = optional_param('orderby', 'id', PARAM_RAW);
 $order = optional_param('order', 'ASC', PARAM_RAW);
 $page = optional_param('page', 0, PARAM_INT);
 $courseid = optional_param('courseid', 0, PARAM_INT);
+
+
+if(optional_param('course', 0, PARAM_INT) && !is_siteadmin($USER->id) && optional_param('id',0,PARAM_RAW) !== $USER->id) {
+    $courseid=optional_param('course', 0, PARAM_INT);
+}
 $limit = 5;
+$isvalid = false;
+
+$context = \CONTEXT_SYSTEM::instance();
+$haseditcapability = has_capability('tiny/cursive:view', $context);
+
+if($courseid) {
+
+$role=$DB->get_record('role',['shortname' => 'editingteacher']);
+$roleid=$role->id;
+$coursecontext= context_course::instance($courseid);
+$isvalid=$DB->get_records('role_assignments', ['userid' => $USER->id, 'roleid' => $roleid,'contextid' => $coursecontext->id]);
+}
+
+
+if (!$haseditcapability && $userid != $USER->id && !$isvalid) {
+
+    return redirect(new moodle_url('/course/index.php'), get_string('warning', 'tiny_cursive'));
+}
+
+
+
+$PAGE->requires->js_call_amd('tiny_cursive/key_logger', 'init', [1]);
+$PAGE->requires->jquery_plugin('jquery');
+$PAGE->requires->js_call_amd('tiny_cursive/cursive_writing_reports', 'init', []);
+
 $perpage = $page * $limit;
 $user = $DB->get_record('user', ['id' => $userid], '*', MUST_EXIST);
 $systemcontext = context_system::instance();

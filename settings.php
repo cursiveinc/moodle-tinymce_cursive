@@ -73,8 +73,8 @@ if (is_siteadmin()) {
     ));
     $settings->add(new admin_setting_configcheckbox(
         'tiny_cursive/showcomments',
-        'Show Comments',
-        'Show comments under post when enabled',
+        'Enable Cite-Source',
+        'Show cite-source comments under post when enabled',
         1
     ));
 
