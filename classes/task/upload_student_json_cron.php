@@ -57,8 +57,9 @@ class upload_student_json_cron extends \core\task\scheduled_task {
         $service = $DB->get_record('external_services',['shortname' => $service_shortname]);
 
         $adminuser = get_admin();
-        $token = $DB->get_records_sql("SELECT * FROM {external_tokens} WHERE userid = ? AND externalserviceid = ? order by id DESC LIMIT 1", array($adminuser->id, $service->id));
-        $wstoken = $token['token'] ?? '';
+        $token = $DB->get_record_sql("SELECT * FROM {external_tokens} WHERE userid = ? AND externalserviceid = ? order by id DESC LIMIT 1", array($adminuser->id, $service->id));
+        $wstoken = $token->token ?? '';
+
         $table = 'tiny_cursive_files';
         $sql = "select * from {tiny_cursive_files} where timemodified > uploaded";
         $filerecords = $DB->get_records_sql($sql);

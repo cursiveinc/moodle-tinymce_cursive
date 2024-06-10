@@ -186,7 +186,7 @@ class cursive_json_func_data extends external_api
         $editorid = null
     ) {
         require_login();
-      
+
         global $USER, $SESSION, $DB, $CFG;
         require_once ($CFG->libdir . '/filestorage/file_storage.php');
 
@@ -211,7 +211,7 @@ class cursive_json_func_data extends external_api
                 $parentData= $DB->get_record('tiny_cursive_files',['resourceid'=> $cmid]);
                 $cmid=$parentData->cmid ?? $cmid;
                 $sql="SELECT id from {forum_posts} ORDER BY id DESC";
-                
+
                 $resourceid=$DB->get_record_sql($sql);
                 $resourceid=$resourceid->id+1;
             }
@@ -220,7 +220,7 @@ class cursive_json_func_data extends external_api
                      $resourceid = $cmid;
              }
         }
-        
+
         $courseid = 0;
         // if ($resourceid == 0) {
         //     $resourceid = $cmid;
@@ -279,7 +279,7 @@ class cursive_json_func_data extends external_api
             $filerec->uploaded = 0;
             $DB->update_record($table, $filerec);
         } else {
-         
+
             $temparray[] = $userdata;
             $dataobj = new stdClass();
             $dataobj->userid = $USER->id;
@@ -621,7 +621,7 @@ class cursive_json_func_data extends external_api
                 ]
             );
             $filep=$CFG->dataroot."/temp/userdata/".$filename->filename;
-            $data['filename'] = file_exists($filep)?$filep:null; 
+            $data['filename'] = file_exists($filep)?$filep:null;
             $data['questionid'] = $questionid;
 
             if ($data['filename']) {
@@ -686,8 +686,8 @@ class cursive_json_func_data extends external_api
         AND modulename = :modulename', ['resourceid' => $id, 'cmid' => $cmid, 'modulename' => $modulename]);
 
                         $filep=$CFG->dataroot."/temp/userdata/".$filename->filename;
-                        $data['filename'] = file_exists($filep)?$filep:null; 
-                       
+                        $data['filename'] = file_exists($filep)?$filep:null;
+
             }
 
             $usercomment = [];
@@ -754,7 +754,7 @@ class cursive_json_func_data extends external_api
                 'cmid' => $cmid,
             ]
         );
-        
+
         $context = context_module::instance($cmid);
 
         $conditions = ["resourceid" => $id];
@@ -769,9 +769,9 @@ class cursive_json_func_data extends external_api
         where uf.resourceid = $id
         AND uf.cmid = $cmid
         AND uf.modulename='" . $modulename . "'";
-       
+
         $data = $DB->get_record_sql($attempts);
-   
+
         $data['first_file'] = 0;
 
         if (!isset($data->filename)) {
@@ -780,15 +780,15 @@ class cursive_json_func_data extends external_api
         AND modulename = :modulename', ['resourceid' => $id, 'cmid' => $cmid, 'modulename' => $modulename]);
 
             $filep=$CFG->dataroot."/temp/userdata/".$filename->filename;
-           
-            $data['filename'] = file_exists($filep)?$filep:null; 
+
+            $data['filename'] = file_exists($filep)?$filep:null;
             $firstfile = $DB->get_record_sql('select * from {tiny_cursive_files}
          where userid = :userid ORDER BY id ASC LIMIT 1', ['userid' => $filename->userid]);
             if ($firstfile == $filename->file_id) {
                 $data['first_file'] = 1;
             }
         }
-  
+
         $firstfile = $DB->get_record_sql('select * from {tiny_cursive_files}
          where userid = :userid ORDER BY id ASC LIMIT 1', ['userid' => $filename->userid]);
         if ($firstfile == $filename->file_id) {
@@ -886,7 +886,7 @@ class cursive_json_func_data extends external_api
             AND modulename = :modulename', ['resourceid' => $id, 'cmid' => $cmid, 'modulename' => $modulename]);
 
                 $filep=$CFG->dataroot."/temp/userdata/".$filename->filename;
-                $data['filename'] = file_exists($filep)?$filep:null; 
+                $data['filename'] = file_exists($filep)?$filep:null;
             }
 
         } else {
@@ -910,7 +910,7 @@ class cursive_json_func_data extends external_api
   AND modulename = :modulename', ['resourceid' => $id, 'cmid' => $cmid, 'modulename' => $modulename]);
 
                 $filep=$CFG->dataroot."/temp/userdata/".$filename->filename;
-                $data['filename'] = file_exists($filep)?$filep:null; 
+                $data['filename'] = file_exists($filep)?$filep:null;
             }
         }
         $usercomment = [];
@@ -1058,7 +1058,7 @@ class cursive_json_func_data extends external_api
         AND modulename = :modulename', ['resourceid' => $id, 'cmid' => $cmid, 'modulename' => $modulename]);
 
             $filep=$CFG->dataroot."/temp/userdata/".$filename->filename;
-            $data['filename'] = file_exists($filep)?$filep:null; 
+            $data['filename'] = file_exists($filep)?$filep:null;
             $data['file_id'] = $filename->id;
             $data['userid'] = $filename->userid;
         }
@@ -1217,8 +1217,8 @@ class cursive_json_func_data extends external_api
         return new external_value(PARAM_RAW, 'Comment Link');
     }
 
-    
-       
+
+
     /**
      * Method store_user_writing_parameters
      *
@@ -1227,7 +1227,7 @@ class cursive_json_func_data extends external_api
     public static function store_user_writing_parameters() {
         return new external_function_parameters(self::storing_user_writing_param());
     }
-    
+
     /**
      * Method store_user_writing
      *
@@ -1247,34 +1247,40 @@ class cursive_json_func_data extends external_api
      *
      * @return array [explicite description]
      */
-    public static function store_user_writing($person_id, $file_id, $character_count, $total_time_seconds, $characters_per_minute, $key_count, $keys_per_minute, $word_count, $words_per_minute, $backspace_percent, $copy_behaviour, $copy_behavior, $score) {
+    public static function store_user_writing($person_id, $file_id, $character_count, $total_time_seconds, $characters_per_minute, $key_count, $keys_per_minute, $word_count, $words_per_minute, $backspace_percent, $copy_behavior, $score) {
         global $DB;
 
         try {
-            $apiEnd=get_config('tiny_cursive','python_server'); 
+            $apiEnd = get_config('tiny_cursive', 'python_server');
             $backspace_percent = round($backspace_percent, 4);
-            $sql = "INSERT INTO {tiny_cursive_user_writing}
-        (file_id, total_time_seconds, key_count, keys_per_minute,character_count,characters_per_minute,
-        word_count,words_per_minute,backspace_percent,score,copy_behavior)
-        VALUES ($file_id,$total_time_seconds,$key_count,
-        $keys_per_minute,$character_count,$characters_per_minute,
-        $word_count,$words_per_minute,$backspace_percent,
-        $score,$copy_behavior)";
 
-            $DB->execute($sql);
+            $data = new stdClass();
+            $data->file_id = $file_id;
+            $data->total_time_seconds = $total_time_seconds;
+            $data->key_count = $key_count;
+            $data->keys_per_minute = $keys_per_minute;
+            $data->character_count = $character_count;
+            $data->characters_per_minute = $characters_per_minute;
+            $data->word_count = $word_count;
+            $data->words_per_minute = $words_per_minute;
+            $data->backspace_percent = $backspace_percent;
+            $data->score = $score;
+            $data->copy_behavior = $copy_behavior;
+
+            $DB->insert_record('tiny_cursive_user_writing', $data);
+
             return [
                 'status' => 'success',
                 'message' => "Data saved successfully",
             ];
-        } catch (Exception $e) {
+        } catch (dml_exception $e) {
             return [
                 'status' => 'failed',
                 'message' => $e->getMessage()
             ];
         }
-
     }
-    
+
     /**
      * Method store_user_writing_returns
      *
@@ -1287,7 +1293,7 @@ class cursive_json_func_data extends external_api
         ]);
     }
 
-    
+
     /**
      * Method cursive_get_reply_json_parameters
      *
@@ -1298,7 +1304,7 @@ class cursive_json_func_data extends external_api
             'filepath' => new external_value(PARAM_TEXT, 'filepath', true),
         ]);
     }
-    
+
     /**
      * Method cursive_get_reply_json
      *
@@ -1322,7 +1328,7 @@ class cursive_json_func_data extends external_api
         }
         return $data;
     }
-    
+
     /**
      * Method cursive_get_reply_json_returns
      *
@@ -1334,7 +1340,7 @@ class cursive_json_func_data extends external_api
             'data' => new external_value(PARAM_TEXT, 'Reply Json')
         ]);
     }
-    
+
     /**
      * Method storing_user_writing_param
      *
@@ -1354,7 +1360,7 @@ class cursive_json_func_data extends external_api
             'backspace_percent' => new external_value(PARAM_FLOAT, 'backspace_percent', true, 'course_detail'),
             'copy_behaviour' => new external_value(PARAM_FLOAT, 'copy_behavior', true, 'course_detail'),
             'copy_behavior' => new external_value(PARAM_FLOAT, 'copy_behavior', true, 'course_detail'),
-            'score' => new external_value(PARAM_FLOAT, 'score', true, 'course_detail'),
+            'score' => new external_value(PARAM_FLOAT, 'score', false, 'course_detail'),
         ];
     }
 }
