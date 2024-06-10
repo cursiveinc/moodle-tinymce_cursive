@@ -772,6 +772,7 @@ class cursive_json_func_data extends external_api
 
         $data = $DB->get_record_sql($attempts);
 
+        $data = (array)$data;
         $data['first_file'] = 0;
 
         if (!isset($data->filename)) {
@@ -1348,19 +1349,19 @@ class cursive_json_func_data extends external_api
      */
     static function storing_user_writing_param() {
         return [
-            'person_id' => new external_value(PARAM_INT, 'person or user id', true),
-            'file_id' => new external_value(PARAM_INT, 'file_id', true, 'course_detail'),
-            'character_count' => new external_value(PARAM_INT, 'character_count', true, 'course_detail'),
-            'total_time_seconds' => new external_value(PARAM_INT, 'total_time_seconds', true, 'course_detail'),
-            'characters_per_minute' => new external_value(PARAM_INT, 'characters_per_minute', true, 'course_detail'),
-            'key_count' => new external_value(PARAM_INT, 'key_count', true, 'course_detail'),
-            'keys_per_minute' => new external_value(PARAM_INT, 'keys per minutes', true),
-            'word_count' => new external_value(PARAM_INT, 'word_count', true, 'course_detail'),
-            'words_per_minute' => new external_value(PARAM_INT, 'words_per_minute', true, 'course_detail'),
-            'backspace_percent' => new external_value(PARAM_FLOAT, 'backspace_percent', true, 'course_detail'),
-            'copy_behaviour' => new external_value(PARAM_FLOAT, 'copy_behavior', true, 'course_detail'),
-            'copy_behavior' => new external_value(PARAM_FLOAT, 'copy_behavior', true, 'course_detail'),
-            'score' => new external_value(PARAM_FLOAT, 'score', false, 'course_detail'),
+            'person_id' => new external_value(PARAM_RAW, 'person or user id', true),
+            'file_id' => new external_value(PARAM_RAW, 'file_id', true, 'course_detail'),
+            'character_count' => new external_value(PARAM_RAW, 'character_count', true, 'course_detail'),
+            'total_time_seconds' => new external_value(PARAM_RAW, 'total_time_seconds', true, 'course_detail'),
+            'characters_per_minute' => new external_value(PARAM_RAW, 'characters_per_minute', true, 'course_detail'),
+            'key_count' => new external_value(PARAM_RAW, 'key_count', true, 'course_detail'),
+            'keys_per_minute' => new external_value(PARAM_RAW, 'keys per minutes', true),
+            'word_count' => new external_value(PARAM_RAW, 'word_count', true, 'course_detail'),
+            'words_per_minute' => new external_value(PARAM_RAW, 'words_per_minute', true, 'course_detail'),
+            'backspace_percent' => new external_value(PARAM_RAW, 'backspace_percent', true, 'course_detail'),
+            'copy_behaviour' => new external_value(PARAM_RAW, 'copy_behavior', true, 'course_detail'),
+            'copy_behavior' => new external_value(PARAM_RAW, 'copy_behavior', true, 'course_detail'),
+            'score' => new external_value(PARAM_RAW, 'score', false, 0,true),
         ];
     }
 }

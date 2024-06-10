@@ -49,7 +49,25 @@ $haseditcapability = has_capability('tiny/cursive:view', $context);
 $userid = optional_param('userid', 0, PARAM_INT);
 $courseid = optional_param('courseid', 0, PARAM_INT);
 
-if (!$haseditcapability ) {
+$editingteacherrole = $DB->get_record('role', ['shortname' => 'editingteacher'], '*', MUST_EXIST);
+$editingteacherroleid = $editingteacherrole->id;
+
+// Function to check if user has editingteacher role in any course
+
+function is_user_editingteacher($userid, $roleid) {
+    global $DB;
+    $sql = "SELECT ra.id
+            FROM {role_assignments} ra
+            JOIN {context} ctx ON ra.contextid = ctx.id
+            WHERE ra.userid = :userid AND ra.roleid = :roleid AND ctx.contextlevel = :contextlevel";
+    $params = ['userid' => $userid, 'roleid' => $roleid, 'contextlevel' => CONTEXT_COURSE];
+    return $DB->record_exists_sql($sql, $params);
+}
+
+// Check if the user is an editing teacher in any course context
+$iseditingteacher = is_user_editingteacher($USER->id, $editingteacherroleid);
+
+if (!$haseditcapability && !$iseditingteacher) {
     return redirect(new moodle_url('/course/index.php'), get_string('warning', 'tiny_cursive'));
 }
 
