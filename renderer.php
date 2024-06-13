@@ -403,8 +403,8 @@ class tiny_cursive_renderer extends plugin_renderer_base {
             }
 
             $row = [];
-            $content = $this->get_html_modal($user, $getmodulename ? $getmodulename->name : 'Stats');
-            $playbackcontent = $this->get_playback_modal($user, $getmodulename ? $getmodulename->name : 'Playback Video');
+            $content = $this->get_html_modal($user, $courseid > 0 ? $getmodulename->name : 'Stats');
+            $playbackcontent = $this->get_playback_modal($user, $courseid > 0 ? $getmodulename->name : 'Playback Video');
 
             $filep = $CFG->dataroot . '/temp/userdata/' . $user->filename;
             $filepath = file_exists($filep) ? $filep : null;

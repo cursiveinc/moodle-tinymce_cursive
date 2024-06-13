@@ -51,35 +51,19 @@ function get_user_attempts_data($userid, $courseid, $moduleid, $orderby = 'id', 
             break;
     }
 
-    $sql = "SELECT 
-    uf.filename, 
-    uf.id AS fileid, 
-    u.id AS usrid, 
-    uw.id AS uniqueid, 
-    u.firstname, 
-    u.lastname, 
-    u.email,
-    uf.courseid, 
-    uf.timemodified, 
-    uf.cmid AS cmid, 
-    uw.total_time_seconds, 
-    uw.key_count,
-    uw.keys_per_minute, 
-    uw.character_count,
-    uw.characters_per_minute, 
-    uw.word_count,
-    uw.words_per_minute, 
-    uw.backspace_percent,
-    uw.score, 
-    uw.copy_behavior 
-FROM 
-    mdl_tiny_cursive_files uf 
-LEFT JOIN 
-    mdl_user u ON uf.userid = u.id 
-LEFT JOIN 
-    mdl_tiny_cursive_user_writing uw ON uw.file_id = uf.id 
-WHERE 
-    uf.userid != 1 ";
+    $sql = "SELECT uf.id as fileid, u.id as usrid,uw.id as uniqueid, u.firstname, u.lastname,u.email,uf.courseid,
+    uf.id as attemptid,uf.timemodified, uf.cmid as cmid,
+    uf.filename, uw.total_time_seconds as total_time_seconds,
+    uw.key_count as key_count, uw.keys_per_minute as keys_per_minute,
+    uw.character_count as character_count,
+    uw.characters_per_minute as characters_per_minute,
+    uw.word_count as word_count, uw.words_per_minute as words_per_minute,
+    uw.backspace_percent as backspace_percent, uw.score as score,
+    uw.copy_behavior as copy_behavior
+      FROM  {tiny_cursive_files} uf
+      INNER JOIN {user} u ON uf.userid =u.id
+LEFT JOIN {tiny_cursive_user_writing} uw ON uw.file_id =uf.id
+   WHERE uf.userid!=1 ";
 
     if ($userid != 0) {
         $sql .= " AND uf.userid = :userid";

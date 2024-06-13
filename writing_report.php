@@ -77,7 +77,7 @@ $PAGE->requires->js_call_amd('tiny_cursive/cursive_writing_reports', 'init', [])
 $orderby = optional_param('orderby', 'id', PARAM_RAW);
 $order = optional_param('order', 'ASC', PARAM_RAW);
 $page = optional_param('page', 0, PARAM_INT);
-$limit = 5;
+$limit = 10;
 $perpage = $page * $limit;
 $user = $DB->get_record('user', ['id' => $userid], '*', MUST_EXIST);
 $systemcontext = context_system::instance();
