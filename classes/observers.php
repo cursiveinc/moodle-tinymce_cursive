@@ -172,4 +172,37 @@ class observers {
             }
         }
     }
+
+    /**
+     * Reset tracking data.
+     *
+     * @param \core\event\course_reset_ended $event
+     * @return void
+     * @throws \dml_exception
+     */
+    public static function reset_tracking_data(\core\event\course_reset_ended $event) {
+        global $DB, $CFG;
+
+        // Get the course ID from the event data.
+        $data = (object) $event->get_data();
+        $courseid = $data->courseid;
+
+        // Retrieve all file records related to the course.
+        $fileids = $DB->get_records('tiny_cursive_files', ['courseid' => $courseid], '', 'id, filename');
+
+        // Delete records from 'tiny_cursive_files' and 'tiny_cursive_comments' tables.
+        $DB->delete_records('tiny_cursive_files', ['courseid' => $courseid]);
+        $DB->delete_records('tiny_cursive_comments', ['courseid' => $courseid]);
+
+        // Delete associated user writing records and files.
+        foreach ($fileids as $file) {
+            $DB->delete_records('tiny_cursive_user_writing', ['id' => $file->id]);
+
+            $filepath = $CFG->tempdir . "/userdata/" . $file->filename;
+            if (file_exists($filepath)) {
+                unlink($filepath);
+            }
+        }
+    }
+
 }

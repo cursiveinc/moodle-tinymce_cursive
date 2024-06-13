@@ -43,6 +43,12 @@ $observers = [
         'callback' => '\tiny_cursive\observers::discussion_created',
         'internal' => true,
         'priority' => 9999,
+    ],
+    [
+        'eventname' => '\core\event\course_reset_ended',
+        'callback' => '\tiny_cursive\observers::reset_tracking_data',
+        'internal' => true,
+        'priority' => 9999,
     ]
 ];
 
