@@ -82,7 +82,12 @@ $PAGE->requires->js_call_amd('tiny_cursive/cursive_writing_reports', 'init', [])
 $perpage = $page * $limit;
 $user = $DB->get_record('user', ['id' => $userid], '*', MUST_EXIST);
 $systemcontext = context_system::instance();
-$linkurl = new moodle_url("/lib/editor/tiny/plugins/cursive/my_writing_report.php?userid=" . $userid);
+if ($courseid){
+    $linkurl = $CFG->wwwroot . '/lib/editor/tiny/plugins/cursive/my_writing_report.php?userid=' . $userid . '&courseid=' . $courseid;
+
+} else{
+    $linkurl = $CFG->wwwroot . '/lib/editor/tiny/plugins/cursive/my_writing_report.php?userid=' . $userid;
+}
 $linktext = get_string('tiny_cursive', 'tiny_cursive');
 $PAGE->set_context($systemcontext);
 $PAGE->set_url($linkurl);
@@ -96,7 +101,7 @@ $PAGE->navbar->add($struser);
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('student_writing_statics', 'tiny_cursive'));
 $renderer = $PAGE->get_renderer('tiny_cursive');
-$attempts = get_user_attempts_data($userid, $courseid, null, $orderby, $order, $perpage, $limit);
+$attempts = get_user_attempts_data($userid, $courseid, null, $orderby, $order, $page, $limit);
 $userprofile = get_user_profile_data($userid, $courseid);
 echo $renderer->user_writing_report($attempts, $userprofile, $userid, $page, $limit, $linkurl);
 echo $OUTPUT->footer();

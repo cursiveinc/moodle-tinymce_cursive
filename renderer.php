@@ -300,8 +300,9 @@ class tiny_cursive_renderer extends plugin_renderer_base {
      * @throws moodle_exception
      */
     public function user_writing_report($users, $userprofile, $userid, $page = 0, $limit = 5, $baseurl = '') {
-        global $CFG, $DB;
+        global $CFG, $DB, $PAGE;
         require_once ($CFG->dirroot . "/lib/editor/tiny/plugins/cursive/lib.php");
+
         echo get_string('total_word', 'tiny_cursive') . " $userprofile->word_count</br>";
 
         if (isset($userprofile->total_time) && $userprofile->total_time > 0) {
@@ -319,13 +320,13 @@ class tiny_cursive_renderer extends plugin_renderer_base {
             $mins = $datetime->format('i'); // 'i' is used for minutes with leading zeros.
             $secs = $datetime->format('s'); // 's' is used for seconds with leading zeros.
 
-            print(get_string('total_time', 'tiny_cursive') . ": " . (int)$hrs . "h : " . (int)$mins . "m : " . (int)$secs . "s</br>");
+            echo get_string('total_time', 'tiny_cursive') . ": " . (int)$hrs . "h : " . (int)$mins . "m : " . (int)$secs . "s</br>";
 
             // Calculate average words per minute if total time is greater than zero.
             $avgwords = round($userprofile->word_count / ($userprofile->total_time / 60));
         } else {
             // Handle the case when there is no time data.
-            print(get_string('total_time', 'tiny_cursive') . " 0h:0m:0s</br>");
+            echo get_string('total_time', 'tiny_cursive') . " 0h:0m:0s</br>";
             $avgwords = 0;
         }
 
@@ -337,21 +338,29 @@ class tiny_cursive_renderer extends plugin_renderer_base {
         INNER JOIN {user_enrolments} ue ON ue.enrolid = en.id
         INNER JOIN {user} u ON u.id = ue.userid
         WHERE ue.userid = :userid", ['userid' => $userid]);
-        $options = [];
 
-        echo "<div class='dropdown mb-4' >";
+        // Remove 'courseid' from the base URL if it exists
+        $currentUrl = new moodle_url($baseurl, ['userid' => $userid, 'courseid' => null]);
+        $allCoursesUrl = $currentUrl->out(false, ['courseid' => null]);
+
+        echo "<div class='dropdown mb-4'>";
         echo '<button class="btn btn-secondary dropdown-toggle" type="button"
         id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
         aria-expanded="false">Select Course</button>';
 
         echo '<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">';
-        $baseurl = $CFG->wwwroot . '/lib/editor/tiny/plugins/cursive/my_writing_report.php';
-        echo " <a class='dropdown-item' href=$baseurl?userid=$userid>All Courses</a>";
+        $allCoursesClass = empty($_GET['courseid']) ? 'active' : '';
+        echo '<a class="dropdown-item ' . $allCoursesClass . '" href="' . $allCoursesUrl . '">All Courses</a>';
+
         foreach ($courses as $course) {
-            echo " <a class='dropdown-item' href=$baseurl?userid=$course->userid&courseid=$course->id>$course->fullname</a>";
+            $courseUrl = new moodle_url($baseurl, ['userid' => $userid, 'courseid' => $course->id]);
+            $courseClass = (isset($_GET['courseid']) && $_GET['courseid'] == $course->id) ? 'active' : '';
+            echo '<a class="dropdown-item ' . $courseClass . '" href="' . $courseUrl . '">' . $course->fullname . '</a>';
         }
+
         echo '</div>';
-        echo "</div >";
+        echo "</div>";
+
         $table = new html_table();
         $table->id = 'writing_report_table';
 
@@ -366,56 +375,50 @@ class tiny_cursive_renderer extends plugin_renderer_base {
             get_string('typeid', 'tiny_cursive'),
             '',
         ];
+
         $firstfile = $DB->get_record_sql(
-            'select id from {tiny_cursive_files} where userid =:userid ORDER BY id ASC Limit 1',
+            'SELECT id FROM {tiny_cursive_files} WHERE userid = :userid ORDER BY id ASC LIMIT 1',
             ['userid' => $userid]
         );
-        foreach ($data as $user) {
 
+        foreach ($data as $user) {
             $courseid = $user->courseid;
-            $courseid = $courseid > 0 ? $courseid : '';
             $cm = null;
 
-            $modinfo = ($courseid != '') ? get_fast_modinfo($courseid) : null;
-            $cm = $modinfo != null ? $modinfo->get_cm($user->cmid) : null;
-            $getmodulename = $cm != null ? get_coursemodule_from_id($cm->modname, $user->cmid, 0, false, MUST_EXIST) : 0;
+            if ($courseid) {
+                $modinfo = get_fast_modinfo($courseid);
+                if ($modinfo) {
+                    $cm = $modinfo->get_cm($user->cmid);
+                }
+            }
 
-            $scorecontent = $this->get_html_score_modal($user, $courseid > 0 ? $getmodulename->name : 'Score');
+            $getmodulename = $cm ? get_coursemodule_from_id($cm->modname, $user->cmid, 0, false, MUST_EXIST) : null;
 
+            $scorecontent = $this->get_html_score_modal($user, $getmodulename ? $getmodulename->name : 'Score');
 
             if ($firstfile->id == $user->fileid) {
-                $linkicon = $this->get_link_icon(200,$firstfile=1);
+                $linkicon = $this->get_link_icon(200, $firstfile = 1);
             } else {
                 $linkicon = $this->get_link_icon($user->score);
             }
 
             $row = [];
-            $content = $this->get_html_modal($user, $courseid > 0 ? $getmodulename->name : 'Stats');
-            $playbackcontent = $this->get_playback_modal($user, $courseid > 0 ? $getmodulename->name : 'Playback Video');
+            $content = $this->get_html_modal($user, $getmodulename ? $getmodulename->name : 'Stats');
+            $playbackcontent = $this->get_playback_modal($user, $getmodulename ? $getmodulename->name : 'Playback Video');
 
-            // Saving the file to moodledata.
-            $context = context_system::instance();
-
-            // Creat URL of the json file from moodledata.
             $filep = $CFG->dataroot . '/temp/userdata/' . $user->filename;
             $filepath = file_exists($filep) ? $filep : null;
+
             $row[] = $getmodulename ? $getmodulename->name : '';
             $row[] = date("l jS \of F Y h:i:s A", $user->timemodified);
-            $row[] = '<a data-filepath ="' . $filepath . '" data-id=playback_' . $user->attemptid . '
-                href ="#" class = "video_playback_icon">
-                <i class="fa fa fa-circle-play"
-                style="font-size:24px;color:black" aria-hidden="true"
-                style = "padding-left:25px; font-size:x-large;"></i>
-                </a>' . $playbackcontent;
-
-            $row[] = '<a data-id=' . $user->attemptid . ' href = "#" class="popup_item">
-                <i class="fa fa-area-chart" style="font-size:24px;color:black"
-                aria-hidden="true" style = "padding-left:25px; font-size:x-large;"></i>
-                </a>' . $content;
-
-            $row[] = "<a data-id=score" . $user->attemptid . "
-                href ='#' class = 'link_icon'>" . $linkicon . "</a>" . $scorecontent;
-
+            $row[] = '<a data-filepath="' . $filepath . '" data-id="playback_' . $user->attemptid . '"
+            href="#" class="video_playback_icon">
+            <i class="fa fa-circle-play" style="font-size:24px;color:black" aria-hidden="true"></i>
+            </a>' . $playbackcontent;
+            $row[] = '<a data-id="' . $user->attemptid . '" href="#" class="popup_item">
+            <i class="fa fa-area-chart" style="font-size:24px;color:black" aria-hidden="true"></i>
+            </a>' . $content;
+            $row[] = '<a data-id="score' . $user->attemptid . '" href="#" class="link_icon">' . $linkicon . '</a>' . $scorecontent;
             $row[] = html_writer::link(
                 new moodle_url('/lib/editor/tiny/plugins/cursive/download_json.php', [
                     'fname' => $user->filename,
@@ -432,7 +435,11 @@ class tiny_cursive_renderer extends plugin_renderer_base {
             );
             $table->data[] = $row;
         }
+
         echo html_writer::table($table);
+
+        $pagingbar = new paging_bar($totalcount, $page, $limit, $baseurl);
+        echo $this->output->render($pagingbar);
 
         echo html_writer::start_tag('div', ['class' => 'text-right']);
         echo html_writer::start_tag('a', [
@@ -447,33 +454,34 @@ class tiny_cursive_renderer extends plugin_renderer_base {
         ]);
         echo html_writer::end_tag('i');
         echo html_writer::end_tag('a');
-        echo html_writer::start_tag('span', ['class' => 'ml-2'], get_string("learn_more", "tiny_cursive"));
+        echo html_writer::start_tag('span', ['class' => 'ml-2']);
         echo get_string("learn_more", "tiny_cursive");
         echo html_writer::end_tag('span');
         echo html_writer::end_tag('div');
 
         echo "<script>
-                document.querySelectorAll('#writing_report_table tr th').forEach((el, index) => {
-                    switch (index) {
-                        case 0:
-                            el.setAttribute('aria-describedby','');
-                            break;
-                        case 1:
-                            el.setAttribute('aria-describedby','');
-                            break;
-                        case 2:
-                            el.setAttribute('aria-describedby','');
-                            break;
-                        case 3:
-                            el.setAttribute('aria-describedby','');
-                            break;
-                        case 4:
-                            el.setAttribute('aria-describedby','TypeID is a confidence score related to authorship');
-                            break;
-                    }
-                });
-            </script>";
-        $this->output->paging_bar($totalcount, $page, $limit, $baseurl);
+        document.querySelectorAll('#writing_report_table tr th').forEach((el, index) => {
+            switch (index) {
+                case 0:
+                    el.setAttribute('aria-describedby','');
+                    break;
+                case 1:
+                    el.setAttribute('aria-describedby','');
+                    break;
+                case 2:
+                    el.setAttribute('aria-describedby','');
+                    break;
+                case 3:
+                    el.setAttribute('aria-describedby','');
+                    break;
+                case 4:
+                    el.setAttribute('aria-describedby','TypeID is a confidence score related to authorship');
+                    break;
+            }
+        });
+    </script>";
     }
+
+
 }
 

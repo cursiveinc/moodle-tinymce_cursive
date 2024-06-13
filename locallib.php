@@ -33,58 +33,88 @@
  * @param $perpage
  * @param $limit
  * */
-function get_user_attempts_data($userid, $courseid, $moduleid, $orderby = 'id', $order = 'ASC', $perpage = 1, $limit = 5) {
+function get_user_attempts_data($userid, $courseid, $moduleid, $orderby = 'id', $order = 'ASC', $page = 0, $limit = 10) {
     global $DB;
-    $attempts = [];
-    if ($orderby == 'id') {
-        $odby = 'u.id';
+
+    $params = [];
+    $odby = 'u.id';
+
+    switch ($orderby) {
+        case 'name':
+            $odby = 'u.firstname';
+            break;
+        case 'email':
+            $odby = 'u.email';
+            break;
+        case 'date':
+            $odby = 'uf.timemodified';
+            break;
     }
-    if ($orderby == 'name') {
-        $odby = 'u.firstname';
-    }
-    if ($orderby == 'email') {
-        $odby = 'u.email';
-    }
-    if ($orderby == 'date') {
-        $odby = 'uf.timemodified';
-    }
-    $attempts = " SELECT uf.id as fileid, u.id as usrid,uw.id as uniqueid, u.firstname, u.lastname,u.email,uf.courseid,
-    uf.id as attemptid,uf.timemodified, uf.cmid as cmid,
-    uf.filename,uf.id as fileid, uw.total_time_seconds as total_time_seconds,
-    uw.key_count as key_count, uw.keys_per_minute as keys_per_minute,
-    uw.character_count as character_count,
-    uw.characters_per_minute as characters_per_minute,
-    uw.word_count as word_count, uw.words_per_minute as words_per_minute,
-    uw.backspace_percent as backspace_percent, uw.score as score,
-    uw.copy_behavior as copy_behavior
-      FROM  {tiny_cursive_files} uf
-      INNER JOIN {user} u ON uf.userid =u.id
-LEFT JOIN {tiny_cursive_user_writing} uw ON uw.file_id =uf.id
-   WHERE uf.userid!=1 ";
+
+    $sql = "SELECT 
+    uf.filename, 
+    uf.id AS fileid, 
+    u.id AS usrid, 
+    uw.id AS uniqueid, 
+    u.firstname, 
+    u.lastname, 
+    u.email,
+    uf.courseid, 
+    uf.timemodified, 
+    uf.cmid AS cmid, 
+    uw.total_time_seconds, 
+    uw.key_count,
+    uw.keys_per_minute, 
+    uw.character_count,
+    uw.characters_per_minute, 
+    uw.word_count,
+    uw.words_per_minute, 
+    uw.backspace_percent,
+    uw.score, 
+    uw.copy_behavior 
+FROM 
+    mdl_tiny_cursive_files uf 
+LEFT JOIN 
+    mdl_user u ON uf.userid = u.id 
+LEFT JOIN 
+    mdl_tiny_cursive_user_writing uw ON uw.file_id = uf.id 
+WHERE 
+    uf.userid != 1 ";
+
     if ($userid != 0) {
-        $attempts .= " AND  uf.userid = $userid";
+        $sql .= " AND uf.userid = :userid";
+        $params['userid'] = $userid;
     }
+
     if ($courseid != 0) {
-        $attempts .= "  AND uf.courseid=$courseid";
+        $sql .= " AND uf.courseid = :courseid";
+        $params['courseid'] = $courseid;
     }
 
     if ($moduleid != 0) {
-        $attempts .= "  AND uf.cmid=$moduleid";
+        $sql .= " AND uf.cmid = :moduleid";
+        $params['moduleid'] = $moduleid;
     }
 
-    $attempts .= " ORDER BY $odby ";
-    $totalcount = 0;
+    $sql .= " ORDER BY $odby $order";
 
-    if ($limit) {
-        $getdetailcount = $DB->get_records_sql($attempts);
-        $totalcount = count($getdetailcount);
-        $attempts .= " LIMIT $perpage , $limit ";
+    // Calculate the total count for pagination
+    $countsql = "SELECT COUNT(*) FROM ($sql) subquery";
+    $totalcount = $DB->count_records_sql($countsql, $params);
+
+    // Add LIMIT and OFFSET for pagination
+    $offset = ( $page * $limit );
+    $sql .= " LIMIT $limit OFFSET $offset";
+
+    try {
+        $res = $DB->get_records_sql($sql, $params);
+    } catch (Exception $e) {
+        error_log("Error executing query: " . $e->getMessage());
+        throw new moodle_exception('errorreadingfromdatabase', 'error', '', null, $e->getMessage());
     }
-
-    $res = $DB->get_records_sql($attempts);
-    $resncount = ['count' => $totalcount, 'data' => $res];
-    return $resncount;
+    return ['count' => $totalcount, 'data' => $res];
 }
+
 
 /**
  * get_user_writing_data
@@ -214,7 +244,7 @@ WHERE uf.userid = ". $resourceid ." AND uf.cmid = ".$cmid. " AND uf.modulename='
         if ($filename) {
             $context = context_system::instance();
             $filep=$CFG->dataroot."/temp/userdata/".$filename->filename;
-            $data['filename'] = file_exists($filep)?$filep:null; 
+            $data['filename'] = file_exists($filep)?$filep:null;
             $data['file_id'] = $filename->fileid ?? '';
         }
     } else{

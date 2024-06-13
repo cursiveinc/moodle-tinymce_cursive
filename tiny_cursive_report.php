@@ -36,7 +36,7 @@ $context = \CONTEXT_SYSTEM::instance();
 $haseditcapability = has_capability('tiny/cursive:view', $context);
 
 if (!$haseditcapability) {
-    
+
     return redirect(new moodle_url('/course/index.php'), get_string('warning', 'tiny_cursive'));
 }
 
@@ -46,7 +46,7 @@ $moduleid = optional_param('moduleid', 0, PARAM_INT);
 $orderby = optional_param('orderby', 'id', PARAM_RAW);
 $order = optional_param('order', 'ASC', PARAM_RAW);
 $page = optional_param('page', 0, PARAM_INT);
-$limit = 10;
+$limit = 100;
 $perpage = $page * $limit;
 $linkurl = '/lib/editor/tiny/plugins/cursive/tiny_cursive_report.php';
 $linkurl .= '?sesskey=' . $USER->sesskey . '&_qf__userreportform=1&coursename=' .
