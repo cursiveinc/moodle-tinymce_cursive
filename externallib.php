@@ -27,9 +27,9 @@ use tiny_cursive\tiny_cursive_data;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once("$CFG->libdir/externallib.php");
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
-require_once('locallib.php');
+require_once ("$CFG->libdir/externallib.php");
+require_once ($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once ('locallib.php');
 
 /**
  * Tiny cursive plugin.
@@ -47,7 +47,8 @@ class cursive_json_func_data extends external_api
      *
      * @return external_function_parameters
      */
-    public static function get_user_list_parameters() {
+    public static function get_user_list_parameters()
+    {
         return new external_function_parameters(
             [
                 'page' => new external_value(PARAM_INT, '', false),
@@ -67,7 +68,8 @@ class cursive_json_func_data extends external_api
      * @throws moodle_exception
      * @throws require_login_exception
      */
-    public static function get_user_list($page, $courseid) {
+    public static function get_user_list($page, $courseid)
+    {
         require_login();
         $params = self::validate_parameters(
             self::get_user_list_parameters(),
@@ -84,7 +86,8 @@ class cursive_json_func_data extends external_api
      *
      * @return external_value
      */
-    public static function get_user_list_returns() {
+    public static function get_user_list_returns()
+    {
         return new external_value(PARAM_RAW, 'All quizzes');
     }
 
@@ -95,7 +98,8 @@ class cursive_json_func_data extends external_api
      *
      * @return external_function_parameters
      */
-    public static function get_module_list_parameters() {
+    public static function get_module_list_parameters()
+    {
         return new external_function_parameters(
             [
                 'page' => new external_value(PARAM_INT, '', false),
@@ -115,7 +119,8 @@ class cursive_json_func_data extends external_api
      * @throws moodle_exception
      * @throws require_login_exception
      */
-    public static function get_module_list($page, $courseid) {
+    public static function get_module_list($page, $courseid)
+    {
         require_login();
         $params = self::validate_parameters(
             self::get_user_list_parameters(),
@@ -132,7 +137,8 @@ class cursive_json_func_data extends external_api
      *
      * @return external_value
      */
-    public static function get_module_list_returns() {
+    public static function get_module_list_returns()
+    {
         return new external_value(PARAM_RAW, 'All quizzes');
     }
 
@@ -142,7 +148,8 @@ class cursive_json_func_data extends external_api
      *
      * @return external_function_parameters
      */
-    public static function cursive_json_func_parameters() {
+    public static function cursive_json_func_parameters()
+    {
         return new external_function_parameters(
             [
                 'resourceId' => new external_value(PARAM_INT, 0, 'resourceId'),
@@ -202,23 +209,23 @@ class cursive_json_func_data extends external_api
                 'editorid' => $editorid,
             ]
         );
-        if($modulename==='forum') {
-            if(!empty($resourceid) && $resourceid != 0 ){
 
-                $parentData= $DB->get_record('tiny_cursive_files',['resourceid'=> $resourceid]);
-                $cmid=$parentData->cmid;
-            }else if(!empty($cmid) && $cmid != 0 && $resourceid == 0){
-                $parentData= $DB->get_record('tiny_cursive_files',['resourceid'=> $cmid]);
-                $cmid=$parentData->cmid ?? $cmid;
-                $sql="SELECT id from {forum_posts} ORDER BY id DESC";
+        if ($modulename === 'forum') {
+            if (!empty($resourceid) && $resourceid != 0) {
+                // $parentdata= $DB->get_record('tiny_cursive_files',['resourceid'=> $resourceid]);
+                // $cmid=$parentData->cmid;
+            } else if (!empty($cmid) && $cmid != 0 && $resourceid == 0) {
+                // $parentdata= $DB->get_record('tiny_cursive_files',['resourceid'=> $cmid]);
+                // $cmid=$parentdata->cmid ?? $cmid;
+                // $sql="SELECT id from {forum_posts} ORDER BY id DESC";
 
-                $resourceid=$DB->get_record_sql($sql);
-                $resourceid=$resourceid->id+1;
+                // $resourceid=$DB->get_record_sql($sql);
+                // $resourceid=$resourceid->id+1;
             }
-        }else{
+        } else {
             if ($resourceid == 0) {
-                     $resourceid = $cmid;
-             }
+                $resourceid = $cmid; // For Quiz and Assignment there is no resourceid that's why cmid is resourceid.
+            }
         }
 
         $courseid = 0;
@@ -265,6 +272,7 @@ class cursive_json_func_data extends external_api
 
         $temparray = null;
         if ($inp) {
+            var_dump("if: ", $inp);
             $temparray = json_decode($inp, true);
             array_push($temparray, $userdata);
             $filerec = $DB->get_record($table, ['cmid' => $cmid, 'modulename' => $modulename, 'userid' => $USER->id]);
@@ -279,7 +287,7 @@ class cursive_json_func_data extends external_api
             $filerec->uploaded = 0;
             $DB->update_record($table, $filerec);
         } else {
-
+            var_dump("else: ", $inp);
             $temparray[] = $userdata;
             $dataobj = new stdClass();
             $dataobj->userid = $USER->id;
@@ -293,7 +301,7 @@ class cursive_json_func_data extends external_api
             $dataobj->uploaded = 0;
             $DB->insert_record($table, $dataobj);
         }
-
+        // die;
         $jsondata = json_encode($temparray);
 
         if (is_array($temparray)) {
@@ -383,7 +391,8 @@ class cursive_json_func_data extends external_api
      * @throws moodle_exception
      * @throws require_login_exception
      */
-    public static function cursive_reports_func($coursename = 0, $quizname = null, $username = 'keyUp') {
+    public static function cursive_reports_func($coursename = 0, $quizname = null, $username = 'keyUp')
+    {
         require_login();
         global $USER, $SESSION, $DB;
         $params = self::validate_parameters(
@@ -402,7 +411,8 @@ class cursive_json_func_data extends external_api
      *
      * @return external_value
      */
-    public static function cursive_reports_func_returns() {
+    public static function cursive_reports_func_returns()
+    {
         return new external_value(PARAM_RAW, 'result');
     }
 
@@ -413,7 +423,8 @@ class cursive_json_func_data extends external_api
      *
      * @return external_function_parameters
      */
-    public static function cursive_user_comments_func_parameters() {
+    public static function cursive_user_comments_func_parameters()
+    {
         return new external_function_parameters(
             [
                 'modulename' => new external_value(PARAM_TEXT, 'modulename'),
@@ -487,7 +498,8 @@ class cursive_json_func_data extends external_api
      *
      * @return external_value
      */
-    public static function cursive_user_comments_func_returns() {
+    public static function cursive_user_comments_func_returns()
+    {
         return new external_value(PARAM_RAW, 'All User Comments');
     }
 
@@ -497,7 +509,8 @@ class cursive_json_func_data extends external_api
      *
      * @return external_function_parameters
      */
-    public static function cursive_approve_token_func_parameters() {
+    public static function cursive_approve_token_func_parameters()
+    {
         return new external_function_parameters(
             [
                 'token' => new external_value(PARAM_TEXT, 'userid'),
@@ -515,7 +528,8 @@ class cursive_json_func_data extends external_api
      * @throws moodle_exception
      * @throws require_login_exception
      */
-    public static function cursive_approve_token_func($token) {
+    public static function cursive_approve_token_func($token)
+    {
         global $DB, $CFG;
         require_login();
         $remoteurl = get_config('tiny_cursive', 'python_server');
@@ -546,7 +560,8 @@ class cursive_json_func_data extends external_api
      *
      * @return external_value
      */
-    public static function cursive_approve_token_func_returns() {
+    public static function cursive_approve_token_func_returns()
+    {
         return new external_value(PARAM_RAW, 'Token Approved');
     }
 
@@ -560,7 +575,8 @@ class cursive_json_func_data extends external_api
      *
      * @return external_function_parameters
      */
-    public static function get_comment_link_parameters() {
+    public static function get_comment_link_parameters()
+    {
         return new external_function_parameters(
             [
                 'id' => new external_value(PARAM_INT, 'id', false, 'course_detail'),
@@ -587,7 +603,8 @@ class cursive_json_func_data extends external_api
      * @throws moodle_exception
      * @throws require_login_exception
      */
-    public static function get_comment_link($id, $modulename, $cmid = null, $questionid = null, $userid = null) {
+    public static function get_comment_link($id, $modulename, $cmid = null, $questionid = null, $userid = null)
+    {
         require_once ('../../config.php');
         global $DB, $CFG;
         require_once ($CFG->dirroot . '/lib/accesslib.php');
@@ -620,8 +637,8 @@ class cursive_json_func_data extends external_api
                     "userid" => $userid,
                 ]
             );
-            $filep=$CFG->dataroot."/temp/userdata/".$filename->filename;
-            $data['filename'] = file_exists($filep)?$filep:null;
+            $filep = $CFG->dataroot . "/temp/userdata/" . $filename->filename;
+            $data['filename'] = file_exists($filep) ? $filep : null;
             $data['questionid'] = $questionid;
 
             if ($data['filename']) {
@@ -678,15 +695,15 @@ class cursive_json_func_data extends external_api
         where uf.resourceid = $id
         AND uf.cmid = $cmid
         AND uf.modulename='" . $modulename . "'";
-                    $data = $DB->get_record_sql($attempts);
+            $data = $DB->get_record_sql($attempts);
 
-                    if (!isset($data->filename)) {
-                        $filename = $DB->get_record_sql('select filename from {tiny_cursive_files} where resourceid = :resourceid
+            if (!isset($data->filename)) {
+                $filename = $DB->get_record_sql('select filename from {tiny_cursive_files} where resourceid = :resourceid
         AND cmid = :cmid
         AND modulename = :modulename', ['resourceid' => $id, 'cmid' => $cmid, 'modulename' => $modulename]);
 
-                        $filep=$CFG->dataroot."/temp/userdata/".$filename->filename;
-                        $data['filename'] = file_exists($filep)?$filep:null;
+                $filep = $CFG->dataroot . "/temp/userdata/" . $filename->filename;
+                $data['filename'] = file_exists($filep) ? $filep : null;
 
             }
 
@@ -709,7 +726,8 @@ class cursive_json_func_data extends external_api
      *
      * @return external_value
      */
-    public static function get_comment_link_returns() {
+    public static function get_comment_link_returns()
+    {
         return new external_value(PARAM_RAW, 'Comment Link');
     }
 
@@ -718,7 +736,8 @@ class cursive_json_func_data extends external_api
      *
      * @return external_function_parameters
      */
-    public static function get_forum_comment_link_parameters() {
+    public static function get_forum_comment_link_parameters()
+    {
         return new external_function_parameters(
             [
                 'id' => new external_value(PARAM_INT, 'id', false, 'course_detail'),
@@ -740,7 +759,8 @@ class cursive_json_func_data extends external_api
      * @throws moodle_exception
      * @throws require_login_exception
      */
-    public static function get_forum_comment_link($id, $modulename, $cmid = null) {
+    public static function get_forum_comment_link($id, $modulename, $cmid = null)
+    {
         require_once ('../../config.php');
         global $DB, $CFG;
         require_once ($CFG->dirroot . '/lib/accesslib.php');
@@ -772,17 +792,17 @@ class cursive_json_func_data extends external_api
 
         $data = $DB->get_record_sql($attempts);
 
-        $data = (array)$data;
+        $data = (array) $data;
         $data['first_file'] = 0;
 
         if (!isset($data->filename)) {
-        $filename = $DB->get_record_sql('select filename,userid from {tiny_cursive_files} where resourceid = :resourceid
+            $filename = $DB->get_record_sql('select filename,userid from {tiny_cursive_files} where resourceid = :resourceid
         AND cmid = :cmid
         AND modulename = :modulename', ['resourceid' => $id, 'cmid' => $cmid, 'modulename' => $modulename]);
 
-            $filep=$CFG->dataroot."/temp/userdata/".$filename->filename;
+            $filep = $CFG->dataroot . "/temp/userdata/" . $filename->filename;
 
-            $data['filename'] = file_exists($filep)?$filep:null;
+            $data['filename'] = file_exists($filep) ? $filep : null;
             $firstfile = $DB->get_record_sql('select * from {tiny_cursive_files}
          where userid = :userid ORDER BY id ASC LIMIT 1', ['userid' => $filename->userid]);
             if ($firstfile == $filename->file_id) {
@@ -813,7 +833,8 @@ class cursive_json_func_data extends external_api
      *
      * @return external_value
      */
-    public static function get_forum_comment_link_returns() {
+    public static function get_forum_comment_link_returns()
+    {
         return new external_value(PARAM_RAW, 'Comment Link');
     }
 
@@ -822,7 +843,8 @@ class cursive_json_func_data extends external_api
      *
      * @return external_function_parameters
      */
-    public static function get_quiz_comment_link_parameters() {
+    public static function get_quiz_comment_link_parameters()
+    {
         return new external_function_parameters(
             [
                 'id' => new external_value(PARAM_INT, 'id', false, 'course_detail'),
@@ -886,8 +908,8 @@ class cursive_json_func_data extends external_api
             AND cmid = :cmid
             AND modulename = :modulename', ['resourceid' => $id, 'cmid' => $cmid, 'modulename' => $modulename]);
 
-                $filep=$CFG->dataroot."/temp/userdata/".$filename->filename;
-                $data['filename'] = file_exists($filep)?$filep:null;
+                $filep = $CFG->dataroot . "/temp/userdata/" . $filename->filename;
+                $data['filename'] = file_exists($filep) ? $filep : null;
             }
 
         } else {
@@ -910,8 +932,8 @@ class cursive_json_func_data extends external_api
   AND cmid = :cmid
   AND modulename = :modulename', ['resourceid' => $id, 'cmid' => $cmid, 'modulename' => $modulename]);
 
-                $filep=$CFG->dataroot."/temp/userdata/".$filename->filename;
-                $data['filename'] = file_exists($filep)?$filep:null;
+                $filep = $CFG->dataroot . "/temp/userdata/" . $filename->filename;
+                $data['filename'] = file_exists($filep) ? $filep : null;
             }
         }
         $usercomment = [];
@@ -931,7 +953,8 @@ class cursive_json_func_data extends external_api
      *
      * @return external_value
      */
-    public static function get_quiz_comment_link_returns() {
+    public static function get_quiz_comment_link_returns()
+    {
         return new external_value(PARAM_RAW, 'Comment Link');
     }
 
@@ -940,7 +963,8 @@ class cursive_json_func_data extends external_api
      *
      * @return external_function_parameters
      */
-    public static function get_assign_comment_link_parameters() {
+    public static function get_assign_comment_link_parameters()
+    {
         return new external_function_parameters(
             [
                 'id' => new external_value(PARAM_INT, 'id', false, 'course_detail'),
@@ -963,7 +987,8 @@ class cursive_json_func_data extends external_api
      * @throws moodle_exception
      * @throws require_login_exception
      */
-    public static function get_assign_comment_link($id, $modulename, $cmid) {
+    public static function get_assign_comment_link($id, $modulename, $cmid)
+    {
         global $DB;
         require_login();
         $params = self::validate_parameters(
@@ -996,7 +1021,8 @@ class cursive_json_func_data extends external_api
      *
      * @return external_value
      */
-    public static function get_assign_comment_link_returns() {
+    public static function get_assign_comment_link_returns()
+    {
         return new external_value(PARAM_RAW, 'Comment Link');
     }
 
@@ -1005,7 +1031,8 @@ class cursive_json_func_data extends external_api
      *
      * @return external_function_parameters
      */
-    public static function get_assign_grade_comment_parameters() {
+    public static function get_assign_grade_comment_parameters()
+    {
         return new external_function_parameters(
             [
                 'id' => new external_value(PARAM_INT, 'id', false, 'course_detail'),
@@ -1028,7 +1055,8 @@ class cursive_json_func_data extends external_api
      * @throws moodle_exception
      * @throws require_login_exception
      */
-    public static function get_assign_grade_comment($id, $modulename, $cmid) {
+    public static function get_assign_grade_comment($id, $modulename, $cmid)
+    {
         global $DB, $CFG;
         require_login();
         $params = self::validate_parameters(
@@ -1058,8 +1086,8 @@ class cursive_json_func_data extends external_api
         AND cmid = :cmid
         AND modulename = :modulename', ['resourceid' => $id, 'cmid' => $cmid, 'modulename' => $modulename]);
 
-            $filep=$CFG->dataroot."/temp/userdata/".$filename->filename;
-            $data['filename'] = file_exists($filep)?$filep:null;
+            $filep = $CFG->dataroot . "/temp/userdata/" . $filename->filename;
+            $data['filename'] = file_exists($filep) ? $filep : null;
             $data['file_id'] = $filename->id;
             $data['userid'] = $filename->userid;
         }
@@ -1092,7 +1120,8 @@ class cursive_json_func_data extends external_api
      *
      * @return external_value
      */
-    public static function get_assign_grade_comment_returns() {
+    public static function get_assign_grade_comment_returns()
+    {
         return new external_value(PARAM_RAW, 'Comment Link');
     }
 
@@ -1101,7 +1130,8 @@ class cursive_json_func_data extends external_api
      *
      * @return external_function_parameters
      */
-    public static function get_user_list_submission_stats_parameters() {
+    public static function get_user_list_submission_stats_parameters()
+    {
         return new external_function_parameters(
             [
                 'id' => new external_value(PARAM_INT, 'id', false, 'course_detail'),
@@ -1124,7 +1154,8 @@ class cursive_json_func_data extends external_api
      * @throws moodle_exception
      * @throws require_login_exception
      */
-    public static function get_user_list_submission_stats($id, $modulename, $cmid) {
+    public static function get_user_list_submission_stats($id, $modulename, $cmid)
+    {
         global $DB;
         require_login();
         $params = self::validate_parameters(
@@ -1146,7 +1177,8 @@ class cursive_json_func_data extends external_api
      *
      * @return external_value
      */
-    public static function get_user_list_submission_stats_returns() {
+    public static function get_user_list_submission_stats_returns()
+    {
         return new external_value(PARAM_RAW, 'Comment Link');
     }
 
@@ -1155,7 +1187,8 @@ class cursive_json_func_data extends external_api
      *
      * @return external_function_parameters
      */
-    public static function cursive_filtered_writing_func_parameters() {
+    public static function cursive_filtered_writing_func_parameters()
+    {
         return new external_function_parameters(
             [
                 'id' => new external_value(PARAM_TEXT, 'id', false, 'id'),
@@ -1174,7 +1207,8 @@ class cursive_json_func_data extends external_api
      * @throws moodle_exception
      * @throws require_login_exception
      */
-    public static function cursive_filtered_writing_func($id) {
+    public static function cursive_filtered_writing_func($id)
+    {
         global $DB, $USER;
         require_login();
         $userid = $USER->id;
@@ -1214,7 +1248,8 @@ class cursive_json_func_data extends external_api
      *
      * @return external_value
      */
-    public static function cursive_filtered_writing_func_returns() {
+    public static function cursive_filtered_writing_func_returns()
+    {
         return new external_value(PARAM_RAW, 'Comment Link');
     }
 
@@ -1225,7 +1260,8 @@ class cursive_json_func_data extends external_api
      *
      * @return object [explicite description]
      */
-    public static function store_user_writing_parameters() {
+    public static function store_user_writing_parameters()
+    {
         return new external_function_parameters(self::storing_user_writing_param());
     }
 
@@ -1248,14 +1284,21 @@ class cursive_json_func_data extends external_api
      *
      * @return array [explicite description]
      */
-    public static function store_user_writing($person_id, $file_id, $character_count, $total_time_seconds, $characters_per_minute, $key_count, $keys_per_minute, $word_count, $words_per_minute, $backspace_percent, $copy_behavior, $score) {
+    public static function store_user_writing($person_id, $file_id, $character_count, $total_time_seconds, $characters_per_minute, $key_count, $keys_per_minute, $word_count, $words_per_minute, $backspace_percent, $copy_behavior, $score)
+    {
         global $DB;
 
         try {
             $apiEnd = get_config('tiny_cursive', 'python_server');
             $backspace_percent = round($backspace_percent, 4);
-
-            $data = new stdClass();
+        
+            // Check if the record exists
+            $recordExists = $DB->record_exists('tiny_cursive_user_writing', ['file_id' => $file_id]);
+        
+            // Retrieve existing data or initialize a new stdClass object
+            $data = $recordExists ? $DB->get_record('tiny_cursive_user_writing', ['file_id' => $file_id]) : new stdClass();
+        
+            // Populate data attributes
             $data->file_id = $file_id;
             $data->total_time_seconds = $total_time_seconds;
             $data->key_count = $key_count;
@@ -1267,19 +1310,26 @@ class cursive_json_func_data extends external_api
             $data->backspace_percent = $backspace_percent;
             $data->score = $score;
             $data->copy_behavior = $copy_behavior;
-
-            $DB->insert_record('tiny_cursive_user_writing', $data);
-
+        
+            // Update or insert the record
+            if ($recordExists) {
+                $DB->update_record('tiny_cursive_user_writing', $data);
+            } else {
+                $DB->insert_record('tiny_cursive_user_writing', $data);
+            }
+        
+            // Return success status
             return [
                 'status' => 'success',
-                'message' => "Data saved successfully",
+                'message' => 'Data saved successfully',
             ];
         } catch (dml_exception $e) {
+            // Return failure status with error message
             return [
                 'status' => 'failed',
                 'message' => $e->getMessage()
             ];
-        }
+        }        
     }
 
     /**
@@ -1287,7 +1337,8 @@ class cursive_json_func_data extends external_api
      *
      * @return external_single_structure [explicite description]
      */
-    public static function store_user_writing_returns() {
+    public static function store_user_writing_returns()
+    {
         return new external_single_structure([
             'status' => new external_value(PARAM_TEXT, 'status message'),
             'message' => new external_value(PARAM_TEXT, 'message'),
@@ -1300,7 +1351,8 @@ class cursive_json_func_data extends external_api
      *
      * @return  external_single_structure [explicite description]
      */
-    public static function cursive_get_reply_json_parameters() {
+    public static function cursive_get_reply_json_parameters()
+    {
         return new external_function_parameters([
             'filepath' => new external_value(PARAM_TEXT, 'filepath', true),
         ]);
@@ -1313,7 +1365,8 @@ class cursive_json_func_data extends external_api
      *
      * @return object [explicite description]
      */
-    public static function cursive_get_reply_json($filepath) {
+    public static function cursive_get_reply_json($filepath)
+    {
         $data = new stdClass;
         try {
             if (!file_exists($filepath)) {
@@ -1347,7 +1400,8 @@ class cursive_json_func_data extends external_api
      *
      * @return array [explicite description]
      */
-    static function storing_user_writing_param() {
+    static function storing_user_writing_param()
+    {
         return [
             'person_id' => new external_value(PARAM_RAW, 'person or user id', true),
             'file_id' => new external_value(PARAM_RAW, 'file_id', true, 'course_detail'),
@@ -1361,7 +1415,7 @@ class cursive_json_func_data extends external_api
             'backspace_percent' => new external_value(PARAM_RAW, 'backspace_percent', true, 'course_detail'),
             'copy_behaviour' => new external_value(PARAM_RAW, 'copy_behavior', true, 'course_detail'),
             'copy_behavior' => new external_value(PARAM_RAW, 'copy_behavior', true, 'course_detail'),
-            'score' => new external_value(PARAM_RAW, 'score', false, 0,true),
+            'score' => new external_value(PARAM_RAW, 'score', false, 0, true),
         ];
     }
 }

@@ -50,12 +50,14 @@ export const register = (editor) => {
                 if (ur.includes("attempt.php")||ur.includes("forum")||ur.includes("assign")){ }else{
                     return false;
                 }
+
                 if (ur.includes("forum")||ur.includes("assign")) {
                     cmid=parm.searchParams.get('id');
                 }else{
                     cmid=parm.searchParams.get('cmid');
                     recourceId=parm.searchParams.get('attempt');
                 }
+
                 if(recourceId===null){
                     recourceId=0;
                 }
@@ -95,31 +97,36 @@ export const register = (editor) => {
     const sendKeyEvent=(event, ed)=>{
          let ur = ed.srcElement.baseURI;
          let parm = new URL(ur);
-         let recourceId=0;
+         let recourceId = 0;
          let modulename="";
-        let cmid=0;
-        let editorid=editor?.id;
+         let editorid=editor?.id;
+         let bodyid = jQuery('body').attr('class');
+         let classes= bodyid.split(' ');
+         let cmid =parseInt(classes.find((classname)=>{ return classname.startsWith('cmid-')}).split('-')[1]); // Getting cmid from body classlist.
+        //  console.log("first: ",classes.find((classname)=>{ return classname.startsWith('cmid-')}).split('-')[1]);
          if (ur.includes("attempt.php")||ur.includes("forum")||ur.includes("assign")){}else{
             return false;
          }
          if (ur.includes("forum")||ur.includes("assign")) {
-            cmid=parm.searchParams.get('id');
+            // cmid=parm.searchParams.get('id');
         }else{
-            cmid=parm.searchParams.get('cmid');
+            // cmid=parm.searchParams.get('cmid');
             recourceId=parm.searchParams.get('attempt');
         }
-        // if(recourceId===null){
-        //     recourceId=0;
-        // }
-        if(cmid===null){ cmid=0;}
+        if(recourceId===null){
+
+            recourceId=0;
+        }
+        // if(cmid===null){ cmid=0;}
         if (ur.includes("forum")){
-            if(reply=parm.searchParams.get('reply')){
-                cmid=reply; // Find cmid using reply id.
-            }else if(parm.searchParams.get('edit')){
-                recourceId=parm.searchParams.get('edit'); // Find cmid using resouceid id.
-                console.log("here: ", recourceId);           
-            };
             
+            // if(reply=parm.searchParams.get('reply')){
+            //     cmid=reply; // Find cmid using reply id.
+            // }else if(parm.searchParams.get('edit')){
+            //     recourceId=parm.searchParams.get('edit'); // Find cmid using resouceid id.
+            //     console.log("here: ", recourceId);           
+            // };
+         
             modulename="forum";
         }
         if (ur.includes("assign")){
@@ -128,6 +135,7 @@ export const register = (editor) => {
         if (ur.includes("attempt")){
             modulename="quiz";
         }
+ 
         postOne('cursive_json', {
             key: ed.key,
             event: event,

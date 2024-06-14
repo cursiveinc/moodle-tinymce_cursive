@@ -73,8 +73,18 @@ class observers {
      * @throws \dml_exception
      */
     public static function update_cursive_files($event) {
+
         global $DB, $CFG;
         $eventdata = $event->get_data();
+        // Injecting Post ID to Event objectid for first forum post. 
+        if($eventdata['target'] === "discussion") {
+            $discussid= $eventdata['objectid'];
+            $postdata = $DB->get_record('forum_posts',['discussion' => $discussid]);
+            if($postdata) {
+                $eventdata['objectid'] = $postdata->id;
+            }
+        }
+
         $table = 'tiny_cursive_files';
         $conditions = [
             "userid" => $eventdata['userid'],
@@ -171,6 +181,9 @@ class observers {
                 $DB->update_record($table, $dataobj, true);
             }
         }
+
+        self::update_cursive_files($event);
+      
     }
 
     /**
