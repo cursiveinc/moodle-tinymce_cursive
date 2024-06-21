@@ -60,7 +60,7 @@ $functions = [
         'description' => 'generate Reports for download',
         'type' => 'write',
         'ajax' => true,
-        'capabilities' => 'tiny/cursive:view',
+        'capabilities' => 'tiny/cursive:write',
     ],
     'cursive_approve_token' => [
         'classname' => 'cursive_json_func_data',
@@ -69,7 +69,7 @@ $functions = [
         'description' => 'generate Reports for download',
         'type' => 'write',
         'ajax' => true,
-        'capabilities' => 'tiny/cursive:view',
+        'capabilities' => 'tiny/cursive:editsettings',
     ],
     'cursive_user_comments' => [
         'classname' => 'cursive_json_func_data',
@@ -78,7 +78,7 @@ $functions = [
         'description' => 'User Comments',
         'type' => 'write',
         'ajax' => true,
-        'capabilities' => 'tiny/cursive:view',
+        'capabilities' => 'tiny/cursive:write',
     ],
     'cursive_get_comment_link' => [
         'classname' => 'cursive_json_func_data',
@@ -143,7 +143,7 @@ $functions = [
         'description' => 'Storing User Writings',
         'type' => 'write',
         'ajax' => true,
-        'capabilities' => 'tiny/cursive:view',
+        'capabilities' => 'tiny/cursive:write',
         'services' => [MOODLE_OFFICIAL_MOBILE_SERVICE],
     ],
     'cursive_get_reply_json' => [

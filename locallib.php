@@ -244,7 +244,6 @@ function get_user_submissions_data($resourceid, $modulename, $cmid, $courseid = 
         $filename = $DB->get_record_sql($sql, ['userid' => $resourceid, 'cmid' => $cmid, 'modulename' => $modulename]);
 
         if ($filename) {
-            $context = context_system::instance();
             $filep=$CFG->dataroot."/temp/userdata/".$filename->filename;
             $data['filename'] = file_exists($filep)?$filep:null;
             $data['file_id'] = $filename->fileid ?? '';

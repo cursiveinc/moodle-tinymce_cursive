@@ -57,24 +57,25 @@ export const register = (editor) => {
                  editor.execCommand('Paste');
                 }
                 let ur = e.srcElement.baseURI;
-                let parm = new URL(ur);
-                let recourceId=0;
-                let cmid=0;
-                let modulename="";
-                let editorid=editor?.id;
+                let recourceId = 0;
+                let modulename = "";
+                let editorid = editor?.id;
+                let bodyid = jQuery('body').attr('class');
+                let classes = bodyid.split(' ');
+                let courseid =parseInt(classes.find((classname)=>{ return classname.startsWith('course-')}).split('-')[1]); // Getting cmid from body classlist.
+                let cmid = parseInt(classes.find((classname)=>{ return classname.startsWith('cmid-')}).split('-')[1]); // Getting cmid from body classlist.
+       
+
                 if (ur.includes("attempt.php")||ur.includes("forum")||ur.includes("assign")){ }else{
                     return false;
                 }
-
-                if (ur.includes("forum")||ur.includes("assign")) {
-                    cmid=parm.searchParams.get('id');
-                }else{
-                    cmid=parm.searchParams.get('cmid');
-                    recourceId=parm.searchParams.get('attempt');
+                
+                if (!ur.includes("forum") && !ur.includes("assign")) {
+                    recourceId = parm.searchParams.get('attempt');
                 }
 
                 if(recourceId===null){
-                    recourceId=0;
+                    recourceId = 0;
                 }
                 if (ur.includes("forum")){
                     modulename="forum";
@@ -91,7 +92,7 @@ export const register = (editor) => {
                     modulename: modulename,
                     cmid: cmid,
                     resourceid: recourceId,
-                    courseid: 0,
+                    courseid: courseid,
                     usercomment:number,
                     timemodified:"1121232",
                     editorid:editorid?editorid:""

@@ -90,7 +90,7 @@ class wrreportform extends moodleform {
         // Get users dropdown.
         global $DB;
         $mdetail = [];
-        $mdetail[0] = 'All Modules';
+        $mdetail[0] = get_string('allmodule','tiny_cursive');
         if ($courseid) {
             $sql = "SELECT id, instance  
                       FROM {course_modules} 

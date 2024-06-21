@@ -101,7 +101,7 @@ class observers {
                 $fname = $userid . '_' . $resourceid . '_' . $cmid . '_attempt' . '.json';
                 $sourcefile = $dirname . $rec->filename;
                 $desfilename = $dirname . $fname;
-                $inp = file_get_contents($desfilename);
+                $inp = file_exists($desfilename) ? file_get_contents($desfilename): null;
                 $temparray = null;
                 if ($inp) {
                     $temparray = json_decode($inp, true);

@@ -102,7 +102,7 @@ class tiny_cursive_data {
         $courseid = (int)$params['courseid'];
 
         $udetail2['id'] = 0;
-        $udetail2['name'] = 'All Modules';
+        $udetail2['name'] = get_string('allmodule','tiny_cursive');
         $allusers->userlist[] = $udetail2;
         $sql = "SELECT id, instance  FROM {course_modules}
                  WHERE course = :courseid";

@@ -142,10 +142,10 @@ class tiny_cursive_renderer extends plugin_renderer_base {
         $content = html_writer::start_div('modal', ['id' => 'score' . $user->attemptid, 'role' => 'dialog']);
         $content .= html_writer::start_div('modal-dialog');
         $content .= html_writer::start_div('modal-content');
-        $content .= html_writer::tag('div', 'Your Random Reflection Prompt', ['class' => 'modal-header']);
+        $content .= html_writer::tag('div', get_string('random_reflex','tiny_cursive'), ['class' => 'modal-header']);
         $content .= html_writer::start_div('modal-body');
-        $content .= html_writer::tag('div', 'Authorship Confidence: ' . $user->score, ['class' => 'position']);
-        $content .= html_writer::tag('div', 'Copy Behavior: ' . $user->copy_behavior, ['class' => 'position']);
+        $content .= html_writer::tag('div', get_string("authorship",'tiny_cursive') . $user->score, ['class' => 'position']);
+        $content .= html_writer::tag('div', get_string('copy_behave','tiny_cursive') . $user->copy_behavior, ['class' => 'position']);
         $content .= html_writer::end_div();
         $content .= html_writer::start_div('modal-footer');
         $content .= html_writer::tag(
@@ -171,7 +171,7 @@ class tiny_cursive_renderer extends plugin_renderer_base {
         $content = html_writer::start_div('modal', ['id' => 'playback_' . $user->attemptid, 'role' => 'dialog']);
         $content .= html_writer::start_div('modal-dialog');
         $content .= html_writer::start_div('modal-content');
-        $content .= html_writer::tag('div', 'Playback Video', ['class' => 'modal-header']);
+        $content .= html_writer::tag('div', get_string("playback",'tiny_cursive'), ['class' => 'modal-header']);
         $content .= html_writer::start_div('modal-body');
         $content .= html_writer::start_div('div', ['id' => 'output_playback_' . $user->attemptid]);
         $content .= html_writer::end_div();
@@ -211,9 +211,9 @@ class tiny_cursive_renderer extends plugin_renderer_base {
 
         $table = new html_table();
         $table->head = [
-            'Attemptid',
-            'Full Name',
-            'Email',
+            get_string('attemptid','tiny_cursive'),
+            get_string('fulname','tiny_cursive'),
+            get_string('email','tiny_cursive'),
             get_string('module_name', 'tiny_cursive'),
             get_string('last_modified', 'tiny_cursive'),
             get_string('playback', 'tiny_cursive'),
@@ -360,7 +360,7 @@ class tiny_cursive_renderer extends plugin_renderer_base {
         ]);
 
         echo html_writer::start_tag('div', ['class' => 'mb-4']);
-        echo html_writer::tag('strong','Select Course');
+        echo html_writer::tag('strong',get_string("selectcrs",'tiny_cursive'));
         echo html_writer::end_tag('strong');
         echo "<br>";
         echo $select;

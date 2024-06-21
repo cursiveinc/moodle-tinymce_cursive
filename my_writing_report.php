@@ -54,7 +54,7 @@ $courseid = optional_param('courseid', 0, PARAM_INT);
 
 
 if(optional_param('course', 0, PARAM_INT) && !is_siteadmin($USER->id) && optional_param('id',0,PARAM_INT) !== $USER->id) {
-    $courseid=optional_param('course', 0, PARAM_INT);
+    $courseid = optional_param('course', 0, PARAM_INT);
 }
 
 $limit = 5;
@@ -64,11 +64,10 @@ $context = \CONTEXT_SYSTEM::instance();
 $haseditcapability = has_capability('tiny/cursive:view', $context);
 
 if($courseid) {
-
-$role=$DB->get_record('role',['shortname' => 'editingteacher']);
-$roleid=$role->id;
-$coursecontext= context_course::instance($courseid);
-$isvalid=$DB->get_records('role_assignments', ['userid' => $USER->id, 'roleid' => $roleid,'contextid' => $coursecontext->id]);
+    $role = $DB->get_record('role',['shortname' => 'editingteacher']);
+    $roleid = $role->id;
+    $coursecontext= context_course::instance($courseid);
+    $isvalid=$DB->get_records('role_assignments', ['userid' => $USER->id, 'roleid' => $roleid,'contextid' => $coursecontext->id]);
 }
 
 if (!$haseditcapability && $userid != $USER->id && !$isvalid) {

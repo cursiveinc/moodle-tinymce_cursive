@@ -37,42 +37,42 @@
                     <h4 class="modal-title">{{tabledata.modulename}}</h4>
                 {{/tabledata.modulename}}
                 {{^tabledata.modulename}}
-                    <h4 class="modal-title">Cursive Writing Report</h4>
+                    <h4 class="modal-title">{{#str}}cursivewritingreport, tiny_cursive {{/str}} </h4>
                 {{/tabledata.modulename}}
             </div>
             <div class="modal-body">
                 {{#tabledata.total_time_seconds}}
                     {{#tabledata.word_count}}
                         <div class="position">
-                            <p>Time Writing: {{tabledata.total_time_seconds}}</p>
+                            <p>{{#str}}time_writing, tiny_cursive {{/str}} {{tabledata.total_time_seconds}}</p>
                             <span></span>
                         </div>
                         <div class="position">
-                            <p>Words per minute: {{tabledata.words_per_minute}}</p>
+                            <p>{{#str}}wordpermin, tiny_cursive {{/str}} {{tabledata.words_per_minute}}</p>
                             <span></span>
                         </div>
                         <div class="position">
-                            <p>Total Words: {{tabledata.word_count}}</p>
+                            <p>{{#str}}total_word, tiny_cursive {{/str}} {{tabledata.word_count}}</p>
                             <span></span>
                         </div>
                         <div class="position">
-                            <p>Backspace %: {{tabledata.backspace_percent}}</p>
+                            <p>{{#str}}backspace, tiny_cursive {{/str}} %: {{tabledata.backspace_percent}}</p>
                             <span></span>
                         </div>
                     {{/tabledata.word_count}}
                 {{/tabledata.total_time_seconds}}
                 {{^tabledata.total_time_seconds}}
-                    <p>No payload data received yet</p>
+                    <p>{{#str}}nopaylod, tiny_cursive {{/str}}</p>
                 {{/tabledata.total_time_seconds}}
                 {{#tabledata.total_time_seconds}}
                     {{^tabledata.word_count}}
-                        <p>No payload data received yet</p>
+                        <p> {{#str}}nopaylod, tiny_cursive {{/str}} </p>
                     {{/tabledata.word_count}}
                 {{/tabledata.total_time_seconds}}
             </div>
             <div class="modal-footer">
                 <button type="button" id="modal-close{{userid}}" data-resource="{{userid}}"
-                        class="btn btn-primary" data-dismiss="modal">Close
+                        class="btn btn-primary" data-dismiss="modal">{{#str}}close, tiny_cursive {{/str}}
                 </button>
             </div>
         </div>
@@ -86,7 +86,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" id="modal-close{{userid}}" data-resource="{{userid}}" class="btn btn-primary"
-                        data-dismiss="modal">Close
+                        data-dismiss="modal">{{#str}}close, tiny_cursive {{/str}}
                 </button>
             </div>
         </div>
@@ -96,14 +96,14 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Playback Video</h4>
+                <h4 class="modal-title">{{#str}}playback, tiny_cursive {{/str}}</h4>
             </div>
             <div class="modal-body">
                 <div id="output_playback_{{userid}}"></div>
             </div>
             <div class="modal-footer">
                 <button type="button" id="modal-close-playback{{userid}}" data-resource="{{userid}}"
-                        class="btn btn-primary" data-dismiss="modal">Close
+                        class="btn btn-primary" data-dismiss="modal"> {{#str}}close, tiny_cursive {{/str}}
                 </button>
             </div>
         </div>

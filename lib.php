@@ -58,7 +58,6 @@ function tiny_cursive_get_path_from_pluginfile(array $args): array {
  * @param array $args extra arguments
  * @param bool $forcedownload whether or not force download
  * @param array $options additional options affecting the file serving
- * @return bool false if file not found, does not return if found - just send the file
  */
 function tiny_cursive_pluginfile($context, $filearea, $args, $forcedownload, array $options=[]) {
     $itemid = array_shift($args);
@@ -91,7 +90,7 @@ function tiny_cursive_extend_navigation_course(\navigation_node $navigation, \st
     global $CFG, $USER, $DB;
     require_once(__DIR__."/locallib.php");
 
-    $url = new moodle_url($CFG->wwwroot . '/lib/editor/tiny/plugins/cursive/tiny_cursive_report.php');
+    $url = new moodle_url($CFG->wwwroot . '/lib/editor/tiny/plugins/cursive/tiny_cursive_report.php',['courseid' => $course->id]);
     $editingteacherrole = $DB->get_record('role', ['shortname' => 'editingteacher'], '*', MUST_EXIST);
     $editingteacherroleid = $editingteacherrole->id;
     // Check if the user is an editing teacher in any course context
@@ -99,7 +98,7 @@ function tiny_cursive_extend_navigation_course(\navigation_node $navigation, \st
     
     if(get_admin()->id == $USER->id || $iseditingteacher) {
         $navigation->add(
-            "Writing Activity Report",
+            get_string('wractivityreport','tiny_cursive'),
             $url,
             navigation_node::TYPE_SETTING,
             null,

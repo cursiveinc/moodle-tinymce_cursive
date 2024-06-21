@@ -259,7 +259,7 @@ class cursive_json_func_data extends external_api
             $cm = $DB->get_record('course_modules', ['id' => $params['cmid']]);
             $courseid = $cm->course;
             $userdata["courseId"] = $courseid;
-            
+
             // Get course context
             $context = context_module::instance($params['cmid']);
             self::validate_context($context);
@@ -389,7 +389,7 @@ class cursive_json_func_data extends external_api
             $cm = $DB->get_record('course_modules', ['course' => $courseid]);
             $context = context_module::instance($cm->id);
             self::validate_context($context);
-            require_capability("tiny/cursive:view", $context);
+            require_capability("tiny/cursive:write", $context);
             
         }
     
@@ -472,10 +472,12 @@ class cursive_json_func_data extends external_api
                 'editorid' => $editorid,
             ]
         );
+        require_once($CFG->libdir . '/accesslib.php'); 
         // Capability check
         $context = context_module::instance($params['cmid']);
         self::validate_context($context);
-        require_capability("moodle/course:view",$context);
+        require_capability("tiny/cursive:write",$context);
+
 
         $userid = $USER->id;
         $editorid;
@@ -605,7 +607,7 @@ class cursive_json_func_data extends external_api
      */
     public static function cursive_approve_token_func_returns()
     {
-        return new external_value(PARAM_BOOL, 'Token Approved');
+        return new external_value(PARAM_TEXT, 'Token Approved');
     }
 
 
@@ -1162,6 +1164,10 @@ class cursive_json_func_data extends external_api
             $data['userid'] = $filename->userid;
         }
         if ($data['filename']) {
+
+            $filep = $CFG->dataroot . "/temp/userdata/" . $data['filename'];
+            $data['filename'] = file_exists($filep) ? $filep : null;
+
             $sql = 'SELECT id AS fileid 
                       FROM {tiny_cursive_files}
                      WHERE userid = :userid ORDER BY id ASC';
@@ -1371,6 +1377,10 @@ class cursive_json_func_data extends external_api
 
         try {
 
+            $context = context_system::instance(); // Assuming a system-wide capability check
+            self::validate_context($context);
+            require_capability('tiny/cursive:editsettings', $context);
+
             $backspace_percent = round($backspace_percent, 4);
         
             // Check if the record exists
@@ -1401,13 +1411,13 @@ class cursive_json_func_data extends external_api
         
             // Return success status
             return [
-                'status' => 'success',
-                'message' => 'Data saved successfully',
+                'status' => get_string('success','tiny_cursive'),
+                'message' => get_string('data_save','tiny_cursive'),
             ];
         } catch (dml_exception $e) {
             // Return failure status with error message
             return [
-                'status' => 'failed',
+                'status' => get_string('failed','tiny_cursive'),
                 'message' => $e->getMessage()
             ];
         }        

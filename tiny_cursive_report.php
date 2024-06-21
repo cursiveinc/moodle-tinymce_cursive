@@ -101,7 +101,7 @@ if ($formdata = $mform->get_data()) {
     echo '<a target="_blank" href="' . $CFG->wwwroot . '/lib/editor/tiny/plugins/cursive/csvexport.php?courseid=' . $courseid .
         '&moduleid=' . $moduleid . '&userid=' . $userid . '" id="export" role="button"
         class="btn btn-primary mb-4" style="margin-right:50px;" >' .
-        'Download cumulative Report' . '</a>';
+        get_string('download_csv','tiny_cursive') . '</a>';
     echo $renderer->timer_report($users, $courseid, $page, $limit, $linkurl);
 
 }
