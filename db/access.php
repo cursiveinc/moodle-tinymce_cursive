@@ -32,15 +32,24 @@ $capabilities = [
             'manager' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
         ],
-
+        'clonepermission' => 'moodle/site:configwrite',
     ],
     'tiny/cursive:view' => [
         'captype' => 'read',
-        'contextlevel' => CONTEXT_SYSTEM,
+        'contextlevel' => CONTEXT_MODULE,
         'archetypes' => [
             'manager' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
+            'student' => CAP_ALLOW,
+            'teacher' => CAP_ALLOW,
         ],
 
+    ],
+    'tiny/cursive:write' => [
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_MODULE,
+        'archetypes' => [
+            'student' => CAP_ALLOW,
+        ],
     ],
 ];

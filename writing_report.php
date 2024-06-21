@@ -26,8 +26,8 @@
 require(__DIR__ . '/../../../../../config.php');
 require_once($CFG->dirroot . '/mod/quiz/lib.php');
 require_once($CFG->dirroot . '/mod/quiz/locallib.php');
-require_once('classes/forms/wrreportform.php');
-require_once('locallib.php');
+require_once(__DIR__.'/classes/forms/wrreportform.php');
+require_once(__DIR__.'/locallib.php');
 
 global $CFG, $DB, $USER, $PAGE, $OUTPUT;
 
@@ -43,26 +43,24 @@ if (\core\session\manager::is_loggedinas()) {
     die;
 }
 
-$context = \CONTEXT_SYSTEM::instance();
-$haseditcapability = has_capability('tiny/cursive:view', $context);
+
 
 $userid = optional_param('userid', 0, PARAM_INT);
 $courseid = optional_param('courseid', 0, PARAM_INT);
+if($courseid) {
+    $sql = "SELECT * 
+              FROM {course_modules} 
+             WHERE course = :course LIMIT 1";
+    $cm = $DB->get_record_sql($sql,['course' => $courseid]);
+    $context = context_module::instance($cm->id);
+}else {
+    $context = context_system::instance();
+}
+
+$haseditcapability = has_capability('tiny/cursive:view', $context);
 
 $editingteacherrole = $DB->get_record('role', ['shortname' => 'editingteacher'], '*', MUST_EXIST);
 $editingteacherroleid = $editingteacherrole->id;
-
-// Function to check if user has editingteacher role in any course
-
-function is_user_editingteacher($userid, $roleid) {
-    global $DB;
-    $sql = "SELECT ra.id
-            FROM {role_assignments} ra
-            JOIN {context} ctx ON ra.contextid = ctx.id
-            WHERE ra.userid = :userid AND ra.roleid = :roleid AND ctx.contextlevel = :contextlevel";
-    $params = ['userid' => $userid, 'roleid' => $roleid, 'contextlevel' => CONTEXT_COURSE];
-    return $DB->record_exists_sql($sql, $params);
-}
 
 // Check if the user is an editing teacher in any course context
 $iseditingteacher = is_user_editingteacher($USER->id, $editingteacherroleid);
@@ -71,11 +69,11 @@ if (!$haseditcapability && !$iseditingteacher) {
     return redirect(new moodle_url('/course/index.php'), get_string('warning', 'tiny_cursive'));
 }
 
-$username = $userid;
+
 $PAGE->requires->jquery_plugin('jquery');
 $PAGE->requires->js_call_amd('tiny_cursive/cursive_writing_reports', 'init', []);
-$orderby = optional_param('orderby', 'id', PARAM_RAW);
-$order = optional_param('order', 'ASC', PARAM_RAW);
+$orderby = optional_param('orderby', 'id', PARAM_TEXT);
+$order = optional_param('order', 'ASC', PARAM_TEXT);
 $page = optional_param('page', 0, PARAM_INT);
 $limit = 10;
 $perpage = $page * $limit;
@@ -101,7 +99,7 @@ $PAGE->navbar->add($struser);
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('student_writing_statics', 'tiny_cursive'));
 $renderer = $PAGE->get_renderer('tiny_cursive');
-$users = get_user_attempts_data($username, $courseid, null, $orderby, $order, $page, $limit);
-$userprofile = get_user_profile_data($username, $courseid);
-echo $renderer->user_writing_report($users, $userprofile, $username, $page, $limit, $linkurl);
+$users = get_user_attempts_data($userid, $courseid, null, $orderby, $order, $page, $limit);
+$userprofile = get_user_profile_data($userid, $courseid);
+echo $renderer->user_writing_report($users, $userprofile, $userid, $page, $limit, $linkurl);
 echo $OUTPUT->footer();

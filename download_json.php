@@ -24,12 +24,13 @@
  */
 
 require(__DIR__ . '/../../../../../config.php');
+require_once(__DIR__.'/locallib.php');
 require_login();
 
 $resourceid = optional_param('resourceid', 0, PARAM_INT);
 $userid = optional_param('user_id', 0, PARAM_INT);
 $cmid = optional_param('cmid', 0, PARAM_INT);
-$fname = optional_param('fname', '', PARAM_RAW);
+$fname = optional_param('fname', '', PARAM_TEXT);
 
 $filename = '';
 $dirname = $CFG->dataroot . '/temp/userdata/';
@@ -43,11 +44,21 @@ if ($fname) {
     $filename = $dirname . $userid . '_' . $resourceid . '_' . $cmid . '_attempt' . '.json';
 }
 
-$context = \CONTEXT_SYSTEM::instance();
+$context = context_module::instance($cmid);
 // Use csv_export_writer.
 $haseditcapability = has_capability('tiny/cursive:view', $context);
 
-if ($haseditcapability) {
+$editingteacherrole = $DB->get_record('role', ['shortname' => 'editingteacher'], '*', MUST_EXIST);
+$editingteacherroleid = $editingteacherrole->id;
+
+// Check if the user is an editing teacher in any course context
+$iseditingteacher = is_user_editingteacher($USER->id, $editingteacherroleid);
+
+if (!$haseditcapability && !$iseditingteacher) {
+    return redirect(new moodle_url('/course/index.php'), get_string('warning', 'tiny_cursive'));
+}
+
+if ($haseditcapability || $iseditingteacher) {
 
     header("Content-Description: File Transfer");
     header("Content-Type: application/octet-stream");

@@ -1,3 +1,18 @@
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
  * @module     tiny_cursive/modal_functions
  * @category TinyMCE Editor
@@ -5,11 +20,8 @@
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  */
 
-define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], function (
+define(["jquery", "./replay"], function (
     $,
-    AJAX,
-    str,
-    templates,
     Replay
 ) {
     var actions = {
@@ -17,12 +29,10 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
 
             $(".popup_item").on('click', function () {
 
-                // $(".modal").hide();
                 let mid = $(this).data('id');
                 $("#" + mid).show();
             });
             $(".typeid").on('click', function () {
-                // $(".modal").hide();
                 let mid = $(this).data('id');
                 $("#typeid" + mid).show();
             });
@@ -39,11 +49,6 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                     controllerId = 'player'
                 );
             });
-            // $(window).on('click', function (e) {
-            //     if (e.target.id == 'modal-close' + userid) {
-            //         $("#" + userid).hide();
-            //     }
-            // });
         }
     };
     return actions;

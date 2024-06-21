@@ -1,3 +1,17 @@
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * @module     tiny_cursive/replay
@@ -9,7 +23,7 @@
 import {call as fetchJson} from 'core/ajax';
 export default class Replay {
     constructor(elementId, filePath, speed = 1, loop = false, controllerId) {
-        console.log(filePath,elementId,controllerId);
+      
         this.replayInProgress = false;
         this.speed = speed;
         this.loop = loop;
@@ -20,7 +34,7 @@ export default class Replay {
             throw new Error(`Element with id '${elementId}' not found`);
         }
         if (controllerId) {
-            console.log("made it here");
+           
             this.constructController(controllerId);
         }
         this.loadJSON(filePath)
@@ -52,7 +66,7 @@ export default class Replay {
     }
     constructController(controllerId) {
         const controller = document.getElementById(controllerId);
-        console.log(controller);
+        
         if (controller) {
             // this.buttonElement = document.createElement('button');
             // this.buttonElement.id = 'playerButton';
@@ -103,7 +117,7 @@ export default class Replay {
         let textOutput = "";
         let index = 0;
         const processEvent = () => {
-            console.log(11);
+           
             if (this.replayInProgress) {
                 if (index < this.logData.length) {
                     let event = this.logData[index++];

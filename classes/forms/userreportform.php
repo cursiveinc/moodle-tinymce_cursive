@@ -43,17 +43,16 @@ class userreportform extends moodleform {
 
         $mform = &$this->_form;
         $attributes = '';
-        $courseid = $this->_customdata['coursename'];
-        $username = $this->_customdata['username'];
+        $courseid = $this->_customdata['courseid'];
         $users = self::get_user($courseid);
         $modules = self::get_modules($courseid);
         $options = ['multiple' => false, 'includefrontpage' => false];
-        $mform->addElement('course', 'coursename', get_string('coursename', 'tiny_cursive'), $options);
-        $mform->addRule('coursename', null, 'required', null, 'client');
-        $mform->addElement('select', 'modulename', get_string('modulename', 'tiny_cursive'), $modules, $attributes);
-        $mform->setType('modulename', PARAM_RAW);
-        $mform->addElement('select', 'username', get_string('userename', 'tiny_cursive'), $users, $attributes);
-        $mform->setType('username', PARAM_RAW);
+        $mform->addElement('course', 'courseid', get_string('coursename', 'tiny_cursive'), $options);
+        $mform->addRule('courseid', null, 'required', null, 'client');
+        $mform->addElement('select', 'moduleid', get_string('modulename', 'tiny_cursive'), $modules, $attributes);
+        $mform->setType('moduleid', PARAM_TEXT);
+        $mform->addElement('select', 'userid', get_string('userename', 'tiny_cursive'), $users, $attributes);
+        $mform->setType('userid', PARAM_TEXT);
         $options = [
             'id' => 'ID',
             'name' => 'Name',
@@ -61,7 +60,7 @@ class userreportform extends moodleform {
             'date' => 'Date',
         ];
         $mform->addElement('select', 'orderby', get_string('orderby', 'tiny_cursive'), $options, $attributes);
-        $mform->setType('orderby', PARAM_RAW);
+        $mform->setType('orderby', PARAM_TEXT);
         $this->add_action_buttons(false, get_string('submit'));
     }
 
@@ -75,14 +74,14 @@ class userreportform extends moodleform {
         if (!empty($data)) {
             $mform = &$this->_form;
             // Add the studentid properly to the $data object.
-            if (!empty($mform->_submitValues['coursename'])) {
-                $data->coursename = $mform->_submitValues['coursename'];
+            if (!empty($mform->_submitValues['courseid'])) {
+                $data->courseid = $mform->_submitValues['courseid'];
             }
-            if (!empty($mform->_submitValues['username'])) {
-                $data->username = $mform->_submitValues['username'];
+            if (!empty($mform->_submitValues['userid'])) {
+                $data->userid = $mform->_submitValues['userid'];
             }
-            if (!empty($mform->_submitValues['modulename'])) {
-                $data->modulename = $mform->_submitValues['modulename'];
+            if (!empty($mform->_submitValues['moduleid'])) {
+                $data->moduleid = $mform->_submitValues['moduleid'];
             }
             if (!empty($mform->_submitValues['orderby'])) {
                 $data->orderby = $mform->_submitValues['orderby'];

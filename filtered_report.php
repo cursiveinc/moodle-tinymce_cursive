@@ -29,14 +29,18 @@ global $CFG, $DB, $USER, $PAGE, $OUTPUT;
 
 require_once($CFG->dirroot . '/mod/quiz/lib.php');
 require_once($CFG->dirroot . '/mod/quiz/locallib.php');
-require_once('classes/forms/filterreportform.php');
-require_once('locallib.php');
+require_once(__DIR__ . '/classes/forms/filterreportform.php');
+require_once(__DIR__ . '/locallib.php');
 
-require_login(null, false);
+require_login();
 
 $courseid = optional_param('coursename', 0, PARAM_INT);
 $systemcontext = context_system::instance();
 $PAGE->set_context($systemcontext);
+
+$cm = $DB->get_record('course_modules', ['course' => $courseid]);
+$context = context_module::instance($cm->id);
+$haseditcapability = has_capability('tiny/cursive:view', $context);
 
 $PAGE->requires->js_call_amd('tiny_cursive/filter_writing_report', "init", [0]);
 

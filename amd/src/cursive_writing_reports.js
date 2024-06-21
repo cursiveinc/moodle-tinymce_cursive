@@ -1,3 +1,18 @@
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
  * @module     tiny_cursive/cursive_writing_reports
  * @category TinyMCE Editor
@@ -28,7 +43,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                         $(".link_icon").on('click', function () {
                             var smid = $(this).data("id");
                             $("#" + smid).show();
-                            window.console.log("#score" + smid);
+                           
                         });
 
                         $(".video_playback_icon").on('click', function () {
@@ -81,8 +96,8 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                     };
                     templates
                         .render("tiny_cursive/user_list", context)
-                        .then(function (html, js) {
-                            window.console.log(js);
+                        .then(function (html) {
+                           
                             var filtered_user = $("#id_username");
                             filtered_user.html(html);
                         });
@@ -104,8 +119,8 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                     };
                     templates
                         .render("tiny_cursive/module_list", context)
-                        .then(function (html, js) {
-                            window.console.log(js);
+                        .then(function (html) {
+                        
                             var filtered_user = $("#id_modulename");
                             filtered_user.html(html);
                         });

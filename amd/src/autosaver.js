@@ -1,3 +1,18 @@
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
  * @module     tiny_cursive/autosaver
  * @category TinyMCE Editor
@@ -8,9 +23,9 @@
 import { call } from 'core/ajax';
 import { create } from 'core/modal_factory';
 import {get_string as getString} from 'core/str';
-//import {render} from 'core/templates';
 import {save,cancel,hidden} from 'core/modal_events';
 import jQuery from 'jquery';
+
 export const register = (editor) => {
     const postOne = (methodname, args) => call([{
         methodname,
@@ -26,7 +41,7 @@ export const register = (editor) => {
             type:'SAVE_CANCEL',
             title: getString('tiny_cursive','tiny_cursive'),
             body: '<textarea  class="form-control inputUrl" value="" id="inputUrl" placeholder="sourceurl"></textarea>',
-            // render("tiny_cursive/popup_form", ""),
+          
             removeOnClose: true,
         },showLog())
         .done(modal => {
@@ -103,30 +118,22 @@ export const register = (editor) => {
          let bodyid = jQuery('body').attr('class');
          let classes= bodyid.split(' ');
          let cmid =parseInt(classes.find((classname)=>{ return classname.startsWith('cmid-')}).split('-')[1]); // Getting cmid from body classlist.
-        //  console.log("first: ",classes.find((classname)=>{ return classname.startsWith('cmid-')}).split('-')[1]);
+       
          if (ur.includes("attempt.php")||ur.includes("forum")||ur.includes("assign")){}else{
             return false;
          }
          if (ur.includes("forum")||ur.includes("assign")) {
-            // cmid=parm.searchParams.get('id');
+      
         }else{
-            // cmid=parm.searchParams.get('cmid');
+            
             recourceId=parm.searchParams.get('attempt');
         }
         if(recourceId===null){
 
             recourceId=0;
         }
-        // if(cmid===null){ cmid=0;}
+
         if (ur.includes("forum")){
-            
-            // if(reply=parm.searchParams.get('reply')){
-            //     cmid=reply; // Find cmid using reply id.
-            // }else if(parm.searchParams.get('edit')){
-            //     recourceId=parm.searchParams.get('edit'); // Find cmid using resouceid id.
-            //     console.log("here: ", recourceId);           
-            // };
-         
             modulename="forum";
         }
         if (ur.includes("assign")){

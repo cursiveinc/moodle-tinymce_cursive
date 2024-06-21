@@ -43,8 +43,6 @@ class wrreportform extends moodleform {
 
         $mform = &$this->_form;
         $attributes = '';
-        $courseid = $this->_customdata['coursename'];
-        $modules = self::get_modules($courseid);
         $options = ['multiple' => false, 'includefrontpage' => false];
         $mform->addElement('course', 'coursename', get_string('coursename', 'tiny_cursive'), $options);
         $mform->addRule('coursename', null, 'required', null, 'client');
@@ -55,7 +53,7 @@ class wrreportform extends moodleform {
             'date' => 'Date',
         ];
         $mform->addElement('select', 'orderby', get_string('orderby', 'tiny_cursive'), $options, $attributes);
-        $mform->setType('orderby', PARAM_RAW);
+        $mform->setType('orderby', PARAM_TEXT);
         $this->add_action_buttons(false, get_string('submit'));
     }
 
@@ -69,14 +67,14 @@ class wrreportform extends moodleform {
         if (!empty($data)) {
             $mform = &$this->_form;
             // Add the studentid properly to the $data object.
-            if (!empty($mform->_submitValues['coursename'])) {
-                $data->coursename = $mform->_submitValues['coursename'];
+            if (!empty($mform->_submitValues['courseid'])) {
+                $data->courseid = $mform->_submitValues['courseid'];
             }
-            if (!empty($mform->_submitValues['username'])) {
-                $data->username = $mform->_submitValues['username'];
+            if (!empty($mform->_submitValues['userid'])) {
+                $data->userid = $mform->_submitValues['userid'];
             }
-            if (!empty($mform->_submitValues['modulename'])) {
-                $data->modulename = $mform->_submitValues['modulename'];
+            if (!empty($mform->_submitValues['moduleid'])) {
+                $data->moduleid = $mform->_submitValues['moduleid'];
             }
         }
         return $data;
@@ -94,7 +92,11 @@ class wrreportform extends moodleform {
         $mdetail = [];
         $mdetail[0] = 'All Modules';
         if ($courseid) {
-            $modules = $DB->get_records_sql("SELECT id, instance  FROM {course_modules} WHERE course = $courseid ");
+            $sql = "SELECT id, instance  
+                      FROM {course_modules} 
+                     WHERE course = :courseid ";
+                     
+            $modules = $DB->get_records_sql($sql,['courseid' => $courseid]);
             foreach ($modules as $cm) {
                 $modinfo = get_fast_modinfo($courseid);
                 $cm = $modinfo->get_cm($cm->id);

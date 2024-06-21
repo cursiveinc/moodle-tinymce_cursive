@@ -1,3 +1,18 @@
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
  * @module     tiny_cursive/show_url_in_submission_grade
  * @category TinyMCE Editor
@@ -42,16 +57,16 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
     };
 
     var usersTable = {
-        init: function(score_setting, showcomment) {
+        init: function(score_setting) {
             str
                 .get_strings([
                     {key: "field_require", component: "tiny_cursive"},
                 ])
                 .done(function() {
-                    usersTable.appendSubmissionDetail(score_setting, showcomment);
+                    usersTable.appendSubmissionDetail(score_setting);
                 });
         },
-        appendSubmissionDetail: function(score_setting, showcomment) {
+        appendSubmissionDetail: function(score_setting) {
             $(document).ready(function($) {
 
                 var divElement = $('.path-mod-assign [data-region="grade-panel"]')[0];
@@ -62,7 +77,6 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                         var currentContextId = window.location.href;
                         if (currentContextId !== previousContextId) {
                             window.location.reload();
-                            // usersTable.appendSubmissionDetail(score_setting, showcomment);
                             previousContextId = currentContextId;
                         }
                     });
@@ -81,7 +95,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                 var chart = "fa fa-area-chart popup_item";
                 var video = "fa fa-play video_playback";
                 var st = "font-size:24px;color:black;border:none";
-                console.log(userid);
+              
                 let args = {id: userid, modulename: "assign", 'cmid': cmid};
                 let methodname = 'cursive_get_assign_grade_comment';
                 let com = AJAX.call([{methodname, args}]);
@@ -108,7 +122,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                     var score = parseFloat(data.data.score);
                     var icon = 'fa fa-circle-o';
                     var color = 'font-size:24px;color:black';
-                    console.log(data.data.first_file);
+                    
                     if(data.data.first_file){
                         icon = 'fa  fa fa-solid fa-info-circle typeid';
                         color = 'font-size:24px;color:#000000';
@@ -142,7 +156,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                         .render("tiny_cursive/pop_modal", context)
                         .then(function (html) {
                             $("body").append(html);
-                        }).catch(e => window.console.log(e));
+                        }).catch(e => window.console.error(e));
 
                 });
 
@@ -163,14 +177,6 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
             });
         },
     };
-    // $(document).on('click', function(e) {
-    //     let tagName = e.target.tagName;
-    //     if ((tagName == "SMALL") || (tagName == "SPAN") || (tagName == "LI") || (tagName == "A")) {
-    //         setTimeout(() => {
-    //             usersTable.init();
-    //         }, 1000);
-    //     }
-    // });
     return usersTable;
 });
 

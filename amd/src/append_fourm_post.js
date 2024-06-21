@@ -1,3 +1,18 @@
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
  * @module     tiny_cursive/append_fourm_post
  * @category TinyMCE Editor
@@ -63,7 +78,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                         });
                     }
                 });
-                console.log(entry.id);
+               
                 var ids = $("#" + entry.id).data("post-id");
                 var anchorTag = $('a.nav-link.active.active_tree_node[href*="mod/forum/view.php?id="]');
                 var cmid= 0;
@@ -92,7 +107,6 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                     var filepath ='';
                     if (data.data.filename){
                         var filepath = data.data.filename;
-                        console.log(filepath);
                     }
                     if (filepath){
                         var score = parseFloat(data.data.score);
@@ -128,7 +142,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                             .render("tiny_cursive/pop_modal", context)
                             .then(function (html) {
                                 $("body").append(html);
-                            }).catch(e => window.console.log(e));
+                            }).catch(e => window.console.error(e));
                     }
 
                 });

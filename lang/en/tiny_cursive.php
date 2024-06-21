@@ -74,3 +74,24 @@ $string['warning'] = "You have no permissions to access the page.";
 $string['filenotfound'] = "File not found!";
 $string['cursive:view'] = 'View Writing Reports';
 $string['cursive:editsettings'] = "Access Plugin Settings";
+$string['errorverifyingtoken'] = "Error verifying token";
+$string['curlerror'] = "Curl error";
+$string['cursive:write'] = 'Write JSON File or Insert records';
+
+$string['privacy:metadata:database:tiny_cursive'] = 'Information about the tiny cursive data.';
+$string['privacy:metadata:database:tiny_cursive:userid'] = 'The ID of the user who provided the data.';
+$string['privacy:metadata:database:tiny_cursive:timemodified'] = 'The time when the data was last modified.';
+$string['privacy:metadata:database:tiny_cursive_comments'] = 'Information about the tiny cursive comments data.';
+$string['privacy:metadata:database:tiny_cursive_comments:userid'] = 'The ID of the user who provided the comment.';
+$string['privacy:metadata:database:tiny_cursive_comments:commenttext'] = 'The text of the comment.';
+$string['privacy:metadata:database:tiny_cursive_comments:timemodified'] = 'The time when the comment was last modified.';
+$string['privacy:metadata:tiny_cursive'] = 'Tiny cursive plugin user data.';
+
+$string['selectquiz'] = 'Select a quiz';
+$string['field_required'] = 'This field is required';
+$string['selecttime'] = 'Select time option';
+$string['stndtime'] = 'Standard time';
+$string['queswise'] = 'Question-wise';
+$string['enter_time'] = 'Enter time';
+$string['timesave_success'] = 'Time saved successfully';
+$string['timesave_successfull'] = 'Time save operation was successful';

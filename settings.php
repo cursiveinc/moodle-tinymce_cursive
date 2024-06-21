@@ -43,7 +43,7 @@ if (is_siteadmin()) {
         get_string('secretkey', 'tiny_cursive'),
         get_string('secretkey_desc', 'tiny_cursive') . '' .
         "<br/><a id='approve_token' href='#' class='btn btn-primary'>  Test Token </a>
-<span id='token_message'></span>",
+            <span id='token_message'></span>",
         '',
         PARAM_TEXT
     ));

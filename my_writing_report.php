@@ -22,12 +22,15 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+
+global $CFG, $DB, $USER, $PAGE;
+
 require(__DIR__ . '/../../../../../config.php');
 require_once($CFG->dirroot . '/mod/quiz/lib.php');
 require_once($CFG->dirroot . '/mod/quiz/locallib.php');
-require_once('classes/forms/userreportform.php');
-require_once('locallib.php');
-global $CFG, $DB, $USER, $PAGE;
+require_once(__DIR__ . '/classes/forms/filterreportform.php');
+require_once(__DIR__ . '/locallib.php');
+
 require_login();
 
 if (isguestuser()) {
@@ -44,15 +47,16 @@ if(optional_param('id',0,PARAM_INT)) {
     $userid=optional_param('id', 0, PARAM_INT);
 }
 
-$orderby = optional_param('orderby', 'id', PARAM_RAW);
-$order = optional_param('order', 'ASC', PARAM_RAW);
+$orderby = optional_param('orderby', 'id', PARAM_TEXT);
+$order = optional_param('order', 'ASC', PARAM_TEXT);
 $page = optional_param('page', 0, PARAM_INT);
 $courseid = optional_param('courseid', 0, PARAM_INT);
 
 
-if(optional_param('course', 0, PARAM_INT) && !is_siteadmin($USER->id) && optional_param('id',0,PARAM_RAW) !== $USER->id) {
+if(optional_param('course', 0, PARAM_INT) && !is_siteadmin($USER->id) && optional_param('id',0,PARAM_INT) !== $USER->id) {
     $courseid=optional_param('course', 0, PARAM_INT);
 }
+
 $limit = 5;
 $isvalid = false;
 
@@ -66,7 +70,6 @@ $roleid=$role->id;
 $coursecontext= context_course::instance($courseid);
 $isvalid=$DB->get_records('role_assignments', ['userid' => $USER->id, 'roleid' => $roleid,'contextid' => $coursecontext->id]);
 }
-
 
 if (!$haseditcapability && $userid != $USER->id && !$isvalid) {
 

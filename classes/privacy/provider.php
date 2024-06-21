@@ -30,6 +30,9 @@ use core_privacy\local\metadata\collection;
 use core_privacy\local\request\userlist;
 use core_privacy\local\request\approved_userlist;
 use stdClass;
+use core_privacy\local\request\transform;
+use context;
+
 
 /**
  * Privacy Subsystem implementation for tiny_cursive.
@@ -56,10 +59,16 @@ class provider implements
      */
     public static function get_metadata(collection $collection): collection {
         // There isn't much point giving details about the pageid, etc.
-        $collection->add_database_table('tiny_cursive', [
+        $collection->add_database_table('tiny_cursive_files', [
             'userid' => 'privacy:metadata:database:tiny_cursive:userid',
             'timemodified' => 'privacy:metadata:database:tiny_cursive:timemodified',
         ], 'privacy:metadata:database:tiny_cursive');
+
+        $collection->add_database_table('tiny_cursive_comments', [
+            'userid' => 'privacy:metadata:database:tiny_cursive_comments:userid',
+            'commenttext' => 'privacy:metadata:database:tiny_cursive_comments:commenttext',
+            'timemodified' => 'privacy:metadata:database:tiny_cursive_comments:timemodified',
+        ], 'privacy:metadata:database:tiny_cursive_comments');
 
         return $collection;
     }
@@ -82,7 +91,9 @@ class provider implements
         $contextlist->add_from_sql($sql, ['contextuser' => CONTEXT_USER, 'userid' => $userid]);
 
         // Data may be saved against the userid.
-        $sql = "SELECT cmid FROM {tiny_cursive_files} WHERE userid = :userid";
+        $sql = "SELECT cmid 
+                  FROM {tiny_cursive_files} 
+                 WHERE userid = :userid";
         $contextlist->add_from_sql($sql, ['userid' => $userid]);
 
         return $contextlist;
@@ -193,7 +204,9 @@ class provider implements
         [$contextsql, $contextparams] = $DB->get_in_or_equal($contextlist->get_contextids(), SQL_PARAMS_NAMED);
         $contextparams['userid'] = $user->id;
 
-        $sql = "SELECT * FROM {tiny_cursive_files} WHERE cmid {$contextsql}";
+        $sql = "SELECT * 
+                  FROM {tiny_cursive_files} 
+                 WHERE cmid {$contextsql}";
         $autosaves = $DB->delete_records_select(
             'tiny_cursive_files',
             "userid = :userid AND cmid {$contextsql}",
@@ -224,4 +237,29 @@ class provider implements
             'noclean' => true,
         ];
     }
+
+    /**
+ * Export autosave records for a user.
+ *
+ * @param stdClass $user The user whose data is being exported.
+ * @param \moodle_recordset $autosaves The recordset of autosave data to export.
+ */
+    protected static function export_autosaves(stdClass $user, \moodle_recordset $autosaves) {
+        foreach ($autosaves as $autosave) {
+            $data = (object)[
+                'contextid' => $autosave->contextid,
+                'userid' => $autosave->userid,
+                'content' => $autosave->content,
+                'timemodified' => transform::datetime($autosave->timemodified)
+            ];
+
+            // Write the data to the export location.
+            writer::with_context(\context::instance_by_id($autosave->contextid))
+                ->export_data([
+                    get_string('privacy:metadata:tiny_cursive', 'tiny_cursive')
+                ], $data);
+        }
+        $autosaves->close();
+    }
+
 }
