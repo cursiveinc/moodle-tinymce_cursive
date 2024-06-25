@@ -71,8 +71,12 @@ class userreportform extends moodleform {
             $PAGE->requires->js_init_code("
 
             const courseNameElement = document.querySelector('#id_courseid option[selected]'); // Select the selected option
+            
+            if(!courseNameElement){ 
+                window.history.back();
+            };
             const forumTestingText = courseNameElement.textContent.trim(); // Get text content and trim whitespace
-         
+            
             const h5Element = document.createElement('div');
             h5Element.classList.add('row', 'align-items-center','pb-4'); 
             const label = document.createElement('label');
@@ -88,8 +92,7 @@ class userreportform extends moodleform {
 
             const parentElement = moduleIdElement.parentElement;
             parentElement.insertBefore(h5Element, moduleIdElement);
-          
-            console.log(forumTestingText);
+
             document.getElementById('fitem_id_courseid').style.display = 'none';
 
             ");
@@ -134,8 +137,10 @@ class userreportform extends moodleform {
         $mdetail = [];
         $mdetail[0] = get_string('allmodule','tiny_cursive');
         if ($courseid) {
-            $modules = $DB->get_records_sql("SELECT id, instance  FROM {course_modules}
-                     WHERE course = :courseid", ['courseid' => $courseid]);
+            $sql = "SELECT id, instance  
+                      FROM {course_modules}
+                     WHERE course = :courseid";
+            $modules = $DB->get_records_sql($sql, ['courseid' => $courseid]);
             foreach ($modules as $cm) {
                 $modinfo = get_fast_modinfo($courseid);
                 $cm = $modinfo->get_cm($cm->id);
@@ -159,12 +164,13 @@ class userreportform extends moodleform {
         $udetail[0] = get_string('alluser','tiny_cursive');
 
         if (!empty($courseid)) {
-            $users = $DB->get_records_sql("SELECT ue.id, u.id AS userid, u.firstname, u.lastname
-            FROM {enrol} e
-            INNER JOIN {user_enrolments} ue ON e.id = ue.enrolid
-            INNER JOIN {user} u ON u.id = ue.userid
-            WHERE e.courseid = :courseid
-            AND u.id != 1", ['courseid' => $courseid]);
+            $sql = "SELECT ue.id, u.id AS userid, u.firstname, u.lastname
+                      FROM {enrol} e
+                INNER JOIN {user_enrolments} ue ON e.id = ue.enrolid
+                INNER JOIN {user} u ON u.id = ue.userid
+                     WHERE e.courseid = :courseid
+                           AND u.id != 1";
+            $users = $DB->get_records_sql($sql, ['courseid' => $courseid]);
 
             foreach ($users as $user) {
                 $udetail[$user->userid] = $user->firstname . ' ' . $user->lastname;
@@ -173,5 +179,5 @@ class userreportform extends moodleform {
 
         return $udetail;
     }
-    
+
 }

@@ -140,8 +140,8 @@ function tiny_cursive_myprofile_navigation(core_user\output\myprofile\tree $tree
     if (isguestuser() || !isloggedin()) {
         return;
     }
-    // || $USER->id != $user->id
-    if (\core\session\manager::is_loggedinas() ) {
+
+    if (\core\session\manager::is_loggedinas() || $USER->id != $user->id ) {
         return;
     }
 
