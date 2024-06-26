@@ -33,9 +33,6 @@ export const register = (editor) => {
     }])[0];
     var is_student=!(jQuery('#body').hasClass('teacher_admin'));
     var intervention=jQuery('#body').hasClass('intervention');
-    const showLog=()=>{
-        window.console.log(editor);
-    };
     const getModal = (e) => {
         return create({
             type:'SAVE_CANCEL',
@@ -43,7 +40,7 @@ export const register = (editor) => {
             body: '<textarea  class="form-control inputUrl" value="" id="inputUrl" placeholder="sourceurl"></textarea>',
           
             removeOnClose: true,
-        },showLog())
+        })
         .done(modal => {
             modal.getRoot().append('<style>.close{ display: none ! important; }</style>');
               modal.show();
@@ -57,6 +54,7 @@ export const register = (editor) => {
                  editor.execCommand('Paste');
                 }
                 let ur = e.srcElement.baseURI;
+                let parm = new URL(ur);
                 let recourceId = 0;
                 let modulename = "";
                 let editorid = editor?.id;

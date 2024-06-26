@@ -63,14 +63,13 @@ $isvalid = false;
 $context = \CONTEXT_SYSTEM::instance();
 $haseditcapability = has_capability('tiny/cursive:view', $context);
 
-if($courseid) {
-    $role = $DB->get_record('role',['shortname' => 'editingteacher']);
-    $roleid = $role->id;
-    $coursecontext= context_course::instance($courseid);
-    $isvalid=$DB->get_records('role_assignments', ['userid' => $USER->id, 'roleid' => $roleid,'contextid' => $coursecontext->id]);
-}
+$editingteacherrole = $DB->get_record('role', ['shortname' => 'editingteacher'], '*', MUST_EXIST);
+$editingteacherroleid = $editingteacherrole->id;
 
-if (!$haseditcapability && $userid != $USER->id && !$isvalid) {
+// Check if the user is an editing teacher in any course context
+$iseditingteacher = is_user_editingteacher($USER->id, $editingteacherroleid);
+
+if (!$haseditcapability && $userid != $USER->id && !$iseditingteacher) {
 
     return redirect(new moodle_url('/course/index.php'), get_string('warning', 'tiny_cursive'));
 }

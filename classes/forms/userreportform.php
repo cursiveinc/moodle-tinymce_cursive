@@ -134,8 +134,10 @@ class userreportform extends moodleform {
         $mdetail = [];
         $mdetail[0] = get_string('allmodule','tiny_cursive');
         if ($courseid) {
-            $modules = $DB->get_records_sql("SELECT id, instance  FROM {course_modules}
-                     WHERE course = :courseid", ['courseid' => $courseid]);
+            $sql = "SELECT id, instance  
+                      FROM {course_modules}
+                     WHERE course = :courseid";
+            $modules = $DB->get_records_sql($sql, ['courseid' => $courseid]);
             foreach ($modules as $cm) {
                 $modinfo = get_fast_modinfo($courseid);
                 $cm = $modinfo->get_cm($cm->id);
@@ -159,12 +161,13 @@ class userreportform extends moodleform {
         $udetail[0] = get_string('alluser','tiny_cursive');
 
         if (!empty($courseid)) {
-            $users = $DB->get_records_sql("SELECT ue.id, u.id AS userid, u.firstname, u.lastname
-            FROM {enrol} e
-            INNER JOIN {user_enrolments} ue ON e.id = ue.enrolid
-            INNER JOIN {user} u ON u.id = ue.userid
-            WHERE e.courseid = :courseid
-            AND u.id != 1", ['courseid' => $courseid]);
+            $sql = "SELECT ue.id, u.id AS userid, u.firstname, u.lastname
+                      FROM {enrol} e
+                INNER JOIN {user_enrolments} ue ON e.id = ue.enrolid
+                INNER JOIN {user} u ON u.id = ue.userid
+                     WHERE e.courseid = :courseid
+                           AND u.id != 1";
+            $users = $DB->get_records_sql($sql, ['courseid' => $courseid]);
 
             foreach ($users as $user) {
                 $udetail[$user->userid] = $user->firstname . ' ' . $user->lastname;
@@ -173,5 +176,5 @@ class userreportform extends moodleform {
 
         return $udetail;
     }
-    
+
 }
