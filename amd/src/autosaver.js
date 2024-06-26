@@ -55,6 +55,7 @@ export const register = (editor) => {
                 }
                 let ur = e.srcElement.baseURI;
                 let recourceId = 0;
+                let parm = new URL(ur);
                 let modulename = "";
                 let editorid = editor?.id;
                 let bodyid = jQuery('body').attr('class');
