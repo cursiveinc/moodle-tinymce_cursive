@@ -34,7 +34,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 {{#tabledata.modulename}}
-                    <h4 class="modal-title">{{tabledata.modulename}}</h4>
+                    <h4 class="modal-title">{{moduletitle}}</h4>
                 {{/tabledata.modulename}}
                 {{^tabledata.modulename}}
                     <h4 class="modal-title">{{#str}}cursivewritingreport, tiny_cursive {{/str}} </h4>
@@ -44,11 +44,11 @@
                 {{#tabledata.total_time_seconds}}
                     {{#tabledata.word_count}}
                         <div class="position">
-                            <p>{{#str}}time_writing, tiny_cursive {{/str}} {{tabledata.total_time_seconds}}</p>
+                            <p>{{#str}}total_time, tiny_cursive {{/str}} {{formattime}}</p>
                             <span></span>
                         </div>
                         <div class="position">
-                            <p>{{#str}}wordpermin, tiny_cursive {{/str}} {{tabledata.words_per_minute}}</p>
+                            <p>{{#str}}average_min, tiny_cursive {{/str}} {{tabledata.words_per_minute}}</p>
                             <span></span>
                         </div>
                         <div class="position">

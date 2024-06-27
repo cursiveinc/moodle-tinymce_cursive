@@ -147,6 +147,15 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                         '</div>      ';
 
                     $('div[data-region="grade-actions"]').before(html);
+
+                    $('div[data-region="review-panel"]').addClass('cursive_review_panel_path_mod_assign');
+
+                    $('div[data-region="grading-navigation-panel"]').addClass('cursive_grading-navigation-panel_path_mod_assign');
+
+                    $('div[data-region="grade-panel"]').addClass('cursive_grade-panel_path_mod_assign');
+
+                    $('div[data-region="grade-actions-panel"]').addClass('cursive_grade-actions-panel_path_mod_assign');
+
                     var context = {
                         tabledata: data.data,
                         page: score_setting,
