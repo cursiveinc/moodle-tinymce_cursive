@@ -28,10 +28,10 @@ $tasks = [
     [
         'classname' => 'tiny_cursive\task\upload_student_json_cron',
         'blocking' => 0,
-        'minute' => '30',
-        'hour' => '0',
-        'day' => '1',
-        'month' => '0',
-        'dayofweek' => '0',
+        'minute' => '*/15',
+        'hour' => '*',
+        'day' => '*',
+        'month' => '*',
+        'dayofweek' => '*',
     ],
 ];
