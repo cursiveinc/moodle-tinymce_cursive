@@ -5,3 +5,22 @@
 .cursive_time_successfull {
     display: none;
 }
+
+.cursive_review_panel_path_mod_assign {
+    position: fixed !important;
+    height: calc(100vh - 205px) !important;
+}
+
+.cursive_grading-navigation-panel_path_mod_assign {
+    position: fixed !important;
+}
+
+.cursive_grade-panel_path_mod_assign {
+    position: fixed !important;
+    height: calc(100vh - 205px) !important;
+}
+
+.cursive_grade-actions-panel_path_mod_assign {
+    position: fixed !important;
+    height: 120px !important;
+}

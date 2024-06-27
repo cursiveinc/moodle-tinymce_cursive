@@ -116,8 +116,21 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                         let typeid_icon = '<td><button onclick="myFunction()" data-id=' + userid + ' class=" ' + icon + ' " style="border:none; ' + color + ';"></button></td>';
                         $(tr).find('td').eq(3).after(typeid_icon);
 
+                        // Get Module Name from element.
+                        let element = document.querySelector('.page-header-headings h1'); // Selects the h1 element within the .page-header-headings class
+                        let textContent = element.textContent; // Extracts the text content from the h1 element
+
+                        // Calculate and format total time
+                        let total_time_seconds = data.res.total_time_seconds;
+                        let hours = Math.floor(total_time_seconds / 3600).toString().padStart(2, '0');
+                        let minutes = Math.floor((total_time_seconds % 3600) / 60).toString().padStart(2, '0');
+                        let seconds = (total_time_seconds % 60).toString().padStart(2, '0');
+                        let formattedTime = `${hours}:${minutes}:${seconds}`;
+
                         var context = {
                             tabledata: data.res,
+                            formattime: formattedTime,
+                            moduletitle: textContent,
                             page: score_setting,
                             userid: userid,
                         };
