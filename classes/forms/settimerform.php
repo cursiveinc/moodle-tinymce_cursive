@@ -39,20 +39,19 @@ class settimerform extends moodleform {
      * Tiny cursive plugin settings form.
      */
     public function definition() {
-        global $DB, $USER;
 
         // Start dropdowns of course, quiz and set time search field in mform.
 
         $attributes = [];
         $mform =& $this->_form;
         $options = ['multiple' => false, 'includefrontpage' => false];
-        $mform->addElement('course', 'coursename', get_string('coursename', 'tiny_cursive'), $options);
-        $mform->addRule('coursename', get_string('field_required', 'tiny_cursive'), 'required', null, 'client');
+        $mform->addElement('course', 'courseid', get_string('coursename', 'tiny_cursive'), $options);
+        $mform->addRule('courseid', get_string('field_required', 'tiny_cursive'), 'required', null, 'client');
 
         $select = $mform->addElement('select', 'quizname', get_string('quizname', 'tiny_cursive'),
             [get_string('selectquiz', 'tiny_cursive')], $attributes);
         $mform->addElement('hidden', 'quizid', '0');
-        $mform->setType('quizid', PARAM_RAW);
+        $mform->setType('quizid', PARAM_INT);
         $select->setMultiple(false);
         $mform->addRule('quizname', get_string('field_required', 'tiny_cursive'), 'required', null, 'client');
 
@@ -72,9 +71,9 @@ class settimerform extends moodleform {
         $mform->addElement('html', '<div class="class_question"></div>');
         $mform->addElement('html', '<div class="form-group row  fitem  class_stdtime"></div>');
         $mform->addElement('html', '<div class="save_time"></div>');
-        $mform->addElement('html', '<div class="alert alert-success time_success" style="display:none;">'
+        $mform->addElement('html', '<div class="alert alert-success cursive_time_success" style="display:none;">'
             . get_string('timesave_success', 'tiny_cursive') . '</div>');
-        $mform->addElement('html', '<div class="alert alert-success time_successfull" style="display:none;">'
+        $mform->addElement('html', '<div class="alert alert-success cursive_time_successfull" style="display:none;">'
             . get_string('timesave_success', 'tiny_cursive') . '</div>');
         $this->add_action_buttons();
     }

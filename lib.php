@@ -22,17 +22,16 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use MoodleHQ\editor\tiny\plugins\cursive\classes\forms\fileupload;
+use editor_tiny\cursive\forms\fileupload;
 
 
 /**
  * Given an array with a file path, it returns the itemid and the filepath for the defined filearea.
  *
- * @param  string $filearea The filearea.
  * @param  array  $args The path (the part after the filearea and before the filename).
  * @return array The itemid and the filepath inside the $args path, for the defined filearea.
  */
-function tiny_cursive_get_path_from_pluginfile(string $filearea, array $args): array {
+function tiny_cursive_get_path_from_pluginfile(array $args): array {
     // Cursive never has an itemid (the number represents the revision but it's not stored in database).
     array_shift($args);
 
@@ -54,17 +53,13 @@ function tiny_cursive_get_path_from_pluginfile(string $filearea, array $args): a
  * Serves the tiny_cursive files.
  *
  * @package  mod_tiny_cursive
- * @category files
- * @param stdClass $course course object
- * @param stdClass $cm course module object
  * @param stdClass $context context object
  * @param string $filearea file area
  * @param array $args extra arguments
  * @param bool $forcedownload whether or not force download
  * @param array $options additional options affecting the file serving
- * @return bool false if file not found, does not return if found - just send the file
  */
-function tiny_cursive_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=[]) {
+function tiny_cursive_pluginfile($context, $filearea, $args, $forcedownload, array $options=[]) {
     $itemid = array_shift($args);
     $filename = array_pop($args);
 
@@ -88,22 +83,29 @@ function tiny_cursive_pluginfile($course, $cm, $context, $filearea, $args, $forc
  *
  * @param navigation_node $navigation
  * @param stdClass $course
- * @param context $context
  * @return void
  * @throws moodle_exception
  */
-function tiny_cursive_extend_navigation_course(\navigation_node $navigation, \stdClass $course, \context $context) {
-    global $CFG, $PAGE, $SESSION;
+function tiny_cursive_extend_navigation_course(\navigation_node $navigation, \stdClass $course) {
+    global $CFG, $USER, $DB;
+    require_once(__DIR__."/locallib.php");
 
-    $url = new moodle_url($CFG->wwwroot . '/lib/editor/tiny/plugins/cursive/tiny_cursive_report.php/', ['courseid' => $course->id]);
-    $navigation->add(
-        "Writing Activity Report",
-        $url,
-        navigation_node::TYPE_SETTING,
-        null,
-        null,
-        new pix_icon('i/report', '')
-    );
+    $url = new moodle_url($CFG->wwwroot . '/lib/editor/tiny/plugins/cursive/tiny_cursive_report.php',['courseid' => $course->id]);
+    $editingteacherrole = $DB->get_record('role', ['shortname' => 'editingteacher'], '*', MUST_EXIST);
+    $editingteacherroleid = $editingteacherrole->id;
+    // Check if the user is an editing teacher in any course context
+    $iseditingteacher = is_user_editingteacher($USER->id, $editingteacherroleid);
+    
+    if(get_admin()->id == $USER->id || $iseditingteacher) {
+        $navigation->add(
+            get_string('wractivityreport','tiny_cursive'),
+            $url,
+            navigation_node::TYPE_SETTING,
+            null,
+            null,
+            new pix_icon('i/report', '')
+        );
+    }
 }
 
 /**
@@ -113,7 +115,7 @@ function tiny_cursive_extend_navigation_course(\navigation_node $navigation, \st
  * @return void
  */
 function tiny_cursive_extend_navigation(global_navigation $navigation) {
-    global $CFG, $PAGE;
+
     if ($home = $navigation->find('home', global_navigation::TYPE_SETTING)) {
         $home->remove();
     }
@@ -124,13 +126,12 @@ function tiny_cursive_extend_navigation(global_navigation $navigation) {
  *
  * @param \core_user\output\myprofile\tree $tree
  * @param $user
- * @param $iscurrentuser
  * @param $course
  * @return void
  * @throws coding_exception
  * @throws moodle_exception
  */
-function tiny_cursive_myprofile_navigation(core_user\output\myprofile\tree $tree, $user, $iscurrentuser, $course) {
+function tiny_cursive_myprofile_navigation(core_user\output\myprofile\tree $tree, $user, $course) {
     global $USER;
     if (empty($course)) {
         $course = get_fast_modinfo(SITEID)->get_course();
@@ -139,11 +140,13 @@ function tiny_cursive_myprofile_navigation(core_user\output\myprofile\tree $tree
     if (isguestuser() || !isloggedin()) {
         return;
     }
-    if (\core\session\manager::is_loggedinas() || $USER->id != $user->id) {
+
+    if (\core\session\manager::is_loggedinas() || $USER->id != $user->id ) {
         return;
     }
+
     $url = new moodle_url('/lib/editor/tiny/plugins/cursive/my_writing_report.php',
-        ['id' => $user->id, 'course' => $course->id, 'mode' => 'cursive']);
+        ['id' => $user->id, 'course' => isset($course->id) ? $course->id: "", 'mode' => 'cursive']);
     $node = new core_user\output\myprofile\node('reports', 'cursive', get_string('writing', 'tiny_cursive'), null, $url);
     $tree->add_node($node);
 }
@@ -156,8 +159,7 @@ function tiny_cursive_myprofile_navigation(core_user\output\myprofile\tree $tree
  * @return bool|string
  * @throws dml_exception
  */
-function upload_multipart_record($filerecord, $filenamewithfullpath) {
-    global $CFG;
+function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath,$wstoken) {
 
     $moodleurl = get_config('tiny_cursive', 'host_url');
     $moodleurl = preg_replace("(^https?://)", "", $moodleurl);
@@ -174,6 +176,7 @@ function upload_multipart_record($filerecord, $filenamewithfullpath) {
             'file' => new CURLFILE($filenamewithfullpath),
             'resource_id' => $filerecord->id,
             'person_id' => $filerecord->userid,
+            'ws_token' => $wstoken,
         ]);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             'Authorization: Bearer ' . $token,
@@ -186,10 +189,7 @@ function upload_multipart_record($filerecord, $filenamewithfullpath) {
     } catch (Exception $e) {
         echo $e->getMessage();
     }
-    $uploaded = false;
-    if ($httpcode == 200) {
-        $uploaded = true;
-    }
+
     return $result;
 }
 
@@ -201,7 +201,7 @@ function upload_multipart_record($filerecord, $filenamewithfullpath) {
  * @throws dml_exception
  */
 function tiny_cursive_before_footer() {
-    global $PAGE, $COURSE, $USER, $DB, $CFG;
+    global $PAGE, $COURSE, $USER;
     $confidencethreshold = get_config('tiny_cursive', 'confidence_threshold');
     $confidencethreshold = !empty($confidencethreshold) ? $confidencethreshold : .65;
     $confidencethreshold = floatval($confidencethreshold);
@@ -220,7 +220,7 @@ function tiny_cursive_before_footer() {
         if ($PAGE->bodyid == 'page-mod-assign-grader') {
 
             $PAGE->requires->js_call_amd('tiny_cursive/show_url_in_submission_grade',
-                'init', [$confidencethreshold, $showcomments]);
+                'init', [$confidencethreshold]);
         }
         if ($PAGE->bodyid == 'page-mod-assign-viewpluginassignsubmission') {
             $PAGE->requires->js_call_amd('tiny_cursive/show_url_in_submission_detail',
@@ -246,7 +246,7 @@ function tiny_cursive_before_footer() {
  * @return false|string
  * @throws coding_exception
  */
-function file_urlcreate ($context, $user) {
+function tiny_cursive_file_urlcreate ($context, $user) {
     $fs = get_file_storage();
     $files = $fs->get_area_files($context->id, 'tiny_cursive', 'attachment', $user->fileid, 'sortorder', false);
 

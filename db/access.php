@@ -25,20 +25,32 @@
 
 defined('MOODLE_INTERNAL') || die();
 $capabilities = [
-    'tiny_cursive/cursive:editsettings' => [
+    'tiny/cursive:editsettings' => [
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => [
+            'manager' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+        ],
+        'clonepermission' => 'moodle/site:configwrite',
+    ],
+    'tiny/cursive:view' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => [
             'manager' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+            'student' => CAP_ALLOW,
+            'teacher' => CAP_ALLOW,
         ],
 
     ],
-    'tiny_cursive/cursive:view' => [
-        'captype' => 'read',
+    'tiny/cursive:write' => [
+        'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => [
-            'manager' => CAP_ALLOW,
+            'student' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
         ],
-
     ],
 ];

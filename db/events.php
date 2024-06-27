@@ -45,16 +45,10 @@ $observers = [
         'priority' => 9999,
     ],
     [
-        'eventname' => '\mod_assign\event\submission_created',
-        'callback' => '\tiny_cursive\observers::submission_created',
+        'eventname' => '\core\event\course_reset_ended',
+        'callback' => '\tiny_cursive\observers::reset_tracking_data',
         'internal' => true,
         'priority' => 9999,
-    ],
-    [
-        'eventname' => '\mod_assign\event\assessable_submitted',
-        'callback' => '\tiny_cursive\observers::assessable_submitted',
-        'internal' => true,
-        'priority' => 9999,
-    ],
+    ]
 ];
 

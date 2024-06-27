@@ -1,10 +1,24 @@
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
- * @module     tiny_cursive/plugin
+ * @module     tiny_cursive/append_submissions_table
  * @category TinyMCE Editor
  * @copyright  CTI <info@cursivetechnology.com>
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  */
-
 
 define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], function (
     $,
@@ -20,6 +34,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
     };
 
     window.video_playback = function(mid, filepath) {
+        
         if (filepath !== ''){
             $("#playback"+mid).show();
             const replay = new Replay(
@@ -74,8 +89,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                         var data = JSON.parse(json);
                         var filepath ='';
                         if (data.res.filename){
-                            var filepath = M.cfg.wwwroot+'/lib/editor/tiny/plugins/cursive/userdata/'+ data.res.filename;
-                            // var filepath = data.res.filename;
+                            var filepath =data.res.filename;
                         }
                         var score = parseFloat(data.res.score);
                         var icon = 'fa fa-circle-o';
@@ -102,8 +116,21 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                         let typeid_icon = '<td><button onclick="myFunction()" data-id=' + userid + ' class=" ' + icon + ' " style="border:none; ' + color + ';"></button></td>';
                         $(tr).find('td').eq(3).after(typeid_icon);
 
+                        // Get Module Name from element.
+                        let element = document.querySelector('.page-header-headings h1'); // Selects the h1 element within the .page-header-headings class
+                        let textContent = element.textContent; // Extracts the text content from the h1 element
+
+                        // Calculate and format total time
+                        let total_time_seconds = data.res.total_time_seconds;
+                        let hours = Math.floor(total_time_seconds / 3600).toString().padStart(2, '0');
+                        let minutes = Math.floor((total_time_seconds % 3600) / 60).toString().padStart(2, '0');
+                        let seconds = (total_time_seconds % 60).toString().padStart(2, '0');
+                        let formattedTime = `${hours}:${minutes}:${seconds}`;
+
                         var context = {
                             tabledata: data.res,
+                            formattime: formattedTime,
+                            moduletitle: textContent,
                             page: score_setting,
                             userid: userid,
                         };
@@ -111,10 +138,10 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                             .render("tiny_cursive/pop_modal", context)
                             .then(function (html) {
                                 $("body").append(html);
-                            }).catch(e => window.console.log(e));
+                            }).catch(e => window.console.error(e));
                     });
                 } catch (error) {
-                    window.console.log(error);
+                    window.console.error(error);
                 }
 
                 $(".popup_item").on('click', function () {

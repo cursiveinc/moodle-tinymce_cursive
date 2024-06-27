@@ -1,6 +1,29 @@
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * @module     tiny_cursive/replay
+ * @category TinyMCE Editor
+ * @copyright  CTI <info@cursivetechnology.com>
+ * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
+ */
+
+import {call as fetchJson} from 'core/ajax';
 export default class Replay {
     constructor(elementId, filePath, speed = 1, loop = false, controllerId) {
-        console.log(filePath,elementId,controllerId);
+      
         this.replayInProgress = false;
         this.speed = speed;
         this.loop = loop;
@@ -11,12 +34,13 @@ export default class Replay {
             throw new Error(`Element with id '${elementId}' not found`);
         }
         if (controllerId) {
-            console.log("made it here");
+           
             this.constructController(controllerId);
         }
         this.loadJSON(filePath)
             .then((data) => {
-                this.logData = data;
+                var val=JSON.parse(data.data);
+                this.logData = val;
                 // support for Cursive Recorder extension files (and outdated Curisve file formats)
                 // logData should be a list of dictionaries for this to work properly
                 if ("data" in this.logData) {
@@ -42,7 +66,7 @@ export default class Replay {
     }
     constructController(controllerId) {
         const controller = document.getElementById(controllerId);
-        console.log(controller);
+        
         if (controller) {
             // this.buttonElement = document.createElement('button');
             // this.buttonElement.id = 'playerButton';
@@ -67,20 +91,14 @@ export default class Replay {
     }
 
     loadJSON(filePath) {
-        return fetch(filePath)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to fetch JSON file');
-                }
-                if (response.headers.get('content-length') === '0') {
-                    throw new Error('Empty JSON response');
-                }
-                let response_json = response.json();
-                return response_json;
-            })
-            .catch(error => {
-                throw new Error('Error loading JSON file: ' + error.message);
-            });
+     return fetchJson([{
+            methodname: 'cursive_get_reply_json',
+            args: {
+                filepath: filePath,
+            },
+        }])[0].done(response=>{
+            return response;
+        }).fail(error =>  { throw new Error('Error loading JSON file: '+error.message); });
     }
 
     // call this to make a "start" or "start over" function
@@ -99,7 +117,7 @@ export default class Replay {
         let textOutput = "";
         let index = 0;
         const processEvent = () => {
-            console.log(11);
+           
             if (this.replayInProgress) {
                 if (index < this.logData.length) {
                     let event = this.logData[index++];

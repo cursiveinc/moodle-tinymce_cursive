@@ -35,7 +35,6 @@ require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 require_once($CFG->dirroot . '/mod/quiz/attemptlib.php');
 
 
-use quiz;
 use stdClass;
 
 /**
@@ -62,10 +61,12 @@ class tiny_cursive_data {
         $udetail = [];
         $udetail2 = [];
         $courseid = (int)$params['courseid'];
-        $quizid = (int)$params['quizid'];
-        $users = $DB->get_records_sql("SELECT ue.id as enrolid,u.id as id,u.firstname,u.lastname FROM {enrol} e
-        INNER JOIN {user_enrolments} ue ON e.id = ue.enrolid
-        INNER JOIN {user} u ON u.id = ue.userid WHERE e.courseid = :courseid AND u.id != 1", ['courseid' => $courseid]);
+        $sql = "SELECT ue.id as enrolid,u.id as id,u.firstname,u.lastname FROM {enrol} e
+            INNER JOIN {user_enrolments} ue ON e.id = ue.enrolid
+            INNER JOIN {user} u ON u.id = ue.userid 
+                 WHERE e.courseid = :courseid 
+                       AND u.id != 1";
+        $users = $DB->get_records_sql($sql, ['courseid' => $courseid]);
         $udetail2['id'] = 0;
         $udetail2['name'] = 'All Users';
         $allusers->userlist[] = $udetail2;
@@ -101,10 +102,11 @@ class tiny_cursive_data {
         $courseid = (int)$params['courseid'];
 
         $udetail2['id'] = 0;
-        $udetail2['name'] = 'All Modules';
+        $udetail2['name'] = get_string('allmodule','tiny_cursive');
         $allusers->userlist[] = $udetail2;
-        $modules = $DB->get_records_sql("SELECT id, instance  FROM {course_modules}
-                     WHERE course = :courseid", ['courseid' => $courseid]);
+        $sql = "SELECT id, instance  FROM {course_modules}
+                 WHERE course = :courseid";
+        $modules = $DB->get_records_sql($sql, ['courseid' => $courseid]);
         foreach ($modules as $cm) {
             $modinfo = get_fast_modinfo($courseid);
             $cm = $modinfo->get_cm($cm->id);

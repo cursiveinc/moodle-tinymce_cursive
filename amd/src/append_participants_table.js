@@ -1,5 +1,20 @@
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
- * @module     tiny_cursive/plugin
+ * @module     tiny_cursive/append_participants_table
  * @category TinyMCE Editor
  * @copyright  CTI <info@cursivetechnology.com>
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
@@ -32,9 +47,9 @@ define(["jquery", "core/ajax", "core/str","core/templates","core/config"], funct
                   .render("tiny_cursive/pop_modal", context)
                   .then(function (html) {
                     $(tr).find('td').eq(5).after(html);
-                  }).catch(e=>window.console.log(e));
+                  }).catch(e=> window.console.error(e));
             } catch (error) {
-                window.console.log(error);
+                window.console.error(error);
               }
             });
             $(".page-item ,.header ").on('click',function () {

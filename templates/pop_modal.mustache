@@ -1,47 +1,78 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+  
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+  
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+  
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template tiny_cursive/pop_modal
+  
+    Template purpose and description.
+  
+    Classes required for JS:
+    * none
+  
+    Data attributes required for JS:
+    * none
+  
+    Context variables required for this template:
+    * none
+}}
+
 <div class="modal" id="{{userid}}" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 {{#tabledata.modulename}}
-                    <h4 class="modal-title">{{tabledata.modulename}}</h4>
+                    <h4 class="modal-title">{{moduletitle}}</h4>
                 {{/tabledata.modulename}}
                 {{^tabledata.modulename}}
-                    <h4 class="modal-title">Cursive Writing Report</h4>
+                    <h4 class="modal-title">{{#str}}cursivewritingreport, tiny_cursive {{/str}} </h4>
                 {{/tabledata.modulename}}
             </div>
             <div class="modal-body">
                 {{#tabledata.total_time_seconds}}
                     {{#tabledata.word_count}}
                         <div class="position">
-                            <p>Time Writing: {{tabledata.total_time_seconds}}</p>
+                            <p>{{#str}}total_time, tiny_cursive {{/str}} {{formattime}}</p>
                             <span></span>
                         </div>
                         <div class="position">
-                            <p>Words per minute: {{tabledata.words_per_minute}}</p>
+                            <p>{{#str}}average_min, tiny_cursive {{/str}} {{tabledata.words_per_minute}}</p>
                             <span></span>
                         </div>
                         <div class="position">
-                            <p>Total Words: {{tabledata.word_count}}</p>
+                            <p>{{#str}}total_word, tiny_cursive {{/str}} {{tabledata.word_count}}</p>
                             <span></span>
                         </div>
                         <div class="position">
-                            <p>Backspace %: {{tabledata.backspace_percent}}</p>
+                            <p>{{#str}}backspace, tiny_cursive {{/str}} %: {{tabledata.backspace_percent}}</p>
                             <span></span>
                         </div>
                     {{/tabledata.word_count}}
                 {{/tabledata.total_time_seconds}}
                 {{^tabledata.total_time_seconds}}
-                    <p>No payload data received yet</p>
+                    <p>{{#str}}nopaylod, tiny_cursive {{/str}}</p>
                 {{/tabledata.total_time_seconds}}
                 {{#tabledata.total_time_seconds}}
                     {{^tabledata.word_count}}
-                        <p>No payload data received yet</p>
+                        <p> {{#str}}nopaylod, tiny_cursive {{/str}} </p>
                     {{/tabledata.word_count}}
                 {{/tabledata.total_time_seconds}}
             </div>
             <div class="modal-footer">
                 <button type="button" id="modal-close{{userid}}" data-resource="{{userid}}"
-                        class="btn btn-primary" data-dismiss="modal">Close
+                        class="btn btn-primary" data-dismiss="modal">{{#str}}close, tiny_cursive {{/str}}
                 </button>
             </div>
         </div>
@@ -55,7 +86,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" id="modal-close{{userid}}" data-resource="{{userid}}" class="btn btn-primary"
-                        data-dismiss="modal">Close
+                        data-dismiss="modal">{{#str}}close, tiny_cursive {{/str}}
                 </button>
             </div>
         </div>
@@ -65,14 +96,14 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Playback Video</h4>
+                <h4 class="modal-title">{{#str}}playback, tiny_cursive {{/str}}</h4>
             </div>
             <div class="modal-body">
                 <div id="output_playback_{{userid}}"></div>
             </div>
             <div class="modal-footer">
                 <button type="button" id="modal-close-playback{{userid}}" data-resource="{{userid}}"
-                        class="btn btn-primary" data-dismiss="modal">Close
+                        class="btn btn-primary" data-dismiss="modal"> {{#str}}close, tiny_cursive {{/str}}
                 </button>
             </div>
         </div>

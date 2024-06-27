@@ -1,3 +1,25 @@
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * @module     tiny_cursive/append_fourm_post
+ * @category TinyMCE Editor
+ * @copyright  CTI <info@cursivetechnology.com>
+ * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
+ */
+
 define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], function(
     $,
     AJAX,
@@ -56,7 +78,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                         });
                     }
                 });
-                console.log(entry.id);
+               
                 var ids = $("#" + entry.id).data("post-id");
                 var anchorTag = $('a.nav-link.active.active_tree_node[href*="mod/forum/view.php?id="]');
                 var cmid= 0;
@@ -84,21 +106,26 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                     }
                     var filepath ='';
                     if (data.data.filename){
-                        var filepath = M.cfg.wwwroot+'/lib/editor/tiny/plugins/cursive/userdata/'+ data.data.filename;
+                        var filepath = data.data.filename;
                     }
                     if (filepath){
                         var score = parseFloat(data.data.score);
                         var icon = 'fa fa-circle-o';
                         var color = 'font-size:24px;color:black';
-                        if (score >= score_setting) {
-                            icon = 'fa fa-check-circle typeid';
-                            color = 'font-size:24px;color:green';
-                        } else if (score < score_setting) {
-                            icon = 'fa fa-question-circle typeid';
-                            color = 'font-size:24px;color:#A9A9A9';
+                        if (data.data.first_file) {
+                            icon = 'fa  fa fa-solid fa-info-circle typeid';
+                            color = 'font-size:24px;color:#000000';
                         } else {
-                            icon = 'fa fa-circle-o typeid';
-                            color = 'font-size:24px;color:black';
+                            if (score >= score_setting) {
+                                icon = 'fa fa-check-circle typeid';
+                                color = 'font-size:24px;color:green';
+                            } else if (score < score_setting) {
+                                icon = 'fa fa-question-circle typeid';
+                                color = 'font-size:24px;color:#A9A9A9';
+                            } else {
+                                icon = 'fa fa-circle-o typeid';
+                                color = 'font-size:24px;color:black';
+                            }
                         }
                         var html= '<div class="justify-content-center d-flex">' +
                             '<button onclick="popup_item(' + ids + ')" data-id=' + ids + ' class="mr-2 ' + chart + '" style="' + st + '"></button>' +
@@ -115,7 +142,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                             .render("tiny_cursive/pop_modal", context)
                             .then(function (html) {
                                 $("body").append(html);
-                            }).catch(e => window.console.log(e));
+                            }).catch(e => window.console.error(e));
                     }
 
                 });
@@ -134,6 +161,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
             });
             $('#page-mod-forum-view').find("article").get().forEach(function(entry) {
 
+              
 
                 var ids = $("#" + entry.id).data("post-id");
                 var cmid = 0;

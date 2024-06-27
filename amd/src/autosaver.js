@@ -1,7 +1,20 @@
-
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @module     tiny_cursive/plugin
+ * @module     tiny_cursive/autosaver
  * @category TinyMCE Editor
  * @copyright  CTI <info@cursivetechnology.com>
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
@@ -10,9 +23,9 @@
 import { call } from 'core/ajax';
 import { create } from 'core/modal_factory';
 import {get_string as getString} from 'core/str';
-//import {render} from 'core/templates';
 import {save,cancel,hidden} from 'core/modal_events';
 import jQuery from 'jquery';
+
 export const register = (editor) => {
     const postOne = (methodname, args) => call([{
         methodname,
@@ -20,17 +33,14 @@ export const register = (editor) => {
     }])[0];
     var is_student=!(jQuery('#body').hasClass('teacher_admin'));
     var intervention=jQuery('#body').hasClass('intervention');
-    const showLog=()=>{
-        window.console.log(editor);
-    };
     const getModal = (e) => {
         return create({
             type:'SAVE_CANCEL',
             title: getString('tiny_cursive','tiny_cursive'),
             body: '<textarea  class="form-control inputUrl" value="" id="inputUrl" placeholder="sourceurl"></textarea>',
-            // render("tiny_cursive/popup_form", ""),
+          
             removeOnClose: true,
-        },showLog())
+        })
         .done(modal => {
             modal.getRoot().append('<style>.close{ display: none ! important; }</style>');
               modal.show();
@@ -44,22 +54,26 @@ export const register = (editor) => {
                  editor.execCommand('Paste');
                 }
                 let ur = e.srcElement.baseURI;
+                let recourceId = 0;
                 let parm = new URL(ur);
-                let recourceId=0;
-                let cmid=0;
-                let modulename="";
-                let editorid=editor?.id;
+                let modulename = "";
+                let editorid = editor?.id;
+                let bodyid = jQuery('body').attr('class');
+                let classes = bodyid.split(' ');
+                let courseid =parseInt(classes.find((classname)=>{ return classname.startsWith('course-')}).split('-')[1]); // Getting cmid from body classlist.
+                let cmid = parseInt(classes.find((classname)=>{ return classname.startsWith('cmid-')}).split('-')[1]); // Getting cmid from body classlist.
+       
+
                 if (ur.includes("attempt.php")||ur.includes("forum")||ur.includes("assign")){ }else{
                     return false;
                 }
-                if (ur.includes("forum")||ur.includes("assign")) {
-                    cmid=parm.searchParams.get('id');
-                }else{
-                    cmid=parm.searchParams.get('cmid');
-                    recourceId=parm.searchParams.get('attempt');
+                
+                if (!ur.includes("forum") && !ur.includes("assign")) {
+                    recourceId = parm.searchParams.get('attempt');
                 }
+
                 if(recourceId===null){
-                    recourceId=0;
+                    recourceId = 0;
                 }
                 if (ur.includes("forum")){
                     modulename="forum";
@@ -76,7 +90,7 @@ export const register = (editor) => {
                     modulename: modulename,
                     cmid: cmid,
                     resourceid: recourceId,
-                    courseid: 0,
+                    courseid: courseid,
                     usercomment:number,
                     timemodified:"1121232",
                     editorid:editorid?editorid:""
@@ -97,23 +111,27 @@ export const register = (editor) => {
     const sendKeyEvent=(event, ed)=>{
          let ur = ed.srcElement.baseURI;
          let parm = new URL(ur);
-         let recourceId=0;
+         let recourceId = 0;
          let modulename="";
-        let cmid=0;
-        let editorid=editor?.id;
+         let editorid=editor?.id;
+         let bodyid = jQuery('body').attr('class');
+         let classes= bodyid.split(' ');
+         let cmid =parseInt(classes.find((classname)=>{ return classname.startsWith('cmid-')}).split('-')[1]); // Getting cmid from body classlist.
+       
          if (ur.includes("attempt.php")||ur.includes("forum")||ur.includes("assign")){}else{
             return false;
          }
          if (ur.includes("forum")||ur.includes("assign")) {
-            cmid=parm.searchParams.get('id');
+      
         }else{
-            cmid=parm.searchParams.get('cmid');
+            
             recourceId=parm.searchParams.get('attempt');
         }
         if(recourceId===null){
+
             recourceId=0;
         }
-        if(cmid===null){ cmid=0;}
+
         if (ur.includes("forum")){
             modulename="forum";
         }
@@ -123,6 +141,7 @@ export const register = (editor) => {
         if (ur.includes("attempt")){
             modulename="quiz";
         }
+ 
         postOne('cursive_json', {
             key: ed.key,
             event: event,

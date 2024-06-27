@@ -43,7 +43,7 @@ if (is_siteadmin()) {
         get_string('secretkey', 'tiny_cursive'),
         get_string('secretkey_desc', 'tiny_cursive') . '' .
         "<br/><a id='approve_token' href='#' class='btn btn-primary'>  Test Token </a>
-<span id='token_message'></span>",
+            <span id='token_message'></span>",
         '',
         PARAM_TEXT
     ));
@@ -73,8 +73,8 @@ if (is_siteadmin()) {
     ));
     $settings->add(new admin_setting_configcheckbox(
         'tiny_cursive/showcomments',
-        'Show Comments',
-        'Show comments under post when enabled',
+        'Enable Cite-Source',
+        'Show cite-source comments under post when enabled',
         1
     ));
 

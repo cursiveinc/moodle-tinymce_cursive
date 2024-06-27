@@ -25,7 +25,6 @@
 
 namespace tiny_cursive;
 
-use context;
 use editor_tiny\plugin;
 
 /**

@@ -1,3 +1,25 @@
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * @module     tiny_cursive/show_url_in_quiz_detail
+ * @category TinyMCE Editor
+ * @copyright  CTI <info@cursivetechnology.com>
+ * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
+ */
+
 define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], function (
     $,
     AJAX,
@@ -50,8 +72,8 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
 
             let cmid = parm.searchParams.get('cmid');
             if (!cmid) {
-                var firstHref = $('a[href*="/mod/quiz/review.php"]').first().attr('href');
-                if (firstHref.length > 0) {
+                var firstHref = $('a[href*="question/bank/editquestion/question.php"]').first().attr('href');
+                if (firstHref && firstHref.length > 0) {
                     cmid = firstHref.match(/cmid=(\d+)/)[1];
                 }
             }
@@ -98,7 +120,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                         }
                         var filepath = '';
                         if (data.data.filename) {
-                            filepath = M.cfg.wwwroot + '/lib/editor/tiny/plugins/cursive/userdata/' + data.data.filename;
+                            filepath = data.data.filename;
                         }
                         var score = parseInt(data.data.score);
                         var icon = 'fa fa-circle-o';
@@ -134,7 +156,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                             .render("tiny_cursive/quiz_pop_modal", context)
                             .then(function(html) {
                                 $("body").append(html);
-                            }).catch(e => window.console.log(e));
+                            }).catch(e => window.console.error(e));
                     }
                 });
                 $(window).on('click', function(e) {

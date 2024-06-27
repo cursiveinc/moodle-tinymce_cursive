@@ -24,25 +24,50 @@
  */
 
 require(__DIR__ . '/../../../../../config.php');
+require_once(__DIR__.'/locallib.php');
 require_login();
 
 $resourceid = optional_param('resourceid', 0, PARAM_INT);
 $userid = optional_param('user_id', 0, PARAM_INT);
 $cmid = optional_param('cmid', 0, PARAM_INT);
-$fname = optional_param('fname', '', PARAM_RAW);
+$fname = optional_param('fname', '', PARAM_TEXT);
 
 $filename = '';
-$dirname = __DIR__ . '/userdata/';
+$dirname = $CFG->dataroot . '/temp/userdata/';
 if ($fname) {
     $filename = $dirname . $fname;
+    if(!file_exists($filename)){
+        $url = new moodle_url('/lib/editor/tiny/plugins/cursive/writing_report.php?userid='.$userid);
+        return redirect($url, get_string('filenotfound', 'tiny_cursive'));
+    }
 } else {
     $filename = $dirname . $userid . '_' . $resourceid . '_' . $cmid . '_attempt' . '.json';
 }
 
-header("Content-Description: File Transfer");
-header("Content-Type: application/octet-stream");
-header("Content-Disposition: attachment; filename=\"" . basename($filename) . "\"");
-flush();
-$inp = file_get_contents($filename);
-echo $inp;
-die();
+$context = context_module::instance($cmid);
+// Use csv_export_writer.
+$haseditcapability = has_capability('tiny/cursive:view', $context);
+
+$editingteacherrole = $DB->get_record('role', ['shortname' => 'editingteacher'], '*', MUST_EXIST);
+$editingteacherroleid = $editingteacherrole->id;
+
+// Check if the user is an editing teacher in any course context
+$iseditingteacher = is_user_editingteacher($USER->id, $editingteacherroleid);
+
+if (!$haseditcapability && !$iseditingteacher) {
+    return redirect(new moodle_url('/course/index.php'), get_string('warning', 'tiny_cursive'));
+}
+
+if ($haseditcapability || $iseditingteacher) {
+
+    header("Content-Description: File Transfer");
+    header("Content-Type: application/octet-stream");
+    header("Content-Disposition: attachment; filename=\"" . basename($filename) . "\"");
+    flush();
+    $inp = file_get_contents($filename);
+    echo $inp;
+    die();
+} else {
+    $url = new moodle_url('/course/index.php');
+    return redirect($url, get_string('warning', 'tiny_cursive'));
+}

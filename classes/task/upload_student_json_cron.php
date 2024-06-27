@@ -51,14 +51,26 @@ class upload_student_json_cron extends \core\task\scheduled_task {
      */
     public function execute() {
         global $CFG, $DB;
-        $table = 'tiny_cursive_files';
-        $sql = "select * from {tiny_cursive_files} where timemodified > uploaded";
-        $filerecords = $DB->get_records_sql($sql);
-        $dirname = $CFG->dirroot . '/lib/editor/tiny/plugins/cursive/userdata/';
         require_once($CFG->dirroot . '/lib/editor/tiny/plugins/cursive/lib.php');
+
+        $service_shortname = 'moodle_mobile_app'; // Replace with your service shortname
+        $service = $DB->get_record('external_services',['shortname' => $service_shortname]);
+
+        $adminuser = get_admin();
+        $token = $DB->get_record_sql("SELECT * FROM {external_tokens} WHERE userid = ? AND externalserviceid = ? order by id DESC LIMIT 1", array($adminuser->id, $service->id));
+        $wstoken = $token->token ?? '';
+
+       
+        $sql = "SELECT tcf.* 
+                  FROM {tiny_cursive_files} AS tcf
+                 WHERE tcf.timemodified > tcf.uploaded";
+        $filerecords = $DB->get_records_sql($sql);
+        $dirname = $CFG->dataroot . '/temp/userdata/';
+
+        $table = 'tiny_cursive_files';
         foreach ($filerecords as $filerecord) {
             $filepath = $dirname . $filerecord->filename;
-            $uploaded = upload_multipart_record($filerecord, $filepath);
+            $uploaded = tiny_cursive_upload_multipart_record($filerecord, $filepath, $wstoken);
             if ($uploaded) {
                 $filerecord->uploaded = strtotime(date('Y-m-d H:i:s'));
                 $DB->update_record($table, $filerecord);

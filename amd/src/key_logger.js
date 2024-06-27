@@ -1,6 +1,20 @@
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @module     tiny_cursive/plugin
+ * @module     tiny_cursive/key_logger
  * @category TinyMCE Editor
  * @copyright  CTI <info@cursivetechnology.com>
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
@@ -19,7 +33,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates"], function (
           { key: "field_require", component: "tiny_cursive" }
         ])
         .done(function (s) {
-          window.console.log(s);
+          
           $(document).ready(function($) {
             $(".popup_item").on('click',function () {
               var mid=$(this).data("id");
@@ -28,7 +42,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates"], function (
             $(".link_icon").on('click',function () {
               var smid=$(this).data("id");
             $("#"+smid).show();
-            window.console.log("#score"+smid);
+          
             });
             $(".modal-close ").on('click',function () {$(".modal").hide();});
         } );
@@ -56,7 +70,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates"], function (
           templates
             .render("tiny_cursive/user_list", context)
             .then(function (html, js) {
-              window.console.log(js);
+           
               var filtered_user = $("#id_username");
               filtered_user.html(html);
             });
@@ -78,8 +92,8 @@ define(["jquery", "core/ajax", "core/str", "core/templates"], function (
           };
           templates
             .render("tiny_cursive/module_list", context)
-            .then(function (html, js) {
-              window.console.log(js);
+            .then(function (html) {
+           
               var filtered_user = $("#id_modulename");
               filtered_user.html(html);
             });

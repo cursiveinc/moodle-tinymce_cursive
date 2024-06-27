@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="lib/editor/tiny/plugins/cursive/db" VERSION="20240319" COMMENT="XMLDB file for Moodle mod/quiz"
+<XMLDB PATH="lib/editor/tiny/plugins/cursive/db" VERSION="2024060212" COMMENT="XMLDB file for Moodle tiny/cursive"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../../../../lib/xmldb/xmldb.xsd"
 >
