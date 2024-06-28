@@ -1502,7 +1502,7 @@ class cursive_json_func_data extends external_api
             'word_count' => new external_value(PARAM_INT, 'word_count', true, 'course_detail'),
             'words_per_minute' => new external_value(PARAM_INT, 'words_per_minute', true, 'course_detail'),
             'backspace_percent' => new external_value(PARAM_FLOAT, 'backspace_percent', true, 'course_detail'),
-            'copy_behavior' => new external_value(PARAM_INT, 'copy_behavior', true, 'course_detail'),
+            'copy_behavior' => new external_value(PARAM_FLOAT, 'copy_behavior', true, 'course_detail'),
             'score' => new external_value(PARAM_FLOAT, 'score', false, 0, true),
         ];
     }
