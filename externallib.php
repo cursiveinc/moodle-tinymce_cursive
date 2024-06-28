@@ -378,7 +378,7 @@ class cursive_json_func_data extends external_api
     {
         require_login();
     
-        global $DB, $CFG, $USER;
+        global $DB, $CFG;
     
         require_once($CFG->libdir . '/accesslib.php'); // Include accesslib.php for capability checks
     
@@ -480,7 +480,6 @@ class cursive_json_func_data extends external_api
 
 
         $userid = $USER->id;
-        $editorid;
         $editoridarr = explode(':', $params['editorid']);
         if (count($editoridarr) > 1) {
             $uniqueid = substr($editoridarr[0] . "\n", 1);
@@ -488,7 +487,6 @@ class cursive_json_func_data extends external_api
             $quba = question_engine::load_questions_usage_by_activity($uniqueid);
             $question = $quba->get_question($slot, false);
             $questionid = $question->id;
-            $questionid;
         }
         $dataobject = new stdClass();
         $dataobject->userid = $userid;
@@ -496,7 +494,7 @@ class cursive_json_func_data extends external_api
         $dataobject->modulename = $params['modulename'];
         $dataobject->resourceid = $params['resourceid'];
         $dataobject->courseid = $params['courseid'];
-        $dataobject->questionid = $params['questionid'];
+        $dataobject->questionid = $questionid ?? 0;
         $dataobject->usercomment = $params['usercomment'];
         $dataobject->timemodified = $params['timemodified'];
 
