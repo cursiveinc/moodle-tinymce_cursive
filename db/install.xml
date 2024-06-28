@@ -50,7 +50,7 @@
         <FIELD NAME="words_per_minute" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Last modified time."/>
         <FIELD NAME="backspace_percent" TYPE="float" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Last modified time."/>
         <FIELD NAME="score" TYPE="float" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="User score to show icons."/>
-        <FIELD NAME="copy_behavior" TYPE="float" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="User score to show icons."/
+        <FIELD NAME="copy_behavior" TYPE="float" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="User score to show icons."/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
