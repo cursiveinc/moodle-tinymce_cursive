@@ -57,16 +57,16 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
     };
 
     var usersTable = {
-        init: function(score_setting) {
+        init: function(score_setting, showcomment) {
             str
                 .get_strings([
                     {key: "field_require", component: "tiny_cursive"},
                 ])
                 .done(function() {
-                    usersTable.appendSubmissionDetail(score_setting);
+                    usersTable.appendSubmissionDetail(score_setting, showcomment);
                 });
         },
-        appendSubmissionDetail: function(score_setting) {
+        appendSubmissionDetail: function(score_setting, showcomment) {
             $(document).ready(function($) {
 
                 var divElement = $('.path-mod-assign [data-region="grade-panel"]')[0];
@@ -103,7 +103,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                     var data = JSON.parse(json);
 
                     $('.alert').remove();
-                    if (data.usercomment != 'comments') {
+                    if (data.usercomment != 'comments' && parseInt(showcomment)) {
                         $(document).ready(function(){
                             $('div[data-region="grade-panel"]').append('<div class="dropdown">');
                             var tt = '';
