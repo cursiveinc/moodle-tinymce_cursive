@@ -47,13 +47,13 @@ if (\core\session\manager::is_loggedinas()) {
 
 $userid = optional_param('userid', 0, PARAM_INT);
 $courseid = optional_param('courseid', 0, PARAM_INT);
-if($courseid) {
-    $sql = "SELECT * 
-              FROM {course_modules} 
-             WHERE course = :course LIMIT 1";
-    $cm = $DB->get_record_sql($sql,['course' => $courseid]);
+if ($courseid) {
+    $sql = "SELECT *
+                FROM {course_modules}
+                WHERE course = :course LIMIT 1";
+    $cm = $DB->get_record_sql($sql, ['course' => $courseid]);
     $context = context_module::instance($cm->id);
-}else {
+} else {
     $context = context_system::instance();
 }
 
@@ -62,13 +62,12 @@ $haseditcapability = has_capability('tiny/cursive:view', $context);
 $editingteacherrole = $DB->get_record('role', ['shortname' => 'editingteacher'], '*', MUST_EXIST);
 $editingteacherroleid = $editingteacherrole->id;
 
-// Check if the user is an editing teacher in any course context
+// Check if the user is an editing teacher in any course context.
 $iseditingteacher = is_user_editingteacher($USER->id, $editingteacherroleid);
 
 if (!$haseditcapability && !$iseditingteacher) {
     return redirect(new moodle_url('/course/index.php'), get_string('warning', 'tiny_cursive'));
 }
-
 
 $PAGE->requires->jquery_plugin('jquery');
 $PAGE->requires->js_call_amd('tiny_cursive/cursive_writing_reports', 'init', []);
@@ -79,12 +78,10 @@ $limit = 10;
 $perpage = $page * $limit;
 $user = $DB->get_record('user', ['id' => $userid], '*', MUST_EXIST);
 $systemcontext = context_system::instance();
-if ($courseid){
+if ($courseid) {
     $linkurl = $CFG->wwwroot . '/lib/editor/tiny/plugins/cursive/writing_report.php?userid=' . $userid . '&courseid=' . $courseid;
-
-} else{
+} else {
     $linkurl = $CFG->wwwroot . '/lib/editor/tiny/plugins/cursive/writing_report.php?userid=' . $userid;
-
 }
 $linktext = get_string('tiny_cursive', 'tiny_cursive');
 $PAGE->set_context($systemcontext);

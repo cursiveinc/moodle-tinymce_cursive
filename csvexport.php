@@ -23,20 +23,20 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require (__DIR__ . '/../../../../../config.php');
+require(__DIR__ . '/../../../../../config.php');
 require_login();
-require_once ($CFG->libdir . "/csvlib.class.php");
+require_once($CFG->libdir . "/csvlib.class.php");
 
-require_once ('lib.php');
+require_once('lib.php');
 
 $courseid = optional_param('courseid', 0, PARAM_INT);
 $userid = optional_param('userid', 0, PARAM_INT);
 $moduleid = optional_param('moduleid', 0, PARAM_INT);
 // Use csv_export_writer.
-if($moduleid != 0) {
+if ($moduleid != 0) {
     $context = context_module::instance($moduleid);
-}else {
-    $cm = $DB->get_record('course_modules', array('course' => $courseid));
+} else {
+    $cm = $DB->get_record('course_modules', ['course' => $courseid]);
     $context = context_module::instance($cm->id);
 }
 
@@ -68,7 +68,7 @@ $exportcsv->set_filename("ExportUsersData");
 $exportcsv->add_data($headers); // Add Header Row.
 $params = [];
 if ($courseid != 0) {
-    
+
     $attempts = "SELECT uf.id as fileid, u.id as usrid,
                         u.firstname, u.lastname, u.email,uf.courseid,
                         sum(uw.total_time_seconds) as total_time,
@@ -100,7 +100,7 @@ if ($courseid != 0) {
         $params['moduleid'] = $moduleid;
     }
     $attempts .= " GROUP BY uf.userid;";
-    $ress = $DB->get_records_sql($attempts,$params);
+    $ress = $DB->get_records_sql($attempts, $params);
     foreach ($ress as $key => $res) {
         if ($res != null) {
             $userrow = [

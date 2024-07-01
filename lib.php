@@ -90,15 +90,14 @@ function tiny_cursive_extend_navigation_course(\navigation_node $navigation, \st
     global $CFG, $USER, $DB;
     require_once(__DIR__."/locallib.php");
 
-    $url = new moodle_url($CFG->wwwroot . '/lib/editor/tiny/plugins/cursive/tiny_cursive_report.php',['courseid' => $course->id]);
+    $url = new moodle_url($CFG->wwwroot . '/lib/editor/tiny/plugins/cursive/tiny_cursive_report.php', ['courseid' => $course->id]);
     $editingteacherrole = $DB->get_record('role', ['shortname' => 'editingteacher'], '*', MUST_EXIST);
     $editingteacherroleid = $editingteacherrole->id;
-    // Check if the user is an editing teacher in any course context
+    // Check if the user is an editing teacher in any course context.
     $iseditingteacher = is_user_editingteacher($USER->id, $editingteacherroleid);
-    
-    if(get_admin()->id == $USER->id || $iseditingteacher) {
+    if (get_admin()->id == $USER->id || $iseditingteacher) {
         $navigation->add(
-            get_string('wractivityreport','tiny_cursive'),
+            get_string('wractivityreport', 'tiny_cursive'),
             $url,
             navigation_node::TYPE_SETTING,
             null,
@@ -146,7 +145,12 @@ function tiny_cursive_myprofile_navigation(core_user\output\myprofile\tree $tree
     }
 
     $url = new moodle_url('/lib/editor/tiny/plugins/cursive/my_writing_report.php',
-        ['id' => $user->id, 'course' => isset($course->id) ? $course->id: "", 'mode' => 'cursive']);
+        [
+            'id' => $user->id,
+            'course' => isset($course->id) ? $course->id : "",
+            'mode' => 'cursive',
+        ]
+    );
     $node = new core_user\output\myprofile\node('reports', 'cursive', get_string('writing', 'tiny_cursive'), null, $url);
     $tree->add_node($node);
 }
@@ -159,8 +163,7 @@ function tiny_cursive_myprofile_navigation(core_user\output\myprofile\tree $tree
  * @return bool|string
  * @throws dml_exception
  */
-function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath,$wstoken) {
-
+function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath, $wstoken) {
     $moodleurl = get_config('tiny_cursive', 'host_url');
     $moodleurl = preg_replace("(^https?://)", "", $moodleurl);
     $moodleurl = 'https://' . $moodleurl;

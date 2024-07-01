@@ -53,17 +53,22 @@ class upload_student_json_cron extends \core\task\scheduled_task {
         global $CFG, $DB;
         require_once($CFG->dirroot . '/lib/editor/tiny/plugins/cursive/lib.php');
 
-        $service_shortname = 'moodle_mobile_app'; // Replace with your service shortname
-        $service = $DB->get_record('external_services',['shortname' => $service_shortname]);
+        $serviceshortname = 'moodle_mobile_app'; // Replace with your service shortname.
+        $service = $DB->get_record('external_services', ['shortname' => $serviceshortname]);
 
         $adminuser = get_admin();
-        $token = $DB->get_record_sql("SELECT * FROM {external_tokens} WHERE userid = ? AND externalserviceid = ? order by id DESC LIMIT 1", array($adminuser->id, $service->id));
+        $token = $DB->get_record_sql(
+            "SELECT *
+                    FROM {external_tokens} WHERE userid = :userid
+                    AND externalserviceid = :externalserviceid
+                    order by id DESC LIMIT 1",
+            ['userid' => $adminuser->id, 'externalserviceid' => $service->id]
+        );
         $wstoken = $token->token ?? '';
 
-       
-        $sql = "SELECT tcf.* 
-                  FROM {tiny_cursive_files} AS tcf
-                 WHERE tcf.timemodified > tcf.uploaded";
+        $sql = "SELECT tcf.*
+                    FROM {tiny_cursive_files} tcf
+                    WHERE tcf.timemodified > tcf.uploaded";
         $filerecords = $DB->get_records_sql($sql);
         $dirname = $CFG->dataroot . '/temp/userdata/';
 

@@ -1,12 +1,39 @@
 <?php
-defined('MOODLE_INTERNAL') || die();
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
- * Post installation procedure
+ * Tiny cursive plugin event.
+ *
+ * @package tiny_cursive
+ * @copyright  CTI <info@cursivetechnology.com>
+ * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+defined('MOODLE_INTERNAL') || die();
+
 use core_external\util;
+
+/**
+ * xmldb_tiny_cursive_install
+ * @return void
+ */
 function xmldb_tiny_cursive_install() {
     global $DB;
-    // Ensure the web service is enabled
+    // Ensure the web service is enabled.
     enable_webservice();
     enable_webservice_protocol('rest');
 
@@ -38,11 +65,11 @@ function enable_webservice_protocol($protocol) {
  */
 function create_token_for_user() {
     global $DB;
-    $amdinid=get_admin();
+    $amdinid = get_admin();
 
-    $service_shortname = 'moodle_mobile_app'; // Replace with your service shortname
-    $service = $DB->get_record('external_services',['shortname' => $service_shortname]);
-    $token = util::generate_token(EXTERNAL_TOKEN_PERMANENT,$service,$amdinid->id,context_system::instance());
+    $serviceshortname = 'moodle_mobile_app'; // Replace with your service shortname.
+    $service = $DB->get_record('external_services', ['shortname' => $serviceshortname]);
+    $token = util::generate_token(EXTERNAL_TOKEN_PERMANENT, $service, $amdinid->id, context_system::instance());
 
     return $token;
 }

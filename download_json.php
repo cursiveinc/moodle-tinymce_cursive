@@ -36,8 +36,8 @@ $filename = '';
 $dirname = $CFG->dataroot . '/temp/userdata/';
 if ($fname) {
     $filename = $dirname . $fname;
-    if(!file_exists($filename)){
-        $url = new moodle_url('/lib/editor/tiny/plugins/cursive/writing_report.php?userid='.$userid);
+    if (!file_exists($filename)) {
+        $url = new moodle_url('/lib/editor/tiny/plugins/cursive/writing_report.php?userid=' . $userid);
         return redirect($url, get_string('filenotfound', 'tiny_cursive'));
     }
 } else {
@@ -51,7 +51,7 @@ $haseditcapability = has_capability('tiny/cursive:view', $context);
 $editingteacherrole = $DB->get_record('role', ['shortname' => 'editingteacher'], '*', MUST_EXIST);
 $editingteacherroleid = $editingteacherrole->id;
 
-// Check if the user is an editing teacher in any course context
+// Check if the user is an editing teacher in any course context.
 $iseditingteacher = is_user_editingteacher($USER->id, $editingteacherroleid);
 
 if (!$haseditcapability && !$iseditingteacher) {

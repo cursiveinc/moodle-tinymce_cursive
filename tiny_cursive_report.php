@@ -41,13 +41,13 @@ $page = optional_param('page', 0, PARAM_INT);
 $limit = 5;
 $perpage = $page * $limit;
 
-if($courseid) {
-    $sql = "SELECT * 
-              FROM {course_modules} 
-             WHERE course = :course LIMIT 1";
-    $cm = $DB->get_record_sql($sql,['course' => $courseid]);
+if ($courseid) {
+    $sql = "SELECT *
+FROM {course_modules}
+WHERE course = :course LIMIT 1";
+    $cm = $DB->get_record_sql($sql, ['course' => $courseid]);
     $context = context_module::instance($cm->id);
-}else {
+} else {
     $context = context_system::instance();
 }
 
@@ -56,7 +56,7 @@ $haseditcapability = has_capability('tiny/cursive:view', $context);
 $editingteacherrole = $DB->get_record('role', ['shortname' => 'editingteacher'], '*', MUST_EXIST);
 $editingteacherroleid = $editingteacherrole->id;
 
-// Check if the user is an editing teacher in any course context
+// Check if the user is an editing teacher in any course context.
 $iseditingteacher = is_user_editingteacher($USER->id, $editingteacherroleid);
 
 if (!$haseditcapability && !$iseditingteacher) {
@@ -101,7 +101,7 @@ if ($formdata = $mform->get_data()) {
     echo '<a target="_blank" href="' . $CFG->wwwroot . '/lib/editor/tiny/plugins/cursive/csvexport.php?courseid=' . $courseid .
         '&moduleid=' . $moduleid . '&userid=' . $userid . '" id="export" role="button"
         class="btn btn-primary mb-4" style="margin-right:50px;" >' .
-        get_string('download_csv','tiny_cursive') . '</a>';
+        get_string('download_csv', 'tiny_cursive') . '</a>';
     echo $renderer->timer_report($users, $courseid, $page, $limit, $linkurl);
 
 }

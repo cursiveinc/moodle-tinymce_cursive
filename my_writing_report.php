@@ -22,10 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
-global $CFG, $DB, $USER, $PAGE;
-
 require(__DIR__ . '/../../../../../config.php');
+global $CFG, $DB, $USER, $PAGE;
 require_once($CFG->dirroot . '/mod/quiz/lib.php');
 require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 require_once(__DIR__ . '/classes/forms/filterreportform.php');
@@ -42,9 +40,9 @@ if (\core\session\manager::is_loggedinas()) {
     die;
 }
 
-$userid = optional_param('userid',0,PARAM_INT);
-if(optional_param('id',0,PARAM_INT)) {
-    $userid=optional_param('id', 0, PARAM_INT);
+$userid = optional_param('userid', 0, PARAM_INT);
+if (optional_param('id', 0, PARAM_INT)) {
+    $userid = optional_param('id', 0, PARAM_INT);
 }
 
 $orderby = optional_param('orderby', 'id', PARAM_TEXT);
@@ -52,8 +50,7 @@ $order = optional_param('order', 'ASC', PARAM_TEXT);
 $page = optional_param('page', 0, PARAM_INT);
 $courseid = optional_param('courseid', 0, PARAM_INT);
 
-
-if(optional_param('course', 0, PARAM_INT) && !is_siteadmin($USER->id) && optional_param('id',0,PARAM_INT) !== $USER->id) {
+if (optional_param('course', 0, PARAM_INT) && !is_siteadmin($USER->id) && optional_param('id', 0, PARAM_INT) !== $USER->id) {
     $courseid = optional_param('course', 0, PARAM_INT);
 }
 
@@ -66,15 +63,12 @@ $haseditcapability = has_capability('tiny/cursive:view', $context);
 $editingteacherrole = $DB->get_record('role', ['shortname' => 'editingteacher'], '*', MUST_EXIST);
 $editingteacherroleid = $editingteacherrole->id;
 
-// Check if the user is an editing teacher in any course context
+// Check if the user is an editing teacher in any course context.
 $iseditingteacher = is_user_editingteacher($USER->id, $editingteacherroleid);
 
 if (!$haseditcapability && $userid != $USER->id && !$iseditingteacher) {
-
     return redirect(new moodle_url('/course/index.php'), get_string('warning', 'tiny_cursive'));
 }
-
-
 
 $PAGE->requires->js_call_amd('tiny_cursive/key_logger', 'init', [1]);
 $PAGE->requires->jquery_plugin('jquery');
@@ -83,10 +77,10 @@ $PAGE->requires->js_call_amd('tiny_cursive/cursive_writing_reports', 'init', [])
 $perpage = $page * $limit;
 $user = $DB->get_record('user', ['id' => $userid], '*', MUST_EXIST);
 $systemcontext = context_system::instance();
-if ($courseid){
-    $linkurl = $CFG->wwwroot . '/lib/editor/tiny/plugins/cursive/my_writing_report.php?userid=' . $userid . '&courseid=' . $courseid;
-
-} else{
+if ($courseid) {
+    $linkurl =
+        $CFG->wwwroot . '/lib/editor/tiny/plugins/cursive/my_writing_report.php?userid=' . $userid . '&courseid=' . $courseid;
+} else {
     $linkurl = $CFG->wwwroot . '/lib/editor/tiny/plugins/cursive/my_writing_report.php?userid=' . $userid;
 }
 $linktext = get_string('tiny_cursive', 'tiny_cursive');

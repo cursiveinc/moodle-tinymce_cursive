@@ -109,7 +109,6 @@ $string['random_reflex'] = 'Your Random Reflection Prompt';
 $string['authorship'] = 'Authorship Confidence: ';
 $string['copy_behave'] = 'Copy Behavior: ';
 $string['playback'] = 'Playback Video';
-$string['attemptid'] = 'Attemptid';
 $string['fulname'] = 'Full Name';
 $string['email'] = 'Email';
 $string['selectcrs'] = 'Select Course';
