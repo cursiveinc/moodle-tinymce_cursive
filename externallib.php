@@ -1156,8 +1156,7 @@ class cursive_json_func_data extends external_api
                             AND modulename = :modulename';
             $filename = $DB->get_record_sql($sql, ['userid' => $id, 'cmid' => $cmid, 'modulename' => $modulename]);
 
-            $filep = $CFG->dataroot . "/temp/userdata/" . $filename->filename;
-            $data['filename'] = file_exists($filep) ? $filep : null;
+            $data['filename'] = $filename->filename;
             $data['file_id'] = $filename->id;
             $data['userid'] = $filename->userid;
         }

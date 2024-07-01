@@ -95,7 +95,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                 let com = AJAX.call([{methodname, args}]);
                 com[0].done(function(json) {
                     var data = JSON.parse(json);
-                    if (data.usercomment != 'comments') {
+                    if (data.usercomment != 'comments' && parseInt(showcomment)) {
                         $("#" + entry.id).find('#post-content-' + ids).append('<div class="dropdown">');
                         var tt = '';
                         data.usercomment.forEach(element => {
