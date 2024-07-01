@@ -109,7 +109,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                     if (data.data.filename) {
                         var html = '';
                         var content = $('.que.essay .editquestion a[href*="question/bank/editquestion/question.php"][href*="&id=' + data.data.questionid + '"]');
-                        if (data.usercomment != 'comments') {
+                        if (data.usercomment != 'comments' && parseInt(showcomment)) {
                             content.parent().parent().parent().find('.qtext').append('<div class="dropdown">');
                             var tt = '';
                             data.usercomment.forEach(element => {
