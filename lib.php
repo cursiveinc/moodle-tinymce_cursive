@@ -212,27 +212,31 @@ function tiny_cursive_before_footer() {
         $userrole = 'teacher_admin';
     }
     $PAGE->requires->js_call_amd('tiny_cursive/settings', 'init', [$showcomments, $userrole]);
-    if (get_config('tiny_cursive', 'showcomments')) {
-        if ($PAGE->bodyid == 'page-mod-forum-discuss' || $PAGE->bodyid == 'page-mod-forum-view') {
-            $PAGE->requires->js_call_amd('tiny_cursive/append_fourm_post',
-                'init', [$confidencethreshold, $showcomments]);
-        }
-        if ($PAGE->bodyid == 'page-mod-assign-grader') {
 
-            $PAGE->requires->js_call_amd('tiny_cursive/show_url_in_submission_grade',
-                'init', [$confidencethreshold]);
-        }
-        if ($PAGE->bodyid == 'page-mod-assign-viewpluginassignsubmission') {
-            $PAGE->requires->js_call_amd('tiny_cursive/show_url_in_submission_detail',
-                'init', [$confidencethreshold, $showcomments]);
-        }
+    if ($PAGE->bodyid == 'page-mod-forum-discuss' || $PAGE->bodyid == 'page-mod-forum-view') {
+        $PAGE->requires->js_call_amd('tiny_cursive/append_fourm_post',
+            'init', [$confidencethreshold, $showcomments]);
     }
+
+    if ($PAGE->bodyid == 'page-mod-assign-grader') {
+
+        $PAGE->requires->js_call_amd('tiny_cursive/show_url_in_submission_grade',
+            'init', [$confidencethreshold, $showcomments]);
+    }
+
+    if ($PAGE->bodyid == 'page-mod-assign-viewpluginassignsubmission') {
+        $PAGE->requires->js_call_amd('tiny_cursive/show_url_in_submission_detail',
+            'init', [$confidencethreshold, $showcomments]);
+    }
+
     if ($PAGE->bodyid == 'page-mod-assign-grading') {
         $PAGE->requires->js_call_amd('tiny_cursive/append_submissions_table', 'init', [$confidencethreshold, $showcomments]);
     }
+
     if ($PAGE->bodyid == 'page-mod-quiz-review') {
         $PAGE->requires->js_call_amd('tiny_cursive/show_url_in_quiz_detail', 'init', [$confidencethreshold, $showcomments]);
     }
+
     if ($PAGE->bodyid == 'page-course-view-participants') {
         $PAGE->requires->js_call_amd('tiny_cursive/append_participants_table', 'init', [$confidencethreshold, $showcomments]);
     }
