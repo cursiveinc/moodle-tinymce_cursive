@@ -20,29 +20,31 @@
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  */
 
-define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], function (
+define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './analytic_modal','./analytic_button'], function (
     $,
     AJAX,
     str,
     templates,
-    Replay
+    Replay,
+    MyModal,
+    analyticButton
 ) {
     const replayInstances = {};
-    window.myFunction = function() {
+    window.myFunction = function () {
         let mid = $(this).data('id');
         $("#typeid" + mid).show();
     };
 
-    window.video_playback = function(mid, filepath) {
-        
-        if (filepath !== ''){
-            $("#playback"+mid).show();
+    window.video_playback = function (mid, filepath) {
+
+        if (filepath !== '') {
+            // $("#playback" + mid).show();
             const replay = new Replay(
-                elementId = 'output_playback_'+mid,
+                elementId = 'content' + mid,
                 filePath = filepath,
                 speed = 10,
                 loop = false,
-                controllerId = 'player_'+mid
+                controllerId = 'player_' + mid
             );
             replayInstances[mid] = replay;
         }
@@ -53,7 +55,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
 
     };
 
-    window.popup_item = function(mid) {
+    window.popup_item = function (mid) {
         $("#" + mid).show();
     };
 
@@ -61,10 +63,10 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
         init: function (score_setting, showcomment) {
             str
                 .get_strings([
-                    {key: "confidence_threshold", component: "tiny_cursive"},
+                    { key: "confidence_threshold", component: "tiny_cursive" },
                 ]).done(function () {
-                usersTable.appendTable(score_setting, showcomment);
-            });
+                    usersTable.appendTable(score_setting, showcomment);
+                });
         },
         appendTable: function (score_setting) {
             let sub_url = window.location.href;
@@ -78,27 +80,38 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                 var chart = "fa fa-area-chart popup_item";
                 var video = "fa fa-play video_playback";
                 var st = "font-size:24px;color:black;border:none";
-                let thunder_icon = '<td><button data-id=' + userid + ' class="' + chart + '" style="' + st + '"></button></td>';
-                $(tr).find('td').eq(3).after(thunder_icon);
 
-                let args = {id: userid, modulename: "assign", cmid: cmid};
+                // Create the table cell element and append the anchor
+                const tableCell = document.createElement('td');
+                tableCell.appendChild(analyticButton(userid));
+
+                $(tr).find('td').eq(3).after(tableCell);
+
+                
+
+                // Function to deactivate all elements
+                function deactiveAll() {
+                    $('.active').removeClass('active'); // Remove 'active' class from all elements that have it
+                }
+
+                let args = { id: userid, modulename: "assign", cmid: cmid };
                 let methodname = 'cursive_user_list_submission_stats';
-                let com = AJAX.call([{methodname, args}]);
+                let com = AJAX.call([{ methodname, args }]);
                 try {
                     com[0].done(function (json) {
                         var data = JSON.parse(json);
-                        var filepath ='';
-                        if (data.res.filename){
-                            var filepath =data.res.filename;
+                        var filepath = '';
+                        if (data.res.filename) {
+                            var filepath = data.res.filename;
                         }
                         var score = parseFloat(data.res.score);
                         var icon = 'fa fa-circle-o';
                         var color = 'font-size:24px;color:black';
-                        if(data.res.first_file){
+                        if (data.res.first_file) {
                             icon = 'fa  fa fa-solid fa-info-circle typeid';
                             color = 'font-size:24px;color:#000000';
                         }
-                        else{
+                        else {
                             if (score >= score_setting) {
                                 icon = 'fa fa-check-circle typeid';
                                 color = 'font-size:24px;color:green';
@@ -110,11 +123,11 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                                 color = 'font-size:24px;color:black';
                             }
                         }
-
+                       
                         let video_icon = '<td><a href="#" onclick="video_playback(' + userid + ', \'' + filepath + '\')" data-filepath="' + filepath + '" data-id="playback_' + userid + '" class="video_playback_icon ' + video + '" style="' + st + '"></a></td>';
-                        $(tr).find('td').eq(3).after(video_icon);
+                        // $(tr).find('td').eq(3).after(video_icon);
                         let typeid_icon = '<td><button onclick="myFunction()" data-id=' + userid + ' class=" ' + icon + ' " style="border:none; ' + color + ';"></button></td>';
-                        $(tr).find('td').eq(3).after(typeid_icon);
+                        // $(tr).find('td').eq(3).after(typeid_icon);
 
                         // Get Module Name from element.
                         let element = document.querySelector('.page-header-headings h1'); // Selects the h1 element within the .page-header-headings class
@@ -134,6 +147,50 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                             page: score_setting,
                             userid: userid,
                         };
+
+                        $('#analytics' + userid).on('click', function (e) {
+                            e.preventDefault();
+
+                            // Create Moodle modal
+                            MyModal.create({ templateContext: context }).then(modal => {
+                                modal.show();
+                            }).catch(error => {
+                                console.error("Failed to create modal:", error);
+                            });
+        
+                        });
+
+                         // Event handler for '#analytic' + userid
+                         $('body').on('click', '#analytic' + userid, function (e) {
+                            e.preventDefault();
+                            deactiveAll(); // Deactivate all elements
+                            $(this).addClass('active'); // Add 'active' class to the clicked element
+
+                            templates.render('tiny_cursive/analytics_table', context).then(function (html) {
+                                $('#content' + userid).html(html);
+
+                            }).fail(function (error) {
+                                console.error("Failed to render template:", error);
+                            });
+                        });
+
+                        // Event handler for '#diff' + userid
+                        $('body').on('click', '#diff' + userid, function (e) {
+                            e.preventDefault();
+                            deactiveAll(); // Deactivate all elements
+                            $(this).addClass('active'); // Add 'active' class to the clicked element
+                            $('#content' + userid).html("diff"); // Update content
+                        });
+
+                        // Event handler for '#rep' + userid
+                        $('body').on('click', '#rep' + userid, function (e) {
+                            e.preventDefault();
+                            deactiveAll(); // Deactivate all elements
+                            $(this).addClass('active'); // Add 'active' class to the clicked element
+                            video_playback(userid, filepath);
+
+                        });
+
                         templates
                             .render("tiny_cursive/pop_modal", context)
                             .then(function (html) {
