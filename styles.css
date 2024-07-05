@@ -24,21 +24,25 @@
     position: fixed !important;
     height: 120px !important;
 }
+
 .cursive-analytics-btn {
     background-color: #306ab3;
     color: white;
     border-radius: 8vw;
     text-decoration: none !important;
 }
+
 .cursive-analytics-btn:hover {
     background-color: #205aa1;
 }
+
 .cursive-analytics-btn span {
     padding: 3px;
     margin-right: 5px;
     font-weight: 500;
     font-size: 16px;
 }
+
 .cursive-analytics-icon {
     background-color: white;
     color: #306ab3;
@@ -52,37 +56,49 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px;
+    padding: 1.5rem;
     background-color: #f3f3f3;
 }
 
-.cursive-analytics-header h5 {
+.cursive-analytics-header h3 {
     margin: 0;
+    color: #306BB2;
 }
 
 .cursive-analytics-header .close-btn {
     font-size: 1.2rem;
     cursor: pointer;
+
 }
 
-.cursive-analytics-header .close-btn:hover {
-    color: red;
+.cursive-analytics-header .close-btn span {
+    font-size: 1.5rem;
+    padding: .25rem .7rem;
+    transition: .3s ease-in-out;
+    background-color: #FF3737;
+}
+
+.cursive-analytics-header .close-btn:hover span {
+    background-color: rgb(211, 0, 0) !important;
 }
 
 .cursive-nav-tab {
     background-color: #f3f3f3;
+    max-width: 250px;
+    min-height: 465px;
 }
 
 .cursive-nav-tab .nav-item .nav-link {
     color: gray;
     font-weight: 600;
-    font-size: .8rem;
+    font-size: 1rem;
+    padding: .8rem 1rem;
 }
 
 .cursive-nav-tab .nav-item .nav-link svg {
     fill: gray;
-    width: 16px;
-    height: 16px;
+    width: 25px;
+    height: auto;
 }
 
 .cursive-nav-tab .nav-item.show .nav-link,
@@ -95,34 +111,83 @@
 .cursive-nav-tab .nav-item.show .nav-link,
 .cursive-nav-tab .nav-link.active svg {
     fill: white;
-    
+
 }
 
-.cursive .table td:first-child {
-    width: 1%;
-    white-space: nowrap;
+.cursive {
+    background-color: white;
+    margin: 0 .5rem 1rem 0;
+    border-radius: .2rem .2rem 1.1rem 1.1rem;
+    padding: 1.2rem 0rem 0rem 2rem;
+    height: 700px;
+    overflow: auto;
 }
 
 .cursive-main {
     display: grid;
-    grid-template-columns: 1fr 3fr;
+    grid-template-columns: 200px auto;
+    background-color: #f3f3f3;
+    height: 100%;
 }
+
+.cursive .table tr td:nth-child(1) {
+    display: inline-flex;
+    gap: .5rem;
+}
+
+/* .cursive .table td:first-child {
+    width: 1%;
+    white-space: nowrap;
+} */
 
 .cursive-analyticcontent {
     overflow: hidden;
+    min-height: 100%;
+    background-color: #f3f3f3;
+}
+
+.cursive .table tbody {
+    width: 100%;
 }
 
 .cursive .table tr {
     border-bottom: 1px solid #f3f3f3;
+    /* width: 100% !important; */
 }
 
 .cursive .table td:first-child {
-    font-size: .8rem;
+    font-size: 1rem;
     font-weight: 600;
 }
 
 .cursive .table td:last-child {
     color: #306ab3;
-    font-size: .8rem;
+    font-size: 1rem;
     font-weight: 500;
+}
+
+.cursive .table tr td svg {
+    fill: gray;
+    width: 30px;
+    height: auto;
+}
+
+.cursive .table tr:first-child td svg {
+    width: 22px;
+    height: 30px;
+}
+
+.cursive .table tr td:nth-child(1) {
+    font-size: 1.18rem;
+}
+
+.cursive .table tr td:nth-child(1) p {
+    font-size: 14px;
+    color: gray;
+    width: 190px;
+    font-weight: 400;
+    text-wrap: wrap;
+}
+.cursive .table tr td:nth-child(even) {
+    font-size: 1.1rem;
 }

@@ -787,12 +787,13 @@ class cursive_json_func_data extends external_api
     {
         return new external_function_parameters(
             [
-                'id' => new external_value(PARAM_INT, 'id', false, 'course_detail'),
-                'modulename' => new external_value(PARAM_TEXT, 'modulename', false, 'modulename'),
-                'cmid' => new external_value(PARAM_INT, 'cmid', false, 'cmid'),
+                'id' => new external_value(PARAM_INT, 'id', VALUE_DEFAULT, null),
+                'modulename' => new external_value(PARAM_TEXT, 'modulename', VALUE_DEFAULT, ''),
+                'cmid' => new external_value(PARAM_INT, 'cmid', VALUE_DEFAULT, 0),
             ]
         );
     }
+    
 
     /**
      * get_forum_comment_link
@@ -1442,7 +1443,7 @@ class cursive_json_func_data extends external_api
     public static function cursive_get_reply_json_parameters()
     {
         return new external_function_parameters([
-            'filepath' => new external_value(PARAM_TEXT, 'filepath', true),
+            'filepath' => new external_value(PARAM_TEXT, 'filepath', VALUE_DEFAULT,''),
         ]);
     }
 
@@ -1491,18 +1492,109 @@ class cursive_json_func_data extends external_api
     static function storing_user_writing_param()
     {
         return [
-            'person_id' => new external_value(PARAM_INT, 'person or user id', true),
-            'file_id' => new external_value(PARAM_INT, 'file_id', true, 'course_detail'),
-            'character_count' => new external_value(PARAM_INT, 'character_count', true, 'course_detail'),
-            'total_time_seconds' => new external_value(PARAM_INT, 'total_time_seconds', true, 'course_detail'),
-            'characters_per_minute' => new external_value(PARAM_INT, 'characters_per_minute', true, 'course_detail'),
-            'key_count' => new external_value(PARAM_INT, 'key_count', true, 'course_detail'),
-            'keys_per_minute' => new external_value(PARAM_INT, 'keys per minutes', true),
-            'word_count' => new external_value(PARAM_INT, 'word_count', true, 'course_detail'),
-            'words_per_minute' => new external_value(PARAM_INT, 'words_per_minute', true, 'course_detail'),
-            'backspace_percent' => new external_value(PARAM_FLOAT, 'backspace_percent', true, 'course_detail'),
-            'copy_behavior' => new external_value(PARAM_FLOAT, 'copy_behavior', true, 'course_detail'),
-            'score' => new external_value(PARAM_FLOAT, 'score', false, 0, true),
+                'person_id' => new external_value(PARAM_INT, 'person or user id', VALUE_REQUIRED),
+                'file_id' => new external_value(PARAM_INT, 'file_id', VALUE_REQUIRED),
+                'character_count' => new external_value(PARAM_INT, 'character_count', VALUE_REQUIRED),
+                'total_time_seconds' => new external_value(PARAM_INT, 'total_time_seconds', VALUE_REQUIRED),
+                'characters_per_minute' => new external_value(PARAM_INT, 'characters_per_minute', VALUE_REQUIRED),
+                'key_count' => new external_value(PARAM_INT, 'key_count', VALUE_REQUIRED),
+                'keys_per_minute' => new external_value(PARAM_INT, 'keys per minutes', VALUE_REQUIRED),
+                'word_count' => new external_value(PARAM_INT, 'word_count', VALUE_REQUIRED),
+                'words_per_minute' => new external_value(PARAM_INT, 'words_per_minute', VALUE_REQUIRED),
+                'backspace_percent' => new external_value(PARAM_FLOAT, 'backspace_percent', VALUE_REQUIRED),
+                'copy_behavior' => new external_value(PARAM_FLOAT, 'copy_behavior', VALUE_REQUIRED),
+                'score' => new external_value(PARAM_FLOAT, 'score', VALUE_DEFAULT, 0),
         ];
+
     }
+
+    public static function cursive_get_analytics_parameters()
+    {
+        return new external_function_parameters([
+            'cmid' => new external_value(PARAM_INT, 'cmid', VALUE_REQUIRED, 0, true),
+            'fileid' => new external_value(PARAM_INT, 'file id', VALUE_REQUIRED, 0, true),
+        ]);
+    }
+
+    public static function cursive_get_analytics($cmid,$fileid) {
+        global $DB;
+
+        $context = context_module::instance($cmid);
+        self::validate_context($context);
+        require_capability('tiny/cursive:view',$context);
+
+        $sql = "SELECT * 
+                  FROM {tiny_cursive_user_writing} 
+                  WHERE file_id = :fileid";
+        $params = ['fileid' => $fileid];
+        $rec = $DB->get_record_sql($sql, $params);
+        return ['data'=>json_encode($rec)];
+    }
+
+    public static function cursive_get_analytics_returns() {
+        return new external_single_structure([
+            'data' => new external_value(PARAM_TEXT, 'Record object'),
+        ]);
+    }
+
+    public static function cursive_store_writing_differencs_parameters() {
+        return new external_function_parameters([
+            'fileid' => new external_value(PARAM_INT, 'file id', VALUE_REQUIRED, 0, true),
+            'content' => new external_value(PARAM_TEXT, 'writing html contents', VALUE_REQUIRED, "", true),
+            'meta' => new external_value(PARAM_TEXT, 'meta data', VALUE_DEFAULT, null, true),
+        ]);
+    }
+
+    public static function cursive_store_writing_differencs($fileid, $content, $meta = null) {
+        global $DB;
+
+        $context = context_system::instance(); // Assuming a system-wide capability check
+        self::validate_context($context);
+        require_capability('tiny/cursive:editsettings', $context);
+
+        $record = new stdClass();
+        $record->file_id = $fileid;
+        $record->content = $content;
+        $record->meta = $meta; // Add the meta field
+    
+        try {
+            $DB->insert_record('tiny_cursive_writing_difference', $record);
+            return ['status' => 'success', 'message' => 'Writing content saved successfully'];
+        } catch (Exception $e) {
+            // Handle the exception
+            return ['status' => 'error', 'message' => 'Error saving writing content: ' . $e->getMessage()];
+        }
+    }
+
+    public static function cursive_store_writing_differencs_returns() {
+        return new external_single_structure([
+            'status' => new external_value(PARAM_TEXT, 'Status message'),
+            'message' => new external_value(PARAM_TEXT, 'Message'),
+        ]);
+    }
+
+    public static function cursive_get_writing_differencs_parameters() {
+        return new external_function_parameters([
+            'fileid' => new external_value(PARAM_INT, 'file id', VALUE_REQUIRED, 0, true),
+        ]);
+    }
+
+    public static function cursive_get_writing_differencs($fileid) {
+        global $DB;
+
+        $sql = "SELECT *
+                  FROM {tiny_cursive_writing_difference}
+                  WHERE file_id = :fileid";
+        $params = ['fileid' => $fileid];
+        $data = $DB->get_records_sql($sql, $params);
+
+        return ['data' => json_encode(array_values($data))];
+    }
+
+    public static function cursive_get_writing_differencs_returns() {
+        return new external_single_structure([
+            'data' => new external_value(PARAM_TEXT, 'content data')
+        ]);
+    }
+    
 }

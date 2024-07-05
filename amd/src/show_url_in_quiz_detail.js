@@ -20,25 +20,27 @@
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  */
 
-define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], function (
+define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./analytic_button", "./analytic_events"], function (
     $,
     AJAX,
     str,
     templates,
-    Replay
+    Replay,
+    analyticButton,
+    customEvents
 ) {
     const replayInstances = {};
 
-    window.myFunction = function() {
+    window.myFunction = function () {
         let mid = $(this).data('id');
         $("#typeid" + mid).show();
     };
 
-    window.video_playback = function(mid, filepath) {
+    window.video_playback = function (mid, filepath) {
         if (filepath !== '') {
-            $("#playback" + mid).show();
+            // $("#playback" + mid).show();
             const replay = new Replay(
-                elementId = 'output_playback_' + mid,
+                elementId = 'content' + mid,
                 filePath = filepath,
                 speed = 10,
                 loop = false,
@@ -51,21 +53,21 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
         return false;
     };
 
-    window.popup_item = function(mid) {
+    window.popup_item = function (mid) {
         $("#" + mid).show();
     };
 
     var usersTable = {
-        init: function(score_setting, showcomment) {
+        init: function (score_setting, showcomment) {
             str
                 .get_strings([
                     { key: "field_require", component: "tiny_cursive" },
                 ])
-                .done(function() {
+                .done(function () {
                     usersTable.appendSubmissionDetail(score_setting, showcomment);
                 });
         },
-        appendSubmissionDetail: function(score_setting, showcomment) {
+        appendSubmissionDetail: function (score_setting, showcomment) {
             let sub_url = window.location.href;
             let parm = new URL(sub_url);
             let attempt_id = parm.searchParams.get('attempt');
@@ -79,7 +81,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
             }
             var userid = '';
             var tableRow = $('table.generaltable.generalbox.quizreviewsummary tbody tr');
-            tableRow.each(function() {
+            tableRow.each(function () {
                 var href = $(this).find('a[href*="/user/view.php"]').attr('href');
                 if (href) {
                     var id = href.match(/id=(\d+)/);
@@ -92,7 +94,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
             var video = "fa fa-play video_playback";
             var st = "font-size:24px;color:black;border:none";
 
-            $('#page-mod-quiz-review .info').each(function() {
+            $('#page-mod-quiz-review .info').each(function () {
 
                 var editQuestionLink = $(this).find('.editquestion a[href*="question/bank/editquestion/question.php"]');
                 if (editQuestionLink.length > 0) {
@@ -103,7 +105,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                 let args = { id: attempt_id, modulename: "quiz", "cmid": cmid, "questionid": questionid, "userid": userid };
                 let methodname = 'cursive_get_comment_link';
                 let com = AJAX.call([{ methodname, args }]);
-                com[0].done(function(json) {
+                com[0].done(function (json) {
                     var data = JSON.parse(json);
 
                     if (data.data.filename) {
@@ -140,26 +142,36 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                                 color = 'font-size:24px;color:black';
                             }
                         }
-                        html = '<div class="justify-content-center d-flex">' +
-                            '<button onclick="popup_item(\'' + userid + "-" + questionid + '\')" data-id=' + userid + ' class="mr-2 ' + chart + '" style="' + st + '"></button>' +
-                            '<a href="#" onclick="video_playback(' + questionid + ', \'' + filepath + '\')" data-filepath="' + filepath + '" data-id="playback_' + questionid + '" class="mr-2 video_playback_icon ' + video + '" style="' + st + '"></a>' +
-                            '<button onclick="myFunction()" data-id=' + userid + ' class="' + icon + ' " style="border:none; ' + color + ';"></button>' +
-                            '</div>';
-                        content.parent().parent().parent().find('.qtext').append(html);
+                        // html = '<div class="justify-content-center d-flex">' +
+                        //     '<button onclick="popup_item(\'' + userid + "-" + questionid + '\')" data-id=' + userid + ' class="mr-2 ' + chart + '" style="' + st + '"></button>' +
+                        //     '<a href="#" onclick="video_playback(' + questionid + ', \'' + filepath + '\')" data-filepath="' + filepath + '" data-id="playback_' + questionid + '" class="mr-2 video_playback_icon ' + video + '" style="' + st + '"></a>' +
+                        //     '<button onclick="myFunction()" data-id=' + userid + ' class="' + icon + ' " style="border:none; ' + color + ';"></button>' +
+                        //     '</div>';
+                        let analytic_button_div = document.createElement('div');
+                        analytic_button_div.classList.add('text-center');
+                        analytic_button_div.append(analyticButton(userid, questionid));
+                        content.parent().parent().parent().find('.qtext').append(analytic_button_div);
                         var context = {
                             tabledata: data.data,
                             page: score_setting,
                             userid: userid,
                             quizid: questionid,
                         };
+
+                        let myEvents = new customEvents();
+                        myEvents.createModal(userid, context, questionid);
+                        myEvents.analytics(userid, templates, context, questionid);
+                        myEvents.checkDiff(userid, data.data.file_id,questionid);
+                        myEvents.replyWriting(userid, filepath, questionid);
+
                         templates
                             .render("tiny_cursive/quiz_pop_modal", context)
-                            .then(function(html) {
+                            .then(function (html) {
                                 $("body").append(html);
                             }).catch(e => window.console.error(e));
                     }
                 });
-                $(window).on('click', function(e) {
+                $(window).on('click', function (e) {
                     const targetId = e.target.id;
                     if (targetId.startsWith('modal-close' + userid + '-' + questionid)) {
                         $("#" + userid + "-" + questionid).hide();

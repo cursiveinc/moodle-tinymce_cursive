@@ -56,5 +56,18 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
+
+    <TABLE NAME="tiny_cursive_writing_difference" COMMENT="Writing Difference data">
+          <FIELDS>
+            <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+            <FIELD NAME="file_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+            <FIELD NAME="content" TYPE="longtext" NOTNULL="true" SEQUENCE="false" COMMENT="Difference html content"/>
+            <FIELD NAME="meta" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="extra field for optional use"/>
+          </FIELDS>
+          <KEYS>
+            <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+          </KEYS>
+        </TABLE>
+
   </TABLES>
 </XMLDB>

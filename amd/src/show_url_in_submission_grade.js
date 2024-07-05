@@ -20,28 +20,30 @@
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  */
 
-define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], function (
+define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./analytic_button","./analytic_events"], function (
     $,
     AJAX,
     str,
     templates,
-    Replay
-){
+    Replay,
+    analyticButton,
+    customEvents
+) {
     const replayInstances = {};
-    window.myFunction = function() {
+    window.myFunction = function () {
         let mid = $(this).data('id');
         $("#typeid" + mid).show();
     };
 
-    window.video_playback = function(mid, filepath) {
-        if (filepath !== ''){
-            $("#playback"+mid).show();
+    window.video_playback = function (mid, filepath) {
+        if (filepath !== '') {
+            // $("#playback" + mid).show();
             const replay = new Replay(
-                elementId = 'output_playback_'+mid,
+                elementId = 'content' + mid,
                 filePath = filepath,
                 speed = 10,
                 loop = false,
-                controllerId = 'player_'+mid
+                controllerId = 'player_' + mid
             );
             replayInstances[mid] = replay;
         }
@@ -52,27 +54,27 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
 
     };
 
-    window.popup_item = function(mid) {
+    window.popup_item = function (mid) {
         $("#" + mid).show();
     };
 
     var usersTable = {
-        init: function(score_setting, showcomment) {
+        init: function (score_setting, showcomment) {
             str
                 .get_strings([
-                    {key: "field_require", component: "tiny_cursive"},
+                    { key: "field_require", component: "tiny_cursive" },
                 ])
-                .done(function() {
+                .done(function () {
                     usersTable.appendSubmissionDetail(score_setting, showcomment);
                 });
         },
-        appendSubmissionDetail: function(score_setting, showcomment) {
-            $(document).ready(function($) {
+        appendSubmissionDetail: function (score_setting, showcomment) {
+            $(document).ready(function ($) {
 
                 var divElement = $('.path-mod-assign [data-region="grade-panel"]')[0];
                 var previousContextId = window.location.href;
-                var observer = new MutationObserver(function(mutations) {
-                    mutations.forEach(function(mutation) {
+                var observer = new MutationObserver(function (mutations) {
+                    mutations.forEach(function (mutation) {
 
                         var currentContextId = window.location.href;
                         if (currentContextId !== previousContextId) {
@@ -95,16 +97,16 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                 var chart = "fa fa-area-chart popup_item";
                 var video = "fa fa-play video_playback";
                 var st = "font-size:24px;color:black;border:none";
-              
-                let args = {id: userid, modulename: "assign", 'cmid': cmid};
+
+                let args = { id: userid, modulename: "assign", 'cmid': cmid };
                 let methodname = 'cursive_get_assign_grade_comment';
-                let com = AJAX.call([{methodname, args}]);
-                com[0].done(function(json) {
+                let com = AJAX.call([{ methodname, args }]);
+                com[0].done(function (json) {
                     var data = JSON.parse(json);
 
                     $('.alert').remove();
                     if (data.usercomment != 'comments' && parseInt(showcomment)) {
-                        $(document).ready(function(){
+                        $(document).ready(function () {
                             $('div[data-region="grade-panel"]').append('<div class="dropdown">');
                             var tt = '';
                             data.usercomment.forEach(element => {
@@ -115,19 +117,19 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                         });
                     }
 
-                    var filepath ='';
-                    if (data.data.filename){
-                        var filepath =data.data.filename;
+                    var filepath = '';
+                    if (data.data.filename) {
+                        filepath = data.data.filename;
                     }
                     var score = parseFloat(data.data.score);
                     var icon = 'fa fa-circle-o';
                     var color = 'font-size:24px;color:black';
-                    
-                    if(data.data.first_file){
+
+                    if (data.data.first_file) {
                         icon = 'fa  fa fa-solid fa-info-circle typeid';
                         color = 'font-size:24px;color:#000000';
                     }
-                    else{
+                    else {
                         if (score >= score_setting) {
                             icon = 'fa fa-check-circle typeid';
                             color = 'font-size:24px;color:green';
@@ -139,14 +141,19 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                             color = 'font-size:24px;color:black';
                         }
                     }
-                    var html= '<div class="justify-content-center d-flex py-3">' +
-                        '<button onclick="popup_item(' + userid + ')" data-id=' + userid + ' class="mr-2 ' + chart + '" style="' + st + '"></button>' +
-                        '<a href="#" onclick="video_playback(' + userid + ', \'' + filepath + '\')" data-filepath="' +
-                            filepath + '" data-id="playback_' + userid + '" class="mr-2 video_playback_icon ' + video + '" style="' + st + '"></a>' +
-                        '<button onclick="myFunction()" data-id=' + userid + ' class="' + icon + ' " style="border:none; ' + color + ';"></button>' +
-                        '</div>      ';
+                    // var html= '<div class="justify-content-center d-flex py-3">' +
+                    //     '<button onclick="popup_item(' + userid + ')" data-id=' + userid + ' class="mr-2 ' + chart + '" style="' + st + '"></button>' +
+                    //     '<a href="#" onclick="video_playback(' + userid + ', \'' + filepath + '\')" data-filepath="' +
+                    //         filepath + '" data-id="playback_' + userid + '" class="mr-2 video_playback_icon ' + video + '" style="' + st + '"></a>' +
+                    //     '<button onclick="myFunction()" data-id=' + userid + ' class="' + icon + ' " style="border:none; ' + color + ';"></button>' +
+                    //     '</div>      ';
+                    // Function to deactivate all elements
+                    
 
-                    $('div[data-region="grade-actions"]').before(html);
+                    let analytic_button_div = document.createElement('div');
+                    analytic_button_div.append(analyticButton(userid));
+                    analytic_button_div.classList.add('text-center', 'mt-2');
+                    $('div[data-region="grade-actions"]').before(analytic_button_div);
 
                     $('div[data-region="review-panel"]').addClass('cursive_review_panel_path_mod_assign');
 
@@ -161,6 +168,12 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                         page: score_setting,
                         userid: userid,
                     };
+                    let myEvents = new customEvents();
+                    myEvents.createModal(userid,context);
+                    myEvents.analytics(userid,templates,context);
+                    myEvents.checkDiff(userid,data.data.file_id);
+                    myEvents.replyWriting(userid,filepath);
+
                     templates
                         .render("tiny_cursive/pop_modal", context)
                         .then(function (html) {

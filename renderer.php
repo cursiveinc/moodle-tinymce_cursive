@@ -216,9 +216,9 @@ class tiny_cursive_renderer extends plugin_renderer_base {
             get_string('email','tiny_cursive'),
             get_string('module_name', 'tiny_cursive'),
             get_string('last_modified', 'tiny_cursive'),
-            get_string('playback', 'tiny_cursive'),
+            // get_string('playback', 'tiny_cursive'),
             get_string('analytics', 'tiny_cursive'),
-            get_string('typeid', 'tiny_cursive'),
+            // get_string('typeid', 'tiny_cursive'),
             '',
         ];
 
@@ -242,27 +242,30 @@ class tiny_cursive_renderer extends plugin_renderer_base {
             $content = $this->get_html_modal($user, $getmodulename->name);
             $scorecontent = $this->get_html_score_modal($user);
             $playbackcontent = $this->get_playback_modal($user);
-            $filepath = file_exists($CFG->dataroot . '/temp/userdata/' . $user->filename)?urlencode($CFG->dataroot . '/temp/userdata/' . $user->filename):null;
+            // $filepath = file_exists($CFG->dataroot . '/temp/userdata/' . $user->filename)?urlencode($CFG->dataroot . '/temp/userdata/' . $user->filename):null;
+            $filep = $CFG->dataroot . '/temp/userdata/' . $user->filename;
+            $filepath = file_exists($filep) ? $filep : null;
             $row = [];
             $row[] = $user->fileid;
             $row[] = $user->firstname . ' ' . $user->lastname ?? '';
             $row[] = $user->email;
             $row[] = $getmodulename->name;
             $row[] = date("l jS \of F Y h:i:s A", $user->timemodified);
-            $row[] = '<a data-filepath ="' . $filepath . '" data-id=playback_' . $user->attemptid . '
-                    href ="#" class = "video_playback_icon">
-                    <i class="fa fa fa-circle-play"
-                    style="font-size:24px;color:black" aria-hidden="true"
-                    style = "padding-left:25px; font-size:x-large;"></i>
-                    </a>' . $playbackcontent;
+            $row[] = '<div class ="analytic-modal" data-cmid="'.$user->cmid.'" data-filepath="' . $filepath . '" data-id="' . $user->attemptid . '" >Analytics</div>';
+            // $row[] = '<a data-filepath ="' . $filepath . '" data-id=playback_' . $user->attemptid . '
+            //         href ="#" class = "video_playback_icon">
+            //         <i class="fa fa fa-circle-play"
+            //         style="font-size:24px;color:black" aria-hidden="true"
+            //         style = "padding-left:25px; font-size:x-large;"></i>
+            //         </a>' . $playbackcontent;
 
-            $row[] = '<a data-id=' . $user->attemptid . ' href = "#" class="popup_item">
-                    <i class="fa fa-area-chart" style="font-size:24px;color:black"
-                    aria-hidden="true" style = "padding-left:25px; font-size:x-large;"></i>
-                    </a>' . $content;
+            // $row[] = '<a data-id=' . $user->attemptid . ' href = "#" class="popup_item">
+            //         <i class="fa fa-area-chart" style="font-size:24px;color:black"
+            //         aria-hidden="true" style = "padding-left:25px; font-size:x-large;"></i>
+            //         </a>' . $content;
 
-            $row[] = "<a data-id=score" . $user->attemptid . "
-                    href ='#' class = 'link_icon'>" . $linkicon . "</a>" . $scorecontent;
+            // $row[] = "<a data-id=score" . $user->attemptid . "
+            //         href ='#' class = 'link_icon'>" . $linkicon . "</a>" . $scorecontent;
 
             $row[] = html_writer::link(
                 new moodle_url('/lib/editor/tiny/plugins/cursive/download_json.php', [
@@ -375,9 +378,9 @@ class tiny_cursive_renderer extends plugin_renderer_base {
         $table->head = [
             get_string('module_name', 'tiny_cursive'),
             get_string('last_modified', 'tiny_cursive'),
-            get_string('playback', 'tiny_cursive'),
+            // get_string('playback', 'tiny_cursive'),
             get_string('analytics', 'tiny_cursive'),
-            get_string('typeid', 'tiny_cursive'),
+            // get_string('typeid', 'tiny_cursive'),
             '',
         ];
 
@@ -419,14 +422,17 @@ class tiny_cursive_renderer extends plugin_renderer_base {
 
             $row[] = $getmodulename ? $getmodulename->name : '';
             $row[] = date("l jS \of F Y h:i:s A", $user->timemodified);
-            $row[] = '<a data-filepath="' . $filepath . '" data-id="playback_' . $user->attemptid . '"
-                    href="#" class="video_playback_icon">
-                    <i class="fa fa-circle-play" style="font-size:24px;color:black" aria-hidden="true"></i>
-                    </a>' . $playbackcontent;
-            $row[] = '<a data-id="' . $user->attemptid . '" href="#" class="popup_item">
-                    <i class="fa fa-area-chart" style="font-size:24px;color:black" aria-hidden="true"></i>
-                    </a>' . $content;
-            $row[] = '<a data-id="score' . $user->attemptid . '" href="#" class="link_icon">' . $linkicon . '</a>' . $scorecontent;
+            $row[] = '<div class ="analytic-modal" data-cmid="'.$user->cmid.'" data-filepath="' . $filepath . '" data-id="' . $user->attemptid . '" >Analytics</div>';
+
+            // $row[] = '<a data-filepath="' . $filepath . '" data-id="playback_' . $user->attemptid . '"
+            //         href="#" class="video_playback_icon">
+            //         <i class="fa fa-circle-play" style="font-size:24px;color:black" aria-hidden="true"></i>
+            //         </a>' . $playbackcontent;
+
+            // $row[] = '<a data-id="' . $user->attemptid . '" href="#" class="popup_item">
+            //         <i class="fa fa-area-chart" style="font-size:24px;color:black" aria-hidden="true"></i>
+            //         </a>' . $content;
+            // $row[] = '<a data-id="score' . $user->attemptid . '" href="#" class="link_icon">' . $linkicon . '</a>' . $scorecontent;
             $row[] = html_writer::link(
                 new moodle_url('/lib/editor/tiny/plugins/cursive/download_json.php', [
                     'fname' => $user->filename,

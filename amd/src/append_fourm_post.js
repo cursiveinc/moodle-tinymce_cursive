@@ -20,12 +20,14 @@
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  */
 
-define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], function(
+define(["jquery", "core/ajax", "core/str", "core/templates", "./replay","./analytic_button","./analytic_events"], function(
     $,
     AJAX,
     str,
     templates,
-    Replay
+    Replay,
+    analyticButton,
+    customEvents
 ) {
     const replayInstances = {};
     window.myFunction = function() {
@@ -35,9 +37,9 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
 
     window.video_playback = function(mid, filepath) {
         if (filepath !== '') {
-            $("#playback"+mid).show();
+            // $("#playback"+mid).show();
             const replay = new Replay(
-                elementId = 'output_playback_' + mid,
+                elementId = 'content' + mid,
                 filePath = filepath,
                 speed = 10,
                 loop = false,
@@ -127,17 +129,27 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                                 color = 'font-size:24px;color:black';
                             }
                         }
-                        var html= '<div class="justify-content-center d-flex">' +
-                            '<button onclick="popup_item(' + ids + ')" data-id=' + ids + ' class="mr-2 ' + chart + '" style="' + st + '"></button>' +
-                            '<a href="#" onclick="video_playback(' + ids + ', \'' + filepath + '\')" data-filepath="' + filepath + '" data-id="playback_' + ids + '" class="mr-2 video_playback_icon ' + video + '" style="' + st + '"></a>' +
-                            '<button onclick="myFunction()" data-id=' + ids + ' class="' + icon + ' " style="border:none; ' + color + ';"></button>' +
-                            '</div>';
-                        $("#" + entry.id).find('#post-content-' + ids).append(html);
+                        // var html= '<div class="justify-content-center d-flex">' +
+                        //     '<button onclick="popup_item(' + ids + ')" data-id=' + ids + ' class="mr-2 ' + chart + '" style="' + st + '"></button>' +
+                        //     '<a href="#" onclick="video_playback(' + ids + ', \'' + filepath + '\')" data-filepath="' + filepath + '" data-id="playback_' + ids + '" class="mr-2 video_playback_icon ' + video + '" style="' + st + '"></a>' +
+                        //     '<button onclick="myFunction()" data-id=' + ids + ' class="' + icon + ' " style="border:none; ' + color + ';"></button>' +
+                        //     '</div>';
+                        let analytic_button_div = document.createElement('div');
+                        analytic_button_div.append(analyticButton(ids));
+                        analytic_button_div.classList.add('text-center');
+                        $("#" + entry.id).find('#post-content-' + ids).append(analytic_button_div);
                         var context = {
                             tabledata: data.data,
                             page: score_setting,
                             userid: ids,
                         };
+
+                        let myEvents = new customEvents();
+                        myEvents.createModal(ids, context);
+                        myEvents.analytics(ids, templates, context);
+                        myEvents.checkDiff(ids,data.data.file_id);
+                        myEvents.replyWriting(ids, filepath);
+
                         templates
                             .render("tiny_cursive/pop_modal", context)
                             .then(function (html) {

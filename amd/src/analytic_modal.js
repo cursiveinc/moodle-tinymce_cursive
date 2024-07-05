@@ -50,6 +50,10 @@ export default class MyModal extends Modal {
 
         // Remove padding from the modal content.
         root.find('.modal-body').css('padding', '0');
+        root.find('.modal-dialog').css({
+            'max-width': '800px',
+            'min-height': '800px'
+        });
 
         // Ensure modal closes on 'analytic-close' button click.
         root.find('#analytic-close').on('click', () => {

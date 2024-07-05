@@ -22,10 +22,10 @@
  */
 
 
-export default analyticButton = (userid) => {
+export default analyticButton = (userid, questionid = '') => {
     const anchor = document.createElement('a');
     anchor.href = '#';
-    anchor.id = 'analytics' + userid;
+    anchor.id = 'analytics' + userid + questionid;
     anchor.classList.add('d-inline-flex', 'align-items-center', 'text-white', 'cursive-analytics-btn');
 
     // Define the SVG element

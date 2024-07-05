@@ -44,6 +44,28 @@ function xmldb_tiny_cursive_upgrade($oldversion) {
         }
         upgrade_plugin_savepoint(true, 2023041937, 'tiny', 'cursive');
     }
+
+    if($oldversion < 2024060222) {
+
+        $table = new xmldb_table('tiny_cursive_writing_difference');
+
+        // Adding fields to table tiny_cursive_writing_difference.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('file_id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('content', XMLDB_TYPE_TEXT, null, null, XMLDB_NOTNULL, null, null);
+        $table->add_field('meta', XMLDB_TYPE_TEXT, null, null, null, null, null);
+
+        // Adding keys to table tiny_cursive_writing_difference.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+
+        // Conditionally launch create table for tiny_cursive_writing_difference.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        upgrade_plugin_savepoint(true, 2024060222, 'tiny', 'cursive');
+    }
+
     return true;
 }
 

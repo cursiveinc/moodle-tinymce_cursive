@@ -20,14 +20,14 @@
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  */
 
-define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './analytic_modal','./analytic_button'], function (
+define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './analytic_button','./analytic_events'], function (
     $,
     AJAX,
     str,
     templates,
     Replay,
-    MyModal,
-    analyticButton
+    analyticButton,
+    customEvents
 ) {
     const replayInstances = {};
     window.myFunction = function () {
@@ -49,7 +49,13 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
             replayInstances[mid] = replay;
         }
         else {
-            alert('No submission');
+            const nosub = document.createElement('p');
+            nosub.className = 'text-center p-5 bg-light rounded m-5 text-primary';
+            nosub.style.verticalAlign = 'middle';
+            nosub.style.textTransform = 'uppercase';
+            nosub.style.fontWeight = '500';
+            nosub.textContent = 'No Submission';
+            $('#content' + mid).html(nosub)
         }
         return false;
 
@@ -72,7 +78,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
             let sub_url = window.location.href;
             let parm = new URL(sub_url);
             let h_tr = $('thead').find('tr').get()[0];
-            $(h_tr).find('th').eq(3).after('<th class="header c3 email">TypeID</th><th class="header c3 email">Playback</th><th class="header c3 email">Stats</th>');
+            $(h_tr).find('th').eq(3).after('<th class="header c4" scope="col">Analytics<div class="commands"><i class="icon fa fa-minus fa-fw " aria-hidden="true"></i></div></th>');
             $('tbody').find("tr").get().forEach(function (tr) {
                 let td_user = $(tr).find("td").get()[0];
                 let userid = $(td_user).find("input[type='checkbox']").get()[0].value;
@@ -87,12 +93,6 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
 
                 $(tr).find('td').eq(3).after(tableCell);
 
-                
-
-                // Function to deactivate all elements
-                function deactiveAll() {
-                    $('.active').removeClass('active'); // Remove 'active' class from all elements that have it
-                }
 
                 let args = { id: userid, modulename: "assign", cmid: cmid };
                 let methodname = 'cursive_user_list_submission_stats';
@@ -123,7 +123,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
                                 color = 'font-size:24px;color:black';
                             }
                         }
-                       
+
                         let video_icon = '<td><a href="#" onclick="video_playback(' + userid + ', \'' + filepath + '\')" data-filepath="' + filepath + '" data-id="playback_' + userid + '" class="video_playback_icon ' + video + '" style="' + st + '"></a></td>';
                         // $(tr).find('td').eq(3).after(video_icon);
                         let typeid_icon = '<td><button onclick="myFunction()" data-id=' + userid + ' class=" ' + icon + ' " style="border:none; ' + color + ';"></button></td>';
@@ -148,48 +148,11 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
                             userid: userid,
                         };
 
-                        $('#analytics' + userid).on('click', function (e) {
-                            e.preventDefault();
-
-                            // Create Moodle modal
-                            MyModal.create({ templateContext: context }).then(modal => {
-                                modal.show();
-                            }).catch(error => {
-                                console.error("Failed to create modal:", error);
-                            });
-        
-                        });
-
-                         // Event handler for '#analytic' + userid
-                         $('body').on('click', '#analytic' + userid, function (e) {
-                            e.preventDefault();
-                            deactiveAll(); // Deactivate all elements
-                            $(this).addClass('active'); // Add 'active' class to the clicked element
-
-                            templates.render('tiny_cursive/analytics_table', context).then(function (html) {
-                                $('#content' + userid).html(html);
-
-                            }).fail(function (error) {
-                                console.error("Failed to render template:", error);
-                            });
-                        });
-
-                        // Event handler for '#diff' + userid
-                        $('body').on('click', '#diff' + userid, function (e) {
-                            e.preventDefault();
-                            deactiveAll(); // Deactivate all elements
-                            $(this).addClass('active'); // Add 'active' class to the clicked element
-                            $('#content' + userid).html("diff"); // Update content
-                        });
-
-                        // Event handler for '#rep' + userid
-                        $('body').on('click', '#rep' + userid, function (e) {
-                            e.preventDefault();
-                            deactiveAll(); // Deactivate all elements
-                            $(this).addClass('active'); // Add 'active' class to the clicked element
-                            video_playback(userid, filepath);
-
-                        });
+                        let myEvents = new customEvents();
+                        myEvents.createModal(userid, context);
+                        myEvents.analytics(userid, templates, context);
+                        myEvents.checkDiff(userid,data.res.file_id);
+                        myEvents.replyWriting(userid, filepath);
 
                         templates
                             .render("tiny_cursive/pop_modal", context)
