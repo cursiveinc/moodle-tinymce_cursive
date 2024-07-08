@@ -112,13 +112,13 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                         var html = '';
                         var content = $('.que.essay .editquestion a[href*="question/bank/editquestion/question.php"][href*="&id=' + data.data.questionid + '"]');
                         if (data.usercomment != 'comments' && parseInt(showcomment)) {
-                            content.parent().parent().parent().find('.qtext').append('<div class="dropdown">');
-                            var tt = '';
+                            content.parent().parent().parent().find('.qtext').append('<div class="mb-2">');
+                            var tt = '<h4>References</h4><div style="background-color:#FCEFDC;font-weight:500" class = " p-2 border-bottom" >';
                             data.usercomment.forEach(element => {
-                                tt += '<li>' + element.usercomment + '</li>';
+                                tt += '<div class = "text-primary">' + element.usercomment + '</div>';
                             });
-                            var p1 = '<div class="border alert alert-warning"><details><summary>Content Sources Provided by Student</summary>';
-                            content.parent().parent().parent().find('.qtext').append(p1 + ' ' + tt + '</details></div></div>');
+                            
+                            content.parent().parent().parent().find('.qtext').append(tt + '</div></div>');
                         }
                         var filepath = '';
                         if (data.data.filename) {
@@ -148,7 +148,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                         //     '<button onclick="myFunction()" data-id=' + userid + ' class="' + icon + ' " style="border:none; ' + color + ';"></button>' +
                         //     '</div>';
                         let analytic_button_div = document.createElement('div');
-                        analytic_button_div.classList.add('text-center');
+                        analytic_button_div.classList.add('text-center','mt-2');
                         analytic_button_div.append(analyticButton(userid, questionid));
                         content.parent().parent().parent().find('.qtext').append(analytic_button_div);
                         var context = {

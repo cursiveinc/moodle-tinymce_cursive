@@ -20,7 +20,7 @@
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  */
 
-define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./analytic_button","./analytic_events"], function (
+define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./analytic_button", "./analytic_events"], function (
     $,
     AJAX,
     str,
@@ -83,7 +83,6 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                         }
                     });
                 });
-
                 // Configuration of the observer:
                 var config = { childList: true, subtree: true };
 
@@ -105,17 +104,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                     var data = JSON.parse(json);
 
                     $('.alert').remove();
-                    if (data.usercomment != 'comments' && parseInt(showcomment)) {
-                        $(document).ready(function () {
-                            $('div[data-region="grade-panel"]').append('<div class="dropdown">');
-                            var tt = '';
-                            data.usercomment.forEach(element => {
-                                tt += '<li>' + element.usercomment + '</li>';
-                            });
-                            var p1 = '<div class="border alert alert-warning"><details><summary>Content Sources Provided by Student</summary>';
-                            $('div[data-region="grade-panel"]').append(p1 + ' ' + tt + '</details></div></div>');
-                        });
-                    }
+                    
 
                     var filepath = '';
                     if (data.data.filename) {
@@ -148,58 +137,103 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                     //     '<button onclick="myFunction()" data-id=' + userid + ' class="' + icon + ' " style="border:none; ' + color + ';"></button>' +
                     //     '</div>      ';
                     // Function to deactivate all elements
+
+
+                    let container = $('<div>');
+                    let row = $('<div>').addClass('row');
+                    let chatbox = $('<div>').addClass('chatbox chatbox22 chatbox--tray');
+
+                    let chatboxTitle = $('<div>').addClass('chatbox__title');
+                    let titleH5 = $('<h5>').append($('<a>').text("References").attr('href', 'javascript:void(0)'));
+                    let closeButton = $('<button>').addClass('chatbox__title__close').append($('<span>').html('&times;'));
+
+                    chatboxTitle.append(titleH5, closeButton);
+                    let cbody = $('<div>').addClass('chatbox__body');
+                    chatbox.append(chatboxTitle, cbody);
+                    row.append(chatbox);
+                    container.append(row);
+                    $('div[data-region="grade-actions-panel"]').before(container);
+                 
                     
 
-                    let analytic_button_div = document.createElement('div');
-                    analytic_button_div.append(analyticButton(userid));
-                    analytic_button_div.classList.add('text-center', 'mt-2');
-                    $('div[data-region="grade-actions"]').before(analytic_button_div);
+                    var $chatbox = $('.chatbox'),
+                        $chatboxTitle = $('.chatbox__title'),
+                        $chatboxTitleClose = $('.chatbox__title__close'),
+                        $chatboxCredentials = $('.chatbox__credentials');
+                    $chatboxTitle.on('click', function () {
+                        $chatbox.toggleClass('chatbox--tray');
+                    });
+                    $chatboxTitleClose.on('click', function (e) {
+                        e.stopPropagation();
+                        $chatbox.addClass('chatbox--closed');
+                    });
+                    $chatbox.on('transitionend', function () {
+                        if ($chatbox.hasClass('chatbox--closed')) $chatbox.remove();
+                    });
 
-                    $('div[data-region="review-panel"]').addClass('cursive_review_panel_path_mod_assign');
-
-                    $('div[data-region="grading-navigation-panel"]').addClass('cursive_grading-navigation-panel_path_mod_assign');
-
-                    $('div[data-region="grade-panel"]').addClass('cursive_grade-panel_path_mod_assign');
-
-                    $('div[data-region="grade-actions-panel"]').addClass('cursive_grade-actions-panel_path_mod_assign');
-
-                    var context = {
-                        tabledata: data.data,
-                        page: score_setting,
-                        userid: userid,
-                    };
-                    let myEvents = new customEvents();
-                    myEvents.createModal(userid,context);
-                    myEvents.analytics(userid,templates,context);
-                    myEvents.checkDiff(userid,data.data.file_id);
-                    myEvents.replyWriting(userid,filepath);
-
-                    templates
-                        .render("tiny_cursive/pop_modal", context)
-                        .then(function (html) {
-                            $("body").append(html);
-                        }).catch(e => window.console.error(e));
-
-                });
-
-
-                $(window).on('click', function (e) {
-                    if (e.target.id == 'modal-close' + userid) {
-                        $("#" + userid).hide();
+                    if (data.usercomment != 'comments' && parseInt(showcomment)) {
+                        $(document).ready(function () {
+                            $('div[data-region="grade-panel"]').append('<div class="dropdown">');
+                            var tt = '';
+                            data.usercomment.forEach(element => {
+                                cbody.append('<div class="border p-2 shadow-sm">' + element.usercomment + '</div>');
+                                
+                            });
+                            var p1 = '<div class="border alert alert-warning"><details><summary>Content Sources Provided by Student</summary>';
+                            $('div[data-region="grade-panel"]').append(p1 + ' ' + tt + '</details></div></div>');
+                        });
                     }
-                    if (e.target.id == 'modal-close-playback' + userid) {
-                        $("#playback" + userid).hide();
-                        if (replayInstances[userid]) {
-                            replayInstances[userid].stopReplay();
-                        }
-                    }
-                });
 
-                return com.usercomment;
+                let analytic_button_div = document.createElement('div');
+                analytic_button_div.append(analyticButton(userid));
+                analytic_button_div.classList.add('text-center', 'mt-2');
+                $('div[data-region="grade-actions"]').before(analytic_button_div);
+
+                $('div[data-region="review-panel"]').addClass('cursive_review_panel_path_mod_assign');
+
+                $('div[data-region="grading-navigation-panel"]').addClass('cursive_grading-navigation-panel_path_mod_assign');
+
+                $('div[data-region="grade-panel"]').addClass('cursive_grade-panel_path_mod_assign');
+
+                $('div[data-region="grade-actions-panel"]').addClass('cursive_grade-actions-panel_path_mod_assign');
+
+                var context = {
+                    tabledata: data.data,
+                    page: score_setting,
+                    userid: userid,
+                };
+                let myEvents = new customEvents();
+                myEvents.createModal(userid, context);
+                myEvents.analytics(userid, templates, context);
+                myEvents.checkDiff(userid, data.data.file_id);
+                myEvents.replyWriting(userid, filepath);
+
+                templates
+                    .render("tiny_cursive/pop_modal", context)
+                    .then(function (html) {
+                        $("body").append(html);
+                    }).catch(e => window.console.error(e));
+
             });
+
+
+            $(window).on('click', function (e) {
+                if (e.target.id == 'modal-close' + userid) {
+                    $("#" + userid).hide();
+                }
+                if (e.target.id == 'modal-close-playback' + userid) {
+                    $("#playback" + userid).hide();
+                    if (replayInstances[userid]) {
+                        replayInstances[userid].stopReplay();
+                    }
+                }
+            });
+
+            return com.usercomment;
+        });
         },
     };
-    return usersTable;
+return usersTable;
 });
 
 
