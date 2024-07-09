@@ -20,24 +20,26 @@
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  */
 
-define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], function(
+define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./analytic_button", "./analytic_events"], function (
     $,
     AJAX,
     str,
     templates,
-    Replay
+    Replay,
+    analyticButton,
+    customEvents
 ) {
     const replayInstances = {};
-    window.myFunction = function() {
+    window.myFunction = function () {
         let mid = $(this).data('id');
         $("#typeid" + mid).show();
     };
 
-    window.video_playback = function(mid, filepath) {
+    window.video_playback = function (mid, filepath) {
         if (filepath !== '') {
-            $("#playback"+mid).show();
+            // $("#playback"+mid).show();
             const replay = new Replay(
-                elementId = 'output_playback_' + mid,
+                elementId = 'content' + mid,
                 filePath = filepath,
                 speed = 10,
                 loop = false,
@@ -52,63 +54,79 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
 
     };
 
-    window.popup_item = function(mid) {
+    window.popup_item = function (mid) {
         $("#" + mid).show();
     };
 
+    // Select the replies container
+    const repliesContainer = document.querySelector('div[data-region="replies-container"]');
+
+    // Clone the replies and empty the container
+    const replies = Array.from(repliesContainer.children)
+        .filter(child => child.dataset.region !== 'replies-container')
+        .map(child => child.cloneNode(true));
+
+    repliesContainer.innerHTML = ''; // Empty the container
+
+    // Create main wrapper for existing elements
+    const existingElementsWrapper = document.createElement('div');
+    existingElementsWrapper.className = 'col-12';
+    existingElementsWrapper.id = 'existingElementsWrapper';
+    existingElementsWrapper.dataset.region = 'post';
+    replies.forEach(reply => existingElementsWrapper.appendChild(reply));
+
+    // Create references sidebar
+    const references = document.createElement('div');
+    references.id = 'source-urls';
+    references.className = 'col-3 p-0 bg-light rounded shadow-sm d-none';
+
+    // Add classes to repliesContainer and append both wrappers
+    repliesContainer.classList.add('row');
+    repliesContainer.appendChild(existingElementsWrapper);
+    repliesContainer.appendChild(references);
+
     var usersTable = {
-        init: function(score_setting, showcomment) {
+        init: function (score_setting, showcomment) {
             str
                 .get_strings([
-                    {key: "field_require", component: "tiny_cursive"},
+                    { key: "field_require", component: "tiny_cursive" },
                 ])
-                .done(function() {
+                .done(function () {
                     usersTable.getToken(score_setting, showcomment);
                 });
         },
-        getToken: function(score_setting,showcomment) {
-            $('#page-mod-forum-discuss').find("article").get().forEach(function(entry) {
-                $(document).ready(function() {
+        getToken: function (score_setting, showcomment) {
+            $('#page-mod-forum-discuss').find("article").get().forEach(function (entry) {
+                $(document).ready(function () {
                     var replyButton = $('a[data-region="post-action"][title="Reply"]');
                     if (replyButton.length > 0) {
-                        replyButton.on('click', function(event) {
+                        replyButton.on('click', function (event) {
                             event.preventDefault();
                             var url = $(this).attr('href');
                             window.location.href = url;
                         });
                     }
                 });
-               
+
                 var ids = $("#" + entry.id).data("post-id");
                 var anchorTag = $('a.nav-link.active.active_tree_node[href*="mod/forum/view.php?id="]');
-                var cmid= 0;
+                var cmid = 0;
                 if (anchorTag.length > 0) {
                     var hrefValue = anchorTag.attr('href');
                     cmid = hrefValue.match(/id=(\d+)/)[1];
                 }
-                var chart = "fa fa-area-chart popup_item";
-                var video = "fa fa-play video_playback";
-                var st = "font-size:24px;color:black;border:none";
 
-                let args = {id: ids, modulename: "forum",cmid:cmid};
+                let args = { id: ids, modulename: "forum", cmid: cmid };
                 let methodname = 'cursive_get_forum_comment_link';
-                let com = AJAX.call([{methodname, args}]);
-                com[0].done(function(json) {
+                let com = AJAX.call([{ methodname, args }]);
+                com[0].done(function (json) {
                     var data = JSON.parse(json);
-                    if (data.usercomment != 'comments' && parseInt(showcomment)) {
-                        $("#" + entry.id).find('#post-content-' + ids).append('<div class="dropdown">');
-                        var tt = '';
-                        data.usercomment.forEach(element => {
-                            tt += '<li>' + element.usercomment + '</li>';
-                        });
-                        var p1 = '<div class="border alert alert-warning"><details><summary>Content Sources Provided by Student</summary>';
-                        $("#" + entry.id).find('#post-content-' + ids).append(p1 + ' ' + tt + '</details></div></div>');
-                    }
-                    var filepath ='';
-                    if (data.data.filename){
+                    
+                    var filepath = '';
+                    if (data.data.filename) {
                         var filepath = data.data.filename;
                     }
-                    if (filepath){
+                    if (filepath) {
                         var score = parseFloat(data.data.score);
                         var icon = 'fa fa-circle-o';
                         var color = 'font-size:24px;color:black';
@@ -127,17 +145,64 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                                 color = 'font-size:24px;color:black';
                             }
                         }
-                        var html= '<div class="justify-content-center d-flex">' +
-                            '<button onclick="popup_item(' + ids + ')" data-id=' + ids + ' class="mr-2 ' + chart + '" style="' + st + '"></button>' +
-                            '<a href="#" onclick="video_playback(' + ids + ', \'' + filepath + '\')" data-filepath="' + filepath + '" data-id="playback_' + ids + '" class="mr-2 video_playback_icon ' + video + '" style="' + st + '"></a>' +
-                            '<button onclick="myFunction()" data-id=' + ids + ' class="' + icon + ' " style="border:none; ' + color + ';"></button>' +
-                            '</div>';
-                        $("#" + entry.id).find('#post-content-' + ids).append(html);
+                        // var html= '<div class="justify-content-center d-flex">' +
+                        //     '<button onclick="popup_item(' + ids + ')" data-id=' + ids + ' class="mr-2 ' + chart + '" style="' + st + '"></button>' +
+                        //     '<a href="#" onclick="video_playback(' + ids + ', \'' + filepath + '\')" data-filepath="' + filepath + '" data-id="playback_' + ids + '" class="mr-2 video_playback_icon ' + video + '" style="' + st + '"></a>' +
+                        //     '<button onclick="myFunction()" data-id=' + ids + ' class="' + icon + ' " style="border:none; ' + color + ';"></button>' +
+                        //     '</div>';
+
+
+
+                        let analytic_button_div = document.createElement('div');
+                        analytic_button_div.append(analyticButton(ids));
+                        analytic_button_div.classList.add('text-center', 'mt-2');
+                        analytic_button_div.dataset.region = "analytic-div" + ids;
+                        $("#" + entry.id).find('#post-content-' + ids).append(analytic_button_div);
+
+
+                        if (data.usercomment != 'comments' && parseInt(showcomment)) {
+                            // $("#" + entry.id).find('#post-content-' + ids).append('<div class="dropdown">');
+                            var tt = '';
+                            let analyticdiv = $('div[data-region="analytic-div' + ids + '"]');
+                            data.usercomment.forEach(element => {
+                                // Create the anchor element
+                                let refBtn = $('<a>').attr('href', '#').addClass('cursive-analytics-btn text-white p-2 mx-2').attr('id', 'ref' + ids);
+                                let refSpan = $('<span>').text('References');
+                                refBtn.append(refSpan);
+                                analyticdiv.append(refBtn);
+                               
+                                refBtn.on('click', function (event) {
+                                    event.preventDefault();
+                                    $('#existingElementsWrapper').removeClass('col-12').addClass('col-9');
+                                    $('#source-urls').removeClass('d-none').html('<div class="border-bottom p-3 text-primary" style="font-weight:600;">' + element.usercomment + '</div>');
+                                    $('#source-urls').append("<a href='#' id='ref-tab-close" + ids + "' class='btn btn-outline-light d-block btn-sm'>Close this tab</a>");
+                                });
+
+                                $('#source-urls').on('click', '#ref-tab-close' + ids, function (e) {
+                                    e.preventDefault();
+                                    $('#existingElementsWrapper').removeClass('col-9').addClass('col-12');
+                                    $('#source-urls').addClass('d-none').html('');
+                                });
+    
+                            });
+                            // var p1 = '<div class="border alert alert-warning"><details><summary>Content Sources Provided by Student</summary>';
+                            // $("#" + entry.id).find('#post-content-' + ids).append(p1 + ' ' + tt + '</details></div></div>');
+
+                        }
+                        let myEvents = new customEvents();
+                   
                         var context = {
                             tabledata: data.data,
+                            formattime: myEvents.formatedtime(data.data),
                             page: score_setting,
                             userid: ids,
                         };
+
+                        myEvents.createModal(ids, context);
+                        myEvents.analytics(ids, templates, context);
+                        myEvents.checkDiff(ids, data.data.file_id);
+                        myEvents.replyWriting(ids, filepath);
+
                         templates
                             .render("tiny_cursive/pop_modal", context)
                             .then(function (html) {
@@ -159,9 +224,9 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                 });
                 return com.usercomment;
             });
-            $('#page-mod-forum-view').find("article").get().forEach(function(entry) {
+            $('#page-mod-forum-view').find("article").get().forEach(function (entry) {
 
-              
+
 
                 var ids = $("#" + entry.id).data("post-id");
                 var cmid = 0;
@@ -170,10 +235,10 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                     var hrefValue = anchorTag.attr('href');
                     cmid = parseInt(hrefValue.match(/id=(\d+)/)[1]);
                 }
-                let args = {id: ids, modulename: "forum", cmid:cmid};
+                let args = { id: ids, modulename: "forum", cmid: cmid };
                 let methodname = 'cursive_get_comment_link';
-                let com = AJAX.call([{methodname, args}]);
-                com[0].done(function(json) {
+                let com = AJAX.call([{ methodname, args }]);
+                com[0].done(function (json) {
                     var data = JSON.parse(json);
                     var p1 = '<div class="border alert alert-warning"><summary>Content Sources Provided by Student</summary>';
                     $("#" + entry.id).find('#post-content-' + ids).append(p1 + " <p>" + data.usercomment + ids + "</p></div>");
