@@ -48,7 +48,7 @@ function xmldb_tiny_cursive_upgrade($oldversion)
 
     if ($oldversion < 2024060224) {
 
-        $table = new xmldb_table('tiny_cursive_writing_difference');
+        $table = new xmldb_table('tiny_cursive_writing_diff');
         // Check if the table exists
         if ($dbman->table_exists($table)) {
             // Drop the existing table
@@ -69,7 +69,7 @@ function xmldb_tiny_cursive_upgrade($oldversion)
         $dbman->create_table($table);
 
         // Save upgrade path
-        upgrade_plugin_savepoint(true, 2024060224, 'tiny', 'cursive_writing_difference');
+        upgrade_plugin_savepoint(true, 2024060224, 'tiny', 'cursive_writing_diff');
 
     }
 
