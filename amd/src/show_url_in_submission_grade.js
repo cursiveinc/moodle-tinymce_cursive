@@ -27,7 +27,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
     templates,
     Replay,
     analyticButton,
-    customEvents
+    AnalyticEvents
 ) {
     const replayInstances = {};
     window.myFunction = function () {
@@ -197,10 +197,10 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                     $('div[data-region="grade-actions-panel"]').addClass('cursive_grade-actions-panel_path_mod_assign');
                     
                    
-                    let myEvents = new customEvents();
+                    let myEvents = new AnalyticEvents();
                     var context = {
                         tabledata: data.data,
-                        formattime: myEvents.formatedtime(data.data),
+                        formattime: myEvents.formatedTime(data.data),
                         page: score_setting,
                         userid: userid,
                     };

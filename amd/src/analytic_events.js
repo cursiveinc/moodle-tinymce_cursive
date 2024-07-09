@@ -22,19 +22,18 @@
  */
 import MyModal from "./analytic_modal";
 import { call as getContent } from "core/ajax";
-export default class analytic_events {
+import ModalFactory from 'core/modal_factory';
+import $ from 'jquery';
+export default class AnalyticEvents {
 
     createModal(userid, context, questionid = '') {
         $('#analytics' + userid + questionid).on('click', function (e) {
             e.preventDefault();
-
-            // Create Moodle modal
-            MyModal.create({ templateContext: context }).then(modal => {
+            ModalFactory.create({ type: MyModal.TYPE ,templateContext: context}).then(modal => {
                 modal.show();
             }).catch(error => {
                 console.error("Failed to create modal:", error);
             });
-
         });
     }
 
@@ -129,7 +128,7 @@ export default class analytic_events {
         });
     }
 
-    formatedtime(data) {
+    formatedTime(data) {
         // Calculate and format total time
         if (data.total_time_seconds) {
             let total_time_seconds = data.total_time_seconds;
