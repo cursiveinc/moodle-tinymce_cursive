@@ -81,7 +81,7 @@ function get_user_attempts_data($userid, $courseid, $moduleid, $orderby = 'id', 
     }
     $params['odby'] = $odby;
     $params['order'] = $order;
-    
+
     $sql .= " ORDER BY :odby :order";
 
     // Calculate the total count for pagination
