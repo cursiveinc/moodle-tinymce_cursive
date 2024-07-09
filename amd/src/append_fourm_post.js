@@ -27,7 +27,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
     templates,
     Replay,
     analyticButton,
-    CustomEvents
+    AnalyticEvents
 ) {
     const replayInstances = {};
     window.myFunction = function () {
@@ -189,7 +189,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                             // $("#" + entry.id).find('#post-content-' + ids).append(p1 + ' ' + tt + '</details></div></div>');
 
                         }
-                        let myEvents = new CustomEvents();
+                        let myEvents = new AnalyticEvents();
                    
                         var context = {
                             tabledata: data.data,

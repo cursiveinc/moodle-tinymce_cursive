@@ -27,7 +27,6 @@ export default class AnalyticEvents {
     createModal(userid, context, questionid = '') {
         $('#analytics' + userid + questionid).on('click', function (e) {
             e.preventDefault();
-
             // Create Moodle modal
             MyModal.create({ templateContext: context }).then(modal => {
                 modal.show();

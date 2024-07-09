@@ -27,10 +27,10 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
     templates,
     Replay,
     analyticButton,
-    CustomEvents
+    AnalyticEvents
 ) {
     const replayInstances = {};
-    window.video_playback = function(mid, filepath) {
+    window.video_playback = function (mid, filepath) {
         if (filepath !== '') {
             // $("#playback"+mid).show();
             const replay = new Replay(
@@ -56,10 +56,10 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
                 ])
                 .done(function () {
                     $(document).ready(function ($) {
-                            // $(".popup_item").on('click', function () {
-                            //     var mid = $(this).data("id");
-                            //     $("#" + mid).show();
-                            // });
+                        // $(".popup_item").on('click', function () {
+                        //     var mid = $(this).data("id");
+                        //     $("#" + mid).show();
+                        // });
                         //     $(".link_icon").on('click', function () {
                         //         var smid = $(this).data("id");
                         //         $("#" + smid).show();
@@ -92,16 +92,17 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
                         //             delete replayInstances[mid];  // Clean up the instance
                         //         }
                         //     });
-                        let myEvents = new CustomEvents();
+                        let myEvents = new AnalyticEvents();
                         $(".analytic-modal").each(function () {
                             var mid = $(this).data("id");
                             var filepath = $(this).data("filepath");
                             let context = { userid: mid };
                             let cmid = $(this).data("cmid");
-                        
+
                             $(this).html(analyticButton($(this).data('id')));
-                            $(this).on('click', function () {
-                                AJAX.call([{
+
+                            $(this).on('click', async function () {
+                                await AJAX.call([{
                                     methodname: 'cursive_get_writing_statistics',
                                     args: {
                                         cmid: cmid,
@@ -109,26 +110,20 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
                                     },
                                 }])[0].done(response => {
                                     let data = JSON.parse(response.data);
-                                 
-                                    context.formattime = myEvents.formatedtime(data),
-                                    context.tabledata = data;
-                        
-                                    // Perform actions that require context.tabledata
-                                    myEvents.createModal(mid, context);
-                                    myEvents.analytics(mid, templates, context);
-                                    myEvents.checkDiff(mid, mid);
-                                    myEvents.replyWriting(mid, filepath);
+
+                                    context.formattime = myEvents.formatedTime(data),
+                                        context.tabledata = data;
+
                                 }).fail(error => {
                                     throw new Error('Error: ' + error.message);
                                 });
                             });
-                        
-                            // Check if context.tabledata is not found, and wait if necessary
-                            if (!context.tabledata) {
-                                // You can add logic here to handle waiting if needed
-                                console.log("Waiting for data to be loaded...");
-                            }
-                        });                        
+                            // Perform actions that require context.tabledata
+                            myEvents.createModal(mid, context);
+                            myEvents.analytics(mid, templates, context);
+                            myEvents.checkDiff(mid, mid);
+                            myEvents.replyWriting(mid, filepath);
+                        });
 
                     });
 
