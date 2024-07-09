@@ -703,7 +703,7 @@ class cursive_json_func_data extends external_api
             if ($filename->file_id) {
                 $sql = 'SELECT uwr.*, diff.meta as effort_ratio
                           FROM {tiny_cursive_user_writing} uwr
-                          JOIN {tiny_cursive_writing_difference} diff ON uwr.file_id = diff.file_id
+                          JOIN {tiny_cursive_writing_diff} diff ON uwr.file_id = diff.file_id
                          WHERE uwr.file_id = :fileid';
                 $report = $DB->get_record_sql($sql, ['fileid' => $filename->file_id]);
                 $data['score'] = $report->score;
@@ -841,7 +841,7 @@ class cursive_json_func_data extends external_api
                             diff.meta AS effort_ratio
                       FROM {tiny_cursive_user_writing} uw
                 INNER JOIN {tiny_cursive_files} uf ON uw.file_id = uf.id
-                 LEFT JOIN {tiny_cursive_writing_difference} diff ON uw.file_id = diff.file_id
+                 LEFT JOIN {tiny_cursive_writing_diff} diff ON uw.file_id = diff.file_id
                      WHERE uf.resourceid = :id
                            AND uf.cmid = :cmid
                            AND uf.modulename = :modulename";
@@ -1152,7 +1152,7 @@ class cursive_json_func_data extends external_api
                             diff.meta AS effort_ratio
                        FROM {tiny_cursive_user_writing} uw
                  INNER JOIN {tiny_cursive_files} uf ON uw.file_id = uf.id
-                  LEFT JOIN {tiny_cursive_writing_difference} diff ON uw.file_id = diff.file_id
+                  LEFT JOIN {tiny_cursive_writing_diff} diff ON uw.file_id = diff.file_id
                       WHERE uf.userid = :id
                             AND uf.cmid = :cmid
                             AND uf.modulename = :modulename";
@@ -1535,7 +1535,7 @@ class cursive_json_func_data extends external_api
 
         $sql = "SELECT u.*, d.meta as effort_ratio
                   FROM {tiny_cursive_user_writing} AS u
-                  JOIN {tiny_cursive_writing_difference} AS d ON u.file_id = d.file_id
+                  JOIN {tiny_cursive_writing_diff} AS d ON u.file_id = d.file_id
                  WHERE u.file_id = :fileid";
 
         $params = ['fileid' => $fileid];
@@ -1565,8 +1565,8 @@ class cursive_json_func_data extends external_api
         self::validate_context($context);
         require_capability('tiny/cursive:editsettings', $context);
 
-        $recordexists = $DB->record_exists('tiny_cursive_writing_difference', ['file_id' => $fileid]);
-        $record = $recordexists ? $DB->get_record('tiny_cursive_writing_difference', ['file_id' => $fileid]) : new stdClass();
+        $recordexists = $DB->record_exists('tiny_cursive_writing_diff', ['file_id' => $fileid]);
+        $record = $recordexists ? $DB->get_record('tiny_cursive_writing_diff', ['file_id' => $fileid]) : new stdClass();
         $record->file_id = $fileid;
         $record->reconstructed_text = $reconstructed_text;
         $record->submitted_text = $submitted_text;
@@ -1575,9 +1575,9 @@ class cursive_json_func_data extends external_api
         try {
            
         if($recordexists) {
-            $DB->update_record('tiny_cursive_writing_difference', $record);
+            $DB->update_record('tiny_cursive_writing_diff', $record);
         } else {
-            $DB->insert_record('tiny_cursive_writing_difference', $record);
+            $DB->insert_record('tiny_cursive_writing_diff', $record);
         }
 
            return [
@@ -1610,7 +1610,7 @@ class cursive_json_func_data extends external_api
         global $DB;
 
         $sql = "SELECT *
-                  FROM {tiny_cursive_writing_difference}
+                  FROM {tiny_cursive_writing_diff}
                   WHERE file_id = :fileid";
         $params = ['fileid' => $fileid];
         $data = $DB->get_records_sql($sql, $params);

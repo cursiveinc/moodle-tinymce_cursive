@@ -57,7 +57,7 @@
       </KEYS>
     </TABLE>
 
-    <TABLE NAME="tiny_cursive_writing_difference" COMMENT="Writing Difference data">
+    <TABLE NAME="tiny_cursive_writing_diff" COMMENT="Writing Difference data">
           <FIELDS>
             <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
             <FIELD NAME="file_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
