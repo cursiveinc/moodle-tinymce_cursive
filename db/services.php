@@ -156,6 +156,36 @@ $functions = [
         'capabilities' => 'tiny/cursive:view',
         'services' => [MOODLE_OFFICIAL_MOBILE_SERVICE],
     ],
+    'cursive_get_writing_statistics' => [
+        'classname' => 'cursive_json_func_data',
+        'methodname' => 'cursive_get_analytics',
+        'classpath' => '/lib/editor/tiny/plugins/cursive/externallib.php',
+        'description' => 'return the stored analytics data',
+        'type' => 'read',
+        'ajax' => true,
+        'capabilities' => 'tiny/cursive:view',
+        'services' => [MOODLE_OFFICIAL_MOBILE_SERVICE],
+    ],
+    'cursive_store_writing_differences' => [
+        'classname' => 'cursive_json_func_data',
+        'methodname' => 'cursive_store_writing_differencs',
+        'classpath' => '/lib/editor/tiny/plugins/cursive/externallib.php',
+        'description' => 'store writing difference data',
+        'type' => 'write',
+        'ajax' => true,
+        'capabilities' => 'tiny/cursive:write',
+        'services' => [MOODLE_OFFICIAL_MOBILE_SERVICE],
+    ],
+    'cursive_get_writing_differences' => [
+        'classname' => 'cursive_json_func_data',
+        'methodname' => 'cursive_get_writing_differencs',
+        'classpath' => '/lib/editor/tiny/plugins/cursive/externallib.php',
+        'description' => 'return the stored writing difference data',
+        'type' => 'read',
+        'ajax' => true,
+        'capabilities' => 'tiny/cursive:view',
+        'services' => [MOODLE_OFFICIAL_MOBILE_SERVICE],
+    ],
 ];
 
 // We define the services to install as pre-build services.
