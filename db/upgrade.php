@@ -69,7 +69,7 @@ function xmldb_tiny_cursive_upgrade($oldversion)
         $dbman->create_table($table);
 
         // Save upgrade path
-        upgrade_plugin_savepoint(true, 2024060226, 'tiny', 'cursive_writing_difference');
+        upgrade_plugin_savepoint(true, 2024060226, 'tiny', 'cursive_writing_diff');
 
     }
 

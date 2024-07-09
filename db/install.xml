@@ -61,8 +61,8 @@
           <FIELDS>
             <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
             <FIELD NAME="file_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
-            <FIELD NAME="reconstructed_text" TYPE="longtext" NOTNULL="true" SEQUENCE="false" COMMENT="Original content"/>
-            <FIELD NAME="submitted_text" TYPE="longtext" NOTNULL="true" SEQUENCE="false" COMMENT="Difference html content"/>
+            <FIELD NAME="reconstructed_text" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="Original content"/>
+            <FIELD NAME="submitted_text" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="Difference html content"/>
             <FIELD NAME="meta" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="extra field for optional use"/>
           </FIELDS>
           <KEYS>
