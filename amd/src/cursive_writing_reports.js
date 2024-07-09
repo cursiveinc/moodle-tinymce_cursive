@@ -27,7 +27,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
     templates,
     Replay,
     analyticButton,
-    CustomEvents
+    AnalyticEvents
 ) {
     const replayInstances = {};
     window.video_playback = function(mid, filepath) {
@@ -92,7 +92,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
                         //             delete replayInstances[mid];  // Clean up the instance
                         //         }
                         //     });
-                        let myEvents = new CustomEvents();
+                        let myEvents = new AnalyticEvents();
                         $(".analytic-modal").each(function () {
                             var mid = $(this).data("id");
                             var filepath = $(this).data("filepath");

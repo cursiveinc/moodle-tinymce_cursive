@@ -27,7 +27,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
     templates,
     Replay,
     analyticButton,
-    CustomEvents
+    AnalyticEvents
 ) {
     const replayInstances = {};
 
@@ -153,7 +153,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                         content.parent().parent().parent().find('.qtext').append(analytic_button_div);
     
                         console.log("Quiz: ",data.data);
-                        let myEvents = new CustomEvents();
+                        let myEvents = new AnalyticEvents();
                         var context = {
                             tabledata: data.data,
                             formattime: myEvents.formatedTime(data.data),
