@@ -113,11 +113,11 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                         var content = $('.que.essay .editquestion a[href*="question/bank/editquestion/question.php"][href*="&id=' + data.data.questionid + '"]');
                         if (data.usercomment != 'comments' && parseInt(showcomment)) {
                             content.parent().parent().parent().find('.qtext').append('<div class="mb-2">');
-                            var tt = '<h4>References</h4><div style="background-color:#FCEFDC;font-weight:500" class = " p-2 border-bottom" >';
+                            var tt = '<h4>References</h4><div style="background-color:#FCEFDC;font-weight:500;" class = "border-bottom" >';
                             data.usercomment.forEach(element => {
-                                tt += '<div class = "text-primary">' + element.usercomment + '</div>';
+                                tt += '<div class = "text-primary p-3" style="border-bottom:1px solid rgba(0, 0, 0, 0.1)">' + element.usercomment + '</div>';
                             });
-                            
+
                             content.parent().parent().parent().find('.qtext').append(tt + '</div></div>');
                         }
                         var filepath = '';
@@ -148,20 +148,24 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                         //     '<button onclick="myFunction()" data-id=' + userid + ' class="' + icon + ' " style="border:none; ' + color + ';"></button>' +
                         //     '</div>';
                         let analytic_button_div = document.createElement('div');
-                        analytic_button_div.classList.add('text-center','mt-2');
+                        analytic_button_div.classList.add('text-center', 'mt-2');
                         analytic_button_div.append(analyticButton(userid, questionid));
                         content.parent().parent().parent().find('.qtext').append(analytic_button_div);
+    
+                        console.log("Quiz: ",data.data);
+                        let myEvents = new customEvents();
                         var context = {
                             tabledata: data.data,
+                            formattime: myEvents.formatedtime(data.data),
                             page: score_setting,
                             userid: userid,
                             quizid: questionid,
                         };
 
-                        let myEvents = new customEvents();
+                        
                         myEvents.createModal(userid, context, questionid);
                         myEvents.analytics(userid, templates, context, questionid);
-                        myEvents.checkDiff(userid, data.data.file_id,questionid);
+                        myEvents.checkDiff(userid, data.data.file_id, questionid);
                         myEvents.replyWriting(userid, filepath, questionid);
 
                         templates

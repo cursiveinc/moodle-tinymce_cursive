@@ -194,7 +194,7 @@
 }
 
 
-.chatbox {
+.tiny_cursive-chatbox {
     position: fixed;
     bottom: 0;
     right: 10%;
@@ -213,24 +213,24 @@
     flex-direction: column;
 }
 
-.chatbox--tray {
+.tiny_cursive-chatbox--tray {
     bottom: -350px;
 }
 
-.chatbox--closed {
+.tiny_cursive-chatbox--closed {
     bottom: -400px;
 }
 
-.chatbox .form-control:focus {
+.tiny_cursive-chatbox .form-control:focus {
     border-color: #1f2836;
 }
 
-.chatbox__title,
-.chatbox__body {
+.tiny_cursive-chatbox__title,
+.tiny_cursive-chatbox__body {
     border-bottom: none;
 }
 
-.chatbox__title {
+.tiny_cursive-chatbox__title {
     min-height: 50px;
     padding-right: 10px;
     background-color: #1f2836cc;
@@ -245,7 +245,7 @@
     align-items: center;
 }
 
-.chatbox__title h5 {
+.tiny_cursive-chatbox__title h5 {
     height: 50px;
     margin: 0 0 0 15px;
     line-height: 50px;
@@ -256,7 +256,7 @@
     flex-grow: 1;
 }
 
-.chatbox__title h5 a {
+.tiny_cursive-chatbox__title h5 a {
     color: #fff;
     max-width: 195px;
     display: inline-block;
@@ -266,8 +266,8 @@
     text-overflow: ellipsis;
 }
 
-.chatbox__title__tray,
-.chatbox__title__close {
+.tiny_cursive-chatbox__title__tray,
+.tiny_cursive-chatbox__title__close {
     width: 24px;
     height: 24px;
     outline: 0;
@@ -280,27 +280,27 @@
     transition: opacity 200ms;
 }
 
-.chatbox__title__tray:hover,
-.chatbox__title__close:hover {
+.tiny_cursive-chatbox__title__tray:hover,
+.tiny_cursive-chatbox__title__close:hover {
     opacity: 1;
 }
 
-.chatbox__title__tray span {
+.tiny_cursive-chatbox__title__tray span {
     width: 12px;
     height: 12px;
     display: inline-block;
     border-bottom: 2px solid #fff
 }
 
-.chatbox__title__close svg {
+.tiny_cursive-chatbox__title__close svg {
     vertical-align: middle;
     stroke-linecap: round;
     stroke-linejoin: round;
     stroke-width: 1.2px;
 }
 
-.chatbox__body,
-.chatbox__credentials {
+.tiny_cursive-chatbox__body,
+.tiny_cursive-chatbox__credentials {
     padding: 15px;
     border-top: 0;
     background-color: #FAFAFA;
@@ -312,38 +312,97 @@
 }
 
 
-.chatbox--empty {
+.tiny_cursive-chatbox--empty {
     height: 262px;
 }
 
-.chatbox--empty.chatbox--tray {
+.tiny_cursive-chatbox--empty.chatbox--tray {
     bottom: -212px;
 }
 
-.chatbox--empty.chatbox--closed {
+.tiny_cursive-chatbox--empty.chatbox--closed {
     bottom: -262px;
 }
 
-.chatbox--empty .chatbox__body,
-.chatbox--empty .chatbox__message {
+.tiny_cursive-chatbox--empty .chatbox__body,
+.tiny_cursive-chatbox--empty .chatbox__message {
     display: none;
 }
 
-.chatbox--empty .chatbox__credentials {
+.tiny_cursive-chatbox--empty .chatbox__credentials {
     display: block;
 }
 
-.chat_set_height {
+.tiny_cursive-chat_set_height {
     height: 40px;
     margin-top: 1px;
 }
 
-.chatbox22 .form-control:focus {
+.tiny_cursive-chatbox22 .form-control:focus {
     border-color: #DCDCDC;
 }
 
-.width50 {
+.tiny_cursive-width50 {
     width: 50%;
     float: left;
     background: #ECECEC;
+}
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+.cursive-comparison-content {
+    margin-right: 1rem;
+}
+
+.cursive-text-block {
+    background: #f7fafc;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s;
+}
+
+.cursive-text-block:hover {
+    transform: translateY(-5px);
+}
+
+
+#cursive-submitted_text {
+    padding: 15px;
+    border: 1px solid #e2e8f0;
+    background-color: #edf2f7;
+    overflow-y: auto;
+    border-radius: 8px;
+    font-size: 1em;
+    line-height: 1.6;
+    color: #2d3748;
+    font-family: 'Roboto Mono', monospace;
+
+}
+
+.tiny_cursive_added {
+    background-color: #7ad957;
+    color: #22543d;
+    font-weight: bold;
+    padding: 2px 4px;
+    border-radius: 4px;
+    word-wrap: break-word;
+}
+
+.cursive-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin: 0rem 1rem;
+}
+.cursive-box {
+    width: 20px;
+    height: 20px;
+    border: 1px solid #ccc;
+}
+.cursive-attributed {
+    background-color: white;
+}
+.cursive-legend-item span {
+    font-family: Arial, sans-serif;
+    color: #4a5568;
 }

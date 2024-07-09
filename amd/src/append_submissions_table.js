@@ -133,22 +133,17 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
                         let element = document.querySelector('.page-header-headings h1'); // Selects the h1 element within the .page-header-headings class
                         let textContent = element.textContent; // Extracts the text content from the h1 element
 
-                        // Calculate and format total time
-                        let total_time_seconds = data.res.total_time_seconds;
-                        let hours = Math.floor(total_time_seconds / 3600).toString().padStart(2, '0');
-                        let minutes = Math.floor((total_time_seconds % 3600) / 60).toString().padStart(2, '0');
-                        let seconds = (total_time_seconds % 60).toString().padStart(2, '0');
-                        let formattedTime = `${hours}:${minutes}:${seconds}`;
-
+                        console.log("assign: ",data.res);
+                        let myEvents = new customEvents();
                         var context = {
                             tabledata: data.res,
-                            formattime: formattedTime,
+                            formattime: myEvents.formatedtime(data.res),
                             moduletitle: textContent,
                             page: score_setting,
                             userid: userid,
                         };
 
-                        let myEvents = new customEvents();
+                       
                         myEvents.createModal(userid, context);
                         myEvents.analytics(userid, templates, context);
                         myEvents.checkDiff(userid,data.res.file_id);

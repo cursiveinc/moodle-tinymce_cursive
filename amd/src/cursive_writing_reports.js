@@ -94,12 +94,11 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
                         //     });
                         let myEvents = new customEvents();
                         $(".analytic-modal").each(function () {
-                           
                             var mid = $(this).data("id");
                             var filepath = $(this).data("filepath");
-                            let context = {userid:mid};
+                            let context = { userid: mid };
                             let cmid = $(this).data("cmid");
-                            
+                        
                             $(this).html(analyticButton($(this).data('id')));
                             $(this).on('click', function () {
                                 AJAX.call([{
@@ -108,20 +107,28 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
                                         cmid: cmid,
                                         fileid: mid,
                                     },
-                                }])[0].done(response=>{
-                                    
+                                }])[0].done(response => {
                                     let data = JSON.parse(response.data);
-                                    context.formattime = usersTable.formatTime(data.total_time_seconds);
+                                 
+                                    context.formattime = myEvents.formatedtime(data),
                                     context.tabledata = data;
-                                }).fail(error =>  { throw new Error('Error: '+error.message); });
+                        
+                                    // Perform actions that require context.tabledata
+                                    myEvents.createModal(mid, context);
+                                    myEvents.analytics(mid, templates, context);
+                                    myEvents.checkDiff(mid, mid);
+                                    myEvents.replyWriting(mid, filepath);
+                                }).fail(error => {
+                                    throw new Error('Error: ' + error.message);
+                                });
                             });
-                            myEvents.createModal(mid, context);
-                            myEvents.analytics(mid, templates, context);
-                            myEvents.checkDiff(mid,mid);
-                            myEvents.replyWriting(mid, filepath);
-
-                        });
-
+                        
+                            // Check if context.tabledata is not found, and wait if necessary
+                            if (!context.tabledata) {
+                                // You can add logic here to handle waiting if needed
+                                console.log("Waiting for data to be loaded...");
+                            }
+                        });                        
 
                     });
 
@@ -129,15 +136,6 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
                     usersTable.getusers(page);
                 });
         },
-
-        formatTime:function (totalSeconds) {
-            const hours = Math.floor(totalSeconds / 3600);
-            const minutes = Math.floor((totalSeconds % 3600) / 60);
-            const seconds = totalSeconds % 60;
-        
-            return `${hours}h ${minutes}m ${seconds}s`;
-        },
-        
         getusers: function (page) {
             $("#id_coursename").change(function () {
                 var courseid = $(this).val();

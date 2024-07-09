@@ -61,15 +61,15 @@ export default class analytic_events {
         nodata.style.textTransform = 'uppercase';
         nodata.style.fontWeight = '500';
         nodata.textContent = "no data received yet";
-        
+
         $('body').on('click', '#diff' + userid + questionid, function (e) {
             e.preventDefault();
             $('.active').removeClass('active');
             $(this).addClass('active'); // Add 'active' class to the clicked element
-            if(!fileid) {
+            if (!fileid) {
                 $('#content' + userid).html(nodata);
                 throw new Error('Missing file id or Difference Content not receive yet');
-            } 
+            }
             getContent([{
                 methodname: 'cursive_get_writing_differences',
                 args: {
@@ -78,7 +78,35 @@ export default class analytic_events {
             }])[0].done(response => {
                 let responsedata = JSON.parse(response.data);
                 if (responsedata[0]) {
-                    content = atob(responsedata[0].content)
+
+                    let submitted_text = atob(responsedata[0].submitted_text);
+                    let reconstructed_text = responsedata[0].reconstructed_text;
+                    const $legend = $('<div class= "d-flex p-2 border rounded  mb-2">');
+
+                    // Create the first legend item
+                    const $attributedItem = $('<div>', { class: 'cursive-legend-item' });
+                    const $attributedBox = $('<div>', { class: 'cursive-box attributed' });
+                    const $attributedText = $('<span>').text('Attributed');
+                    $attributedItem.append($attributedBox).append($attributedText);
+
+                    // Create the second legend item
+                    const $unattributedItem = $('<div>', { class: 'cursive-legend-item' });
+                    const $unattributedBox = $('<div>', { class: 'cursive-box tiny_cursive_added' });
+                    const $unattributedText = $('<span>').text('Unattributed');
+                    $unattributedItem.append($unattributedBox).append($unattributedText);
+
+                    // Append the legend items to the legend container
+                    $legend.append($attributedItem).append($unattributedItem);
+
+                    let contents = $('<div>').addClass('cursive-comparison-content');
+
+                    let textBlock2 = $('<div>').addClass('cursive-text-block').append(
+                        $('<div>').attr('id', 'cursive-reconstructed_text').html(JSON.parse(submitted_text))
+                    );
+
+                    contents.append($legend, textBlock2);
+
+                    content = contents;
                     $('#content' + userid).html(content); // Update content
                 } else {
                     $('#content' + userid).html(nodata)
@@ -99,5 +127,19 @@ export default class analytic_events {
             video_playback(userid, filepath);
 
         });
+    }
+
+    formatedtime(data) {
+        // Calculate and format total time
+        if (data.total_time_seconds) {
+            let total_time_seconds = data.total_time_seconds;
+            let hours = Math.floor(total_time_seconds / 3600).toString().padStart(2, 0);
+            let minutes = Math.floor((total_time_seconds % 3600) / 60).toString().padStart(2, 0);
+            let seconds = (total_time_seconds % 60).toString().padStart(2, 0);
+            let formattedTime = `${hours}h ${minutes}m ${seconds}s`;
+            return formattedTime
+        } else {
+            return "0h 0m 0s"
+        }
     }
 }

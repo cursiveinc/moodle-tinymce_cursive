@@ -104,7 +104,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                     var data = JSON.parse(json);
 
                     $('.alert').remove();
-                    
+
 
                     var filepath = '';
                     if (data.data.filename) {
@@ -141,99 +141,101 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
 
                     let container = $('<div>');
                     let row = $('<div>').addClass('row');
-                    let chatbox = $('<div>').addClass('chatbox chatbox22 chatbox--tray');
+                    let chatbox = $('<div>').addClass('tiny_cursive-chatbox tiny_cursive-chatbox22 tiny_cursive-chatbox--tray');
 
-                    let chatboxTitle = $('<div>').addClass('chatbox__title');
-                    let titleH5 = $('<h5>').append($('<a>').text("References").attr('href', 'javascript:void(0)'));
-                    let closeButton = $('<button>').addClass('chatbox__title__close').append($('<span>').html('&times;'));
+                    let chatboxTitle = $('<div>').addClass('tiny_cursive-chatbox__title');
+                    let titleH5 = $('<h5 class="text-white">').text("References");
 
-                    chatboxTitle.append(titleH5, closeButton);
-                    let cbody = $('<div>').addClass('chatbox__body');
+
+                    chatboxTitle.append(titleH5);
+                    let cbody = $('<div>').addClass('tiny_cursive-chatbox__body');
                     chatbox.append(chatboxTitle, cbody);
                     row.append(chatbox);
                     container.append(row);
                     $('div[data-region="grade-actions-panel"]').before(container);
-                 
-                    
 
-                    var $chatbox = $('.chatbox'),
-                        $chatboxTitle = $('.chatbox__title'),
-                        $chatboxTitleClose = $('.chatbox__title__close'),
-                        $chatboxCredentials = $('.chatbox__credentials');
+
+
+                    var $chatbox = $('.tiny_cursive-chatbox'),
+                        $chatboxTitle = $('.tiny_cursive-chatbox__title'),
+                        $chatboxTitleClose = $('.tiny_cursive-chatbox__title__close');
                     $chatboxTitle.on('click', function () {
-                        $chatbox.toggleClass('chatbox--tray');
+                        $chatbox.toggleClass('tiny_cursive-chatbox--tray');
                     });
                     $chatboxTitleClose.on('click', function (e) {
                         e.stopPropagation();
-                        $chatbox.addClass('chatbox--closed');
+                        $chatbox.addClass('tiny_cursive-chatbox--closed');
                     });
                     $chatbox.on('transitionend', function () {
-                        if ($chatbox.hasClass('chatbox--closed')) $chatbox.remove();
+                        if ($chatbox.hasClass('tiny_cursive-chatbox--closed')) $chatbox.remove();
                     });
 
                     if (data.usercomment != 'comments' && parseInt(showcomment)) {
                         $(document).ready(function () {
                             $('div[data-region="grade-panel"]').append('<div class="dropdown">');
-                            var tt = '';
+                            // var tt = '';
                             data.usercomment.forEach(element => {
                                 cbody.append('<div class="border p-2 shadow-sm">' + element.usercomment + '</div>');
-                                
+
                             });
-                            var p1 = '<div class="border alert alert-warning"><details><summary>Content Sources Provided by Student</summary>';
-                            $('div[data-region="grade-panel"]').append(p1 + ' ' + tt + '</details></div></div>');
+                            // var p1 = '<div class="border alert alert-warning"><details><summary>Content Sources Provided by Student</summary>';
+                            // $('div[data-region="grade-panel"]').append(p1 + ' ' + tt + '</details></div></div>');
                         });
                     }
 
-                let analytic_button_div = document.createElement('div');
-                analytic_button_div.append(analyticButton(userid));
-                analytic_button_div.classList.add('text-center', 'mt-2');
-                $('div[data-region="grade-actions"]').before(analytic_button_div);
+                    let analytic_button_div = document.createElement('div');
+                    analytic_button_div.append(analyticButton(userid));
+                    analytic_button_div.classList.add('text-center', 'mt-2');
+                    $('div[data-region="grade-actions"]').before(analytic_button_div);
 
-                $('div[data-region="review-panel"]').addClass('cursive_review_panel_path_mod_assign');
+                    $('div[data-region="review-panel"]').addClass('cursive_review_panel_path_mod_assign');
 
-                $('div[data-region="grading-navigation-panel"]').addClass('cursive_grading-navigation-panel_path_mod_assign');
+                    $('div[data-region="grading-navigation-panel"]').addClass('cursive_grading-navigation-panel_path_mod_assign');
 
-                $('div[data-region="grade-panel"]').addClass('cursive_grade-panel_path_mod_assign');
+                    $('div[data-region="grade-panel"]').addClass('cursive_grade-panel_path_mod_assign');
 
-                $('div[data-region="grade-actions-panel"]').addClass('cursive_grade-actions-panel_path_mod_assign');
+                    $('div[data-region="grade-actions-panel"]').addClass('cursive_grade-actions-panel_path_mod_assign');
+                    
+                   
+                    let myEvents = new customEvents();
+                    var context = {
+                        tabledata: data.data,
+                        formattime: myEvents.formatedtime(data.data),
+                        page: score_setting,
+                        userid: userid,
+                    };
+                    
+                    myEvents.createModal(userid, context);
+                    myEvents.analytics(userid, templates, context);
+                    myEvents.checkDiff(userid, data.data.file_id);
+                    myEvents.replyWriting(userid, filepath);
 
-                var context = {
-                    tabledata: data.data,
-                    page: score_setting,
-                    userid: userid,
-                };
-                let myEvents = new customEvents();
-                myEvents.createModal(userid, context);
-                myEvents.analytics(userid, templates, context);
-                myEvents.checkDiff(userid, data.data.file_id);
-                myEvents.replyWriting(userid, filepath);
+                    templates
+                        .render("tiny_cursive/pop_modal", context)
+                        .then(function (html) {
+                            $("body").append(html);
+                        }).catch(e => window.console.error(e));
 
-                templates
-                    .render("tiny_cursive/pop_modal", context)
-                    .then(function (html) {
-                        $("body").append(html);
-                    }).catch(e => window.console.error(e));
-
-            });
+                });
 
 
-            $(window).on('click', function (e) {
-                if (e.target.id == 'modal-close' + userid) {
-                    $("#" + userid).hide();
-                }
-                if (e.target.id == 'modal-close-playback' + userid) {
-                    $("#playback" + userid).hide();
-                    if (replayInstances[userid]) {
-                        replayInstances[userid].stopReplay();
+                $(window).on('click', function (e) {
+                    if (e.target.id == 'modal-close' + userid) {
+                        $("#" + userid).hide();
                     }
-                }
-            });
+                    if (e.target.id == 'modal-close-playback' + userid) {
+                        $("#playback" + userid).hide();
+                        if (replayInstances[userid]) {
+                            replayInstances[userid].stopReplay();
+                        }
+                    }
+                });
 
-            return com.usercomment;
-        });
+                return com.usercomment;
+            });
         },
     };
-return usersTable;
+    return usersTable;
 });
 
 

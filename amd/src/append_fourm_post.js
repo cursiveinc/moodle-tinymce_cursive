@@ -189,14 +189,15 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                             // $("#" + entry.id).find('#post-content-' + ids).append(p1 + ' ' + tt + '</details></div></div>');
 
                         }
-
+                        let myEvents = new customEvents();
+                   
                         var context = {
                             tabledata: data.data,
+                            formattime: myEvents.formatedtime(data.data),
                             page: score_setting,
                             userid: ids,
                         };
 
-                        let myEvents = new customEvents();
                         myEvents.createModal(ids, context);
                         myEvents.analytics(ids, templates, context);
                         myEvents.checkDiff(ids, data.data.file_id);
