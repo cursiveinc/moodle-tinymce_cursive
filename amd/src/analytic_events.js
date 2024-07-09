@@ -22,7 +22,7 @@
  */
 import MyModal from "./analytic_modal";
 import { call as getContent } from "core/ajax";
-export default class analytic_events {
+export default class AnalyticEvents {
 
     createModal(userid, context, questionid = '') {
         $('#analytics' + userid + questionid).on('click', function (e) {
@@ -129,7 +129,7 @@ export default class analytic_events {
         });
     }
 
-    formatedtime(data) {
+    formatedTime(data) {
         // Calculate and format total time
         if (data.total_time_seconds) {
             let total_time_seconds = data.total_time_seconds;

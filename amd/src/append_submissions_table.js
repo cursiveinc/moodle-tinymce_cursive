@@ -27,7 +27,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
     templates,
     Replay,
     analyticButton,
-    customEvents
+    CustomEvents
 ) {
     const replayInstances = {};
     window.myFunction = function () {
@@ -134,10 +134,10 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
                         let textContent = element.textContent; // Extracts the text content from the h1 element
 
                         console.log("assign: ",data.res);
-                        let myEvents = new customEvents();
+                        let myEvents = new CustomEvents();
                         var context = {
                             tabledata: data.res,
-                            formattime: myEvents.formatedtime(data.res),
+                            formattime: myEvents.formatedTime(data.res),
                             moduletitle: textContent,
                             page: score_setting,
                             userid: userid,
