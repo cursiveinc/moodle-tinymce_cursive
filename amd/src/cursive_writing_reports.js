@@ -125,9 +125,9 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
 
                 // Perform actions that require context.tabledata
                 myEvents.createModal(mid, context);
-                myEvents.analytics(mid, templates, context);
-                myEvents.checkDiff(mid, mid);
-                myEvents.replyWriting(mid, filepath);
+                myEvents.analytics(mid, templates, context,'', replayInstances);
+                myEvents.checkDiff(mid, mid,'', replayInstances);
+                myEvents.replyWriting(mid, filepath,'', replayInstances);
             });
         },
         getusers: function (page) {

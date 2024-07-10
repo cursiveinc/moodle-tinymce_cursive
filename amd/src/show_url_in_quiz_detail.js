@@ -151,8 +151,8 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                         analytic_button_div.classList.add('text-center', 'mt-2');
                         analytic_button_div.append(analyticButton(userid, questionid));
                         content.parent().parent().parent().find('.qtext').append(analytic_button_div);
-    
-                        console.log("Quiz: ",data.data);
+
+                        console.log("Quiz: ", data.data);
                         let myEvents = new AnalyticEvents();
                         var context = {
                             tabledata: data.data,
@@ -162,11 +162,10 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                             quizid: questionid,
                         };
 
-                        
                         myEvents.createModal(userid, context, questionid);
-                        myEvents.analytics(userid, templates, context, questionid);
-                        myEvents.checkDiff(userid, data.data.file_id, questionid);
-                        myEvents.replyWriting(userid, filepath, questionid);
+                        myEvents.analytics(userid, templates, context, questionid, replayInstances);
+                        myEvents.checkDiff(userid, data.data.file_id, questionid, replayInstances);
+                        myEvents.replyWriting(userid, filepath, questionid, replayInstances);
 
                         templates
                             .render("tiny_cursive/quiz_pop_modal", context)

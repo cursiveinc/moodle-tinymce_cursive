@@ -20,7 +20,7 @@
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  */
 
-define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './analytic_button','./analytic_events'], function (
+define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './analytic_button', './analytic_events'], function (
     $,
     AJAX,
     str,
@@ -133,7 +133,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
                         let element = document.querySelector('.page-header-headings h1'); // Selects the h1 element within the .page-header-headings class
                         let textContent = element.textContent; // Extracts the text content from the h1 element
 
-                        console.log("assign: ",data.res);
+                        console.log("assign: ", data.res);
                         let myEvents = new AnalyticEvents();
                         var context = {
                             tabledata: data.res,
@@ -143,11 +143,11 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
                             userid: userid,
                         };
 
-                       
+
                         myEvents.createModal(userid, context);
-                        myEvents.analytics(userid, templates, context);
-                        myEvents.checkDiff(userid,data.res.file_id);
-                        myEvents.replyWriting(userid, filepath);
+                        myEvents.analytics(userid, templates, context,'', replayInstances);
+                        myEvents.checkDiff(userid, data.res.file_id,'', replayInstances);
+                        myEvents.replyWriting(userid, filepath,'', replayInstances);
 
                         templates
                             .render("tiny_cursive/pop_modal", context)
