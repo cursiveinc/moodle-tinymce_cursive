@@ -30,7 +30,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
     AnalyticEvents
 ) {
     const replayInstances = {};
-    window.video_playback = function(mid, filepath) {
+    window.video_playback = function (mid, filepath) {
         if (filepath !== '') {
             // $("#playback"+mid).show();
             const replay = new Replay(
@@ -56,10 +56,10 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
                 ])
                 .done(function () {
                     $(document).ready(function ($) {
-                            // $(".popup_item").on('click', function () {
-                            //     var mid = $(this).data("id");
-                            //     $("#" + mid).show();
-                            // });
+                        // $(".popup_item").on('click', function () {
+                        //     var mid = $(this).data("id");
+                        //     $("#" + mid).show();
+                        // });
                         //     $(".link_icon").on('click', function () {
                         //         var smid = $(this).data("id");
                         //         $("#" + smid).show();
@@ -92,49 +92,43 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
                         //             delete replayInstances[mid];  // Clean up the instance
                         //         }
                         //     });
-                        let myEvents = new AnalyticEvents();
-                        $(".analytic-modal").each(function () {
-                            var mid = $(this).data("id");
-                            var filepath = $(this).data("filepath");
-                            let context = { userid: mid };
-                            let cmid = $(this).data("cmid");
-                        
-                            $(this).html(analyticButton($(this).data('id')));
-                            $(this).on('click', function () {
-                                AJAX.call([{
-                                    methodname: 'cursive_get_writing_statistics',
-                                    args: {
-                                        cmid: cmid,
-                                        fileid: mid,
-                                    },
-                                }])[0].done(response => {
-                                    let data = JSON.parse(response.data);
-                                 
-                                    context.formattime = myEvents.formatedtime(data),
-                                    context.tabledata = data;
-                        
-                                    // Perform actions that require context.tabledata
-                                    myEvents.createModal(mid, context);
-                                    myEvents.analytics(mid, templates, context);
-                                    myEvents.checkDiff(mid, mid);
-                                    myEvents.replyWriting(mid, filepath);
-                                }).fail(error => {
-                                    throw new Error('Error: ' + error.message);
-                                });
-                            });
-                        
-                            // Check if context.tabledata is not found, and wait if necessary
-                            if (!context.tabledata) {
-                                // You can add logic here to handle waiting if needed
-                                console.log("Waiting for data to be loaded...");
-                            }
-                        });                        
+
 
                     });
-
-
                     usersTable.getusers(page);
                 });
+
+            let myEvents = new AnalyticEvents();
+            $(".analytic-modal").each(function () {
+                var mid = $(this).data("id");
+                var filepath = $(this).data("filepath");
+                let context = { userid: mid };
+                let cmid = $(this).data("cmid");
+
+                $(this).html(analyticButton($(this).data('id')));
+                AJAX.call([{
+                    methodname: 'cursive_get_writing_statistics',
+                    args: {
+                        cmid: cmid,
+                        fileid: mid,
+                    },
+                }])[0].done(response => {
+                    let data = JSON.parse(response.data);
+
+                    context.formattime = myEvents.formatedTime(data);
+                    context.tabledata = data;
+
+                }).fail(error => {
+                    throw new Error('Error: ' + error.message);
+                });
+
+                // Perform actions that require context.tabledata
+                myEvents.createModal(mid, context);
+                myEvents.analytics(mid, templates, context,'', replayInstances);
+                myEvents.checkDiff(mid, mid,'', replayInstances);
+                myEvents.replyWriting(mid, filepath,'', replayInstances);
+            });
+
         },
         getusers: function (page) {
             $("#id_coursename").change(function () {
