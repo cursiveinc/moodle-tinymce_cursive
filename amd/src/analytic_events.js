@@ -29,7 +29,7 @@ export default class AnalyticEvents {
     createModal(userid, context, questionid = '') {
         $('#analytics' + userid + questionid).on('click', function (e) {
             e.preventDefault();
-            ModalFactory.create({ type: MyModal.TYPE ,templateContext: context}).then(modal => {
+            ModalFactory.create({ type: MyModal.TYPE, templateContext: context }).then(modal => {
                 modal.show();
             }).catch(error => {
                 console.error("Failed to create modal:", error);
@@ -37,9 +37,12 @@ export default class AnalyticEvents {
         });
     }
 
-    analytics(userid, templates, context, questionid = '') {
+    analytics(userid, templates, context, questionid = '', replayInstances = null) {
         $('body').on('click', '#analytic' + userid + questionid, function (e) {
             e.preventDefault();
+            if (replayInstances && replayInstances[userid]) {
+                replayInstances[userid].stopReplay();
+            }
             $('.active').removeClass('active');
             $(this).addClass('active'); // Add 'active' class to the clicked element
 
@@ -52,7 +55,7 @@ export default class AnalyticEvents {
         });
     }
 
-    checkDiff(userid, fileid, questionid = '', content = "diff") {
+    checkDiff(userid, fileid, questionid = '', replayInstances = null) {
         // Event handler for '#diff' + userid
         const nodata = document.createElement('p');
         nodata.classList.add('text-center', 'p-5', 'bg-light', 'rounded', 'm-5', 'text-primary');
@@ -64,6 +67,9 @@ export default class AnalyticEvents {
         $('body').on('click', '#diff' + userid + questionid, function (e) {
             e.preventDefault();
             $('.active').removeClass('active');
+            if (replayInstances && replayInstances[userid]) {
+                replayInstances[userid].stopReplay();
+            }
             $(this).addClass('active'); // Add 'active' class to the clicked element
             if (!fileid) {
                 $('#content' + userid).html(nodata);
@@ -105,8 +111,7 @@ export default class AnalyticEvents {
 
                     contents.append($legend, textBlock2);
 
-                    content = contents;
-                    $('#content' + userid).html(content); // Update content
+                    $('#content' + userid).html(contents); // Update content
                 } else {
                     $('#content' + userid).html(nodata)
                 }
@@ -117,12 +122,15 @@ export default class AnalyticEvents {
         });
     }
 
-    replyWriting(userid, filepath, questionid = '') {
+    replyWriting(userid, filepath, questionid = '', replayInstances = null) {
         // Event handler for '#rep' + userid
         $('body').on('click', '#rep' + userid + questionid, function (e) {
             e.preventDefault();
             $('.active').removeClass('active');
             $(this).addClass('active'); // Add 'active' class to the clicked element
+            if (replayInstances && replayInstances[userid]) {
+                replayInstances[userid].stopReplay();
+            }
             video_playback(userid, filepath);
 
         });

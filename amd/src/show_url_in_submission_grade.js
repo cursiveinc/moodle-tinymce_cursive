@@ -206,9 +206,9 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                     };
                     
                     myEvents.createModal(userid, context);
-                    myEvents.analytics(userid, templates, context);
-                    myEvents.checkDiff(userid, data.data.file_id);
-                    myEvents.replyWriting(userid, filepath);
+                    myEvents.analytics(userid, templates, context,'', replayInstances);
+                    myEvents.checkDiff(userid, data.data.file_id,'', replayInstances);
+                    myEvents.replyWriting(userid, filepath,'', replayInstances);
 
                     templates
                         .render("tiny_cursive/pop_modal", context)
