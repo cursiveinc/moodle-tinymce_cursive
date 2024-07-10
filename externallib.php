@@ -703,7 +703,7 @@ class cursive_json_func_data extends external_api
             if ($filename->file_id) {
                 $sql = 'SELECT uwr.*, diff.meta as effort_ratio
                           FROM {tiny_cursive_user_writing} uwr
-                          JOIN {tiny_cursive_writing_diff} diff ON uwr.file_id = diff.file_id
+                     LEFT JOIN {tiny_cursive_writing_diff} diff ON uwr.file_id = diff.file_id
                          WHERE uwr.file_id = :fileid';
                 $report = $DB->get_record_sql($sql, ['fileid' => $filename->file_id]);
                 $data['score'] = $report->score;
@@ -1535,7 +1535,7 @@ class cursive_json_func_data extends external_api
 
         $sql = "SELECT u.*, d.meta as effort_ratio
                   FROM {tiny_cursive_user_writing} AS u
-                  JOIN {tiny_cursive_writing_diff} AS d ON u.file_id = d.file_id
+             LEFT JOIN {tiny_cursive_writing_diff} AS d ON u.file_id = d.file_id
                  WHERE u.file_id = :fileid";
 
         $params = ['fileid' => $fileid];
