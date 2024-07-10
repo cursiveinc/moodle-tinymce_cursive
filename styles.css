@@ -347,6 +347,7 @@
     float: left;
     background: #ECECEC;
 }
+
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
 .cursive-comparison-content {
@@ -394,15 +395,36 @@
     gap: 5px;
     margin: 0rem 1rem;
 }
+
 .cursive-box {
     width: 20px;
     height: 20px;
     border: 1px solid #ccc;
 }
+
 .cursive-attributed {
     background-color: white;
 }
+
 .cursive-legend-item span {
     font-family: Arial, sans-serif;
     color: #4a5568;
+}
+
+.tiny-cursive-loader {
+    width: 50px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    margin-left: -2rem;
+    background:
+        radial-gradient(farthest-side, #bdbdbd 94%, #0000) top/8px 8px no-repeat,
+        conic-gradient(#0000 30%, #bdbdbd);
+    -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 8px), #000 0);
+    animation: l13 1s infinite linear;
+}
+
+@keyframes l13 {
+    100% {
+        transform: rotate(1turn)
+    }
 }

@@ -38,8 +38,10 @@ export default class AnalyticEvents {
     }
 
     analytics(userid, templates, context, questionid = '', replayInstances = null) {
+
         $('body').on('click', '#analytic' + userid + questionid, function (e) {
             e.preventDefault();
+            $('#content' + userid).html($('<div>').addClass('d-flex justify-content-center my-5').append($('<div>').addClass('tiny-cursive-loader')));
             if (replayInstances && replayInstances[userid]) {
                 replayInstances[userid].stopReplay();
             }
@@ -66,6 +68,7 @@ export default class AnalyticEvents {
 
         $('body').on('click', '#diff' + userid + questionid, function (e) {
             e.preventDefault();
+            $('#content' + userid).html($('<div>').addClass('d-flex justify-content-center my-5').append($('<div>').addClass('tiny-cursive-loader')));
             $('.active').removeClass('active');
             if (replayInstances && replayInstances[userid]) {
                 replayInstances[userid].stopReplay();
@@ -124,14 +127,17 @@ export default class AnalyticEvents {
 
     replyWriting(userid, filepath, questionid = '', replayInstances = null) {
         // Event handler for '#rep' + userid
+
         $('body').on('click', '#rep' + userid + questionid, function (e) {
             e.preventDefault();
+            $('#content' + userid).html($('<div>').addClass('d-flex justify-content-center my-5').append($('<div>').addClass('tiny-cursive-loader')));
             $('.active').removeClass('active');
             $(this).addClass('active'); // Add 'active' class to the clicked element
             if (replayInstances && replayInstances[userid]) {
                 replayInstances[userid].stopReplay();
             }
             video_playback(userid, filepath);
+
 
         });
     }
@@ -149,4 +155,5 @@ export default class AnalyticEvents {
             return "0h 0m 0s"
         }
     }
+
 }
