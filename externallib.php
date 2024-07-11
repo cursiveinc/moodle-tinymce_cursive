@@ -690,7 +690,7 @@ class cursive_json_func_data extends external_api
             if ($data['filename']) {
                 $sql = 'SELECT id AS fileid 
                           FROM {tiny_cursive_files}
-                         WHERE userid = :userid ORDER BY id ASC';
+                         WHERE userid = :userid ORDER BY id ASC LIMIT 1';
                 $ffile = $DB->get_record_sql($sql, ['userid' => $filename->userid]);
 
                 if ($ffile->fileid == $filename->file_id) {
@@ -850,8 +850,9 @@ class cursive_json_func_data extends external_api
 
         $data = (array) $data;
         $data['first_file'] = 0;
-
+    
         if (!isset($data['filename'])) {
+           
             $sql = 'SELECT filename,userid 
                       FROM {tiny_cursive_files} 
                      WHERE resourceid = :resourceid
@@ -867,7 +868,7 @@ class cursive_json_func_data extends external_api
                       FROM {tiny_cursive_files}
                      WHERE userid = :userid ORDER BY id ASC LIMIT 1';
             $firstfile = $DB->get_record_sql($sql, ['userid' => $filename->userid]);
-            if ($firstfile == $filename->file_id) {
+            if ($firstfile->id == $filename->file_id) {
                 $data['first_file'] = 1;
             }
         } else {
@@ -877,8 +878,9 @@ class cursive_json_func_data extends external_api
         $sql = 'SELECT * 
                   FROM {tiny_cursive_files}
                  WHERE userid = :userid ORDER BY id ASC LIMIT 1';
-        $firstfile = $DB->get_record_sql($sql, ['userid' => $filename->userid]);
-        if ($firstfile == $filename->file_id) {
+        $firstfile = $DB->get_record_sql($sql, ['userid' => $data['userid']]);
+
+        if ($firstfile->id == $filename->file_id) {
             $data['first_file'] = 1;
         }
 
@@ -1178,7 +1180,7 @@ class cursive_json_func_data extends external_api
 
             $sql = 'SELECT id AS fileid 
                       FROM {tiny_cursive_files}
-                     WHERE userid = :userid ORDER BY id ASC';
+                     WHERE userid = :userid ORDER BY id ASC LIMIT 1';
             $ffile = $DB->get_record_sql($sql, ['userid' => $data['userid']]);
 
             if ($ffile->fileid == $data['file_id']) {

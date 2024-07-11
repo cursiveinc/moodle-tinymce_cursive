@@ -20,7 +20,7 @@
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  */
 
-define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './analytic_button','./analytic_events'], function (
+define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './analytic_button', './analytic_events'], function (
     $,
     AJAX,
     str,
@@ -102,38 +102,19 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
                         var data = JSON.parse(json);
                         var filepath = '';
                         if (data.res.filename) {
-                            var filepath = data.res.filename;
-                        }
-                        var score = parseFloat(data.res.score);
-                        var icon = 'fa fa-circle-o';
-                        var color = 'font-size:24px;color:black';
-                        if (data.res.first_file) {
-                            icon = 'fa  fa fa-solid fa-info-circle typeid';
-                            color = 'font-size:24px;color:#000000';
-                        }
-                        else {
-                            if (score >= score_setting) {
-                                icon = 'fa fa-check-circle typeid';
-                                color = 'font-size:24px;color:green';
-                            } else if (score < score_setting) {
-                                icon = 'fa fa-question-circle typeid';
-                                color = 'font-size:24px;color:#A9A9A9';
-                            } else {
-                                icon = 'fa fa-circle-o typeid';
-                                color = 'font-size:24px;color:black';
-                            }
+                            filepath = data.res.filename;
                         }
 
-                        let video_icon = '<td><a href="#" onclick="video_playback(' + userid + ', \'' + filepath + '\')" data-filepath="' + filepath + '" data-id="playback_' + userid + '" class="video_playback_icon ' + video + '" style="' + st + '"></a></td>';
+                        // let video_icon = '<td><a href="#" onclick="video_playback(' + userid + ', \'' + filepath + '\')" data-filepath="' + filepath + '" data-id="playback_' + userid + '" class="video_playback_icon ' + video + '" style="' + st + '"></a></td>';
                         // $(tr).find('td').eq(3).after(video_icon);
-                        let typeid_icon = '<td><button onclick="myFunction()" data-id=' + userid + ' class=" ' + icon + ' " style="border:none; ' + color + ';"></button></td>';
+                        // let typeid_icon = '<td><button onclick="myFunction()" data-id=' + userid + ' class=" ' + icon + ' " style="border:none; ' + color + ';"></button></td>';
                         // $(tr).find('td').eq(3).after(typeid_icon);
 
                         // Get Module Name from element.
                         let element = document.querySelector('.page-header-headings h1'); // Selects the h1 element within the .page-header-headings class
                         let textContent = element.textContent; // Extracts the text content from the h1 element
 
-                        console.log("assign: ",data.res);
+                        console.log("assign: ", data.res);
                         let myEvents = new AnalyticEvents();
                         var context = {
                             tabledata: data.res,
@@ -143,11 +124,11 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
                             userid: userid,
                         };
 
-                       
-                        myEvents.createModal(userid, context);
-                        myEvents.analytics(userid, templates, context,'', replayInstances);
-                        myEvents.checkDiff(userid,data.res.file_id,'', replayInstances);
-                        myEvents.replyWriting(userid, filepath,'', replayInstances);
+                        let authIcon = myEvents.authorshipStatus(data.res.first_file, data.res.score, score_setting);
+                        myEvents.createModal(userid, context, '', authIcon);
+                        myEvents.analytics(userid, templates, context, '', replayInstances, authIcon);
+                        myEvents.checkDiff(userid, data.res.file_id, '', replayInstances);
+                        myEvents.replyWriting(userid, filepath, '', replayInstances);
 
                         templates
                             .render("tiny_cursive/pop_modal", context)

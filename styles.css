@@ -105,7 +105,6 @@
 .cursive-nav-tab .nav-link.active {
     color: white;
     background-color: #306ab3;
-
 }
 
 .cursive-nav-tab .nav-item.show .nav-link,
@@ -144,7 +143,7 @@
 .cursive-analyticcontent {
     overflow: hidden;
     min-height: 100%;
-    background-color: #f3f3f3;
+
 }
 
 .cursive .table tbody {
@@ -427,5 +426,44 @@
 @keyframes l13 {
     100% {
         transform: rotate(1turn)
+    }
+}
+
+/* Mobile Responsive */
+
+
+@media screen and (max-width: 576px) {
+    .cursive-main {
+        grid-template-columns: 1fr;
+    }
+
+    .cursive-nav-tab {
+        max-width: 100%;
+        min-height: fit-content;
+        display: flex;
+        justify-content: space-between;
+        background-color: #306ab3;
+    }
+
+    .cursive-nav-tab .nav-item.show .nav-link,
+    .cursive-nav-tab .nav-link.active {
+        color: #306ab3 !important; 
+        background-color: white;
+        min-height: 100%;
+    }
+
+    .cursive-nav-tab .nav-item.show .nav-link,
+    .cursive-nav-tab .nav-link.active svg {
+        fill: #306ab3 !important;
+
+    }
+
+    .cursive-nav-tab .nav-item .nav-link {
+        color: white;
+     
+    }
+    
+    .cursive-nav-tab .nav-item .nav-link svg {
+        fill: white;
     }
 }
