@@ -209,7 +209,8 @@ class observers {
 
         // Delete associated user writing records and files.
         foreach ($fileids as $file) {
-            $DB->delete_records('tiny_cursive_user_writing', ['id' => $file->id]);
+            $DB->delete_records('tiny_cursive_user_writing', ['file_id' => $file->id]);
+            $DB->delete_records('tiny_cursive_writing_diff', ['file_id' => $file->id]);
 
             $filepath = $CFG->tempdir . "/userdata/" . $file->filename;
             if (file_exists($filepath)) {
