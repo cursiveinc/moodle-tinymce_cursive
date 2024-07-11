@@ -102,34 +102,11 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                 let com = AJAX.call([{ methodname, args }]);
                 com[0].done(function (json) {
                     var data = JSON.parse(json);
-
-                    $('.alert').remove();
-
-
                     var filepath = '';
                     if (data.data.filename) {
                         filepath = data.data.filename;
                     }
-                    var score = parseFloat(data.data.score);
-                    var icon = 'fa fa-circle-o';
-                    var color = 'font-size:24px;color:black';
 
-                    if (data.data.first_file) {
-                        icon = 'fa  fa fa-solid fa-info-circle typeid';
-                        color = 'font-size:24px;color:#000000';
-                    }
-                    else {
-                        if (score >= score_setting) {
-                            icon = 'fa fa-check-circle typeid';
-                            color = 'font-size:24px;color:green';
-                        } else if (score < score_setting) {
-                            icon = 'fa fa-question-circle typeid';
-                            color = 'font-size:24px;color:#A9A9A9';
-                        } else {
-                            icon = 'fa fa-circle-o typeid';
-                            color = 'font-size:24px;color:black';
-                        }
-                    }
                     // var html= '<div class="justify-content-center d-flex py-3">' +
                     //     '<button onclick="popup_item(' + userid + ')" data-id=' + userid + ' class="mr-2 ' + chart + '" style="' + st + '"></button>' +
                     //     '<a href="#" onclick="video_playback(' + userid + ', \'' + filepath + '\')" data-filepath="' +
@@ -153,8 +130,6 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                     row.append(chatbox);
                     container.append(row);
                     $('div[data-region="grade-actions-panel"]').before(container);
-
-
 
                     var $chatbox = $('.tiny_cursive-chatbox'),
                         $chatboxTitle = $('.tiny_cursive-chatbox__title'),
@@ -186,6 +161,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                     let analytic_button_div = document.createElement('div');
                     analytic_button_div.append(analyticButton(userid));
                     analytic_button_div.classList.add('text-center', 'mt-2');
+
                     $('div[data-region="grade-actions"]').before(analytic_button_div);
 
                     $('div[data-region="review-panel"]').addClass('cursive_review_panel_path_mod_assign');
@@ -195,8 +171,8 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                     $('div[data-region="grade-panel"]').addClass('cursive_grade-panel_path_mod_assign');
 
                     $('div[data-region="grade-actions-panel"]').addClass('cursive_grade-actions-panel_path_mod_assign');
-                    
-                   
+
+
                     let myEvents = new AnalyticEvents();
                     var context = {
                         tabledata: data.data,
@@ -205,10 +181,11 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                         userid: userid,
                     };
                     
-                    myEvents.createModal(userid, context);
-                    myEvents.analytics(userid, templates, context,'', replayInstances);
-                    myEvents.checkDiff(userid, data.data.file_id,'', replayInstances);
-                    myEvents.replyWriting(userid, filepath,'', replayInstances);
+                    let authIcon = myEvents.authorshipStatus(data.data.first_file, data.data.score, score_setting);
+                    myEvents.createModal(userid, context, '', authIcon);
+                    myEvents.analytics(userid, templates, context, '', replayInstances, '', authIcon);
+                    myEvents.checkDiff(userid, data.data.file_id, '', replayInstances);
+                    myEvents.replyWriting(userid, filepath, '', replayInstances);
 
                     templates
                         .render("tiny_cursive/pop_modal", context)
