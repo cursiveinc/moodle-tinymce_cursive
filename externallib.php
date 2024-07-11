@@ -690,7 +690,7 @@ class cursive_json_func_data extends external_api
             if ($data['filename']) {
                 $sql = 'SELECT id AS fileid 
                           FROM {tiny_cursive_files}
-                         WHERE userid = :userid ORDER BY id ASC';
+                         WHERE userid = :userid ORDER BY id ASC LIMIT 1';
                 $ffile = $DB->get_record_sql($sql, ['userid' => $filename->userid]);
 
                 if ($ffile->fileid == $filename->file_id) {
@@ -703,7 +703,7 @@ class cursive_json_func_data extends external_api
             if ($filename->file_id) {
                 $sql = 'SELECT uwr.*, diff.meta as effort_ratio
                           FROM {tiny_cursive_user_writing} uwr
-                          JOIN {tiny_cursive_writing_diff} diff ON uwr.file_id = diff.file_id
+                     LEFT JOIN {tiny_cursive_writing_diff} diff ON uwr.file_id = diff.file_id
                          WHERE uwr.file_id = :fileid';
                 $report = $DB->get_record_sql($sql, ['fileid' => $filename->file_id]);
                 $data['score'] = $report->score;
@@ -850,8 +850,9 @@ class cursive_json_func_data extends external_api
 
         $data = (array) $data;
         $data['first_file'] = 0;
-
+    
         if (!isset($data['filename'])) {
+           
             $sql = 'SELECT filename,userid 
                       FROM {tiny_cursive_files} 
                      WHERE resourceid = :resourceid
@@ -867,7 +868,7 @@ class cursive_json_func_data extends external_api
                       FROM {tiny_cursive_files}
                      WHERE userid = :userid ORDER BY id ASC LIMIT 1';
             $firstfile = $DB->get_record_sql($sql, ['userid' => $filename->userid]);
-            if ($firstfile == $filename->file_id) {
+            if ($firstfile->id == $filename->file_id) {
                 $data['first_file'] = 1;
             }
         } else {
@@ -877,8 +878,9 @@ class cursive_json_func_data extends external_api
         $sql = 'SELECT * 
                   FROM {tiny_cursive_files}
                  WHERE userid = :userid ORDER BY id ASC LIMIT 1';
-        $firstfile = $DB->get_record_sql($sql, ['userid' => $filename->userid]);
-        if ($firstfile == $filename->file_id) {
+        $firstfile = $DB->get_record_sql($sql, ['userid' => $data['userid']]);
+
+        if ($firstfile->id == $filename->file_id) {
             $data['first_file'] = 1;
         }
 
@@ -1178,7 +1180,7 @@ class cursive_json_func_data extends external_api
 
             $sql = 'SELECT id AS fileid 
                       FROM {tiny_cursive_files}
-                     WHERE userid = :userid ORDER BY id ASC';
+                     WHERE userid = :userid ORDER BY id ASC LIMIT 1';
             $ffile = $DB->get_record_sql($sql, ['userid' => $data['userid']]);
 
             if ($ffile->fileid == $data['file_id']) {
@@ -1535,7 +1537,7 @@ class cursive_json_func_data extends external_api
 
         $sql = "SELECT u.*, d.meta as effort_ratio
                   FROM {tiny_cursive_user_writing} AS u
-                  JOIN {tiny_cursive_writing_diff} AS d ON u.file_id = d.file_id
+             LEFT JOIN {tiny_cursive_writing_diff} AS d ON u.file_id = d.file_id
                  WHERE u.file_id = :fileid";
 
         $params = ['fileid' => $fileid];

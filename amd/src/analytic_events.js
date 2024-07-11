@@ -26,10 +26,11 @@ import ModalFactory from 'core/modal_factory';
 import $ from 'jquery';
 export default class AnalyticEvents {
 
-    createModal(userid, context, questionid = '') {
+    createModal(userid, context, questionid = '', authIcon) {
         $('#analytics' + userid + questionid).on('click', function (e) {
             e.preventDefault();
             ModalFactory.create({ type: MyModal.TYPE, templateContext: context }).then(modal => {
+                $('#content' + userid + ' .table tbody tr:first-child td:nth-child(2)').html(authIcon);
                 modal.show();
             }).catch(error => {
                 console.error("Failed to create modal:", error);
@@ -37,7 +38,7 @@ export default class AnalyticEvents {
         });
     }
 
-    analytics(userid, templates, context, questionid = '', replayInstances = null) {
+    analytics(userid, templates, context, questionid = '', replayInstances = null, authIcon) {
 
         $('body').on('click', '#analytic' + userid + questionid, function (e) {
             e.preventDefault();
@@ -50,6 +51,7 @@ export default class AnalyticEvents {
 
             templates.render('tiny_cursive/analytics_table', context).then(function (html) {
                 $('#content' + userid).html(html);
+                $('#content' + userid + ' .table tbody tr:first-child td:nth-child(2)').html(authIcon);
 
             }).fail(function (error) {
                 console.error("Failed to render template:", error);
@@ -154,6 +156,30 @@ export default class AnalyticEvents {
         } else {
             return "0h 0m 0s"
         }
+    }
+
+    authorshipStatus(firstFile,score,score_setting) {
+
+        var score = parseFloat(score);
+        var icon = 'fa fa-circle-o';
+        var color = 'font-size:24px;color:black';
+
+        if (firstFile) {
+            icon = 'fa  fa fa-solid fa-info-circle';
+            color = 'font-size:24px;color:#000000';
+        } else {
+            if (score >= score_setting) {
+                icon = 'fa fa-check-circle';
+                color = 'font-size:24px;color:green';
+            } else if (score < score_setting) {
+                icon = 'fa fa-question-circle';
+                color = 'font-size:24px;color:#A9A9A9';
+            } else {
+                icon = 'fa fa-circle-o';
+                color = 'font-size:24px;color:black';
+            }
+        }
+        return $('<i>').addClass(icon).attr('style', color);
     }
 
 }
