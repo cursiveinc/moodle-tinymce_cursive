@@ -51,7 +51,7 @@ export const register = (editor) => {
                         editor.execCommand('Undo');
                         alert("You cannot paste text without providing source");
                     } else {
-                        editor.execCommand('Paste');
+                       editor.execCommand('Paste');
                     }
                     let ur = e.srcElement.baseURI;
                     let recourceId = 0;
@@ -102,6 +102,7 @@ export const register = (editor) => {
                     modal.destroy();
                 });
                 modal.getRoot().on(cancel, function () {
+                
                     editor.execCommand('Undo');
                     lastEvent = 'cancel';
                 });

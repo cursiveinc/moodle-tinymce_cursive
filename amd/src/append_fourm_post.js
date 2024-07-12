@@ -27,7 +27,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
     templates,
     Replay,
     analyticButton,
-    customEvents
+    AnalyticEvents
 ) {
     const replayInstances = {};
     window.myFunction = function () {
@@ -121,37 +121,20 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                 let com = AJAX.call([{ methodname, args }]);
                 com[0].done(function (json) {
                     var data = JSON.parse(json);
-                    
+
                     var filepath = '';
                     if (data.data.filename) {
                         var filepath = data.data.filename;
                     }
                     if (filepath) {
-                        var score = parseFloat(data.data.score);
-                        var icon = 'fa fa-circle-o';
-                        var color = 'font-size:24px;color:black';
-                        if (data.data.first_file) {
-                            icon = 'fa  fa fa-solid fa-info-circle typeid';
-                            color = 'font-size:24px;color:#000000';
-                        } else {
-                            if (score >= score_setting) {
-                                icon = 'fa fa-check-circle typeid';
-                                color = 'font-size:24px;color:green';
-                            } else if (score < score_setting) {
-                                icon = 'fa fa-question-circle typeid';
-                                color = 'font-size:24px;color:#A9A9A9';
-                            } else {
-                                icon = 'fa fa-circle-o typeid';
-                                color = 'font-size:24px;color:black';
-                            }
-                        }
+                        
                         // var html= '<div class="justify-content-center d-flex">' +
                         //     '<button onclick="popup_item(' + ids + ')" data-id=' + ids + ' class="mr-2 ' + chart + '" style="' + st + '"></button>' +
                         //     '<a href="#" onclick="video_playback(' + ids + ', \'' + filepath + '\')" data-filepath="' + filepath + '" data-id="playback_' + ids + '" class="mr-2 video_playback_icon ' + video + '" style="' + st + '"></a>' +
                         //     '<button onclick="myFunction()" data-id=' + ids + ' class="' + icon + ' " style="border:none; ' + color + ';"></button>' +
                         //     '</div>';
 
-
+                       
 
                         let analytic_button_div = document.createElement('div');
                         analytic_button_div.append(analyticButton(ids));
@@ -164,44 +147,46 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                             // $("#" + entry.id).find('#post-content-' + ids).append('<div class="dropdown">');
                             var tt = '';
                             let analyticdiv = $('div[data-region="analytic-div' + ids + '"]');
+                            let refBtn = $('<a>').attr('href', '#').addClass('cursive-analytics-btn text-white p-2 mx-2').attr('id', 'ref' + ids);
+                            let refSpan = $('<span>').text('References');
+                            refBtn.append(refSpan);
+                            analyticdiv.append(refBtn);
+                            let comments = "";
+
                             data.usercomment.forEach(element => {
                                 // Create the anchor element
-                                let refBtn = $('<a>').attr('href', '#').addClass('cursive-analytics-btn text-white p-2 mx-2').attr('id', 'ref' + ids);
-                                let refSpan = $('<span>').text('References');
-                                refBtn.append(refSpan);
-                                analyticdiv.append(refBtn);
-                               
-                                refBtn.on('click', function (event) {
-                                    event.preventDefault();
-                                    $('#existingElementsWrapper').removeClass('col-12').addClass('col-9');
-                                    $('#source-urls').removeClass('d-none').html('<div class="border-bottom p-3 text-primary" style="font-weight:600;">' + element.usercomment + '</div>');
-                                    $('#source-urls').append("<a href='#' id='ref-tab-close" + ids + "' class='btn btn-outline-light d-block btn-sm'>Close this tab</a>");
-                                });
+                                comments += '<div class="border-bottom p-3 text-primary" style="font-weight:600;">' + element.usercomment + '</div>';
+                            });
+                            refBtn.on('click', function (event) {
+                                event.preventDefault();
+                                $('#existingElementsWrapper').removeClass('col-12').addClass('col-9');
+                                $('#source-urls').removeClass('d-none').html(comments);
+                                $('#source-urls').append("<a href='#' id='ref-tab-close" + ids + "' class='btn btn-outline-light d-block btn-sm'>Close this tab</a>");
+                            });
 
-                                $('#source-urls').on('click', '#ref-tab-close' + ids, function (e) {
-                                    e.preventDefault();
-                                    $('#existingElementsWrapper').removeClass('col-9').addClass('col-12');
-                                    $('#source-urls').addClass('d-none').html('');
-                                });
-    
+                            $('#source-urls').on('click', '#ref-tab-close' + ids, function (e) {
+                                e.preventDefault();
+                                $('#existingElementsWrapper').removeClass('col-9').addClass('col-12');
+                                $('#source-urls').addClass('d-none').html('');
                             });
                             // var p1 = '<div class="border alert alert-warning"><details><summary>Content Sources Provided by Student</summary>';
                             // $("#" + entry.id).find('#post-content-' + ids).append(p1 + ' ' + tt + '</details></div></div>');
 
                         }
-                        let myEvents = new customEvents();
-                   
+                        let myEvents = new AnalyticEvents();
+
                         var context = {
                             tabledata: data.data,
-                            formattime: myEvents.formatedtime(data.data),
+                            formattime: myEvents.formatedTime(data.data),
                             page: score_setting,
                             userid: ids,
                         };
-
-                        myEvents.createModal(ids, context);
-                        myEvents.analytics(ids, templates, context);
-                        myEvents.checkDiff(ids, data.data.file_id);
-                        myEvents.replyWriting(ids, filepath);
+                        console.log(context);
+                        let authIcon = myEvents.authorshipStatus(data.data.first_file,data.data.score,score_setting);
+                        myEvents.createModal(ids, context, '', authIcon);
+                        myEvents.analytics(ids, templates, context, '', replayInstances, authIcon);
+                        myEvents.checkDiff(ids, data.data.file_id, '', replayInstances);
+                        myEvents.replyWriting(ids, filepath, '', replayInstances);
 
                         templates
                             .render("tiny_cursive/pop_modal", context)

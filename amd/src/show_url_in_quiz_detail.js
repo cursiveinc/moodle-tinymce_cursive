@@ -27,7 +27,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
     templates,
     Replay,
     analyticButton,
-    customEvents
+    AnalyticEvents
 ) {
     const replayInstances = {};
 
@@ -109,11 +109,11 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                     var data = JSON.parse(json);
 
                     if (data.data.filename) {
-                        var html = '';
+
                         var content = $('.que.essay .editquestion a[href*="question/bank/editquestion/question.php"][href*="&id=' + data.data.questionid + '"]');
                         if (data.usercomment != 'comments' && parseInt(showcomment)) {
                             content.parent().parent().parent().find('.qtext').append('<div class="mb-2">');
-                            var tt = '<h4>References</h4><div style="background-color:#FCEFDC;font-weight:500;" class = "border-bottom" >';
+                            var tt = '<h4>References</h4><div style="background-color:#FCEFDC;font-weight:500;" class = "rounded overflow-hidden" >';
                             data.usercomment.forEach(element => {
                                 tt += '<div class = "text-primary p-3" style="border-bottom:1px solid rgba(0, 0, 0, 0.1)">' + element.usercomment + '</div>';
                             });
@@ -124,49 +124,33 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                         if (data.data.filename) {
                             filepath = data.data.filename;
                         }
-                        var score = parseInt(data.data.score);
-                        var icon = 'fa fa-circle-o';
-                        var color = 'font-size:24px;color:black';
-                        if (data.data.first_file) {
-                            icon = 'fa  fa fa-solid fa-info-circle typeid';
-                            color = 'font-size:24px;color:#000000';
-                        } else {
-                            if (score >= score_setting) {
-                                icon = 'fa fa-check-circle typeid';
-                                color = 'font-size:24px;color:green';
-                            } else if (score < score_setting) {
-                                icon = 'fa fa-question-circle typeid';
-                                color = 'font-size:24px;color:#A9A9A9';
-                            } else {
-                                icon = 'fa fa-circle-o typeid';
-                                color = 'font-size:24px;color:black';
-                            }
-                        }
+                       
                         // html = '<div class="justify-content-center d-flex">' +
                         //     '<button onclick="popup_item(\'' + userid + "-" + questionid + '\')" data-id=' + userid + ' class="mr-2 ' + chart + '" style="' + st + '"></button>' +
                         //     '<a href="#" onclick="video_playback(' + questionid + ', \'' + filepath + '\')" data-filepath="' + filepath + '" data-id="playback_' + questionid + '" class="mr-2 video_playback_icon ' + video + '" style="' + st + '"></a>' +
                         //     '<button onclick="myFunction()" data-id=' + userid + ' class="' + icon + ' " style="border:none; ' + color + ';"></button>' +
                         //     '</div>';
+
                         let analytic_button_div = document.createElement('div');
                         analytic_button_div.classList.add('text-center', 'mt-2');
                         analytic_button_div.append(analyticButton(userid, questionid));
                         content.parent().parent().parent().find('.qtext').append(analytic_button_div);
-    
-                        console.log("Quiz: ",data.data);
-                        let myEvents = new customEvents();
+
+                        console.log("Quiz: ", data.data);
+                        let myEvents = new AnalyticEvents();
                         var context = {
                             tabledata: data.data,
-                            formattime: myEvents.formatedtime(data.data),
+                            formattime: myEvents.formatedTime(data.data),
                             page: score_setting,
                             userid: userid,
                             quizid: questionid,
                         };
 
-                        
-                        myEvents.createModal(userid, context, questionid);
-                        myEvents.analytics(userid, templates, context, questionid);
-                        myEvents.checkDiff(userid, data.data.file_id, questionid);
-                        myEvents.replyWriting(userid, filepath, questionid);
+                        let authIcon = myEvents.authorshipStatus(data.data.first_file, data.data.score, score_setting);
+                        myEvents.createModal(userid, context, questionid, authIcon);
+                        myEvents.analytics(userid, templates, context, questionid, replayInstances, authIcon);
+                        myEvents.checkDiff(userid, data.data.file_id, questionid, replayInstances);
+                        myEvents.replyWriting(userid, filepath, questionid, replayInstances);
 
                         templates
                             .render("tiny_cursive/quiz_pop_modal", context)

@@ -22,30 +22,38 @@
  */
 import MyModal from "./analytic_modal";
 import { call as getContent } from "core/ajax";
-export default class analytic_events {
+import $ from 'jquery';
+export default class AnalyticEvents {
 
-    createModal(userid, context, questionid = '') {
+
+    createModal(userid, context, questionid = '', authIcon) {
         $('#analytics' + userid + questionid).on('click', function (e) {
             e.preventDefault();
 
             // Create Moodle modal
             MyModal.create({ templateContext: context }).then(modal => {
+                $('#content' + userid + ' .table tbody tr:first-child td:nth-child(2)').html(authIcon);
                 modal.show();
             }).catch(error => {
                 console.error("Failed to create modal:", error);
             });
-
         });
     }
 
-    analytics(userid, templates, context, questionid = '') {
+    analytics(userid, templates, context, questionid = '', replayInstances = null, authIcon) {
+
         $('body').on('click', '#analytic' + userid + questionid, function (e) {
             e.preventDefault();
+            $('#content' + userid).html($('<div>').addClass('d-flex justify-content-center my-5').append($('<div>').addClass('tiny-cursive-loader')));
+            if (replayInstances && replayInstances[userid]) {
+                replayInstances[userid].stopReplay();
+            }
             $('.active').removeClass('active');
             $(this).addClass('active'); // Add 'active' class to the clicked element
 
             templates.render('tiny_cursive/analytics_table', context).then(function (html) {
                 $('#content' + userid).html(html);
+                $('#content' + userid + ' .table tbody tr:first-child td:nth-child(2)').html(authIcon);
 
             }).fail(function (error) {
                 console.error("Failed to render template:", error);
@@ -53,7 +61,7 @@ export default class analytic_events {
         });
     }
 
-    checkDiff(userid, fileid, questionid = '', content = "diff") {
+    checkDiff(userid, fileid, questionid = '', replayInstances = null) {
         // Event handler for '#diff' + userid
         const nodata = document.createElement('p');
         nodata.classList.add('text-center', 'p-5', 'bg-light', 'rounded', 'm-5', 'text-primary');
@@ -64,7 +72,11 @@ export default class analytic_events {
 
         $('body').on('click', '#diff' + userid + questionid, function (e) {
             e.preventDefault();
+            $('#content' + userid).html($('<div>').addClass('d-flex justify-content-center my-5').append($('<div>').addClass('tiny-cursive-loader')));
             $('.active').removeClass('active');
+            if (replayInstances && replayInstances[userid]) {
+                replayInstances[userid].stopReplay();
+            }
             $(this).addClass('active'); // Add 'active' class to the clicked element
             if (!fileid) {
                 $('#content' + userid).html(nodata);
@@ -106,8 +118,7 @@ export default class analytic_events {
 
                     contents.append($legend, textBlock2);
 
-                    content = contents;
-                    $('#content' + userid).html(content); // Update content
+                    $('#content' + userid).html(contents); // Update content
                 } else {
                     $('#content' + userid).html(nodata)
                 }
@@ -118,18 +129,24 @@ export default class analytic_events {
         });
     }
 
-    replyWriting(userid, filepath, questionid = '') {
+    replyWriting(userid, filepath, questionid = '', replayInstances = null) {
         // Event handler for '#rep' + userid
+
         $('body').on('click', '#rep' + userid + questionid, function (e) {
             e.preventDefault();
+            $('#content' + userid).html($('<div>').addClass('d-flex justify-content-center my-5').append($('<div>').addClass('tiny-cursive-loader')));
             $('.active').removeClass('active');
             $(this).addClass('active'); // Add 'active' class to the clicked element
+            if (replayInstances && replayInstances[userid]) {
+                replayInstances[userid].stopReplay();
+            }
             video_playback(userid, filepath);
+
 
         });
     }
 
-    formatedtime(data) {
+    formatedTime(data) {
         // Calculate and format total time
         if (data.total_time_seconds) {
             let total_time_seconds = data.total_time_seconds;
@@ -142,4 +159,29 @@ export default class analytic_events {
             return "0h 0m 0s"
         }
     }
+
+    authorshipStatus(firstFile,score,score_setting) {
+
+        var score = parseFloat(score);
+        var icon = 'fa fa-circle-o';
+        var color = 'font-size:24px;color:black';
+
+        if (firstFile) {
+            icon = 'fa  fa fa-solid fa-info-circle';
+            color = 'font-size:24px;color:#000000';
+        } else {
+            if (score >= score_setting) {
+                icon = 'fa fa-check-circle';
+                color = 'font-size:24px;color:green';
+            } else if (score < score_setting) {
+                icon = 'fa fa-question-circle';
+                color = 'font-size:24px;color:#A9A9A9';
+            } else {
+                icon = 'fa fa-circle-o';
+                color = 'font-size:24px;color:black';
+            }
+        }
+        return $('<i>').addClass(icon).attr('style', color);
+    }
+
 }
