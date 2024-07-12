@@ -88,26 +88,26 @@
     min-height: 400px;
 }
 
-.cursive-nav-tab .nav-item .nav-link {
+.cursive-nav-tab .cursive-nav-item .nav-link {
     color: gray;
     font-weight: 600;
     font-size: 1rem;
     padding: .8rem 1rem;
 }
 
-.cursive-nav-tab .nav-item .nav-link svg {
+.cursive-nav-tab .cursive-nav-item .nav-link svg {
     fill: gray;
     width: 25px;
     height: auto;
 }
 
-.cursive-nav-tab .nav-item.show .nav-link,
+.cursive-nav-tab .cursive-nav-item.show .nav-link,
 .cursive-nav-tab .nav-link.active {
     color: white;
     background-color: #306ab3;
 }
 
-.cursive-nav-tab .nav-item.show .nav-link,
+.cursive-nav-tab .cursive-nav-item.show .nav-link,
 .cursive-nav-tab .nav-link.active svg {
     fill: white;
 
@@ -176,7 +176,6 @@
     overflow: hidden;
     min-height: 100%;
     border-radius: 30px;
-
 }
 
 .cursive .table tbody {
@@ -478,25 +477,25 @@
         background-color: #306ab3;
     }
 
-    .cursive-nav-tab .nav-item.show .nav-link,
+    .cursive-nav-tab .cursive-nav-item.show .nav-link,
     .cursive-nav-tab .nav-link.active {
         color: #306ab3 !important;
         background-color: white;
         min-height: 100%;
     }
 
-    .cursive-nav-tab .nav-item.show .nav-link,
+    .cursive-nav-tab .cursive-nav-item.show .nav-link,
     .cursive-nav-tab .nav-link.active svg {
         fill: #306ab3 !important;
 
     }
 
-    .cursive-nav-tab .nav-item .nav-link {
+    .cursive-nav-tab .cursive-nav-item .nav-link {
         color: white;
 
     }
 
-    .cursive-nav-tab .nav-item .nav-link svg {
+    .cursive-nav-tab .cursive-nav-item .nav-link svg {
         fill: white;
     }
 }

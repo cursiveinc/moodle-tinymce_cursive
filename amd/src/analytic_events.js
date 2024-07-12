@@ -158,7 +158,7 @@ export default class AnalyticEvents {
         }
     }
 
-    authorshipStatus(firstFile,score,score_setting) {
+    authorshipStatus(firstFile, score, score_setting) {
 
         var score = parseFloat(score);
         var icon = 'fa fa-circle-o';
