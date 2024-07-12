@@ -81,7 +81,7 @@ function get_user_attempts_data($userid, $courseid, $moduleid, $orderby = 'id', 
     }
     $params['odby'] = $odby;
     $params['order'] = $order;
-    
+
     $sql .= " ORDER BY :odby :order";
 
     // Calculate the total count for pagination
@@ -239,6 +239,7 @@ function get_user_submissions_data($resourceid, $modulename, $cmid, $courseid = 
     // Execute the SQL query using Moodle's database abstraction layer
     $data = $DB->get_record_sql($sql, $params);
     $data = (array)$data;
+    
     if (!isset($data['filename'])) {
         $sql = 'SELECT id as fileid, userid, filename
                   FROM {tiny_cursive_files}
@@ -254,12 +255,11 @@ function get_user_submissions_data($resourceid, $modulename, $cmid, $courseid = 
         $data['filename'] = $CFG->dataroot."/temp/userdata/".$data['filename'];
     }
 
-    $data = (array)$data;
 
     if ($data['filename']) {
         $sql = 'SELECT id as fileid
                   FROM {tiny_cursive_files} 
-                 WHERE userid = :userid ORDER BY id ASC';
+                 WHERE userid = :userid ORDER BY id ASC LIMIT 1';
 
         $ffile = $DB->get_record_sql($sql, ['userid' => $userid]);
         $ffile = (array)$ffile;

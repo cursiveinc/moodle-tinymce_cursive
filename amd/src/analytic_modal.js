@@ -22,7 +22,7 @@
  */
 
 import Modal from 'core/modal';
-
+import ModalRegistry from 'core/modal_registry';
 export default class MyModal extends Modal {
     static TYPE = "tiny_cursive/analytics_modal";
     static TEMPLATE = "tiny_cursive/analytics_modal";
@@ -48,11 +48,16 @@ export default class MyModal extends Modal {
         // Hide the default modal header.
         root.find('.modal-header').hide();
 
+        root.find('.modal-content').css({
+            'border-radius':'30px'
+        });
         // Remove padding from the modal content.
-        root.find('.modal-body').css('padding', '0');
+        root.find('.modal-body').css({
+            'padding':'0',
+            'border-radius':'30px'
+        });
         root.find('.modal-dialog').css({
             'max-width': '800px',
-            'min-height': '800px'
         });
 
         // Ensure modal closes on 'analytic-close' button click.
@@ -67,4 +72,10 @@ export default class MyModal extends Modal {
             }
         });
     }
+}
+
+let registered = false;
+if (!registered) {
+    ModalRegistry.register(MyModal.TYPE, MyModal, MyModal.TEMPLATE);
+    registered = true;
 }

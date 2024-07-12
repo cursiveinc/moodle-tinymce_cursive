@@ -93,42 +93,58 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
                         //         }
                         //     });
 
+
                     });
-
-
                     usersTable.getusers(page);
                 });
 
             let myEvents = new AnalyticEvents();
-            $(".analytic-modal").each(function () {
-                var mid = $(this).data("id");
-                var filepath = $(this).data("filepath");
-                let context = { userid: mid };
-                let cmid = $(this).data("cmid");
+            (async function () {
+                try {
+                    let score_setting = await str.get_string('confidence_threshold', 'tiny_cursive');
+                    analyticsEvents(score_setting);
+                } catch (error) {
+                    console.error('Error fetching string:', error);
+                }
+            })();
 
-                $(this).html(analyticButton($(this).data('id')));
-                AJAX.call([{
-                    methodname: 'cursive_get_writing_statistics',
-                    args: {
-                        cmid: cmid,
-                        fileid: mid,
-                    },
-                }])[0].done(response => {
-                    let data = JSON.parse(response.data);
+            function analyticsEvents(score_setting) {
 
-                    context.formattime = myEvents.formatedTime(data);
-                    context.tabledata = data;
+                $(".analytic-modal").each(function () {
+                    var mid = $(this).data("id");
+                    var filepath = $(this).data("filepath");
+                    let context = {};
+                    context.userid = mid;
+                    let cmid = $(this).data("cmid");
+                    let score = 0;
+                    let first_file = 0;
+                    $(this).html(analyticButton($(this).data('id')));
 
-                }).fail(error => {
-                    throw new Error('Error: ' + error.message);
+                    AJAX.call([{
+                        methodname: 'cursive_get_writing_statistics',
+                        args: {
+                            cmid: cmid,
+                            fileid: mid,
+                        },
+                    }])[0].done(response => {
+                        let data = JSON.parse(response.data);
+
+                        context.formattime = myEvents.formatedTime(data);
+                        context.tabledata = data;
+                        console.log(context.tabledata);
+                      
+                        // Perform actions that require context.tabledata
+                        let authIcon = myEvents.authorshipStatus(data.first_file, data.score, score_setting);
+                        myEvents.createModal(mid, context, '', authIcon);
+                        myEvents.analytics(mid, templates, context, '', replayInstances, authIcon);
+                        myEvents.checkDiff(mid, mid, '', replayInstances);
+                        myEvents.replyWriting(mid, filepath, '', replayInstances);
+                    }).fail(error => {
+                        throw new Error('Error: ' + error.message);
+                    });
+
                 });
-
-                // Perform actions that require context.tabledata
-                myEvents.createModal(mid, context);
-                myEvents.analytics(mid, templates, context,'', replayInstances);
-                myEvents.checkDiff(mid, mid,'', replayInstances);
-                myEvents.replyWriting(mid, filepath,'', replayInstances);
-            });
+            }
         },
         getusers: function (page) {
             $("#id_coursename").change(function () {
