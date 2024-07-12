@@ -46,6 +46,7 @@ function xmldb_tiny_cursive_upgrade($oldversion)
         upgrade_plugin_savepoint(true, 2023041937, 'tiny', 'cursive');
     }
 
+
     if ($oldversion < 2024060227) {
 
         $table = new xmldb_table('tiny_cursive_writing_diff');
