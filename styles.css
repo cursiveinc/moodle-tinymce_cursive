@@ -229,8 +229,8 @@
 .tiny_cursive-chatbox {
     position: fixed;
     bottom: 0;
-    right: 10%;
-    width: 300px;
+    left: 0;
+    width: 400px;
     height: 400px;
     background-color: #fff;
     font-family: 'Lato', sans-serif;
