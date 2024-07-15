@@ -85,7 +85,7 @@
 .cursive-nav-tab {
     background-color: #f3f3f3;
     max-width: 250px;
-    min-height: 400px;
+    min-height: auto;
 }
 
 .cursive-nav-tab .cursive-nav-item .nav-link {
@@ -118,7 +118,7 @@
     margin: 0 .5rem 1rem 0;
     border-radius: .2rem .2rem 1.1rem 1.1rem;
     padding: 1.2rem 1rem 1rem 2rem;
-    height: 600px;
+    height: 500px;
     text-align: justify;
     overflow: auto;
 }
