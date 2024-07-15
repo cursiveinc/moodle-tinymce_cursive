@@ -31,8 +31,14 @@ export default class AnalyticEvents {
         $('#analytics' + userid + questionid).on('click', function (e) {
             e.preventDefault();
             ModalFactory.create({ type: MyModal.TYPE, templateContext: context }).then(modal => {
-                $('#content' + userid + ' .table tbody tr:first-child td:nth-child(2)').html(authIcon);
+
                 modal.show();
+                const targetElement = $('#content' + userid + ' .table tbody tr:first-child td:nth-child(2)');
+                if (targetElement.length > 0) {
+                    targetElement.html(authIcon);
+                } else {
+                    console.error('Target element not found');
+                }
             }).catch(error => {
                 console.error("Failed to create modal:", error);
             });
