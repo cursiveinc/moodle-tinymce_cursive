@@ -145,32 +145,14 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
 
                         if (data.usercomment != 'comments' && parseInt(showcomment)) {
                             // $("#" + entry.id).find('#post-content-' + ids).append('<div class="dropdown">');
-                            var tt = '';
-                            let analyticdiv = $('div[data-region="analytic-div' + ids + '"]');
-                            let refBtn = $('<a>').attr('href', '#').addClass('cursive-analytics-btn text-white p-2 mx-2').attr('id', 'ref' + ids);
-                            let refSpan = $('<span>').text('References');
-                            refBtn.append(refSpan);
-                            analyticdiv.append(refBtn);
                             let comments = "";
 
                             data.usercomment.forEach(element => {
                                 // Create the anchor element
                                 comments += '<div class="border-bottom p-3 text-primary" style="font-weight:600;">' + element.usercomment + '</div>';
                             });
-                            refBtn.on('click', function (event) {
-                                event.preventDefault();
-                                $('#existingElementsWrapper').removeClass('col-12').addClass('col-9');
-                                $('#source-urls').removeClass('d-none').html(comments);
-                                $('#source-urls').append("<a href='#' id='ref-tab-close" + ids + "' class='btn btn-outline-light d-block btn-sm'>Close this tab</a>");
-                            });
 
-                            $('#source-urls').on('click', '#ref-tab-close' + ids, function (e) {
-                                e.preventDefault();
-                                $('#existingElementsWrapper').removeClass('col-9').addClass('col-12');
-                                $('#source-urls').addClass('d-none').html('');
-                            });
-                            // var p1 = '<div class="border alert alert-warning"><details><summary>Content Sources Provided by Student</summary>';
-                            // $("#" + entry.id).find('#post-content-' + ids).append(p1 + ' ' + tt + '</details></div></div>');
+                            $("#" + entry.id).find('#post-content-' + ids).prepend($('<div>').addClass('cursive-quiz-references rounded').append(comments));
 
                         }
                         let myEvents = new AnalyticEvents();
