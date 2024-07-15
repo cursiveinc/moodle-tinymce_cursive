@@ -338,7 +338,6 @@
     background-color: #FAFAFA;
     border-left: 1px solid #ddd;
     border-right: 1px solid #ddd;
-
     -webkit-flex-grow: 1;
     flex-grow: 1;
 }
@@ -461,8 +460,16 @@
     }
 }
 
-/* Mobile Responsive */
+.cursive-quiz-references {
+    background-color: #FCEFDC;
+    font-weight: 500;
+    max-height: 200px;
+    overflow-y: auto !important;
+    margin: 2rem 0rem;
+}
 
+
+/* Mobile Responsive */
 
 @media screen and (max-width: 576px) {
     .cursive-main {
