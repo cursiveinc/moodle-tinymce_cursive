@@ -59,7 +59,8 @@ export default class MyModal extends Modal {
         });
         root.find('.modal-dialog').css({
             'max-width': '800px',
-        });
+
+        }).addClass('border-none shadow-none');
 
         // Ensure modal closes on 'analytic-close' button click.
         root.find('#analytic-close').on('click', () => {
