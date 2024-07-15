@@ -85,29 +85,29 @@
 .cursive-nav-tab {
     background-color: #f3f3f3;
     max-width: 250px;
-    min-height: 465px;
+    min-height: 400px;
 }
 
-.cursive-nav-tab .nav-item .nav-link {
+.cursive-nav-tab .cursive-nav-item .nav-link {
     color: gray;
     font-weight: 600;
     font-size: 1rem;
     padding: .8rem 1rem;
 }
 
-.cursive-nav-tab .nav-item .nav-link svg {
+.cursive-nav-tab .cursive-nav-item .nav-link svg {
     fill: gray;
     width: 25px;
     height: auto;
 }
 
-.cursive-nav-tab .nav-item.show .nav-link,
+.cursive-nav-tab .cursive-nav-item.show .nav-link,
 .cursive-nav-tab .nav-link.active {
     color: white;
     background-color: #306ab3;
 }
 
-.cursive-nav-tab .nav-item.show .nav-link,
+.cursive-nav-tab .cursive-nav-item.show .nav-link,
 .cursive-nav-tab .nav-link.active svg {
     fill: white;
 
@@ -118,9 +118,41 @@
     margin: 0 .5rem 1rem 0;
     border-radius: .2rem .2rem 1.1rem 1.1rem;
     padding: 1.2rem 1rem 1rem 2rem;
-    height: 700px;
+    height: 600px;
     text-align: justify;
     overflow: auto;
+}
+
+/* Scrollbar styles for Chrome/Safari/Edge */
+.cursive::-webkit-scrollbar {
+    width: 10px;
+    /* Width of the scrollbar track */
+    border-radius: 5px;
+}
+
+.cursive::-webkit-scrollbar-track {
+    background-color: #f5f5f5;
+    /* Color of the scrollbar track */
+}
+
+.cursive::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    /* Color of the scrollbar thumb */
+    border-radius: 5px;
+    /* Add rounded corners to the thumb */
+}
+
+.cursive::-webkit-scrollbar-thumb:hover {
+    background-color: #999;
+    /* Change thumb color on hover */
+}
+
+/* Scrollbar styles for Firefox */
+.cursive {
+    scrollbar-width: 5px;
+    /* Set the width of the scrollbar */
+    scrollbar-color: #ccc transparent;
+    /* Set thumb and track colors */
 }
 
 .cursive-main {
@@ -143,7 +175,7 @@
 .cursive-analyticcontent {
     overflow: hidden;
     min-height: 100%;
-
+    border-radius: 30px;
 }
 
 .cursive .table tbody {
@@ -306,7 +338,6 @@
     background-color: #FAFAFA;
     border-left: 1px solid #ddd;
     border-right: 1px solid #ddd;
-
     -webkit-flex-grow: 1;
     flex-grow: 1;
 }
@@ -429,8 +460,16 @@
     }
 }
 
-/* Mobile Responsive */
+.cursive-quiz-references {
+    background-color: #FCEFDC;
+    font-weight: 500;
+    max-height: 200px;
+    overflow-y: auto !important;
+    margin: 2rem 0rem;
+}
 
+
+/* Mobile Responsive */
 
 @media screen and (max-width: 576px) {
     .cursive-main {
@@ -445,25 +484,25 @@
         background-color: #306ab3;
     }
 
-    .cursive-nav-tab .nav-item.show .nav-link,
+    .cursive-nav-tab .cursive-nav-item.show .nav-link,
     .cursive-nav-tab .nav-link.active {
-        color: #306ab3 !important; 
+        color: #306ab3 !important;
         background-color: white;
         min-height: 100%;
     }
 
-    .cursive-nav-tab .nav-item.show .nav-link,
+    .cursive-nav-tab .cursive-nav-item.show .nav-link,
     .cursive-nav-tab .nav-link.active svg {
         fill: #306ab3 !important;
 
     }
 
-    .cursive-nav-tab .nav-item .nav-link {
+    .cursive-nav-tab .cursive-nav-item .nav-link {
         color: white;
-     
+
     }
-    
-    .cursive-nav-tab .nav-item .nav-link svg {
+
+    .cursive-nav-tab .cursive-nav-item .nav-link svg {
         fill: white;
     }
 }
