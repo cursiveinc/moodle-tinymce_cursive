@@ -22,9 +22,10 @@
  */
 import MyModal from "./analytic_modal";
 import { call as getContent } from "core/ajax";
-import ModalFactory from 'core/modal_factory';
 import $ from 'jquery';
+import ModalFactory from 'core/modal_factory';
 export default class AnalyticEvents {
+
 
     createModal(userid, context, questionid = '', authIcon) {
         $('#analytics' + userid + questionid).on('click', function (e) {
