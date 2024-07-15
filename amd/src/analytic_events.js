@@ -158,25 +158,25 @@ export default class AnalyticEvents {
         }
     }
 
-    authorshipStatus(firstFile,score,score_setting) {
+    authorshipStatus(firstFile, score, score_setting) {
 
         var score = parseFloat(score);
         var icon = 'fa fa-circle-o';
-        var color = 'font-size:24px;color:black';
+        var color = 'font-size:32px;color:black';
 
         if (firstFile) {
             icon = 'fa  fa fa-solid fa-info-circle';
-            color = 'font-size:24px;color:#000000';
+            color = 'font-size:32px;color:#000000';
         } else {
             if (score >= score_setting) {
                 icon = 'fa fa-check-circle';
-                color = 'font-size:24px;color:green';
+                color = 'font-size:32px;color:green';
             } else if (score < score_setting) {
                 icon = 'fa fa-question-circle';
-                color = 'font-size:24px;color:#A9A9A9';
+                color = 'font-size:32px;color:#A9A9A9';
             } else {
                 icon = 'fa fa-circle-o';
-                color = 'font-size:24px;color:black';
+                color = 'font-size:32px;color:black';
             }
         }
         return $('<i>').addClass(icon).attr('style', color);
