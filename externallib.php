@@ -1535,13 +1535,27 @@ class cursive_json_func_data extends external_api
         self::validate_context($context);
         require_capability('tiny/cursive:view',$context);
 
-        $sql = "SELECT u.*, d.meta as effort_ratio
+        $sql = "SELECT u.*, d.meta as effort_ratio, cf.userid as userid
                   FROM {tiny_cursive_user_writing} AS u
              LEFT JOIN {tiny_cursive_writing_diff} AS d ON u.file_id = d.file_id
+             LEFT JOIN {tiny_cursive_files} AS cf ON u.file_id = cf.id
                  WHERE u.file_id = :fileid";
 
         $params = ['fileid' => $fileid];
         $rec = $DB->get_record_sql($sql, $params);
+        
+        $sql = 'SELECT id AS fileid 
+                  FROM {tiny_cursive_files}
+                 WHERE userid = :userid ORDER BY id ASC LIMIT 1';
+        $ffile = $DB->get_record_sql($sql, ['userid' => $rec->userid]);
+        if($rec) {
+            if ($ffile->fileid == $rec->file_id) {
+                $rec->first_file = 1;
+            } else {
+                $rec->first_file = 0;
+            }
+        }
+      
         return ['data'=>json_encode($rec)];
     }
 
