@@ -25,25 +25,6 @@ import { call as getContent } from "core/ajax";
 import $ from 'jquery';
 export default class AnalyticEvents {
 
-    constructor() {
-        // Override AJAX methods to keep track of active requests
-        const originalAjax = $.ajax;
-        $.ajax = function (settings) {
-            const jqXHR = originalAjax.apply(this, arguments);
-            if (!$.ajax.active) {
-                $.ajax.active = [];
-            }
-            $.ajax.active.push(jqXHR);
-            jqXHR.always(() => {
-                const index = $.ajax.active.indexOf(jqXHR);
-                if (index > -1) {
-                    $.ajax.active.splice(index, 1);
-                }
-            });
-            return jqXHR;
-        };
-    }
-
     createModal(userid, context, questionid = '', authIcon) {
         $('#analytics' + userid + questionid).on('click', function (e) {
             e.preventDefault();
@@ -61,20 +42,7 @@ export default class AnalyticEvents {
     analytics(userid, templates, context, questionid = '', replayInstances = null, authIcon) {
 
         $('body').on('click', '#analytic' + userid + questionid, function (e) {
-            // Abort all pending AJAX requests
-            const xhrs = $.ajax.active;
-            for (let i = 0; i < xhrs.length; i++) {
-                if (xhrs[i] && xhrs[i].readyState !== 4) {
-                    xhrs[i].abort();
-                }
-            }
 
-            // Clear timeouts and intervals
-            const maxTimerId = setTimeout(() => { }, 0);
-            for (let i = 0; i <= maxTimerId; i++) {
-                clearTimeout(i);
-                clearInterval(i);
-            }
             e.preventDefault();
             $('#content' + userid).html($('<div>').addClass('d-flex justify-content-center my-5').append($('<div>').addClass('tiny-cursive-loader')));
             if (replayInstances && replayInstances[userid]) {
@@ -103,20 +71,7 @@ export default class AnalyticEvents {
         nodata.textContent = "no data received yet";
 
         $('body').on('click', '#diff' + userid + questionid, function (e) {
-            // Abort all pending AJAX requests
-            const xhrs = $.ajax.active;
-            for (let i = 0; i < xhrs.length; i++) {
-                if (xhrs[i] && xhrs[i].readyState !== 4) {
-                    xhrs[i].abort();
-                }
-            }
-
-            // Clear timeouts and intervals
-            const maxTimerId = setTimeout(() => { }, 0);
-            for (let i = 0; i <= maxTimerId; i++) {
-                clearTimeout(i);
-                clearInterval(i);
-            }
+         
             e.preventDefault();
             $('#content' + userid).html($('<div>').addClass('d-flex justify-content-center my-5').append($('<div>').addClass('tiny-cursive-loader')));
             $('.active').removeClass('active');
@@ -179,21 +134,7 @@ export default class AnalyticEvents {
         // Event handler for '#rep' + userid
 
         $('body').on('click', '#rep' + userid + questionid, function (e) {
-            // Abort all pending AJAX requests
-            const xhrs = $.ajax.active;
-            for (let i = 0; i < xhrs.length; i++) {
-                if (xhrs[i] && xhrs[i].readyState !== 4) {
-                    xhrs[i].abort();
-                }
-            }
-
-            // Clear timeouts and intervals
-            const maxTimerId = setTimeout(() => { }, 0);
-            for (let i = 0; i <= maxTimerId; i++) {
-                clearTimeout(i);
-                clearInterval(i);
-            }
-
+            
             e.preventDefault();
             $('#content' + userid).html($('<div>').addClass('d-flex justify-content-center my-5').append($('<div>').addClass('tiny-cursive-loader')));
             $('.active').removeClass('active');
@@ -210,7 +151,10 @@ export default class AnalyticEvents {
                     .css('text-transform', 'uppercase')
                     .css('font-weight', '500'));
             } else {
-                video_playback(userid, filepath);
+                setTimeout(() => {
+                    video_playback(userid, filepath);
+                }, 3000);
+               
 
             }
         });
