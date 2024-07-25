@@ -71,7 +71,7 @@ export default class AnalyticEvents {
         nodata.textContent = "no data received yet";
 
         $('body').on('click', '#diff' + userid + questionid, function (e) {
-         
+
             e.preventDefault();
             $('#content' + userid).html($('<div>').addClass('d-flex justify-content-center my-5').append($('<div>').addClass('tiny-cursive-loader')));
             $('.active').removeClass('active');
@@ -134,7 +134,7 @@ export default class AnalyticEvents {
         // Event handler for '#rep' + userid
 
         $('body').on('click', '#rep' + userid + questionid, function (e) {
-            
+
             e.preventDefault();
             $('#content' + userid).html($('<div>').addClass('d-flex justify-content-center my-5').append($('<div>').addClass('tiny-cursive-loader')));
             $('.active').removeClass('active');
@@ -151,11 +151,7 @@ export default class AnalyticEvents {
                     .css('text-transform', 'uppercase')
                     .css('font-weight', '500'));
             } else {
-                setTimeout(() => {
-                    video_playback(userid, filepath);
-                }, 3000);
-               
-
+                video_playback(userid, filepath);
             }
         });
     }
