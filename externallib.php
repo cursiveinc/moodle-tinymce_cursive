@@ -1543,7 +1543,7 @@ class cursive_json_func_data extends external_api
 
         $params = ['fileid' => $fileid];
         $rec = $DB->get_record_sql($sql, $params);
-
+        
         $sql = 'SELECT id AS fileid 
                   FROM {tiny_cursive_files}
                  WHERE userid = :userid ORDER BY id ASC LIMIT 1';
@@ -1555,6 +1555,7 @@ class cursive_json_func_data extends external_api
                 $rec->first_file = 0;
             }
         }
+      
         return ['data'=>json_encode($rec)];
     }
 
