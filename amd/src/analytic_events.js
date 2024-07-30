@@ -99,13 +99,13 @@ export default class AnalyticEvents {
                     // Create the first legend item
                     const $attributedItem = $('<div>', { class: 'cursive-legend-item' });
                     const $attributedBox = $('<div>', { class: 'cursive-box attributed' });
-                    const $attributedText = $('<span>').text('Attributed');
+                    const $attributedText = $('<span>').text('Original Text');
                     $attributedItem.append($attributedBox).append($attributedText);
 
                     // Create the second legend item
                     const $unattributedItem = $('<div>', { class: 'cursive-legend-item' });
                     const $unattributedBox = $('<div>', { class: 'cursive-box tiny_cursive_added' });
-                    const $unattributedText = $('<span>').text('Unattributed');
+                    const $unattributedText = $('<span>').text('Edits, Pastes, AI');
                     $unattributedItem.append($unattributedBox).append($unattributedText);
 
                     // Append the legend items to the legend container
