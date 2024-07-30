@@ -49,13 +49,9 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
             replayInstances[mid] = replay;
         }
         else {
-            const nosub = document.createElement('p');
-            nosub.className = 'text-center p-5 bg-light rounded m-5 text-primary';
-            nosub.style.verticalAlign = 'middle';
-            nosub.style.textTransform = 'uppercase';
-            nosub.style.fontWeight = '500';
-            nosub.textContent = 'No Submission';
-            $('#content' + mid).html(nosub)
+            templates.render('tiny_cursive/no_submission').then(html => {
+                $('#content' + mid).html(html);
+            }).catch(e => window.console.error(e));
         }
         return false;
 
