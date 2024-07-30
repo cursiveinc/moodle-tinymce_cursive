@@ -116,3 +116,5 @@ $string['wractivityreport'] = "Writing Activity Report";
 $string['data_save'] = 'Data saved successfully';
 $string['success'] = 'success';
 $string['failed'] = 'failed';
+$string['attributed'] = "Original Text";
+$string['unattributed'] = "Edits, Pastes, AI";

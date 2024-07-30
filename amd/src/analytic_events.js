@@ -24,6 +24,7 @@ import MyModal from "./analytic_modal";
 import { call as getContent } from "core/ajax";
 import $ from 'jquery';
 import ModalFactory from 'core/modal_factory';
+import str from 'core/str';
 export default class AnalyticEvents {
 
 
@@ -99,17 +100,18 @@ export default class AnalyticEvents {
                     let submitted_text = atob(responsedata[0].submitted_text);
                     let reconstructed_text = responsedata[0].reconstructed_text;
                     const $legend = $('<div class= "d-flex p-2 border rounded  mb-2">');
-
+                    let unattibuted = "Edits, Pastes, AI";
+                    let attibuted = "Original Text";
                     // Create the first legend item
                     const $attributedItem = $('<div>', { class: 'cursive-legend-item' });
                     const $attributedBox = $('<div>', { class: 'cursive-box attributed' });
-                    const $attributedText = $('<span>').text('Attributed');
+                    const $attributedText = $('<span>').text(attibuted);
                     $attributedItem.append($attributedBox).append($attributedText);
 
                     // Create the second legend item
                     const $unattributedItem = $('<div>', { class: 'cursive-legend-item' });
                     const $unattributedBox = $('<div>', { class: 'cursive-box tiny_cursive_added' });
-                    const $unattributedText = $('<span>').text('Unattributed');
+                    const $unattributedText = $('<span>').text(unattibuted);
                     $unattributedItem.append($unattributedBox).append($unattributedText);
 
                     // Append the legend items to the legend container
