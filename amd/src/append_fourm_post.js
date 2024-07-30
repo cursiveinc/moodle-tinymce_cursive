@@ -48,7 +48,9 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
             replayInstances[mid] = replay;
         }
         else {
-            alert('No submission');
+            templates.render('tiny_cursive/no_submission').then(html => {
+                $('#content' + mid).html(html);
+            }).catch(e => window.console.error(e));
         }
         return false;
 
@@ -127,14 +129,14 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                         var filepath = data.data.filename;
                     }
                     if (filepath) {
-                        
+
                         // var html= '<div class="justify-content-center d-flex">' +
                         //     '<button onclick="popup_item(' + ids + ')" data-id=' + ids + ' class="mr-2 ' + chart + '" style="' + st + '"></button>' +
                         //     '<a href="#" onclick="video_playback(' + ids + ', \'' + filepath + '\')" data-filepath="' + filepath + '" data-id="playback_' + ids + '" class="mr-2 video_playback_icon ' + video + '" style="' + st + '"></a>' +
                         //     '<button onclick="myFunction()" data-id=' + ids + ' class="' + icon + ' " style="border:none; ' + color + ';"></button>' +
                         //     '</div>';
 
-                       
+
 
                         let analytic_button_div = document.createElement('div');
                         analytic_button_div.append(analyticButton(ids));
@@ -164,7 +166,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                             userid: ids,
                         };
                         console.log(context);
-                        let authIcon = myEvents.authorshipStatus(data.data.first_file,data.data.score,score_setting);
+                        let authIcon = myEvents.authorshipStatus(data.data.first_file, data.data.score, score_setting);
                         myEvents.createModal(ids, context, '', authIcon);
                         myEvents.analytics(ids, templates, context, '', replayInstances, authIcon);
                         myEvents.checkDiff(ids, data.data.file_id, '', replayInstances);
