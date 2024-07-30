@@ -42,7 +42,7 @@ export default class AnalyticEvents {
     analytics(userid, templates, context, questionid = '', replayInstances = null, authIcon) {
 
         $('body').on('click', '#analytic' + userid + questionid, function (e) {
-
+            $('#rep' + userid + questionid).prop('disabled', false);
             e.preventDefault();
             $('#content' + userid).html($('<div>').addClass('d-flex justify-content-center my-5').append($('<div>').addClass('tiny-cursive-loader')));
             if (replayInstances && replayInstances[userid]) {
@@ -71,7 +71,7 @@ export default class AnalyticEvents {
         nodata.textContent = "no data received yet";
 
         $('body').on('click', '#diff' + userid + questionid, function (e) {
-
+            $('#rep' + userid + questionid).prop('disabled', false);
             e.preventDefault();
             $('#content' + userid).html($('<div>').addClass('d-flex justify-content-center my-5').append($('<div>').addClass('tiny-cursive-loader')));
             $('.active').removeClass('active');
@@ -134,7 +134,7 @@ export default class AnalyticEvents {
         // Event handler for '#rep' + userid
 
         $('body').on('click', '#rep' + userid + questionid, function (e) {
-
+            $(this).prop('disabled', true);
             e.preventDefault();
             $('#content' + userid).html($('<div>').addClass('d-flex justify-content-center my-5').append($('<div>').addClass('tiny-cursive-loader')));
             $('.active').removeClass('active');
@@ -142,17 +142,8 @@ export default class AnalyticEvents {
             if (replayInstances && replayInstances[userid]) {
                 replayInstances[userid].stopReplay();
             }
-
-            if (filepath === '') {
-                $('#content' + userid).empty().append($('<p>')
-                    .text('No Submission')
-                    .addClass('text-center p-5 bg-light rounded m-5 text-primary')
-                    .css('vertical-align', 'middle')
-                    .css('text-transform', 'uppercase')
-                    .css('font-weight', '500'));
-            } else {
-                video_playback(userid, filepath);
-            }
+            video_playback(userid, filepath);
+            
         });
     }
 
