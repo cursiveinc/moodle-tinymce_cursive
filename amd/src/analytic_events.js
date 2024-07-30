@@ -48,7 +48,7 @@ export default class AnalyticEvents {
             if (replayInstances && replayInstances[userid]) {
                 replayInstances[userid].stopReplay();
             }
-            $('.active').removeClass('active');
+            $('.cursive-nav-tab').find('.active').removeClass('active');
             $(this).addClass('active'); // Add 'active' class to the clicked element
 
             templates.render('tiny_cursive/analytics_table', context).then(function (html) {
@@ -74,11 +74,11 @@ export default class AnalyticEvents {
             $('#rep' + userid + questionid).prop('disabled', false);
             e.preventDefault();
             $('#content' + userid).html($('<div>').addClass('d-flex justify-content-center my-5').append($('<div>').addClass('tiny-cursive-loader')));
-            $('.active').removeClass('active');
+            $('.cursive-nav-tab').find('.active').removeClass('active');
+            $(this).addClass('active'); // Add 'active' class to the clicked element
             if (replayInstances && replayInstances[userid]) {
                 replayInstances[userid].stopReplay();
             }
-            $(this).addClass('active'); // Add 'active' class to the clicked element
             if (!fileid) {
                 $('#content' + userid).html(nodata);
                 throw new Error('Missing file id or Difference Content not receive yet');
@@ -137,7 +137,7 @@ export default class AnalyticEvents {
             $(this).prop('disabled', true);
             e.preventDefault();
             $('#content' + userid).html($('<div>').addClass('d-flex justify-content-center my-5').append($('<div>').addClass('tiny-cursive-loader')));
-            $('.active').removeClass('active');
+            $('.cursive-nav-tab').find('.active').removeClass('active');
             $(this).addClass('active'); // Add 'active' class to the clicked element
             if (replayInstances && replayInstances[userid]) {
                 replayInstances[userid].stopReplay();
