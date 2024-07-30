@@ -48,7 +48,9 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
             replayInstances[mid] = replay;
         }
         else {
-            alert('No submission');
+            templates.render('tiny_cursive/no_submission').then(html => {
+                $('#content' + mid).html(html);
+            }).catch(e => window.console.error(e));
         }
         return false;
 

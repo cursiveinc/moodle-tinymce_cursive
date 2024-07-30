@@ -467,7 +467,11 @@
     overflow-y: auto !important;
     margin: 2rem 0rem;
 }
-
+.tiny_cursive_nosub {
+    vertical-align: middle;
+    text-transform: uppercase;
+    font-weight: 500;
+}
 
 /* Mobile Responsive */
 
