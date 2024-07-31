@@ -21,6 +21,7 @@
  */
 
 import { call as fetchJson } from 'core/ajax';
+import templates from 'core/templates';
 export default class Replay {
     constructor(elementId, filePath, speed = 1, loop = false, controllerId) {
 
@@ -39,19 +40,23 @@ export default class Replay {
         }
         this.loadJSON(filePath)
             .then((data) => {
-                var val = JSON.parse(data.data);
-                this.logData = val;
-                // support for Cursive Recorder extension files (and outdated Curisve file formats)
-                // logData should be a list of dictionaries for this to work properly
-                if ("data" in this.logData) {
-                    this.logData = this.logData['data'];
+                if (data.status) {
+                    var val = JSON.parse(data.data);
+                    this.logData = val;
+
+                    if ("data" in this.logData) {
+                        this.logData = this.logData['data'];
+                    };
+                    if ("payload" in this.logData) {
+                        this.logData = this.logData['payload'];
+                    };
+                    this.startReplay();
+                } else {
+                    templates.render('tiny_cursive/no_submission').then(html => {
+                        let updatedHtml = html.replace('No Submission', "Something Went Wrong! or File Not Found!");
+                        $('.cursive').html(updatedHtml);
+                    });
                 }
-                ;
-                if ("payload" in this.logData) {
-                    this.logData = this.logData['payload'];
-                }
-                ;
-                this.startReplay();
             })
             .catch(error => {
                 throw new Error('Error loading JSON file: ' + error.message);
