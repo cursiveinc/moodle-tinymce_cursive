@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <XMLDB PATH="lib/editor/tiny/plugins/cursive/db" VERSION="2024060212" COMMENT="XMLDB file for Moodle tiny/cursive"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="../../../../../../lib/xmldb/xmldb.xsd"
->
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../lib/xmldb/xmldb.xsd">
   <TABLES>
     <TABLE NAME="tiny_cursive_files" COMMENT="Stores File names.">
       <FIELDS>
@@ -13,6 +11,7 @@
         <FIELD NAME="resourceid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="The page number that this questions appears on. If the question in slot n appears on page p, then the question in slot n+1 must appear on page p or p+1. Well, except that when a quiz is being created, there may be empty pages, which would cause the page number to jump here."/>
         <FIELD NAME="courseid" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Set to 1 when current question requires previous one to be answered first."/>
         <FIELD NAME="filename" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="How many marks this question contributes to quiz.sumgrades."/>
+        <FIELD NAME="content" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Encoded Files data for backup uses"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Last modified time."/>
         <FIELD NAME="uploaded" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="File upladed to api."/>
         <FIELD NAME="questionid" TYPE="int" LENGTH="20" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
@@ -58,17 +57,17 @@
     </TABLE>
 
     <TABLE NAME="tiny_cursive_writing_diff" COMMENT="Writing Difference data">
-          <FIELDS>
-            <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-            <FIELD NAME="file_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
-            <FIELD NAME="reconstructed_text" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="Original content"/>
-            <FIELD NAME="submitted_text" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="Difference html content"/>
-            <FIELD NAME="meta" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="extra field for optional use"/>
-          </FIELDS>
-          <KEYS>
-            <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-          </KEYS>
-        </TABLE>
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="file_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="reconstructed_text" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="Original content"/>
+        <FIELD NAME="submitted_text" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="Difference html content"/>
+        <FIELD NAME="meta" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="extra field for optional use"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
 
   </TABLES>
 </XMLDB>

@@ -73,6 +73,16 @@ function xmldb_tiny_cursive_upgrade($oldversion)
 
     }
 
+    if ($oldversion < 2024060228) {
+        $table = new xmldb_table('tiny_cursive_files');
+        $field = new xmldb_field('content', XMLDB_TYPE_TEXT, null, null, null, null, null, 'filename');
+
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        upgrade_plugin_savepoint(true, 2024060228, 'tiny', 'cursive');
+    }
+
     return true;
 }
 

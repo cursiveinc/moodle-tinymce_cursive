@@ -1468,15 +1468,25 @@ class cursive_json_func_data extends external_api
      */
     public static function cursive_get_reply_json($filepath)
     {
+        global $DB;
         $data = new stdClass;
         try {
-            if (!file_exists($filepath)) {
-                throw new Exception('File not found.');
+            if (file_exists($filepath)) {
+                $data->status = true;
+                $content = file_get_contents($filepath);
+            } else {
+                $filename = explode('/', $filepath);
+                $filename = end($filename);
+                $filedata = $DB->get_record('tiny_cursive_files', ['filename' => $filename]);
+                $content = $filedata->content ? base64_decode($filedata->content) : $content = false;
+                $data->status = true;
             }
-            $content = file_get_contents($filepath);
+
             if ($content === false) {
-                throw new Exception('Failed to read file.');
+                $data->status = false;
+                $content = 'File not found! or Failed to read file';
             }
+
             $data->data = $content;
         } catch (Exception $e) {
             $data->data = $e->getMessage();
@@ -1492,6 +1502,7 @@ class cursive_json_func_data extends external_api
     public static function cursive_get_reply_json_returns()
     {
         return new external_single_structure([
+            'status' => new external_value(PARAM_BOOL, "file status"), 
             'data' => new external_value(PARAM_TEXT, 'Reply Json')
         ]);
     }
