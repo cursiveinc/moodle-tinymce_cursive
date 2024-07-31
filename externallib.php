@@ -1472,11 +1472,7 @@ class cursive_json_func_data extends external_api
         global $DB;
         $data = new stdClass;
         try {
-            // if (!file_exists($filepath)) {
-            //    
-            //     $data->data = 'File not found';
-            // }
-
+            
             if (file_exists($filepath)) {
                 $data->status = true;
                 $content = file_get_contents($filepath);
