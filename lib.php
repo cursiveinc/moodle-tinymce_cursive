@@ -162,18 +162,22 @@ function tiny_cursive_myprofile_navigation(core_user\output\myprofile\tree $tree
 function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath,$wstoken, $answertext) {
 
     $moodleurl = get_config('tiny_cursive', 'host_url');
-    $moodleurl = preg_replace("(^https?://)", "", $moodleurl);
-    $moodleurl = 'https://' . $moodleurl;
     try {
         $token = get_config('tiny_cursive', 'secretkey');
         $remoteurl = get_config('tiny_cursive', 'python_server');
         $remoteurl = $remoteurl . "/upload_file";
+        $filecontent = "";
+        
+        if(!file_exists($filenamewithfullpath)) {
+            $filecontentdata = base64_decode($filerecord->content);
+            $filecontent = $filecontentdata;
+        }
         echo $remoteurl;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $remoteurl);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, [
-            'file' => new CURLFILE($filenamewithfullpath),
+            'file' => $filecontent ? $filecontent : new CURLFILE($filenamewithfullpath),
             'resource_id' => $filerecord->id,
             'person_id' => $filerecord->userid,
             'ws_token' => $wstoken,
@@ -186,6 +190,13 @@ function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath
         ]);
         $result = curl_exec($ch);
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        if ($result === false) {
+            echo "File not found: " . $filenamewithfullpath . "\n";
+            echo "cURL Error: " . curl_error($ch) . "\n";
+        } else {
+            echo "HTTP Status Code: " . $httpcode . "\n";
+            echo "File Id: " . $filerecord->id . "\n";
+        }
         curl_close($ch);
     } catch (Exception $e) {
         echo $e->getMessage();
