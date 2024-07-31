@@ -90,6 +90,7 @@ class upload_student_json_cron extends \core\task\scheduled_task {
             }
           
             $uploaded = tiny_cursive_upload_multipart_record($filerecord, $filepath, $wstoken, $answer);
+            echo "#######################################\n";
             if ($uploaded) {
                 $filerecord->uploaded = strtotime(date('Y-m-d H:i:s'));
                 $DB->update_record($table, $filerecord);
