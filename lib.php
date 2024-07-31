@@ -168,12 +168,18 @@ function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath
         $token = get_config('tiny_cursive', 'secretkey');
         $remoteurl = get_config('tiny_cursive', 'python_server');
         $remoteurl = $remoteurl . "/upload_file";
+        $filecontent = "";
+        
+        if(!file_exists($filenamewithfullpath)) {
+            $filecontentdata = base64_decode($filerecord->content);
+            $filecontent = $filecontentdata;
+        }
         echo $remoteurl;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $remoteurl);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, [
-            'file' => new CURLFILE($filenamewithfullpath),
+            'file' => $filecontent ? $filecontent : new CURLFILE($filenamewithfullpath),
             'resource_id' => $filerecord->id,
             'person_id' => $filerecord->userid,
             'ws_token' => $wstoken,
