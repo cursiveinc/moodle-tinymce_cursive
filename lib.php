@@ -162,8 +162,8 @@ function tiny_cursive_myprofile_navigation(core_user\output\myprofile\tree $tree
 function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath,$wstoken, $answertext) {
 
     $moodleurl = get_config('tiny_cursive', 'host_url');
-    $moodleurl = preg_replace("(^https?://)", "", $moodleurl);
-    $moodleurl = 'https://' . $moodleurl;
+    // $moodleurl = preg_replace("(^https?://)", "", $moodleurl);
+    // $moodleurl = 'https://' . $moodleurl;
     try {
         $token = get_config('tiny_cursive', 'secretkey');
         
