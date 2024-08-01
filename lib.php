@@ -166,7 +166,8 @@ function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath
     // $moodleurl = 'https://' . $moodleurl;
     try {
         $token = get_config('tiny_cursive', 'secretkey');
-        
+        $remoteurl = get_config('tiny_cursive', 'python_server');
+        $remoteurl = $remoteurl . "/upload_file";
         $filecontent = "";
         
         if(!file_exists($filenamewithfullpath)) {
