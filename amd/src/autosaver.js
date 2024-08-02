@@ -86,9 +86,6 @@ export const register = (editor) => {
                     }
                     if (cmid === null) { cmid = 0; }
 
-                    
-
-
                     postOne('cursive_user_comments', {
                         modulename: modulename,
                         cmid: cmid,

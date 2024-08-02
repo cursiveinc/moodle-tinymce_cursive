@@ -17,7 +17,7 @@
  * TODO describe module analytic_events
  *
  * @module     tiny_cursive/analytic_events
- * @copyright  2024 YOUR NAME <your@email.com>
+ * @copyright  2024 CTI <your@email.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 import MyModal from "./analytic_modal";
@@ -44,11 +44,11 @@ export default class AnalyticEvents {
         $('body').on('click', '#analytic' + userid + questionid, function (e) {
             $('#rep' + userid + questionid).prop('disabled', false);
             e.preventDefault();
-            $('#content' + userid).html($('<div>').addClass('d-flex justify-content-center my-5').append($('<div>').addClass('tiny-cursive-loader')));
+            $('#content' + userid).html($('<div>').addClass('d-flex justify-content-center my-5').append($('<div>').addClass('tiny_cursive-loader')));
             if (replayInstances && replayInstances[userid]) {
                 replayInstances[userid].stopReplay();
             }
-            $('.cursive-nav-tab').find('.active').removeClass('active');
+            $('.tiny_cursive-nav-tab').find('.active').removeClass('active');
             $(this).addClass('active'); // Add 'active' class to the clicked element
 
             templates.render('tiny_cursive/analytics_table', context).then(function (html) {
@@ -62,7 +62,6 @@ export default class AnalyticEvents {
     }
 
     checkDiff(userid, fileid, questionid = '', replayInstances = null) {
-        // Event handler for '#diff' + userid
         const nodata = document.createElement('p');
         nodata.classList.add('text-center', 'p-5', 'bg-light', 'rounded', 'm-5', 'text-primary');
         nodata.style.verticalAlign = 'middle';
@@ -73,8 +72,8 @@ export default class AnalyticEvents {
         $('body').on('click', '#diff' + userid + questionid, function (e) {
             $('#rep' + userid + questionid).prop('disabled', false);
             e.preventDefault();
-            $('#content' + userid).html($('<div>').addClass('d-flex justify-content-center my-5').append($('<div>').addClass('tiny-cursive-loader')));
-            $('.cursive-nav-tab').find('.active').removeClass('active');
+            $('#content' + userid).html($('<div>').addClass('d-flex justify-content-center my-5').append($('<div>').addClass('tiny_cursive-loader')));
+            $('.tiny_cursive-nav-tab').find('.active').removeClass('active');
             $(this).addClass('active'); // Add 'active' class to the clicked element
             if (replayInstances && replayInstances[userid]) {
                 replayInstances[userid].stopReplay();
@@ -97,24 +96,24 @@ export default class AnalyticEvents {
                     const $legend = $('<div class= "d-flex p-2 border rounded  mb-2">');
 
                     // Create the first legend item
-                    const $attributedItem = $('<div>', { class: 'cursive-legend-item' });
-                    const $attributedBox = $('<div>', { class: 'cursive-box attributed' });
+                    const $attributedItem = $('<div>', { class: 'tiny_cursive-legend-item' });
+                    const $attributedBox = $('<div>', { class: 'tiny_cursive-box attributed' });
                     const $attributedText = $('<span>').text('Original Text');
                     $attributedItem.append($attributedBox).append($attributedText);
 
                     // Create the second legend item
-                    const $unattributedItem = $('<div>', { class: 'cursive-legend-item' });
-                    const $unattributedBox = $('<div>', { class: 'cursive-box tiny_cursive_added' });
+                    const $unattributedItem = $('<div>', { class: 'tiny_cursive-legend-item' });
+                    const $unattributedBox = $('<div>', { class: 'tiny_cursive-box tiny_cursive_added' });
                     const $unattributedText = $('<span>').text('Edits, Pastes, AI');
                     $unattributedItem.append($unattributedBox).append($unattributedText);
 
                     // Append the legend items to the legend container
                     $legend.append($attributedItem).append($unattributedItem);
 
-                    let contents = $('<div>').addClass('cursive-comparison-content');
+                    let contents = $('<div>').addClass('tiny_cursive-comparison-content');
 
-                    let textBlock2 = $('<div>').addClass('cursive-text-block').append(
-                        $('<div>').attr('id', 'cursive-reconstructed_text').html(JSON.parse(submitted_text))
+                    let textBlock2 = $('<div>').addClass('tiny_cursive-text-block').append(
+                        $('<div>').attr('id', 'tiny_cursive-reconstructed_text').html(JSON.parse(submitted_text))
                     );
 
                     contents.append($legend, textBlock2);
@@ -131,19 +130,23 @@ export default class AnalyticEvents {
     }
 
     replyWriting(userid, filepath, questionid = '', replayInstances = null) {
-        // Event handler for '#rep' + userid
 
         $('body').on('click', '#rep' + userid + questionid, function (e) {
             $(this).prop('disabled', true);
             e.preventDefault();
-            $('#content' + userid).html($('<div>').addClass('d-flex justify-content-center my-5').append($('<div>').addClass('tiny-cursive-loader')));
-            $('.cursive-nav-tab').find('.active').removeClass('active');
+            $('#content' + userid).html($('<div>').addClass('d-flex justify-content-center my-5').append($('<div>').addClass('tiny_cursive-loader')));
+            $('.tiny_cursive-nav-tab').find('.active').removeClass('active');
             $(this).addClass('active'); // Add 'active' class to the clicked element
             if (replayInstances && replayInstances[userid]) {
                 replayInstances[userid].stopReplay();
             }
-            video_playback(userid, filepath);
-            
+            if (questionid) {
+                video_playback(userid, filepath, questionid);
+            } else {
+                video_playback(userid, filepath);
+            }
+
+
         });
     }
 

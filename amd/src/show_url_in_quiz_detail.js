@@ -31,20 +31,14 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
 ) {
     const replayInstances = {};
 
-    window.myFunction = function () {
-        let mid = $(this).data('id');
-        $("#typeid" + mid).show();
-    };
-
-    window.video_playback = function (mid, filepath) {
+    window.video_playback = function (mid, filepath, questionid) {
         if (filepath !== '') {
-            // $("#playback" + mid).show();
             const replay = new Replay(
                 elementId = 'content' + mid,
                 filePath = filepath,
                 speed = 10,
                 loop = false,
-                controllerId = 'player_' + mid
+                controllerId = 'player_' + mid+questionid
             );
             replayInstances[mid] = replay;
         } else {
@@ -53,10 +47,6 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
             }).catch(e => window.console.error(e));
         }
         return false;
-    };
-
-    window.popup_item = function (mid) {
-        $("#" + mid).show();
     };
 
     var usersTable = {
@@ -92,9 +82,6 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                     }
                 }
             });
-            var chart = "fa fa-area-chart popup_item";
-            var video = "fa fa-play video_playback";
-            var st = "font-size:24px;color:black;border:none";
 
             $('#page-mod-quiz-review .info').each(function () {
 
@@ -115,7 +102,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                         var content = $('.que.essay .editquestion a[href*="question/bank/editquestion/question.php"][href*="&id=' + data.data.questionid + '"]');
                         if (data.usercomment != 'comments' && parseInt(showcomment)) {
                             content.parent().parent().parent().find('.qtext').append('<div class="mb-2">');
-                            var tt = '<h4>References</h4><div class = "cursive-quiz-references rounded" >';
+                            var tt = '<h4>References</h4><div class = "tiny_cursive-quiz-references rounded" >';
                             data.usercomment.forEach(element => {
                                 tt += '<div class = "text-primary p-3" style="border-bottom:1px solid rgba(0, 0, 0, 0.1)">' + element.usercomment + '</div>';
                             });
@@ -127,18 +114,11 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                             filepath = data.data.filename;
                         }
                        
-                        // html = '<div class="justify-content-center d-flex">' +
-                        //     '<button onclick="popup_item(\'' + userid + "-" + questionid + '\')" data-id=' + userid + ' class="mr-2 ' + chart + '" style="' + st + '"></button>' +
-                        //     '<a href="#" onclick="video_playback(' + questionid + ', \'' + filepath + '\')" data-filepath="' + filepath + '" data-id="playback_' + questionid + '" class="mr-2 video_playback_icon ' + video + '" style="' + st + '"></a>' +
-                        //     '<button onclick="myFunction()" data-id=' + userid + ' class="' + icon + ' " style="border:none; ' + color + ';"></button>' +
-                        //     '</div>';
-
                         let analytic_button_div = document.createElement('div');
                         analytic_button_div.classList.add('text-center', 'mt-2');
                         analytic_button_div.append(analyticButton(userid, questionid));
                         content.parent().parent().parent().find('.qtext').append(analytic_button_div);
 
-                        console.log("Quiz: ", data.data);
                         let myEvents = new AnalyticEvents();
                         var context = {
                             tabledata: data.data,
@@ -147,30 +127,13 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                             userid: userid,
                             quizid: questionid,
                         };
-
+       
                         let authIcon = myEvents.authorshipStatus(data.data.first_file, data.data.score, score_setting);
                         myEvents.createModal(userid, context, questionid, authIcon);
                         myEvents.analytics(userid, templates, context, questionid, replayInstances, authIcon);
                         myEvents.checkDiff(userid, data.data.file_id, questionid, replayInstances);
                         myEvents.replyWriting(userid, filepath, questionid, replayInstances);
 
-                        templates
-                            .render("tiny_cursive/quiz_pop_modal", context)
-                            .then(function (html) {
-                                $("body").append(html);
-                            }).catch(e => window.console.error(e));
-                    }
-                });
-                $(window).on('click', function (e) {
-                    const targetId = e.target.id;
-                    if (targetId.startsWith('modal-close' + userid + '-' + questionid)) {
-                        $("#" + userid + "-" + questionid).hide();
-                    }
-                    if (targetId.startsWith('modal-close-playback' + questionid)) {
-                        $("#playback" + questionid).hide();
-                        if (replayInstances[questionid]) {
-                            replayInstances[questionid].stopReplay();
-                        }
                     }
                 });
                 return com.usercomment;

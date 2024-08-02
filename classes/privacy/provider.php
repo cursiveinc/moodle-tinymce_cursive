@@ -159,18 +159,28 @@ class provider implements
      *
      * @param \context $context The specific context to delete data for.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
         global $DB;
 
-        $DB->delete_records('tiny_cursive_files', [
-            'cmid' => $context->id,
-        ]);
+        $filesrecords = $DB->get_records('tiny_cursive_files', ['cmid' => $context->instanceid]);
+
+        foreach($filesrecords as $record){
+            $DB->delete_records('tiny_cursive_user_writing', [
+                'file_id' => $record->id,
+            ]);
+            $DB->delete_records('tiny_cursive_writing_diff', [
+                'file_id' => $record->id,
+            ]);
+        }
+
         $DB->delete_records('tiny_cursive_comments', [
-            'cmid' => $context->id,
+            'cmid' => $context->instanceid,
         ]);
-        $DB->delete_records('tiny_cursive_user_writing', [
-            'cmid' => $context->id,
+        $DB->delete_records('tiny_cursive_files', [
+            'cmid' => $context->instanceid,
         ]);
+      
+        
     }
 
     /**
@@ -254,7 +264,7 @@ class provider implements
             ];
 
             // Write the data to the export location.
-            writer::with_context(\context::instance_by_id($autosave->contextid))
+            writer::with_context(context::instance_by_id($autosave->contextid))
                 ->export_data([
                     get_string('privacy:metadata:tiny_cursive', 'tiny_cursive')
                 ], $data);

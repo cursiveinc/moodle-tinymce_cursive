@@ -98,13 +98,13 @@ class tiny_cursive_data {
 
         $udetail = [];
         $udetail2 = [];
-
         $courseid = (int)$params['courseid'];
 
         $udetail2['id'] = 0;
         $udetail2['name'] = get_string('allmodule','tiny_cursive');
         $allusers->userlist[] = $udetail2;
-        $sql = "SELECT id, instance  FROM {course_modules}
+        $sql = "SELECT id, instance  
+                  FROM {course_modules}
                  WHERE course = :courseid";
         $modules = $DB->get_records_sql($sql, ['courseid' => $courseid]);
         foreach ($modules as $cm) {
