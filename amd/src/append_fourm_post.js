@@ -30,14 +30,8 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
     AnalyticEvents
 ) {
     const replayInstances = {};
-    window.myFunction = function () {
-        let mid = $(this).data('id');
-        $("#typeid" + mid).show();
-    };
-
     window.video_playback = function (mid, filepath) {
         if (filepath !== '') {
-            // $("#playback"+mid).show();
             const replay = new Replay(
                 elementId = 'content' + mid,
                 filePath = filepath,
@@ -55,37 +49,6 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
         return false;
 
     };
-
-    window.popup_item = function (mid) {
-        $("#" + mid).show();
-    };
-
-    // Select the replies container
-    const repliesContainer = document.querySelector('div[data-region="replies-container"]');
-
-    // Clone the replies and empty the container
-    const replies = Array.from(repliesContainer.children)
-        .filter(child => child.dataset.region !== 'replies-container')
-        .map(child => child.cloneNode(true));
-
-    repliesContainer.innerHTML = ''; // Empty the container
-
-    // Create main wrapper for existing elements
-    const existingElementsWrapper = document.createElement('div');
-    existingElementsWrapper.className = 'col-12';
-    existingElementsWrapper.id = 'existingElementsWrapper';
-    existingElementsWrapper.dataset.region = 'post';
-    replies.forEach(reply => existingElementsWrapper.appendChild(reply));
-
-    // Create references sidebar
-    const references = document.createElement('div');
-    references.id = 'source-urls';
-    references.className = 'col-3 p-0 bg-light rounded shadow-sm d-none';
-
-    // Add classes to repliesContainer and append both wrappers
-    repliesContainer.classList.add('row');
-    repliesContainer.appendChild(existingElementsWrapper);
-    repliesContainer.appendChild(references);
 
     var usersTable = {
         init: function (score_setting, showcomment) {
@@ -130,87 +93,39 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                     }
                     if (filepath) {
 
-                        // var html= '<div class="justify-content-center d-flex">' +
-                        //     '<button onclick="popup_item(' + ids + ')" data-id=' + ids + ' class="mr-2 ' + chart + '" style="' + st + '"></button>' +
-                        //     '<a href="#" onclick="video_playback(' + ids + ', \'' + filepath + '\')" data-filepath="' + filepath + '" data-id="playback_' + ids + '" class="mr-2 video_playback_icon ' + video + '" style="' + st + '"></a>' +
-                        //     '<button onclick="myFunction()" data-id=' + ids + ' class="' + icon + ' " style="border:none; ' + color + ';"></button>' +
-                        //     '</div>';
-
-
-
                         let analytic_button_div = document.createElement('div');
                         analytic_button_div.append(analyticButton(ids));
                         analytic_button_div.classList.add('text-center', 'mt-2');
                         analytic_button_div.dataset.region = "analytic-div" + ids;
+
                         $("#" + entry.id).find('#post-content-' + ids).append(analytic_button_div);
-
-
                         if (data.usercomment != 'comments' && parseInt(showcomment)) {
-                            // $("#" + entry.id).find('#post-content-' + ids).append('<div class="dropdown">');
+                          
                             let comments = "";
-
                             data.usercomment.forEach(element => {
                                 // Create the anchor element
                                 comments += '<div class="border-bottom p-3 text-primary" style="font-weight:600;">' + element.usercomment + '</div>';
                             });
 
-                            $("#" + entry.id).find('#post-content-' + ids).prepend($('<div>').addClass('cursive-quiz-references rounded').append(comments));
+                            $("#" + entry.id).find('#post-content-' + ids).prepend($('<div>').addClass('tiny_cursive-quiz-references rounded').append(comments));
 
                         }
-                        let myEvents = new AnalyticEvents();
 
+                        let myEvents = new AnalyticEvents();
                         var context = {
                             tabledata: data.data,
                             formattime: myEvents.formatedTime(data.data),
                             page: score_setting,
                             userid: ids,
                         };
-                        console.log(context);
+
                         let authIcon = myEvents.authorshipStatus(data.data.first_file, data.data.score, score_setting);
                         myEvents.createModal(ids, context, '', authIcon);
                         myEvents.analytics(ids, templates, context, '', replayInstances, authIcon);
                         myEvents.checkDiff(ids, data.data.file_id, '', replayInstances);
                         myEvents.replyWriting(ids, filepath, '', replayInstances);
-
-                        templates
-                            .render("tiny_cursive/pop_modal", context)
-                            .then(function (html) {
-                                $("body").append(html);
-                            }).catch(e => window.console.error(e));
                     }
 
-                });
-                $(window).on('click', function (e) {
-                    if (e.target.id == 'modal-close' + ids) {
-                        $("#" + ids).hide();
-                    }
-                    if (e.target.id == 'modal-close-playback' + ids) {
-                        $("#playback" + ids).hide();
-                        if (replayInstances[ids]) {
-                            replayInstances[ids].stopReplay();
-                        }
-                    }
-                });
-                return com.usercomment;
-            });
-            $('#page-mod-forum-view').find("article").get().forEach(function (entry) {
-
-
-
-                var ids = $("#" + entry.id).data("post-id");
-                var cmid = 0;
-                var anchorTag = $('a.nav-link.active.active_tree_node[href*="mod/forum/view.php?id="]');
-                if (anchorTag.length > 0) {
-                    var hrefValue = anchorTag.attr('href');
-                    cmid = parseInt(hrefValue.match(/id=(\d+)/)[1]);
-                }
-                let args = { id: ids, modulename: "forum", cmid: cmid };
-                let methodname = 'cursive_get_comment_link';
-                let com = AJAX.call([{ methodname, args }]);
-                com[0].done(function (json) {
-                    var data = JSON.parse(json);
-                    var p1 = '<div class="border alert alert-warning"><summary>Content Sources Provided by Student</summary>';
-                    $("#" + entry.id).find('#post-content-' + ids).append(p1 + " <p>" + data.usercomment + ids + "</p></div>");
                 });
                 return com.usercomment;
             });

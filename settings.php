@@ -31,51 +31,59 @@ global $CFG, $PAGE;
 $PAGE->requires->js_call_amd('tiny_cursive/token_approve', 'init', [1]);
 
 if (is_siteadmin()) {
-    $settings->add(new admin_setting_heading(
-        'cursive_settings',
-        '',
-        get_string('pluginname_desc', 'tiny_cursive')
-    ));
+    $settings->add(
+        new admin_setting_heading(
+            'cursive_settings',
+            '',
+            get_string('pluginname_desc', 'tiny_cursive')
+        )
+    );
     $restweblink = $CFG->wwwroot . '/admin/settings.php?section=webserviceprotocols';
     $createtoken = $CFG->wwwroot . '/admin/webservice/tokens.php';
-    $settings->add(new admin_setting_configtext(
-        'tiny_cursive/secretkey',
-        get_string('secretkey', 'tiny_cursive'),
-        get_string('secretkey_desc', 'tiny_cursive') . '' .
-        "<br/><a id='approve_token' href='#' class='btn btn-primary'>  Test Token </a>
+    $settings->add(
+        new admin_setting_configtext(
+            'tiny_cursive/secretkey',
+            get_string('secretkey', 'tiny_cursive'),
+            get_string('secretkey_desc', 'tiny_cursive') . '' .
+            "<br/><a id='approve_token' href='#' class='btn btn-primary'>  " . get_string('test_token', 'tiny_cursive') . " </a>
             <span id='token_message'></span>",
-        '',
-        PARAM_TEXT
-    ));
-    $settings->add(new admin_setting_configtext(
-        'tiny_cursive/python_server',
-        'API URL',
-        'API address URL',
-        '',
-        PARAM_TEXT
-    ));
-    $settings->add(new admin_setting_configtext(
-        'tiny_cursive/host_url',
-        'Moodle Host',
-        'You Host domain.',
-        $CFG->wwwroot,
-        PARAM_TEXT
-    ));
-    $settings->add(new admin_setting_configtext(
-        'tiny_cursive/confidence_threshold',
-        'Confidence Threshold',
-        'Each site may set its threshold for providing the successful match
-        “green check” to the TypeID column for student submissions.
-        We recommend .65. However, there may be arguments for lower or higher
-        thresholds depending on your experience or academic honesty policy.',
-        '',
-        PARAM_TEXT
-    ));
-    $settings->add(new admin_setting_configcheckbox(
-        'tiny_cursive/showcomments',
-        'Enable Cite-Source',
-        'Show cite-source comments under post when enabled',
-        1
-    ));
+            PARAM_TEXT
+        )
+    );
+    $settings->add(
+        new admin_setting_configtext(
+            'tiny_cursive/python_server',
+            get_string('api_url','tiny_cursive'),
+            get_string('api_addr_url','tiny_cursive'),
+            '',
+            PARAM_TEXT
+        )
+    );
+    $settings->add(
+        new admin_setting_configtext(
+            'tiny_cursive/host_url',
+          get_string('moodle_host','tiny_cursive'),
+            get_string('host_domain','tiny_cursive'),
+            $CFG->wwwroot,
+            PARAM_TEXT
+        )
+    );
+    $settings->add(
+        new admin_setting_configtext(
+            'tiny_cursive/confidence_threshold',
+            get_string('confidence_thresholds','tiny_cursive'),
+            get_string('thresold_description','tiny_cursive'),
+            '',
+            PARAM_TEXT
+        )
+    );
+    $settings->add(
+        new admin_setting_configcheckbox(
+            'tiny_cursive/showcomments',
+            get_string('cite_src',"tiny_cursive"),
+            get_string('cite_src_des','tiny_cursive'),
+            1
+        )
+    );
 
 }

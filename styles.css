@@ -1,49 +1,49 @@
-.cursive_time_success {
+.tiny_cursive_time_success {
     display: none;
 }
 
-.cursive_time_successfull {
+.tiny_cursive_time_successfull {
     display: none;
 }
 
-.cursive_review_panel_path_mod_assign {
+.tiny_cursive_review_panel_path_mod_assign {
     position: fixed !important;
     height: calc(100vh - 205px) !important;
 }
 
-.cursive_grading-navigation-panel_path_mod_assign {
+.tiny_cursive_grading-navigation-panel_path_mod_assign {
     position: fixed !important;
 }
 
-.cursive_grade-panel_path_mod_assign {
+.tiny_cursive_grade-panel_path_mod_assign {
     position: fixed !important;
     height: calc(100vh - 205px) !important;
 }
 
-.cursive_grade-actions-panel_path_mod_assign {
+.tiny_cursive_grade-actions-panel_path_mod_assign {
     position: fixed !important;
     height: 120px !important;
 }
 
-.cursive-analytics-btn {
+.tiny_cursive-analytics-btn {
     background-color: #306ab3;
     color: white;
     border-radius: 8vw;
     text-decoration: none !important;
 }
 
-.cursive-analytics-btn:hover {
+.tiny_cursive-analytics-btn:hover {
     background-color: #205aa1;
 }
 
-.cursive-analytics-btn span {
+.tiny_cursive-analytics-btn span {
     padding: 3px;
     margin-right: 5px;
     font-weight: 500;
     font-size: 16px;
 }
 
-.cursive-analytics-icon {
+.tiny_cursive-analytics-icon {
     background-color: white;
     color: #306ab3;
     border-radius: 5vw;
@@ -52,7 +52,7 @@
 }
 
 
-.cursive-analytics-header {
+.tiny_cursive-analytics-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -60,60 +60,60 @@
     background-color: #f3f3f3;
 }
 
-.cursive-analytics-header h3 {
+.tiny_cursive-analytics-header h3 {
     margin: 0;
     color: #306BB2;
 }
 
-.cursive-analytics-header .close-btn {
+.tiny_cursive-analytics-header .close-btn {
     font-size: 1.2rem;
     cursor: pointer;
 
 }
 
-.cursive-analytics-header .close-btn span {
+.tiny_cursive-analytics-header .close-btn span {
     font-size: 1.5rem;
     padding: .25rem .7rem;
     transition: .3s ease-in-out;
     background-color: #FF3737;
 }
 
-.cursive-analytics-header .close-btn:hover span {
+.tiny_cursive-analytics-header .close-btn:hover span {
     background-color: rgb(211, 0, 0) !important;
 }
 
-.cursive-nav-tab {
+.tiny_cursive-nav-tab {
     background-color: #f3f3f3;
     max-width: 250px;
     min-height: auto;
 }
 
-.cursive-nav-tab .cursive-nav-item .nav-link {
+.tiny_cursive-nav-tab .tiny_cursive-nav-item .nav-link {
     color: gray;
     font-weight: 600;
     font-size: 1rem;
     padding: .8rem 1rem;
 }
 
-.cursive-nav-tab .cursive-nav-item .nav-link svg {
+.tiny_cursive-nav-tab .tiny_cursive-nav-item .nav-link svg {
     fill: gray;
     width: 25px;
     height: auto;
 }
 
-.cursive-nav-tab .cursive-nav-item.show .nav-link,
-.cursive-nav-tab .nav-link.active {
+.tiny_cursive-nav-tab .tiny_cursive-nav-item.show .nav-link,
+.tiny_cursive-nav-tab .nav-link.active {
     color: white;
     background-color: #306ab3;
 }
 
-.cursive-nav-tab .cursive-nav-item.show .nav-link,
-.cursive-nav-tab .nav-link.active svg {
+.tiny_cursive-nav-tab .tiny_cursive-nav-item.show .nav-link,
+.tiny_cursive-nav-tab .nav-link.active svg {
     fill: white;
 
 }
 
-.cursive {
+.tiny_cursive {
     background-color: white;
     margin: 0 .5rem 1rem 0;
     border-radius: .2rem .2rem 1.1rem 1.1rem;
@@ -124,96 +124,91 @@
 }
 
 /* Scrollbar styles for Chrome/Safari/Edge */
-.cursive::-webkit-scrollbar {
+.tiny_cursive::-webkit-scrollbar {
     width: 10px;
     /* Width of the scrollbar track */
     border-radius: 5px;
 }
 
-.cursive::-webkit-scrollbar-track {
+.tiny_cursive::-webkit-scrollbar-track {
     background-color: #f5f5f5;
     /* Color of the scrollbar track */
 }
 
-.cursive::-webkit-scrollbar-thumb {
+.tiny_cursive::-webkit-scrollbar-thumb {
     background-color: #ccc;
     /* Color of the scrollbar thumb */
     border-radius: 5px;
     /* Add rounded corners to the thumb */
 }
 
-.cursive::-webkit-scrollbar-thumb:hover {
+.tiny_cursive::-webkit-scrollbar-thumb:hover {
     background-color: #999;
     /* Change thumb color on hover */
 }
 
 /* Scrollbar styles for Firefox */
-.cursive {
+.tiny_cursive {
     scrollbar-width: 5px;
     /* Set the width of the scrollbar */
     scrollbar-color: #ccc transparent;
     /* Set thumb and track colors */
 }
 
-.cursive-main {
+.tiny_cursive-main {
     display: grid;
     grid-template-columns: 200px auto;
     background-color: #f3f3f3;
     height: 100%;
 }
 
-.cursive .table tr td:nth-child(1) {
+.tiny_cursive .table tr td:nth-child(1) {
     display: inline-flex;
     gap: .5rem;
 }
 
-/* .cursive .table td:first-child {
-    width: 1%;
-    white-space: nowrap;
-} */
-
-.cursive-analyticcontent {
+.tiny_cursive-analyticcontent {
     overflow: hidden;
     min-height: 100%;
     border-radius: 30px;
 }
 
-.cursive .table tbody {
+.tiny_cursive .table tbody {
     width: 100%;
 }
 
-.cursive .table tr {
+.tiny_cursive .table tr {
     border-bottom: 1px solid #f3f3f3;
     /* width: 100% !important; */
 }
 
-.cursive .table td:first-child {
+.tiny_cursive .table td:first-child {
     font-size: 1rem;
     font-weight: 600;
 }
 
-.cursive .table td:last-child {
+.tiny_cursive .table td:last-child {
     color: #306ab3;
     font-size: 1rem;
     font-weight: 500;
 }
 
-.cursive .table tr td svg {
+.tiny_cursive .table tr td svg {
     fill: gray;
     width: 30px;
     height: auto;
 }
 
-.cursive .table tr:first-child td svg {
+.tiny_cursive .table tr:first-child td svg {
     width: 22px;
     height: 30px;
 }
 
-.cursive .table tr td:nth-child(1) {
+.tiny_cursive .table tr td:nth-child(1) {
     font-size: 1.18rem;
 }
 
-.cursive .table tr td:nth-child(1) p {
+.tiny_cursive .table tr td:nth-child(1) p {
     font-size: 14px;
     color: gray;
     width: 190px;
@@ -221,7 +216,7 @@
     text-wrap: wrap;
 }
 
-.cursive .table tr td:nth-child(even) {
+.tiny_cursive .table tr td:nth-child(even) {
     font-size: 1.1rem;
 }
 
@@ -381,11 +376,11 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
-.cursive-comparison-content {
+.tiny_cursive-comparison-content {
     margin-right: 1rem;
 }
 
-.cursive-text-block {
+.tiny_cursive-text-block {
     background: #f7fafc;
     padding: 20px;
     border-radius: 10px;
@@ -393,7 +388,7 @@
     transition: transform 0.3s;
 }
 
-.cursive-text-block:hover {
+.tiny_cursive-text-block:hover {
     transform: translateY(-5px);
 }
 
@@ -420,29 +415,29 @@
     word-wrap: break-word;
 }
 
-.cursive-legend-item {
+.tiny_cursive-legend-item {
     display: flex;
     align-items: center;
     gap: 5px;
     margin: 0rem 1rem;
 }
 
-.cursive-box {
+.tiny_cursive-box {
     width: 20px;
     height: 20px;
     border: 1px solid #ccc;
 }
 
-.cursive-attributed {
+.tiny_cursive-attributed {
     background-color: white;
 }
 
-.cursive-legend-item span {
+.tiny_cursive-legend-item span {
     font-family: Arial, sans-serif;
     color: #4a5568;
 }
 
-.tiny-cursive-loader {
+.tiny_cursive-loader {
     width: 50px;
     aspect-ratio: 1;
     border-radius: 50%;
@@ -460,7 +455,7 @@
     }
 }
 
-.cursive-quiz-references {
+.tiny_cursive-quiz-references {
     background-color: #FCEFDC;
     font-weight: 500;
     max-height: 200px;
@@ -476,11 +471,11 @@
 /* Mobile Responsive */
 
 @media screen and (max-width: 576px) {
-    .cursive-main {
+    .tiny_cursive-main {
         grid-template-columns: 1fr;
     }
 
-    .cursive-nav-tab {
+    .tiny_cursive-nav-tab {
         max-width: 100%;
         min-height: fit-content;
         display: flex;
@@ -488,25 +483,25 @@
         background-color: #306ab3;
     }
 
-    .cursive-nav-tab .cursive-nav-item.show .nav-link,
-    .cursive-nav-tab .nav-link.active {
+    .tiny_cursive-nav-tab .tiny_cursive-nav-item.show .nav-link,
+    .tiny_cursive-nav-tab .nav-link.active {
         color: #306ab3 !important;
         background-color: white;
         min-height: 100%;
     }
 
-    .cursive-nav-tab .cursive-nav-item.show .nav-link,
-    .cursive-nav-tab .nav-link.active svg {
+    .tiny_cursive-nav-tab .tiny_cursive-nav-item.show .nav-link,
+    .tiny_cursive-nav-tab .nav-link.active svg {
         fill: #306ab3 !important;
 
     }
 
-    .cursive-nav-tab .cursive-nav-item .nav-link {
+    .tiny_cursive-nav-tab .tiny_cursive-nav-item .nav-link {
         color: white;
 
     }
 
-    .cursive-nav-tab .cursive-nav-item .nav-link svg {
+    .tiny_cursive-nav-tab .tiny_cursive-nav-item .nav-link svg {
         fill: white;
     }
 }

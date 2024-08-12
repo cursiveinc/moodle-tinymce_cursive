@@ -54,7 +54,7 @@ export default class Replay {
                 } else {
                     templates.render('tiny_cursive/no_submission').then(html => {
                         let updatedHtml = html.replace('No Submission', "Something Went Wrong! or File Not Found!");
-                        $('.cursive').html(updatedHtml);
+                        $('.tiny_cursive').html(updatedHtml);
                     });
                 }
             })
@@ -73,9 +73,6 @@ export default class Replay {
         const controller = document.getElementById(controllerId);
 
         if (controller) {
-            // this.buttonElement = document.createElement('button');
-            // this.buttonElement.id = 'playerButton';
-            // this.buttonElement.textContent = 'Play';
             this.scrubberElement = document.createElement('input');
             this.scrubberElement.type = 'range';
             this.scrubberElement.id = 'timelineScrubber';

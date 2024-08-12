@@ -32,7 +32,6 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
     const replayInstances = {};
     window.video_playback = function (mid, filepath) {
         if (filepath !== '') {
-            // $("#playback"+mid).show();
             const replay = new Replay(
                 elementId = 'content' + mid,
                 filePath = filepath,
@@ -58,44 +57,6 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
                 ])
                 .done(function () {
                     $(document).ready(function ($) {
-                        // $(".popup_item").on('click', function () {
-                        //     var mid = $(this).data("id");
-                        //     $("#" + mid).show();
-                        // });
-                        //     $(".link_icon").on('click', function () {
-                        //         var smid = $(this).data("id");
-                        //         $("#" + smid).show();
-
-                        //     });
-
-                        //     $(".video_playback_icon").on('click', function () {
-
-                        //         var mid = $(this).data("id");
-                        //         var filepath = $(this).data("filepath");
-                        //         if(filepath){
-                        //         $("#" + mid).show();
-                        //         const replay = new Replay(
-                        //             elementId = 'output_'+mid,
-                        //             filePath = decodeURIComponent(filepath),
-                        //             speed = 10,
-                        //             loop = false,
-                        //             controllerId = 'player_' + mid
-                        //         );
-                        //         replayInstances[mid] = replay;
-                        //         } else {
-                        //             alert("File not found");
-                        //         }
-                        //     });
-                        //     $(".modal-close ").on('click', function () {
-                        //         $(".modal").hide();
-                        //         var mid = $(this).data("id");
-                        //         if (replayInstances[mid]) {
-                        //             replayInstances[mid].stopReplay();
-                        //             delete replayInstances[mid];  // Clean up the instance
-                        //         }
-                        //     });
-
-
                     });
                     usersTable.getusers(page);
                 });
@@ -118,8 +79,6 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
                     let context = {};
                     context.userid = mid;
                     let cmid = $(this).data("cmid");
-                    let score = 0;
-                    let first_file = 0;
                     $(this).html(analyticButton($(this).data('id')));
 
                     AJAX.call([{
@@ -133,8 +92,6 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
 
                         context.formattime = myEvents.formatedTime(data);
                         context.tabledata = data;
-                        console.log(context.tabledata);
-                      
                         // Perform actions that require context.tabledata
                         let authIcon = myEvents.authorshipStatus(data.first_file, data.score, score_setting);
                         myEvents.createModal(mid, context, '', authIcon);
