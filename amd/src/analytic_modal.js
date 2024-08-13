@@ -17,7 +17,7 @@
  * This module defines a custom modal for analytics.
  *
  * @module     tiny_cursive/analytic_modal
- * @copyright  2024 YOUR NAME <your@email.com>
+ * @copyright  2024  CTI <info@cursivetechnology.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

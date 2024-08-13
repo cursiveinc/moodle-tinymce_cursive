@@ -30,15 +30,10 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
     AnalyticEvents
 ) {
     const replayInstances = {};
-    window.myFunction = function () {
-        let mid = $(this).data('id');
-        $("#typeid" + mid).show();
-    };
 
     window.video_playback = function (mid, filepath) {
 
         if (filepath !== '') {
-            // $("#playback" + mid).show();
             const replay = new Replay(
                 elementId = 'content' + mid,
                 filePath = filepath,
@@ -56,11 +51,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
         return false;
 
     };
-
-    window.popup_item = function (mid) {
-        $("#" + mid).show();
-    };
-
+    
     var usersTable = {
         init: function (score_setting, showcomment) {
             str
@@ -79,10 +70,6 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
                 let td_user = $(tr).find("td").get()[0];
                 let userid = $(td_user).find("input[type='checkbox']").get()[0].value;
                 let cmid = parm.searchParams.get('id');
-                var chart = "fa fa-area-chart popup_item";
-                var video = "fa fa-play video_playback";
-                var st = "font-size:24px;color:black;border:none";
-
                 // Create the table cell element and append the anchor
                 const tableCell = document.createElement('td');
                 tableCell.appendChild(analyticButton(userid));
@@ -100,17 +87,10 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
                         if (data.res.filename) {
                             filepath = data.res.filename;
                         }
-
-                        // let video_icon = '<td><a href="#" onclick="video_playback(' + userid + ', \'' + filepath + '\')" data-filepath="' + filepath + '" data-id="playback_' + userid + '" class="video_playback_icon ' + video + '" style="' + st + '"></a></td>';
-                        // $(tr).find('td').eq(3).after(video_icon);
-                        // let typeid_icon = '<td><button onclick="myFunction()" data-id=' + userid + ' class=" ' + icon + ' " style="border:none; ' + color + ';"></button></td>';
-                        // $(tr).find('td').eq(3).after(typeid_icon);
-
                         // Get Module Name from element.
                         let element = document.querySelector('.page-header-headings h1'); // Selects the h1 element within the .page-header-headings class
                         let textContent = element.textContent; // Extracts the text content from the h1 element
 
-                        console.log("assign: ", data.res);
                         let myEvents = new AnalyticEvents();
                         var context = {
                             tabledata: data.res,
@@ -135,23 +115,6 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
                 } catch (error) {
                     window.console.error(error);
                 }
-
-                $(".popup_item").on('click', function () {
-                    let mid = $(this).data('id');
-                    $("#" + mid).show();
-                });
-
-                $(window).on('click', function (e) {
-                    if (e.target.id == 'modal-close' + userid) {
-                        $("#" + userid).hide();
-                    }
-                    if (e.target.id == 'modal-close-playback' + userid) {
-                        $("#playback" + userid).hide();
-                        if (replayInstances[userid]) {
-                            replayInstances[userid].stopReplay();
-                        }
-                    }
-                });
                 return com.usercomment;
             });
         }

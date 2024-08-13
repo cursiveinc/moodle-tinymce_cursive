@@ -18,7 +18,7 @@
  * Plugin functions for individual student report.
  *
  * @package   tiny_cursive
- * @copyright Year, You Name <your@email.address>
+ * @copyright 2024, CTI <info@cursivetechnology.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -60,16 +60,10 @@ if(optional_param('course', 0, PARAM_INT) && !is_siteadmin($USER->id) && optiona
 $limit = 5;
 $isvalid = false;
 
-$context = \CONTEXT_SYSTEM::instance();
+$context = context_system::instance();
 $haseditcapability = has_capability('tiny/cursive:view', $context);
 
-$editingteacherrole = $DB->get_record('role', ['shortname' => 'editingteacher'], '*', MUST_EXIST);
-$editingteacherroleid = $editingteacherrole->id;
-
-// Check if the user is an editing teacher in any course context
-$iseditingteacher = is_user_editingteacher($USER->id, $editingteacherroleid);
-
-if (!$haseditcapability && $userid != $USER->id && !$iseditingteacher) {
+if (!$haseditcapability && $userid != $USER->id) {
 
     return redirect(new moodle_url('/course/index.php'), get_string('warning', 'tiny_cursive'));
 }
@@ -83,6 +77,7 @@ $PAGE->requires->js_call_amd('tiny_cursive/cursive_writing_reports', 'init', [])
 $perpage = $page * $limit;
 $user = $DB->get_record('user', ['id' => $userid], '*', MUST_EXIST);
 $systemcontext = context_system::instance();
+
 if ($courseid){
     $linkurl = $CFG->wwwroot . '/lib/editor/tiny/plugins/cursive/my_writing_report.php?userid=' . $userid . '&courseid=' . $courseid;
 
@@ -96,15 +91,18 @@ $PAGE->set_title($linktext);
 $PAGE->set_heading(fullname($user));
 $PAGE->set_pagelayout('mypublic');
 $PAGE->set_pagetype('user-profile');
+
 $struser = get_string('student_writing_statics', 'tiny_cursive');
 $PAGE->set_url('/user/profile.php', ['id' => $userid]);
 $PAGE->navbar->add($struser);
 echo $OUTPUT->header();
+
 echo $OUTPUT->heading(get_string('student_writing_statics', 'tiny_cursive'));
 $renderer = $PAGE->get_renderer('tiny_cursive');
 $attempts = get_user_attempts_data($userid, $courseid, null, $orderby, $order, $page, $limit);
 $userprofile = get_user_profile_data($userid, $courseid);
 echo $renderer->user_writing_report($attempts, $userprofile, $userid, $page, $limit, $linkurl);
+
 echo $OUTPUT->footer();
 
 

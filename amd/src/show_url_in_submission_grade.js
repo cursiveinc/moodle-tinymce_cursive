@@ -30,11 +30,6 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
     AnalyticEvents
 ) {
     const replayInstances = {};
-    window.myFunction = function () {
-        let mid = $(this).data('id');
-        $("#typeid" + mid).show();
-    };
-
     window.video_playback = function (mid, filepath) {
         if (filepath !== '') {
             // $("#playback" + mid).show();
@@ -54,10 +49,6 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
         }
         return false;
 
-    };
-
-    window.popup_item = function (mid) {
-        $("#" + mid).show();
     };
 
     var usersTable = {
@@ -87,7 +78,6 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                 });
                 // Configuration of the observer:
                 var config = { childList: true, subtree: true };
-
                 // Start observing the target node for configured mutations
                 observer.observe(divElement, config);
 
@@ -95,9 +85,6 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                 let parm = new URL(sub_url);
                 let userid = parm.searchParams.get('userid');
                 let cmid = parm.searchParams.get('id');
-                var chart = "fa fa-area-chart popup_item";
-                var video = "fa fa-play video_playback";
-                var st = "font-size:24px;color:black;border:none";
 
                 let args = { id: userid, modulename: "assign", 'cmid': cmid };
                 let methodname = 'cursive_get_assign_grade_comment';
@@ -108,17 +95,6 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                     if (data.data.filename) {
                         filepath = data.data.filename;
                     }
-
-                    // var html= '<div class="justify-content-center d-flex py-3">' +
-                    //     '<button onclick="popup_item(' + userid + ')" data-id=' + userid + ' class="mr-2 ' + chart + '" style="' + st + '"></button>' +
-                    //     '<a href="#" onclick="video_playback(' + userid + ', \'' + filepath + '\')" data-filepath="' +
-                    //         filepath + '" data-id="playback_' + userid + '" class="mr-2 video_playback_icon ' + video + '" style="' + st + '"></a>' +
-                    //     '<button onclick="myFunction()" data-id=' + userid + ' class="' + icon + ' " style="border:none; ' + color + ';"></button>' +
-                    //     '</div>      ';
-                    // Function to deactivate all elements
-
-
-
 
                     if (data.usercomment != 'comments' && parseInt(showcomment)) {
 
@@ -153,13 +129,11 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
 
                         $(document).ready(function () {
                             $('div[data-region="grade-panel"]').append('<div class="dropdown">');
-                            // var tt = '';
                             data.usercomment.forEach(element => {
                                 cbody.append('<div class="border p-2 shadow-sm">' + element.usercomment + '</div>');
 
                             });
-                            // var p1 = '<div class="border alert alert-warning"><details><summary>Content Sources Provided by Student</summary>';
-                            // $('div[data-region="grade-panel"]').append(p1 + ' ' + tt + '</details></div></div>');
+                          
                         });
                     }
 
@@ -199,20 +173,6 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                         }).catch(e => window.console.error(e));
 
                 });
-
-
-                $(window).on('click', function (e) {
-                    if (e.target.id == 'modal-close' + userid) {
-                        $("#" + userid).hide();
-                    }
-                    if (e.target.id == 'modal-close-playback' + userid) {
-                        $("#playback" + userid).hide();
-                        if (replayInstances[userid]) {
-                            replayInstances[userid].stopReplay();
-                        }
-                    }
-                });
-
                 return com.usercomment;
             });
         },

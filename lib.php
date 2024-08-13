@@ -18,7 +18,7 @@
  * Plugin functions for the tiny_cursive plugin.
  *
  * @package   tiny_cursive
- * @copyright Year, You Name <your@email.address>
+ * @copyright 2024, CTI <info@cursivetechnology.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -91,10 +91,9 @@ function tiny_cursive_extend_navigation_course(\navigation_node $navigation, \st
     require_once(__DIR__."/locallib.php");
 
     $url = new moodle_url($CFG->wwwroot . '/lib/editor/tiny/plugins/cursive/tiny_cursive_report.php',['courseid' => $course->id]);
-    $editingteacherrole = $DB->get_record('role', ['shortname' => 'editingteacher'], '*', MUST_EXIST);
-    $editingteacherroleid = $editingteacherrole->id;
-    // Check if the user is an editing teacher in any course context
-    $iseditingteacher = is_user_editingteacher($USER->id, $editingteacherroleid);
+    $cmid = tiny_cursive_get_cmid($course->id);
+    $context = context_module::instance($cmid);
+    $iseditingteacher = has_capability("tiny/cursive:view",$context);
     
     if(get_admin()->id == $USER->id || $iseditingteacher) {
         $navigation->add(
@@ -162,8 +161,6 @@ function tiny_cursive_myprofile_navigation(core_user\output\myprofile\tree $tree
 function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath,$wstoken, $answertext) {
 
     $moodleurl = get_config('tiny_cursive', 'host_url');
-    // $moodleurl = preg_replace("(^https?://)", "", $moodleurl);
-    // $moodleurl = 'https://' . $moodleurl;
     try {
         $token = get_config('tiny_cursive', 'secretkey');
         $remoteurl = get_config('tiny_cursive', 'python_server');
@@ -238,10 +235,10 @@ function tiny_cursive_before_footer() {
             'init', [$confidencethreshold, $showcomments]);
     }
 
-    if ($PAGE->bodyid == 'page-mod-assign-viewpluginassignsubmission') {
-        $PAGE->requires->js_call_amd('tiny_cursive/show_url_in_submission_detail',
-            'init', [$confidencethreshold, $showcomments]);
-    }
+    // if ($PAGE->bodyid == 'page-mod-assign-viewpluginassignsubmission') {
+    //     $PAGE->requires->js_call_amd('tiny_cursive/show_url_in_submission_detail',
+    //         'init', [$confidencethreshold, $showcomments]);
+    // }
 
     if ($PAGE->bodyid == 'page-mod-assign-grading') {
         $PAGE->requires->js_call_amd('tiny_cursive/append_submissions_table', 'init', [$confidencethreshold, $showcomments]);

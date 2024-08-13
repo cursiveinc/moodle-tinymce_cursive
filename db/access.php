@@ -40,7 +40,6 @@ $capabilities = [
         'archetypes' => [
             'manager' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
-            'student' => CAP_ALLOW,
             'teacher' => CAP_ALLOW,
         ],
 
@@ -50,6 +49,22 @@ $capabilities = [
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => [
             'student' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+        ],
+    ],
+    'tiny/cursive:writingreport' => [
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_MODULE,
+        'archetypes' => [
+            'student' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+        ],
+    ],
+    'tiny/cursive:mywritingreport' => [
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => [
+            'user' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
         ],
     ],

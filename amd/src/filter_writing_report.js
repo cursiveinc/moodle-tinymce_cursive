@@ -51,16 +51,6 @@ define(["jquery", "core/ajax", "core/templates"], function (
             });
         });
       });
-      $(document).ready(function ($) {
-        $(window).on('click', function (e) {
-          var mid = $(e.target.parentNode).data("id");
-          $("#score" + mid).show();
-          $("#" + mid).show();
-          if ($(e.target).hasClass('modal-close')) {
-            $(".modal").hide();
-          }
-        });
-      });
     },
   };
 });

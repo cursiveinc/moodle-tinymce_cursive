@@ -17,7 +17,7 @@
  * TODO describe module analytic_button
  *
  * @module     tiny_cursive/analytic_button
- * @copyright  2024 YOUR NAME <your@email.com>
+ * @copyright  2024 CTI <info@cursivetechnology.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -26,7 +26,7 @@ export default analyticButton = (userid, questionid = '') => {
     const anchor = document.createElement('a');
     anchor.href = '#';
     anchor.id = 'analytics' + userid + questionid;
-    anchor.classList.add('d-inline-flex', 'align-items-center', 'text-white', 'cursive-analytics-btn');
+    anchor.classList.add('d-inline-flex', 'align-items-center', 'text-white', 'tiny_cursive-analytics-btn');
 
     // Define the SVG element
     const svgNS = "http://www.w3.org/2000/svg";
@@ -48,7 +48,7 @@ export default analyticButton = (userid, questionid = '') => {
 
     const icon = document.createElement('i');
     icon.appendChild(svg);
-    icon.classList.add('cursive-analytics-icon');
+    icon.classList.add('tiny_cursive-analytics-icon');
 
     const textNode = document.createElement('span');
     textNode.textContent = 'Analytics';
