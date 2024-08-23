@@ -31,7 +31,8 @@ use editor_tiny\cursive\forms\fileupload;
  * @param  array  $args The path (the part after the filearea and before the filename).
  * @return array The itemid and the filepath inside the $args path, for the defined filearea.
  */
-function tiny_cursive_get_path_from_pluginfile(array $args): array {
+function tiny_cursive_get_path_from_pluginfile(array $args): array
+{
     // Cursive never has an itemid (the number represents the revision but it's not stored in database).
     array_shift($args);
 
@@ -59,7 +60,8 @@ function tiny_cursive_get_path_from_pluginfile(array $args): array {
  * @param bool $forcedownload whether or not force download
  * @param array $options additional options affecting the file serving
  */
-function tiny_cursive_pluginfile($context, $filearea, $args, $forcedownload, array $options=[]) {
+function tiny_cursive_pluginfile($context, $filearea, $args, $forcedownload, array $options = [])
+{
     $itemid = array_shift($args);
     $filename = array_pop($args);
 
@@ -86,18 +88,19 @@ function tiny_cursive_pluginfile($context, $filearea, $args, $forcedownload, arr
  * @return void
  * @throws moodle_exception
  */
-function tiny_cursive_extend_navigation_course(\navigation_node $navigation, \stdClass $course) {
+function tiny_cursive_extend_navigation_course(\navigation_node $navigation, \stdClass $course)
+{
     global $CFG, $USER, $DB;
-    require_once(__DIR__."/locallib.php");
+    require_once(__DIR__ . "/locallib.php");
 
-    $url = new moodle_url($CFG->wwwroot . '/lib/editor/tiny/plugins/cursive/tiny_cursive_report.php',['courseid' => $course->id]);
+    $url = new moodle_url($CFG->wwwroot . '/lib/editor/tiny/plugins/cursive/tiny_cursive_report.php', ['courseid' => $course->id]);
     $cmid = tiny_cursive_get_cmid($course->id);
     $context = context_module::instance($cmid);
-    $iseditingteacher = has_capability("tiny/cursive:view",$context);
-    
-    if(get_admin()->id == $USER->id || $iseditingteacher) {
+    $iseditingteacher = has_capability("tiny/cursive:view", $context);
+
+    if (get_admin()->id == $USER->id || $iseditingteacher) {
         $navigation->add(
-            get_string('wractivityreport','tiny_cursive'),
+            get_string('wractivityreport', 'tiny_cursive'),
             $url,
             navigation_node::TYPE_SETTING,
             null,
@@ -113,7 +116,8 @@ function tiny_cursive_extend_navigation_course(\navigation_node $navigation, \st
  * @param global_navigation $navigation
  * @return void
  */
-function tiny_cursive_extend_navigation(global_navigation $navigation) {
+function tiny_cursive_extend_navigation(global_navigation $navigation)
+{
 
     if ($home = $navigation->find('home', global_navigation::TYPE_SETTING)) {
         $home->remove();
@@ -130,7 +134,8 @@ function tiny_cursive_extend_navigation(global_navigation $navigation) {
  * @throws coding_exception
  * @throws moodle_exception
  */
-function tiny_cursive_myprofile_navigation(core_user\output\myprofile\tree $tree, $user, $course) {
+function tiny_cursive_myprofile_navigation(core_user\output\myprofile\tree $tree, $user, $course)
+{
     global $USER;
     if (empty($course)) {
         $course = get_fast_modinfo(SITEID)->get_course();
@@ -140,12 +145,14 @@ function tiny_cursive_myprofile_navigation(core_user\output\myprofile\tree $tree
         return;
     }
 
-    if (\core\session\manager::is_loggedinas() || $USER->id != $user->id ) {
+    if (\core\session\manager::is_loggedinas() || $USER->id != $user->id) {
         return;
     }
 
-    $url = new moodle_url('/lib/editor/tiny/plugins/cursive/my_writing_report.php',
-        ['id' => $user->id, 'course' => isset($course->id) ? $course->id: "", 'mode' => 'cursive']);
+    $url = new moodle_url(
+        '/lib/editor/tiny/plugins/cursive/my_writing_report.php',
+        ['id' => $user->id, 'course' => isset($course->id) ? $course->id : "", 'mode' => 'cursive']
+    );
     $node = new core_user\output\myprofile\node('reports', 'cursive', get_string('writing', 'tiny_cursive'), null, $url);
     $tree->add_node($node);
 }
@@ -158,7 +165,8 @@ function tiny_cursive_myprofile_navigation(core_user\output\myprofile\tree $tree
  * @return bool|string
  * @throws dml_exception
  */
-function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath,$wstoken, $answertext) {
+function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath, $wstoken, $answertext)
+{
 
     $moodleurl = get_config('tiny_cursive', 'host_url');
     try {
@@ -166,8 +174,8 @@ function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath
         $remoteurl = get_config('tiny_cursive', 'python_server');
         $remoteurl = $remoteurl . "/upload_file";
         $filecontent = "";
-        
-        if(!file_exists($filenamewithfullpath)) {
+
+        if (!file_exists($filenamewithfullpath)) {
             $filecontentdata = base64_decode($filerecord->content);
             $filecontent = $filecontentdata;
         }
@@ -211,7 +219,8 @@ function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath
  * @throws coding_exception
  * @throws dml_exception
  */
-function tiny_cursive_before_footer() {
+function tiny_cursive_before_footer()
+{
     global $PAGE, $COURSE, $USER;
     $confidencethreshold = get_config('tiny_cursive', 'confidence_threshold');
     $confidencethreshold = !empty($confidencethreshold) ? $confidencethreshold : .65;
@@ -225,14 +234,20 @@ function tiny_cursive_before_footer() {
     $PAGE->requires->js_call_amd('tiny_cursive/settings', 'init', [$showcomments, $userrole]);
 
     if ($PAGE->bodyid == 'page-mod-forum-discuss' || $PAGE->bodyid == 'page-mod-forum-view') {
-        $PAGE->requires->js_call_amd('tiny_cursive/append_fourm_post',
-            'init', [$confidencethreshold, $showcomments]);
+        $PAGE->requires->js_call_amd(
+            'tiny_cursive/append_fourm_post',
+            'init',
+            [$confidencethreshold, $showcomments]
+        );
     }
 
     if ($PAGE->bodyid == 'page-mod-assign-grader') {
 
-        $PAGE->requires->js_call_amd('tiny_cursive/show_url_in_submission_grade',
-            'init', [$confidencethreshold, $showcomments]);
+        $PAGE->requires->js_call_amd(
+            'tiny_cursive/show_url_in_submission_grade',
+            'init',
+            [$confidencethreshold, $showcomments]
+        );
     }
 
     // if ($PAGE->bodyid == 'page-mod-assign-viewpluginassignsubmission') {
@@ -251,6 +266,10 @@ function tiny_cursive_before_footer() {
     if ($PAGE->bodyid == 'page-course-view-participants') {
         $PAGE->requires->js_call_amd('tiny_cursive/append_participants_table', 'init', [$confidencethreshold, $showcomments]);
     }
+    if ($PAGE->bodyid == 'page-mod-quiz-attempt' || $PAGE->bodyid == 'page-mod-quiz-summary' || $PAGE->bodyid == 'page-mod-assign-editsubmission' || $PAGE->bodyid == 'page-mod-forum-view' || $PAGE->bodyid == 'page-mod-forum-post') {
+        $PAGE->requires->js_call_amd('tiny_cursive/user', 'setUserId', [$USER->id]);
+    }
+    
 }
 
 /**
@@ -261,7 +280,8 @@ function tiny_cursive_before_footer() {
  * @return false|string
  * @throws coding_exception
  */
-function tiny_cursive_file_urlcreate ($context, $user) {
+function tiny_cursive_file_urlcreate($context, $user)
+{
     $fs = get_file_storage();
     $files = $fs->get_area_files($context->id, 'tiny_cursive', 'attachment', $user->fileid, 'sortorder', false);
 
@@ -299,7 +319,8 @@ function tiny_cursive_file_urlcreate ($context, $user) {
  *
  * @return string
  */
-function tiny_cursive_get_user_essay_quiz_responses($userid, $courseid, $resourceid, $modulename, $cmid, $questionid) {
+function tiny_cursive_get_user_essay_quiz_responses($userid, $courseid, $resourceid, $modulename, $cmid, $questionid)
+{
     global $DB;
     $sql = "SELECT q.name AS question_name, qna.questionsummary, qna.responsesummary
           FROM {question_attempt_steps} qas
@@ -319,10 +340,10 @@ function tiny_cursive_get_user_essay_quiz_responses($userid, $courseid, $resourc
                AND qas.state = 'complete'
          ORDER BY qa.attempt, qna.id, qas.sequencenumber";
 
-    $result = $DB->get_record_sql($sql, ['userid' => $userid, 'courseid' => $courseid, 'resourceid' => $resourceid, 'modulename' => $modulename,'cmid'=> $cmid, 'questionid' => $questionid]);
+    $result = $DB->get_record_sql($sql, ['userid' => $userid, 'courseid' => $courseid, 'resourceid' => $resourceid, 'modulename' => $modulename, 'cmid' => $cmid, 'questionid' => $questionid]);
     return $result->responsesummary;
 }
- 
+
 /**
  * Method tiny_cursive_get_user_onlinetext_assignments
  *
@@ -333,10 +354,11 @@ function tiny_cursive_get_user_essay_quiz_responses($userid, $courseid, $resourc
  *
  * @return string
  */
-function tiny_cursive_get_user_onlinetext_assignments($userid, $courseid, $modulename, $cmid) {
-        global $DB;
-    
-        $sql = "SELECT cm.instance as assignmentid, ontext.onlinetext, :modulename AS modulename
+function tiny_cursive_get_user_onlinetext_assignments($userid, $courseid, $modulename, $cmid)
+{
+    global $DB;
+
+    $sql = "SELECT cm.instance as assignmentid, ontext.onlinetext, :modulename AS modulename
           FROM {assign_submission} asub
                JOIN {assign} a ON asub.assignment = a.id
                JOIN {assignsubmission_onlinetext} ontext ON asub.id = ontext.submission
@@ -348,22 +370,23 @@ function tiny_cursive_get_user_onlinetext_assignments($userid, $courseid, $modul
                AND asub.status = 'submitted'
                AND cm.id = :cmid";
 
-        $result = $DB->get_record_sql($sql, ['userid' => $userid, 'courseid' => $courseid, 'modulename' => $modulename, 'cmid'=> $cmid]);
-        return $result->onlinetext;
+    $result = $DB->get_record_sql($sql, ['userid' => $userid, 'courseid' => $courseid, 'modulename' => $modulename, 'cmid' => $cmid]);
+    return $result->onlinetext;
 }
-    
-    /**
-    * get_user_forum_posts
-    *
-    * @param $userid
-    * @param $courseid
-    * @param $resourceid
-    * @return string
-    */
-function tiny_cursive_get_user_forum_posts($userid, $courseid, $resourceid) {
-        global $DB;
-    
-        $sql = "SELECT fp.id AS postid, fp.subject, fp.message
+
+/**
+ * get_user_forum_posts
+ *
+ * @param $userid
+ * @param $courseid
+ * @param $resourceid
+ * @return string
+ */
+function tiny_cursive_get_user_forum_posts($userid, $courseid, $resourceid)
+{
+    global $DB;
+
+    $sql = "SELECT fp.id AS postid, fp.subject, fp.message
                   FROM {forum_posts} fp
                        JOIN {forum_discussions} fd ON fp.discussion = fd.id
                        JOIN {forum} f ON fd.forum = f.id
@@ -371,6 +394,6 @@ function tiny_cursive_get_user_forum_posts($userid, $courseid, $resourceid) {
                        AND fd.course = :courseid 
                        AND fp.id = :resourceid";
 
-        $result = $DB->get_record_sql($sql, ['userid' => $userid, 'courseid' => $courseid, 'resourceid' => $resourceid]);
-        return $result->message;
+    $result = $DB->get_record_sql($sql, ['userid' => $userid, 'courseid' => $courseid, 'resourceid' => $resourceid]);
+    return $result->message;
 }

@@ -141,6 +141,7 @@ export default class AnalyticEvents {
                 replayInstances[userid].stopReplay();
             }
             if (questionid) {
+                console.log(userid, filepath, questionid);
                 video_playback(userid, filepath, questionid);
             } else {
                 video_playback(userid, filepath);
