@@ -185,6 +185,15 @@ $functions = [
         'ajax' => true,
         'capabilities' => 'tiny/cursive:view',
         'services' => [MOODLE_OFFICIAL_MOBILE_SERVICE],
+    ],'cursive_write_local_to_json' => [
+        'classname' => 'cursive_json_func_data',
+        'methodname' => 'write_local_to_json',
+        'classpath' => '/lib/editor/tiny/plugins/cursive/externallib.php',
+        'description' => 'Store User writing as json',
+        'type' => 'write',
+        'ajax' => true,
+        'capabilities' => 'tiny/cursive:view',
+        'services' => [MOODLE_OFFICIAL_MOBILE_SERVICE],
     ],
 ];
 

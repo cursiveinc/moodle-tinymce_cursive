@@ -27,9 +27,9 @@ use tiny_cursive\tiny_cursive_data;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once ("$CFG->libdir/externallib.php");
-require_once ($CFG->dirroot . '/mod/quiz/locallib.php');
-require_once (__DIR__ . '/locallib.php');
+require_once("$CFG->libdir/externallib.php");
+require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once(__DIR__ . '/locallib.php');
 
 /**
  * Tiny cursive plugin.
@@ -137,7 +137,7 @@ class cursive_json_func_data extends external_api
 
         global $CFG, $DB;
         require_login();
-        require_once ($CFG->libdir . '/accesslib.php');
+        require_once($CFG->libdir . '/accesslib.php');
 
         // Validate parameters
         $params = self::validate_parameters(
@@ -368,7 +368,7 @@ class cursive_json_func_data extends external_api
     {
         require_login();
         global $DB, $CFG;
-        require_once ($CFG->libdir . '/accesslib.php'); // Include accesslib.php for capability checks
+        require_once($CFG->libdir . '/accesslib.php'); // Include accesslib.php for capability checks
 
         // Ensure the user has the capability to view the cursive reports
         if ($courseid) {
@@ -458,7 +458,7 @@ class cursive_json_func_data extends external_api
                 'editorid' => $editorid,
             ]
         );
-        require_once ($CFG->libdir . '/accesslib.php');
+        require_once($CFG->libdir . '/accesslib.php');
         // Capability check
         $context = context_module::instance($params['cmid']);
         self::validate_context($context);
@@ -634,9 +634,9 @@ class cursive_json_func_data extends external_api
     public static function get_comment_link($id, $modulename, $cmid = null, $questionid = null, $userid = null)
     {
         global $DB, $CFG;
-        require_once ($CFG->dirroot . '/config.php');
-        require_once ($CFG->dirroot . '/lib/accesslib.php');
-        require_once ($CFG->dirroot . '/question/lib.php');
+        require_once($CFG->dirroot . '/config.php');
+        require_once($CFG->dirroot . '/lib/accesslib.php');
+        require_once($CFG->dirroot . '/question/lib.php');
         require_login();
         $params = self::validate_parameters(
             self::get_comment_link_parameters(),
@@ -797,9 +797,9 @@ class cursive_json_func_data extends external_api
     public static function get_forum_comment_link($id, $modulename, $cmid = null)
     {
         global $DB, $CFG;
-        require_once ($CFG->dirroot . '/config.php');
-        require_once ($CFG->dirroot . '/lib/accesslib.php');
-        require_once ($CFG->dirroot . '/question/lib.php');
+        require_once($CFG->dirroot . '/config.php');
+        require_once($CFG->dirroot . '/lib/accesslib.php');
+        require_once($CFG->dirroot . '/question/lib.php');
         require_login();
 
         $params = self::validate_parameters(
@@ -929,9 +929,9 @@ class cursive_json_func_data extends external_api
         $questionid = null
     ) {
         global $DB, $CFG;
-        require_once ($CFG->dirroot . '/config.php');
-        require_once ($CFG->dirroot . '/lib/accesslib.php');
-        require_once ($CFG->dirroot . '/question/lib.php');
+        require_once($CFG->dirroot . '/config.php');
+        require_once($CFG->dirroot . '/lib/accesslib.php');
+        require_once($CFG->dirroot . '/question/lib.php');
         require_login();
         $params = self::validate_parameters(
             self::get_comment_link_parameters(),
@@ -1641,6 +1641,147 @@ class cursive_json_func_data extends external_api
         return new external_single_structure([
             'data' => new external_value(PARAM_TEXT, 'content data')
         ]);
+    }
+
+    public static function write_local_to_json_parameters()
+    {
+        return new external_function_parameters(
+            [
+                'resourceId' => new external_value(PARAM_INT, 'resourceId', VALUE_DEFAULT, 0),
+                'key' => new external_value(PARAM_TEXT, 'key detail', VALUE_DEFAULT, ""),
+                'keyCode' => new external_value(PARAM_INT, 'key code ', VALUE_DEFAULT, 0),
+                'event' => new external_value(PARAM_TEXT, 'event', VALUE_DEFAULT, 0),
+                'cmid' => new external_value(PARAM_INT, 'cmid', VALUE_DEFAULT, 0),
+                'modulename' => new external_value(PARAM_TEXT, 'Modulename', VALUE_DEFAULT, ""),
+                'editorid' => new external_value(PARAM_TEXT, 'editorid', VALUE_DEFAULT, ""),
+                'json_data' => new external_value(PARAM_TEXT, 'JSON Data', VALUE_DEFAULT, "")
+            ]
+        );
+    }
+
+    public static function write_local_to_json($resourceId = 0, $key = null, $keyCode = null, $event = 'keyUp', $cmid = 0, $modulename = 'quiz', $editorid = null, $json_data)
+    {
+        require_login();
+        global $USER, $DB, $CFG;
+
+        $params = self::validate_parameters(
+            self::write_local_to_json_parameters(),
+            [
+                'resourceId' => $resourceId,
+                'key' => $key,
+                'keyCode' => $keyCode,
+                'event' => $event,
+                'cmid' => $cmid,
+                'modulename' => $modulename,
+                'editorid' => $editorid,
+                'json_data' => $json_data
+            ]
+        );
+
+        if ($params['resourceId'] == 0 && $params['modulename'] !== 'forum') {
+            $params['resourceId'] = $params['cmid']; // For Quiz and Assignment there is no resourceid that's why cmid is resourceid.
+        }
+
+        $courseid = 0;
+
+        $userdata = [];
+        if ($params['cmid']) {
+            $cm = $DB->get_record('course_modules', ['id' => $params['cmid']]);
+            $courseid = $cm->course;
+            $userdata["courseId"] = $courseid;
+
+            // Get course context
+            $context = context_module::instance($params['cmid']);
+            self::validate_context($context);
+            require_capability('tiny/cursive:write', $context);
+
+        } else {
+            $userdata["courseId"] = 0;
+        }
+
+
+        $userdata["clientId"] = $CFG->wwwroot;
+        $userdata["personId"] = $USER->id;
+        $editoridarr = explode(':', $params['editorid']);
+
+        if (count($editoridarr) > 1) {
+            $uniqueid = substr($editoridarr[0] . "\n", 1);
+            $slot = substr($editoridarr[1] . "\n", 0, -11);
+            $quba = question_engine::load_questions_usage_by_activity($uniqueid);
+            $question = $quba->get_question($slot, false);
+            $questionid = $question->id;
+        }
+        $dirname = make_temp_directory('userdata');
+
+        $fname = $USER->id . '_' . $params['resourceId'] . '_' . $params['cmid'] . '_attempt' . '.json';
+        if ($questionid) {
+            $fname = $USER->id . '_' . $params['resourceId'] . '_' . $params['cmid'] . '_' . $questionid . '_attempt' . '.json';
+        }
+        // File path.
+        $filename = $dirname . '/' . $fname;
+
+        $table = 'tiny_cursive_files';
+        $inp = file_get_contents($filename);
+
+        $temparray = [];
+        if ($inp) {
+
+            $temparray = json_decode($inp, true);
+            $json_data = json_decode($params['json_data'], true);
+            foreach ($json_data as $value) {
+                $userdata = $value;
+                $timearr = explode('.', microtime("now") * 1000);
+                $timestampinmilliseconds = $timearr[0];
+                $userdata['unixTimestamp'] = $timestampinmilliseconds;
+                array_push($temparray, $userdata);
+            }
+
+            $filerec = $DB->get_record($table, ['cmid' => $params['cmid'], 'modulename' => $params['modulename'], 'userid' => $USER->id]);
+            if ($questionid) {
+                $filerec = $DB->get_record($table, [
+                    'cmid' => $params['cmid'],
+                    'modulename' => $params['modulename'],
+                    'userid' => $USER->id,
+                    'questionid' => $questionid,
+                ]);
+            }
+            $filerec->uploaded = 0;
+            $DB->update_record($table, $filerec);
+        } else {
+
+            $json_data = json_decode($params['json_data'], true);
+            foreach ($json_data as $value) {
+                $userdata = $value;
+                $timearr = explode('.', microtime("now") * 1000);
+                $timestampinmilliseconds = $timearr[0];
+                $userdata['unixTimestamp'] = $timestampinmilliseconds;
+                array_push($temparray, $userdata);
+            }
+            $dataobj = new stdClass();
+            $dataobj->userid = $USER->id;
+            $dataobj->resourceid = $params['resourceId'];
+            $dataobj->cmid = $params['cmid'];
+            $dataobj->modulename = $params['modulename'];
+            $dataobj->courseid = $courseid;
+            $dataobj->timemodified = time();
+            $dataobj->filename = $fname;
+            $dataobj->questionid = $questionid ?? 0;
+            $dataobj->uploaded = 0;
+            $DB->insert_record($table, $dataobj);
+        }
+
+        $jsondata = json_encode($temparray);
+
+        if (is_array($temparray)) {
+            file_put_contents($filename, $jsondata);
+        }
+
+        return $filename;
+    }
+
+    public static function write_local_to_json_returns()
+    {
+        return new external_value(PARAM_TEXT, 'filename');
     }
 
 }
