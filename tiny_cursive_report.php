@@ -23,13 +23,13 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require (__DIR__ . '/../../../../../config.php');
+require(__DIR__ . '/../../../../../config.php');
 global $CFG, $DB, $USER, $PAGE, $SESSION, $OUTPUT;
 
-require_once ($CFG->dirroot . '/mod/quiz/lib.php');
-require_once ($CFG->dirroot . '/mod/quiz/locallib.php');
-require_once (__DIR__ . '/classes/forms/userreportform.php');
-require_once (__DIR__ . '/locallib.php');
+require_once($CFG->dirroot . '/mod/quiz/lib.php');
+require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once(__DIR__ . '/classes/forms/userreportform.php');
+require_once(__DIR__ . '/locallib.php');
 
 require_login(); // Teacher and admin can see this page.
 $courseid = optional_param('courseid', 0, PARAM_INT);
@@ -98,23 +98,23 @@ if ($formdata = $mform->get_data()) {
         $limit
     );
     $renderer = $PAGE->get_renderer('tiny_cursive');
-    // Prepare the URL for the link
+    // Prepare the URL for the link.
     $url = new moodle_url('/lib/editor/tiny/plugins/cursive/csvexport.php', [
         'courseid' => $courseid,
         'moduleid' => $moduleid,
-        'userid' => $userid
+        'userid' => $userid,
     ]);
-    // Prepare the link text
+    // Prepare the link text.
     $linktext = get_string('download_csv', 'tiny_cursive');
-    // Prepare the attributes for the link
+    // Prepare the attributes for the link.
     $attributes = [
         'target' => '_blank',
         'id' => 'export',
         'role' => 'button',
         'class' => 'btn btn-primary mb-4',
-        'style' => 'margin-right:50px;'
+        'style' => 'margin-right:50px;',
     ];
-    // Generate the link using html_writer::link
+    // Generate the link using html_writer::link.
     echo html_writer::link($url, $linktext, $attributes);
     echo $renderer->timer_report($users, $courseid, $page, $limit, $linkurl);
 

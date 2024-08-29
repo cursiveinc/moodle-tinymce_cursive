@@ -36,8 +36,8 @@ $filename = '';
 $dirname = $CFG->dataroot . '/temp/userdata/';
 if ($fname) {
     $filename = $dirname . $fname;
-    if(!file_exists($filename)){
-        $url = new moodle_url('/lib/editor/tiny/plugins/cursive/writing_report.php?userid='.$userid);
+    if (!file_exists($filename)) {
+        $url = new moodle_url('/lib/editor/tiny/plugins/cursive/writing_report.php?userid=' . $userid);
         return redirect($url, get_string('filenotfound', 'tiny_cursive'));
     }
 } else {

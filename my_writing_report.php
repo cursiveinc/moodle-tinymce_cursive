@@ -15,17 +15,16 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin functions for individual student report.
+ * Tiny cursive plugin.
  *
- * @package   tiny_cursive
- * @copyright 2024, CTI <info@cursivetechnology.com>
+ * @package tiny_cursive
+ * @copyright  CTI <info@cursivetechnology.com>
+ * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
-global $CFG, $DB, $USER, $PAGE;
-
 require(__DIR__ . '/../../../../../config.php');
+global $CFG, $DB, $USER, $PAGE;
 require_once($CFG->dirroot . '/mod/quiz/lib.php');
 require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 require_once(__DIR__ . '/classes/forms/filterreportform.php');
@@ -42,9 +41,9 @@ if (\core\session\manager::is_loggedinas()) {
     die;
 }
 
-$userid = optional_param('userid',0,PARAM_INT);
-if(optional_param('id',0,PARAM_INT)) {
-    $userid=optional_param('id', 0, PARAM_INT);
+$userid = optional_param('userid', 0, PARAM_INT);
+if (optional_param('id', 0, PARAM_INT)) {
+    $userid = optional_param('id', 0, PARAM_INT);
 }
 
 $orderby = optional_param('orderby', 'id', PARAM_TEXT);
@@ -52,8 +51,7 @@ $order = optional_param('order', 'ASC', PARAM_TEXT);
 $page = optional_param('page', 0, PARAM_INT);
 $courseid = optional_param('courseid', 0, PARAM_INT);
 
-
-if(optional_param('course', 0, PARAM_INT) && !is_siteadmin($USER->id) && optional_param('id',0,PARAM_INT) !== $USER->id) {
+if (optional_param('course', 0, PARAM_INT) && !is_siteadmin($USER->id) && optional_param('id', 0, PARAM_INT) !== $USER->id) {
     $courseid = optional_param('course', 0, PARAM_INT);
 }
 
@@ -64,7 +62,6 @@ $context = context_system::instance();
 $haseditcapability = has_capability('tiny/cursive:view', $context);
 
 if (!$haseditcapability && $userid != $USER->id) {
-
     return redirect(new moodle_url('/course/index.php'), get_string('warning', 'tiny_cursive'));
 }
 
@@ -78,10 +75,10 @@ $perpage = $page * $limit;
 $user = $DB->get_record('user', ['id' => $userid], '*', MUST_EXIST);
 $systemcontext = context_system::instance();
 
-if ($courseid){
-    $linkurl = $CFG->wwwroot . '/lib/editor/tiny/plugins/cursive/my_writing_report.php?userid=' . $userid . '&courseid=' . $courseid;
-
-} else{
+if ($courseid) {
+    $linkurl =
+        $CFG->wwwroot . '/lib/editor/tiny/plugins/cursive/my_writing_report.php?userid=' . $userid . '&courseid=' . $courseid;
+} else {
     $linkurl = $CFG->wwwroot . '/lib/editor/tiny/plugins/cursive/my_writing_report.php?userid=' . $userid;
 }
 $linktext = get_string('tiny_cursive', 'tiny_cursive');

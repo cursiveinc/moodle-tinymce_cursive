@@ -35,8 +35,7 @@ require_login();
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class tiny_cursive_renderer extends plugin_renderer_base
-{
+class tiny_cursive_renderer extends plugin_renderer_base {
     /**
      * timer_report
      *
@@ -50,8 +49,7 @@ class tiny_cursive_renderer extends plugin_renderer_base
      * @throws dml_exception
      * @throws moodle_exception
      */
-    public function timer_report($users, $courseid, $page = 0, $limit = 5, $baseurl = '')
-    {
+    public function timer_report($users, $courseid, $page = 0, $limit = 5, $baseurl = '') {
         global $CFG, $DB;
         $totalcount = $users['count'];
 
@@ -70,7 +68,7 @@ class tiny_cursive_renderer extends plugin_renderer_base
 
         foreach ($data as $user) {
             $sql = 'SELECT id AS fileid
-                      FROM {tiny_cursive_files} 
+                      FROM {tiny_cursive_files}
                      WHERE userid = :userid ORDER BY id ASC Limit 1';
 
             $ffile = $DB->get_record_sql($sql, ['userid' => $user->usrid]);
@@ -93,13 +91,15 @@ class tiny_cursive_renderer extends plugin_renderer_base
             $row[] = $user->email;
             $row[] = $getmodulename->name;
             $row[] = date("l jS \of F Y h:i:s A", $user->timemodified);
-            $row[] = '<div class ="analytic-modal" data-cmid="' . $user->cmid . '" data-filepath="' . $filepath . '" data-id="' . $user->attemptid . '" >Analytics</div>';
+            $row[] = '<div class ="analytic-modal" data-cmid="' . $user->cmid .
+                '" data-filepath="' . $filepath . '" data-id="' . $user->attemptid .
+                '" >Analytics</div>';
             $row[] = html_writer::link(
                 new moodle_url('/lib/editor/tiny/plugins/cursive/download_json.php', [
                     'fname' => $user->filename,
                     'quizid' => 2,
                     'user_id' => $user->usrid,
-                    'cmid' => $user->cmid
+                    'cmid' => $user->cmid,
                 ]),
                 get_string('download', 'tiny_cursive'),
                 [
@@ -111,7 +111,6 @@ class tiny_cursive_renderer extends plugin_renderer_base
             );
             $table->data[] = $row;
         }
-        ;
         echo html_writer::table($table);
         echo $this->output->paging_bar($totalcount, $page, $limit, $baseurl);
     }
@@ -130,23 +129,23 @@ class tiny_cursive_renderer extends plugin_renderer_base
      * @throws dml_exception
      * @throws moodle_exception
      */
-    public function user_writing_report($users, $userprofile, $userid, $page = 0, $limit = 5, $baseurl = '')
-    {
+    public function user_writing_report($users, $userprofile, $userid, $page = 0, $limit = 5, $baseurl = '') {
         global $CFG, $DB, $PAGE, $USER;
-        require_once ($CFG->dirroot . "/lib/editor/tiny/plugins/cursive/lib.php");
-        $courseid = optional_param('courseid', 0,PARAM_INT);
-    
+        require_once($CFG->dirroot . "/lib/editor/tiny/plugins/cursive/lib.php");
+        $courseid = optional_param('courseid', 0, PARAM_INT);
+
         echo get_string('total_word', 'tiny_cursive') . " $userprofile->word_count</br>";
         if (isset($userprofile->total_time) && $userprofile->total_time > 0) {
-            
+
             $seconds = $userprofile->total_time;
             $interval = new DateInterval('PT' . $seconds . 'S');
             $datetime = new DateTime('@0');
             $datetime->add($interval);
-            $hrs = $datetime->format('G'); // 'G' is used for 24-hour format without leading zeros.
-            $mins = $datetime->format('i'); // 'i' is used for minutes with leading zeros.
-            $secs = $datetime->format('s'); // 's' is used for seconds with leading zeros.
-            echo get_string('total_time', 'tiny_cursive') . ": " . (int) $hrs . "h : " . (int) $mins . "m : " . (int) $secs . "s</br>";
+            $hrs = $datetime->format('G');
+            $mins = $datetime->format('i');
+            $secs = $datetime->format('s');
+            echo get_string('total_time', 'tiny_cursive') .
+                ": " . (int)$hrs . "h : " . (int)$mins . "m : " . (int)$secs . "s</br>";
             $avgwords = round($userprofile->word_count / ($userprofile->total_time / 60));
 
         } else {
@@ -170,21 +169,23 @@ class tiny_cursive_renderer extends plugin_renderer_base
         }
 
         $options = [];
-        $currentUrl = new moodle_url($baseurl, ['userid' => $userid, 'courseid' => null]);
-        $allCoursesUrl = $currentUrl->out(false, ['courseid' => null]);
-        $allCoursesAttributes = empty($courseid) ? ['value' => $allCoursesUrl, 'selected' => 'selected'] : ['value' => $allCoursesUrl];
-        $options[] = html_writer::tag('option', 'All Courses', $allCoursesAttributes);
+        $currenturl = new moodle_url($baseurl, ['userid' => $userid, 'courseid' => null]);
+        $allcoursesurl = $currenturl->out(false, ['courseid' => null]);
+        $allcoursesattributes =
+            empty($courseid) ? ['value' => $allcoursesurl, 'selected' => 'selected'] : ['value' => $allcoursesurl];
+        $options[] = html_writer::tag('option', 'All Courses', $allcoursesattributes);
 
         foreach ($courses as $course) {
-            $courseUrl = new moodle_url($baseurl, ['userid' => $userid, 'courseid' => $course->id]);
-            $courseAttributes = (isset($courseid) && $courseid == $course->id) ? ['value' => $courseUrl, 'selected' => 'selected'] : ['value' => $courseUrl];
-            $options[] = html_writer::tag('option', $course->fullname, $courseAttributes);
+            $courseurl = new moodle_url($baseurl, ['userid' => $userid, 'courseid' => $course->id]);
+            $courseattributes = (isset($courseid) && $courseid == $course->id) ? ['value' => $courseurl, 'selected' => 'selected'] :
+                ['value' => $courseurl];
+            $options[] = html_writer::tag('option', $course->fullname, $courseattributes);
         }
 
         $select = html_writer::tag('select', implode('', $options), [
             'id' => 'course-select',
             'class' => 'custom-select',
-            'onchange' => 'window.location.href=this.value'
+            'onchange' => 'window.location.href=this.value',
         ]);
 
         echo html_writer::start_tag('div', ['class' => 'mb-4']);
@@ -206,8 +207,8 @@ class tiny_cursive_renderer extends plugin_renderer_base
             get_string('download', 'tiny_cursive'),
         ];
 
-        $sql = 'SELECT id 
-                  FROM {tiny_cursive_files} 
+        $sql = 'SELECT id
+                  FROM {tiny_cursive_files}
                  WHERE userid = :userid ORDER BY id ASC LIMIT 1';
         $firstfile = $DB->get_record_sql(
             $sql,
@@ -231,13 +232,14 @@ class tiny_cursive_renderer extends plugin_renderer_base
             $row   = [];
             $row[] = $getmodulename ? $getmodulename->name : '';
             $row[] = date("l jS \of F Y h:i:s A", $user->timemodified);
-            $row[] = '<div class ="analytic-modal" data-cmid="' . $user->cmid . '" data-filepath="' . $filepath . '" data-id="' . $user->attemptid . '" >Analytics</div>';
+            $row[] = '<div class ="analytic-modal" data-cmid="' . $user->cmid . '" data-filepath="' . $filepath . '" data-id="' .
+                $user->attemptid . '" >Analytics</div>';
             $row[] = html_writer::link(
                 new moodle_url('/lib/editor/tiny/plugins/cursive/download_json.php', [
                     'fname' => $user->filename,
                     'quizid' => 2,
                     'user_id' => $user->usrid,
-                    'cmid' => $user->cmid
+                    'cmid' => $user->cmid,
                 ]),
                 get_string('download', 'tiny_cursive'),
                 [
@@ -271,7 +273,7 @@ class tiny_cursive_renderer extends plugin_renderer_base
         echo get_string("learn_more", "tiny_cursive");
         echo html_writer::end_tag('span');
         echo html_writer::end_tag('div');
-        echo html_writer::start_tag('script', array('type' => 'text/template', 'id' => 'aria-descriptions-script'));
+        echo html_writer::start_tag('script', ['type' => 'text/template', 'id' => 'aria-descriptions-script']);
         echo "document.querySelectorAll('#writing_report_table tr th').forEach((el, index) => {
                 switch (index) {
                     case 0:
@@ -296,4 +298,3 @@ class tiny_cursive_renderer extends plugin_renderer_base
     }
 
 }
-
