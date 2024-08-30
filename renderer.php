@@ -27,14 +27,6 @@ defined('MOODLE_INTERNAL') || die;
 
 require_login();
 
-/**
- * Tiny cursive plugin.
- *
- * @package tiny_cursive
- * @copyright  CTI <info@cursivetechnology.com>
- * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
 class tiny_cursive_renderer extends plugin_renderer_base {
     /**
      * timer_report

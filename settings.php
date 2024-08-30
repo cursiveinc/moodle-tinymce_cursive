@@ -25,8 +25,6 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$linktext = get_string('questimereport', 'tiny_cursive');
-defined('MOODLE_INTERNAL') || die();
 global $CFG, $PAGE;
 $PAGE->requires->js_call_amd('tiny_cursive/token_approve', 'init', [1]);
 

@@ -68,25 +68,7 @@ class userreportform extends moodleform {
         $this->add_action_buttons(false, get_string('submit'));
 
         if (!is_siteadmin()) {
-            $PAGE->requires->js_init_code("
-            const courseNameElement = document.querySelector('#id_courseid option[selected]');
-            if(!courseNameElement){window.history.back();};
-            const forumTestingText = courseNameElement.textContent.trim();
-            const h5Element = document.createElement('div');
-            h5Element.classList.add('row','align-items-center','pb-4');
-            const label = document.createElement('label');
-            label.textContent = 'Course Name';
-            label.classList.add('col-md-3', 'col-form-label', 'd-flex', 'pb-0', 'pr-md-0');
-            h5Element.appendChild(label);
-            const label2 = document.createElement('label');
-            label2.textContent = forumTestingText;
-            label2.classList.add('col-md-9', 'col-form-label', 'd-flex', 'pb-0', 'pr-md-0');
-            h5Element.appendChild(label2);
-            const moduleIdElement = document.getElementById('fitem_id_moduleid');
-            const parentElement = moduleIdElement.parentElement;
-            parentElement.insertBefore(h5Element, moduleIdElement);
-            document.getElementById('fitem_id_courseid').style.display = 'none';
-            ");
+            $PAGE->requires->js_call_amd('tiny_cursive/user_report_addition', 'init',[]);
         }
     }
 
