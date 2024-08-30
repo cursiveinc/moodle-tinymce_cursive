@@ -1513,17 +1513,17 @@ class cursive_json_func_data extends external_api {
      */
     public static function storing_user_writing_param() {
         return [
-            'personid' => new external_value(PARAM_INT, 'person or user id', VALUE_REQUIRED),
-            'fileid' => new external_value(PARAM_INT, 'file_id', VALUE_REQUIRED),
-            'charactercount' => new external_value(PARAM_INT, 'character_count', VALUE_REQUIRED),
-            'totaltimeseconds' => new external_value(PARAM_INT, 'total_time_seconds', VALUE_REQUIRED),
-            'charactersperminute' => new external_value(PARAM_INT, 'characters_per_minute', VALUE_REQUIRED),
-            'keycount' => new external_value(PARAM_INT, 'key_count', VALUE_REQUIRED),
-            'keysperminute' => new external_value(PARAM_INT, 'keys per minutes', VALUE_REQUIRED),
-            'wordcount' => new external_value(PARAM_INT, 'word_count', VALUE_REQUIRED),
-            'wordsperminute' => new external_value(PARAM_INT, 'words_per_minute', VALUE_REQUIRED),
-            'backspacepercent' => new external_value(PARAM_FLOAT, 'backspace_percent', VALUE_REQUIRED),
-            'copybehavior' => new external_value(PARAM_FLOAT, 'copy_behavior', VALUE_REQUIRED),
+            'person_id' => new external_value(PARAM_INT, 'person or user id', VALUE_REQUIRED),
+            'file_id' => new external_value(PARAM_INT, 'file_id', VALUE_REQUIRED),
+            'character_count' => new external_value(PARAM_INT, 'character_count', VALUE_REQUIRED),
+            'total_time_seconds' => new external_value(PARAM_INT, 'total_time_seconds', VALUE_REQUIRED),
+            'characters_per_minute' => new external_value(PARAM_INT, 'characters_per_minute', VALUE_REQUIRED),
+            'key_count' => new external_value(PARAM_INT, 'key_count', VALUE_REQUIRED),
+            'keys_per_minute' => new external_value(PARAM_INT, 'keys per minutes', VALUE_REQUIRED),
+            'word_count' => new external_value(PARAM_INT, 'word_count', VALUE_REQUIRED),
+            'words_per_minute' => new external_value(PARAM_INT, 'words_per_minute', VALUE_REQUIRED),
+            'backspace_percent' => new external_value(PARAM_FLOAT, 'backspace_percent', VALUE_REQUIRED),
+            'copy_behavior' => new external_value(PARAM_FLOAT, 'copy_behavior', VALUE_REQUIRED),
             'score' => new external_value(PARAM_FLOAT, 'score', VALUE_DEFAULT, 0),
         ];
 
@@ -1596,8 +1596,8 @@ class cursive_json_func_data extends external_api {
     public static function cursive_store_writing_differencs_parameters() {
         return new external_function_parameters([
             'fileid' => new external_value(PARAM_INT, 'file id', VALUE_REQUIRED, 0, true),
-            'reconstructedtext' => new external_value(PARAM_TEXT, 'original writing contents', VALUE_REQUIRED, "", true),
-            'submittedtext' => new external_value(PARAM_TEXT, 'writing html contents', VALUE_REQUIRED, "", true),
+            'reconstructed_text' => new external_value(PARAM_TEXT, 'original writing contents', VALUE_REQUIRED, "", true),
+            'submitted_text' => new external_value(PARAM_TEXT, 'writing html contents', VALUE_REQUIRED, "", true),
             'meta' => new external_value(PARAM_TEXT, 'meta data', VALUE_DEFAULT, null, true),
         ]);
     }
