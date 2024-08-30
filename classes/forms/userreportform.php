@@ -68,7 +68,7 @@ class userreportform extends moodleform {
         $this->add_action_buttons(false, get_string('submit'));
 
         if (!is_siteadmin()) {
-            $PAGE->requires->js_call_amd('tiny_cursive/user_report_addition', 'init',[]);
+            $PAGE->requires->js_call_amd('tiny_cursive/user_report_addition', 'init', []);
         }
     }
 
