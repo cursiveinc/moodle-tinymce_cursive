@@ -63,8 +63,8 @@ class tiny_cursive_data {
         $courseid = (int)$params['courseid'];
         $sql = "SELECT ue.id as enrolid,u.id as id,u.firstname,u.lastname FROM {enrol} e
             INNER JOIN {user_enrolments} ue ON e.id = ue.enrolid
-            INNER JOIN {user} u ON u.id = ue.userid 
-                 WHERE e.courseid = :courseid 
+            INNER JOIN {user} u ON u.id = ue.userid
+                 WHERE e.courseid = :courseid
                        AND u.id != 1";
         $users = $DB->get_records_sql($sql, ['courseid' => $courseid]);
         $udetail2['id'] = 0;
@@ -98,13 +98,13 @@ class tiny_cursive_data {
 
         $udetail = [];
         $udetail2 = [];
-
         $courseid = (int)$params['courseid'];
 
         $udetail2['id'] = 0;
-        $udetail2['name'] = get_string('allmodule','tiny_cursive');
+        $udetail2['name'] = get_string('allmodule', 'tiny_cursive');
         $allusers->userlist[] = $udetail2;
-        $sql = "SELECT id, instance  FROM {course_modules}
+        $sql = "SELECT id, instance
+                  FROM {course_modules}
                  WHERE course = :courseid";
         $modules = $DB->get_records_sql($sql, ['courseid' => $courseid]);
         foreach ($modules as $cm) {

@@ -20,52 +20,46 @@
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  */
 
-define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], function (
+define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./analytic_button", "./analytic_events"], function (
     $,
     AJAX,
     str,
     templates,
-    Replay
+    Replay,
+    analyticButton,
+    AnalyticEvents
 ) {
     const replayInstances = {};
 
-    window.myFunction = function() {
-        let mid = $(this).data('id');
-        $("#typeid" + mid).show();
-    };
-
-    window.video_playback = function(mid, filepath) {
+    window.video_playback = function (mid, filepath, questionid) {
         if (filepath !== '') {
-            $("#playback" + mid).show();
             const replay = new Replay(
-                elementId = 'output_playback_' + mid,
+                elementId = 'content' + mid,
                 filePath = filepath,
                 speed = 10,
                 loop = false,
-                controllerId = 'player_' + mid
+                controllerId = 'player_' + mid+questionid
             );
             replayInstances[mid] = replay;
         } else {
-            alert('No submission');
+            templates.render('tiny_cursive/no_submission').then(html => {
+                $('#content' + mid).html(html);
+            }).catch(e => window.console.error(e));
         }
         return false;
     };
 
-    window.popup_item = function(mid) {
-        $("#" + mid).show();
-    };
-
     var usersTable = {
-        init: function(score_setting, showcomment) {
+        init: function (score_setting, showcomment) {
             str
                 .get_strings([
                     { key: "field_require", component: "tiny_cursive" },
                 ])
-                .done(function() {
+                .done(function () {
                     usersTable.appendSubmissionDetail(score_setting, showcomment);
                 });
         },
-        appendSubmissionDetail: function(score_setting, showcomment) {
+        appendSubmissionDetail: function (score_setting, showcomment) {
             let sub_url = window.location.href;
             let parm = new URL(sub_url);
             let attempt_id = parm.searchParams.get('attempt');
@@ -79,7 +73,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
             }
             var userid = '';
             var tableRow = $('table.generaltable.generalbox.quizreviewsummary tbody tr');
-            tableRow.each(function() {
+            tableRow.each(function () {
                 var href = $(this).find('a[href*="/user/view.php"]').attr('href');
                 if (href) {
                     var id = href.match(/id=(\d+)/);
@@ -88,11 +82,8 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                     }
                 }
             });
-            var chart = "fa fa-area-chart popup_item";
-            var video = "fa fa-play video_playback";
-            var st = "font-size:24px;color:black;border:none";
 
-            $('#page-mod-quiz-review .info').each(function() {
+            $('#page-mod-quiz-review .info').each(function () {
 
                 var editQuestionLink = $(this).find('.editquestion a[href*="question/bank/editquestion/question.php"]');
                 if (editQuestionLink.length > 0) {
@@ -103,72 +94,46 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                 let args = { id: attempt_id, modulename: "quiz", "cmid": cmid, "questionid": questionid, "userid": userid };
                 let methodname = 'cursive_get_comment_link';
                 let com = AJAX.call([{ methodname, args }]);
-                com[0].done(function(json) {
+                com[0].done(function (json) {
                     var data = JSON.parse(json);
 
                     if (data.data.filename) {
-                        var html = '';
+
                         var content = $('.que.essay .editquestion a[href*="question/bank/editquestion/question.php"][href*="&id=' + data.data.questionid + '"]');
                         if (data.usercomment != 'comments' && parseInt(showcomment)) {
-                            content.parent().parent().parent().find('.qtext').append('<div class="dropdown">');
-                            var tt = '';
+                            content.parent().parent().parent().find('.qtext').append('<div class="mb-2">');
+                            var tt = '<h4>References</h4><div class = "tiny_cursive-quiz-references rounded" >';
                             data.usercomment.forEach(element => {
-                                tt += '<li>' + element.usercomment + '</li>';
+                                tt += '<div class = "text-primary p-3" style="border-bottom:1px solid rgba(0, 0, 0, 0.1)">' + element.usercomment + '</div>';
                             });
-                            var p1 = '<div class="border alert alert-warning"><details><summary>Content Sources Provided by Student</summary>';
-                            content.parent().parent().parent().find('.qtext').append(p1 + ' ' + tt + '</details></div></div>');
+
+                            content.parent().parent().parent().find('.qtext').append(tt + '</div></div>');
                         }
                         var filepath = '';
                         if (data.data.filename) {
                             filepath = data.data.filename;
                         }
-                        var score = parseInt(data.data.score);
-                        var icon = 'fa fa-circle-o';
-                        var color = 'font-size:24px;color:black';
-                        if (data.data.first_file) {
-                            icon = 'fa  fa fa-solid fa-info-circle typeid';
-                            color = 'font-size:24px;color:#000000';
-                        } else {
-                            if (score >= score_setting) {
-                                icon = 'fa fa-check-circle typeid';
-                                color = 'font-size:24px;color:green';
-                            } else if (score < score_setting) {
-                                icon = 'fa fa-question-circle typeid';
-                                color = 'font-size:24px;color:#A9A9A9';
-                            } else {
-                                icon = 'fa fa-circle-o typeid';
-                                color = 'font-size:24px;color:black';
-                            }
-                        }
-                        html = '<div class="justify-content-center d-flex">' +
-                            '<button onclick="popup_item(\'' + userid + "-" + questionid + '\')" data-id=' + userid + ' class="mr-2 ' + chart + '" style="' + st + '"></button>' +
-                            '<a href="#" onclick="video_playback(' + questionid + ', \'' + filepath + '\')" data-filepath="' + filepath + '" data-id="playback_' + questionid + '" class="mr-2 video_playback_icon ' + video + '" style="' + st + '"></a>' +
-                            '<button onclick="myFunction()" data-id=' + userid + ' class="' + icon + ' " style="border:none; ' + color + ';"></button>' +
-                            '</div>';
-                        content.parent().parent().parent().find('.qtext').append(html);
+                       
+                        let analytic_button_div = document.createElement('div');
+                        analytic_button_div.classList.add('text-center', 'mt-2');
+                        analytic_button_div.append(analyticButton(userid, questionid));
+                        content.parent().parent().parent().find('.qtext').append(analytic_button_div);
+
+                        let myEvents = new AnalyticEvents();
                         var context = {
                             tabledata: data.data,
+                            formattime: myEvents.formatedTime(data.data),
                             page: score_setting,
                             userid: userid,
                             quizid: questionid,
                         };
-                        templates
-                            .render("tiny_cursive/quiz_pop_modal", context)
-                            .then(function(html) {
-                                $("body").append(html);
-                            }).catch(e => window.console.error(e));
-                    }
-                });
-                $(window).on('click', function(e) {
-                    const targetId = e.target.id;
-                    if (targetId.startsWith('modal-close' + userid + '-' + questionid)) {
-                        $("#" + userid + "-" + questionid).hide();
-                    }
-                    if (targetId.startsWith('modal-close-playback' + questionid)) {
-                        $("#playback" + questionid).hide();
-                        if (replayInstances[questionid]) {
-                            replayInstances[questionid].stopReplay();
-                        }
+       
+                        let authIcon = myEvents.authorshipStatus(data.data.first_file, data.data.score, score_setting);
+                        myEvents.createModal(userid, context, questionid, authIcon);
+                        myEvents.analytics(userid, templates, context, questionid, replayInstances, authIcon);
+                        myEvents.checkDiff(userid, data.data.file_id, questionid, replayInstances);
+                        myEvents.replyWriting(userid, filepath, questionid, replayInstances);
+
                     }
                 });
                 return com.usercomment;

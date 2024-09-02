@@ -20,120 +20,92 @@
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  */
 
-define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], function (
+define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './analytic_button', './analytic_events'], function (
     $,
     AJAX,
     str,
     templates,
-    Replay
+    Replay,
+    analyticButton,
+    AnalyticEvents
 ) {
     const replayInstances = {};
-    window.myFunction = function() {
-        let mid = $(this).data('id');
-        $("#typeid" + mid).show();
-    };
 
-    window.video_playback = function(mid, filepath) {
-        
-        if (filepath !== ''){
-            $("#playback"+mid).show();
+    window.video_playback = function (mid, filepath) {
+
+        if (filepath !== '') {
             const replay = new Replay(
-                elementId = 'output_playback_'+mid,
+                elementId = 'content' + mid,
                 filePath = filepath,
                 speed = 10,
                 loop = false,
-                controllerId = 'player_'+mid
+                controllerId = 'player_' + mid
             );
             replayInstances[mid] = replay;
         }
         else {
-            alert('No submission');
+            templates.render('tiny_cursive/no_submission').then(html => {
+                $('#content' + mid).html(html);
+            }).catch(e => window.console.error(e));
         }
         return false;
 
     };
-
-    window.popup_item = function(mid) {
-        $("#" + mid).show();
-    };
-
+    
     var usersTable = {
         init: function (score_setting, showcomment) {
             str
                 .get_strings([
-                    {key: "confidence_threshold", component: "tiny_cursive"},
+                    { key: "confidence_threshold", component: "tiny_cursive" },
                 ]).done(function () {
-                usersTable.appendTable(score_setting, showcomment);
-            });
+                    usersTable.appendTable(score_setting, showcomment);
+                });
         },
         appendTable: function (score_setting) {
             let sub_url = window.location.href;
             let parm = new URL(sub_url);
             let h_tr = $('thead').find('tr').get()[0];
-            $(h_tr).find('th').eq(3).after('<th class="header c3 email">TypeID</th><th class="header c3 email">Playback</th><th class="header c3 email">Stats</th>');
+            $(h_tr).find('th').eq(3).after('<th class="header c4" scope="col">Analytics<div class="commands"><i class="icon fa fa-minus fa-fw " aria-hidden="true"></i></div></th>');
             $('tbody').find("tr").get().forEach(function (tr) {
                 let td_user = $(tr).find("td").get()[0];
                 let userid = $(td_user).find("input[type='checkbox']").get()[0].value;
                 let cmid = parm.searchParams.get('id');
-                var chart = "fa fa-area-chart popup_item";
-                var video = "fa fa-play video_playback";
-                var st = "font-size:24px;color:black;border:none";
-                let thunder_icon = '<td><button data-id=' + userid + ' class="' + chart + '" style="' + st + '"></button></td>';
-                $(tr).find('td').eq(3).after(thunder_icon);
+                // Create the table cell element and append the anchor
+                const tableCell = document.createElement('td');
+                tableCell.appendChild(analyticButton(userid));
 
-                let args = {id: userid, modulename: "assign", cmid: cmid};
+                $(tr).find('td').eq(3).after(tableCell);
+
+
+                let args = { id: userid, modulename: "assign", cmid: cmid };
                 let methodname = 'cursive_user_list_submission_stats';
-                let com = AJAX.call([{methodname, args}]);
+                let com = AJAX.call([{ methodname, args }]);
                 try {
                     com[0].done(function (json) {
                         var data = JSON.parse(json);
-                        var filepath ='';
-                        if (data.res.filename){
-                            var filepath =data.res.filename;
+                        var filepath = '';
+                        if (data.res.filename) {
+                            filepath = data.res.filename;
                         }
-                        var score = parseFloat(data.res.score);
-                        var icon = 'fa fa-circle-o';
-                        var color = 'font-size:24px;color:black';
-                        if(data.res.first_file){
-                            icon = 'fa  fa fa-solid fa-info-circle typeid';
-                            color = 'font-size:24px;color:#000000';
-                        }
-                        else{
-                            if (score >= score_setting) {
-                                icon = 'fa fa-check-circle typeid';
-                                color = 'font-size:24px;color:green';
-                            } else if (score < score_setting) {
-                                icon = 'fa fa-question-circle typeid';
-                                color = 'font-size:24px;color:#A9A9A9';
-                            } else {
-                                icon = 'fa fa-circle-o typeid';
-                                color = 'font-size:24px;color:black';
-                            }
-                        }
-
-                        let video_icon = '<td><a href="#" onclick="video_playback(' + userid + ', \'' + filepath + '\')" data-filepath="' + filepath + '" data-id="playback_' + userid + '" class="video_playback_icon ' + video + '" style="' + st + '"></a></td>';
-                        $(tr).find('td').eq(3).after(video_icon);
-                        let typeid_icon = '<td><button onclick="myFunction()" data-id=' + userid + ' class=" ' + icon + ' " style="border:none; ' + color + ';"></button></td>';
-                        $(tr).find('td').eq(3).after(typeid_icon);
-
                         // Get Module Name from element.
                         let element = document.querySelector('.page-header-headings h1'); // Selects the h1 element within the .page-header-headings class
                         let textContent = element.textContent; // Extracts the text content from the h1 element
 
-                        // Calculate and format total time
-                        let total_time_seconds = data.res.total_time_seconds;
-                        let hours = Math.floor(total_time_seconds / 3600).toString().padStart(2, '0');
-                        let minutes = Math.floor((total_time_seconds % 3600) / 60).toString().padStart(2, '0');
-                        let seconds = (total_time_seconds % 60).toString().padStart(2, '0');
-                        let formattedTime = `${hours}:${minutes}:${seconds}`;
-
+                        let myEvents = new AnalyticEvents();
                         var context = {
                             tabledata: data.res,
-                            formattime: formattedTime,
+                            formattime: myEvents.formatedTime(data.res),
                             moduletitle: textContent,
                             page: score_setting,
                             userid: userid,
                         };
+
+                        let authIcon = myEvents.authorshipStatus(data.res.first_file, data.res.score, score_setting);
+                        myEvents.createModal(userid, context, '', authIcon);
+                        myEvents.analytics(userid, templates, context, '', replayInstances, authIcon);
+                        myEvents.checkDiff(userid, data.res.file_id, '', replayInstances);
+                        myEvents.replyWriting(userid, filepath, '', replayInstances);
+
                         templates
                             .render("tiny_cursive/pop_modal", context)
                             .then(function (html) {
@@ -143,23 +115,6 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                 } catch (error) {
                     window.console.error(error);
                 }
-
-                $(".popup_item").on('click', function () {
-                    let mid = $(this).data('id');
-                    $("#" + mid).show();
-                });
-
-                $(window).on('click', function (e) {
-                    if (e.target.id == 'modal-close' + userid) {
-                        $("#" + userid).hide();
-                    }
-                    if (e.target.id == 'modal-close-playback' + userid) {
-                        $("#playback" + userid).hide();
-                        if (replayInstances[userid]) {
-                            replayInstances[userid].stopReplay();
-                        }
-                    }
-                });
                 return com.usercomment;
             });
         }

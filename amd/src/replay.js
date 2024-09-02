@@ -20,10 +20,11 @@
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  */
 
-import {call as fetchJson} from 'core/ajax';
+import { call as fetchJson } from 'core/ajax';
+import templates from 'core/templates';
 export default class Replay {
     constructor(elementId, filePath, speed = 1, loop = false, controllerId) {
-      
+
         this.replayInProgress = false;
         this.speed = speed;
         this.loop = loop;
@@ -34,24 +35,28 @@ export default class Replay {
             throw new Error(`Element with id '${elementId}' not found`);
         }
         if (controllerId) {
-           
+
             this.constructController(controllerId);
         }
         this.loadJSON(filePath)
             .then((data) => {
-                var val=JSON.parse(data.data);
-                this.logData = val;
-                // support for Cursive Recorder extension files (and outdated Curisve file formats)
-                // logData should be a list of dictionaries for this to work properly
-                if ("data" in this.logData) {
-                    this.logData = this.logData['data'];
+                if (data.status) {
+                    var val = JSON.parse(data.data);
+                    this.logData = val;
+
+                    if ("data" in this.logData) {
+                        this.logData = this.logData['data'];
+                    };
+                    if ("payload" in this.logData) {
+                        this.logData = this.logData['payload'];
+                    };
+                    this.startReplay();
+                } else {
+                    templates.render('tiny_cursive/no_submission').then(html => {
+                        let updatedHtml = html.replace('No Submission', "Something Went Wrong! or File Not Found!");
+                        $('.tiny_cursive').html(updatedHtml);
+                    });
                 }
-                ;
-                if ("payload" in this.logData) {
-                    this.logData = this.logData['payload'];
-                }
-                ;
-                this.startReplay();
             })
             .catch(error => {
                 throw new Error('Error loading JSON file: ' + error.message);
@@ -66,11 +71,8 @@ export default class Replay {
     }
     constructController(controllerId) {
         const controller = document.getElementById(controllerId);
-        
+
         if (controller) {
-            // this.buttonElement = document.createElement('button');
-            // this.buttonElement.id = 'playerButton';
-            // this.buttonElement.textContent = 'Play';
             this.scrubberElement = document.createElement('input');
             this.scrubberElement.type = 'range';
             this.scrubberElement.id = 'timelineScrubber';
@@ -91,14 +93,14 @@ export default class Replay {
     }
 
     loadJSON(filePath) {
-     return fetchJson([{
+        return fetchJson([{
             methodname: 'cursive_get_reply_json',
             args: {
                 filepath: filePath,
             },
-        }])[0].done(response=>{
+        }])[0].done(response => {
             return response;
-        }).fail(error =>  { throw new Error('Error loading JSON file: '+error.message); });
+        }).fail(error => { throw new Error('Error loading JSON file: ' + error.message); });
     }
 
     // call this to make a "start" or "start over" function
@@ -108,7 +110,14 @@ export default class Replay {
             clearTimeout(this.replayTimeout);
         };
         this.replayInProgress = true;
-        this.outputElement.innerHTML = '';
+        let uid = controllerId.split('_')[1];
+        let element = document.getElementById('rep' + uid);
+        let isactive = element.classList.contains('active');
+        if (!isactive) {
+            this.stopReplay();
+        } else {
+            this.outputElement.innerHTML = '';
+        }
         this.replayLog();
     }
 
@@ -117,7 +126,7 @@ export default class Replay {
         let textOutput = "";
         let index = 0;
         const processEvent = () => {
-           
+
             if (this.replayInProgress) {
                 if (index < this.logData.length) {
                     let event = this.logData[index++];

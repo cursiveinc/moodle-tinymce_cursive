@@ -83,6 +83,8 @@ $string['warning'] = "You have no permissions to access the page.";
 $string['filenotfound'] = "File not found!";
 $string['cursive:view'] = 'View Writing Reports';
 $string['cursive:editsettings'] = "Access Plugin Settings";
+$string['cursive:writingreport'] = "Access to analytics";
+$string['cursive:mywritingreport'] = "Accessing to my writing report";
 $string['errorverifyingtoken'] = "Error verifying token";
 $string['curlerror'] = "Curl error";
 $string['cursive:write'] = 'Write JSON File or Insert records';
@@ -109,7 +111,6 @@ $string['random_reflex'] = 'Your Random Reflection Prompt';
 $string['authorship'] = 'Authorship Confidence: ';
 $string['copy_behave'] = 'Copy Behavior: ';
 $string['playback'] = 'Playback Video';
-$string['attemptid'] = 'Attemptid';
 $string['fulname'] = 'Full Name';
 $string['email'] = 'Email';
 $string['selectcrs'] = 'Select Course';
@@ -117,3 +118,16 @@ $string['wractivityreport'] = "Writing Activity Report";
 $string['data_save'] = 'Data saved successfully';
 $string['success'] = 'success';
 $string['failed'] = 'failed';
+
+$string['test_token'] = "Test Token";
+$string['api_url'] = 'API URL';
+$string['api_addr_url'] = 'API address URL';
+$string['moodle_host'] = 'Moodle Host';
+$string['host_domain'] = 'You Host domain.';
+$string['confidence_thresholds'] = 'Confidence Threshold';
+$string['thresold_description'] = 'Each site may set its threshold for providing the successful match
+        “green check” to the TypeID column for student submissions.
+        We recommend .65. However, there may be arguments for lower or higher
+        thresholds depending on your experience or academic honesty policy.';
+$string['cite_src'] = 'Enable Cite-Source';
+$string['cite_src_des'] = 'Show cite-source comments under post when enabled';

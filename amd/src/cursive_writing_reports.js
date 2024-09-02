@@ -20,63 +20,91 @@
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  */
 
-define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], function (
+define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './analytic_button', "./analytic_events"], function (
     $,
     AJAX,
     str,
     templates,
-    Replay
+    Replay,
+    analyticButton,
+    AnalyticEvents
 ) {
     const replayInstances = {};
+    window.video_playback = function (mid, filepath) {
+        if (filepath !== '') {
+            const replay = new Replay(
+                elementId = 'content' + mid,
+                filePath = filepath,
+                speed = 10,
+                loop = false,
+                controllerId = 'player_' + mid
+            );
+            replayInstances[mid] = replay;
+        }
+        else {
+            templates.render('tiny_cursive/no_submission').then(html => {
+                $('#content' + mid).html(html);
+            }).catch(e => window.console.error(e));
+        }
+        return false;
+
+    };
     var usersTable = {
         init: function (page) {
             str
                 .get_strings([
-                    {key: "field_require", component: "tiny_cursive"},
+                    { key: "field_require", component: "tiny_cursive" },
                 ])
                 .done(function () {
                     $(document).ready(function ($) {
-                        $(".popup_item").on('click', function () {
-                            var mid = $(this).data("id");
-                            $("#" + mid).show();
-                        });
-                        $(".link_icon").on('click', function () {
-                            var smid = $(this).data("id");
-                            $("#" + smid).show();
-                           
-                        });
-
-                        $(".video_playback_icon").on('click', function () {
-
-                            var mid = $(this).data("id");
-                            var filepath = $(this).data("filepath");
-                            if(filepath){
-                            $("#" + mid).show();
-                            const replay = new Replay(
-                                elementId = 'output_'+mid,
-                                filePath = decodeURIComponent(filepath),
-                                speed = 10,
-                                loop = false,
-                                controllerId = 'player_' + mid
-                            );
-                            replayInstances[mid] = replay;
-                            } else {
-                                alert("File not found");
-                            }
-                        });
-                        $(".modal-close ").on('click', function () {
-                            $(".modal").hide();
-                            var mid = $(this).data("id");
-                            if (replayInstances[mid]) {
-                                replayInstances[mid].stopReplay();
-                                delete replayInstances[mid];  // Clean up the instance
-                            }
-                        });
                     });
                     usersTable.getusers(page);
                 });
-        },
 
+            let myEvents = new AnalyticEvents();
+            (async function () {
+                try {
+                    let score_setting = await str.get_string('confidence_threshold', 'tiny_cursive');
+                    analyticsEvents(score_setting);
+                } catch (error) {
+                    console.error('Error fetching string:', error);
+                }
+            })();
+
+            function analyticsEvents(score_setting) {
+
+                $(".analytic-modal").each(function () {
+                    var mid = $(this).data("id");
+                    var filepath = $(this).data("filepath");
+                    let context = {};
+                    context.userid = mid;
+                    let cmid = $(this).data("cmid");
+                    $(this).html(analyticButton($(this).data('id')));
+
+                    AJAX.call([{
+                        methodname: 'cursive_get_writing_statistics',
+                        args: {
+                            cmid: cmid,
+                            fileid: mid,
+                        },
+                    }])[0].done(response => {
+                        let data = JSON.parse(response.data);
+
+                        context.formattime = myEvents.formatedTime(data);
+                        context.tabledata = data;
+                        // Perform actions that require context.tabledata
+                        let authIcon = myEvents.authorshipStatus(data.first_file, data.score, score_setting);
+                        myEvents.createModal(mid, context, '', authIcon);
+                        myEvents.analytics(mid, templates, context, '', replayInstances, authIcon);
+                        myEvents.checkDiff(mid, mid, '', replayInstances);
+                        myEvents.replyWriting(mid, filepath, '', replayInstances);
+                    }).fail(error => {
+                        throw new Error('Error: ' + error.message);
+                    });
+
+                });
+            }
+        },
         getusers: function (page) {
             $("#id_coursename").change(function () {
                 var courseid = $(this).val();
@@ -97,7 +125,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                     templates
                         .render("tiny_cursive/user_list", context)
                         .then(function (html) {
-                           
+
                             var filtered_user = $("#id_username");
                             filtered_user.html(html);
                         });
@@ -120,7 +148,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay"], functi
                     templates
                         .render("tiny_cursive/module_list", context)
                         .then(function (html) {
-                        
+
                             var filtered_user = $("#id_modulename");
                             filtered_user.html(html);
                         });

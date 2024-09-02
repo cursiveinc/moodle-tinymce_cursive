@@ -26,52 +26,35 @@
 require(__DIR__ . '/../../../../../config.php');
 require_once($CFG->dirroot . '/mod/quiz/lib.php');
 require_once($CFG->dirroot . '/mod/quiz/locallib.php');
-require_once(__DIR__.'/classes/forms/wrreportform.php');
-require_once(__DIR__.'/locallib.php');
+require_once(__DIR__ . '/classes/forms/wrreportform.php');
+require_once(__DIR__ . '/locallib.php');
 
 global $CFG, $DB, $USER, $PAGE, $OUTPUT;
-
 require_login(null, false);
 
 if (isguestuser()) {
-    // No guests here!
     redirect($CFG->wwwroot);
     die;
 }
 if (\core\session\manager::is_loggedinas()) {
-    redirect($CFG->wwwroot. '/user/index.php');
+    redirect($CFG->wwwroot . '/user/index.php');
     die;
 }
 
-
-
 $userid = optional_param('userid', 0, PARAM_INT);
 $courseid = optional_param('courseid', 0, PARAM_INT);
-if($courseid) {
-    $sql = "SELECT * 
-              FROM {course_modules} 
-             WHERE course = :course LIMIT 1";
-    $cm = $DB->get_record_sql($sql,['course' => $courseid]);
-    $context = context_module::instance($cm->id);
-}else {
+if ($courseid) {
+    $cmid = tiny_cursive_get_cmid($courseid);
+    $context = context_module::instance($cmid);
+} else {
     $context = context_system::instance();
 }
 
 $haseditcapability = has_capability('tiny/cursive:view', $context);
-
-$editingteacherrole = $DB->get_record('role', ['shortname' => 'editingteacher'], '*', MUST_EXIST);
-$editingteacherroleid = $editingteacherrole->id;
-
-// Check if the user is an editing teacher in any course context
-$iseditingteacher = is_user_editingteacher($USER->id, $editingteacherroleid);
-
-if (!$haseditcapability && !$iseditingteacher) {
+if (!$haseditcapability) {
     return redirect(new moodle_url('/course/index.php'), get_string('warning', 'tiny_cursive'));
 }
 
-
-$PAGE->requires->jquery_plugin('jquery');
-$PAGE->requires->js_call_amd('tiny_cursive/cursive_writing_reports', 'init', []);
 $orderby = optional_param('orderby', 'id', PARAM_TEXT);
 $order = optional_param('order', 'ASC', PARAM_TEXT);
 $page = optional_param('page', 0, PARAM_INT);
@@ -79,27 +62,33 @@ $limit = 10;
 $perpage = $page * $limit;
 $user = $DB->get_record('user', ['id' => $userid], '*', MUST_EXIST);
 $systemcontext = context_system::instance();
-if ($courseid){
+$struser = get_string('student_writing_statics', 'tiny_cursive');
+
+if ($courseid) {
     $linkurl = $CFG->wwwroot . '/lib/editor/tiny/plugins/cursive/writing_report.php?userid=' . $userid . '&courseid=' . $courseid;
 
-} else{
+} else {
     $linkurl = $CFG->wwwroot . '/lib/editor/tiny/plugins/cursive/writing_report.php?userid=' . $userid;
-
 }
 $linktext = get_string('tiny_cursive', 'tiny_cursive');
+
+$PAGE->requires->jquery_plugin('jquery');
+$PAGE->requires->js_call_amd('tiny_cursive/cursive_writing_reports', 'init', []);
 $PAGE->set_context($systemcontext);
 $PAGE->set_url($linkurl);
 $PAGE->set_title($linktext);
 $PAGE->set_heading(fullname($user));
 $PAGE->set_pagelayout('mypublic');
 $PAGE->set_pagetype('user-profile');
-$struser = get_string('student_writing_statics', 'tiny_cursive');
 $PAGE->set_url('/user/profile.php', ['id' => $userid]);
 $PAGE->navbar->add($struser);
+
 echo $OUTPUT->header();
+
 echo $OUTPUT->heading(get_string('student_writing_statics', 'tiny_cursive'));
 $renderer = $PAGE->get_renderer('tiny_cursive');
 $users = get_user_attempts_data($userid, $courseid, null, $orderby, $order, $page, $limit);
 $userprofile = get_user_profile_data($userid, $courseid);
 echo $renderer->user_writing_report($users, $userprofile, $userid, $page, $limit, $linkurl);
+
 echo $OUTPUT->footer();

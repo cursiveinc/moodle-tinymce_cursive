@@ -76,11 +76,10 @@ class observers {
 
         global $DB, $CFG;
         $eventdata = $event->get_data();
-        // Injecting Post ID to Event objectid for first forum post. 
-        if($eventdata['target'] === "discussion") {
-            $discussid= $eventdata['objectid'];
-            $postdata = $DB->get_record('forum_posts',['discussion' => $discussid]);
-            if($postdata) {
+        if ($eventdata['target'] === "discussion") {
+            $discussid = $eventdata['objectid'];
+            $postdata = $DB->get_record('forum_posts', ['discussion' => $discussid]);
+            if ($postdata) {
                 $eventdata['objectid'] = $postdata->id;
             }
         }
@@ -101,7 +100,7 @@ class observers {
                 $fname = $userid . '_' . $resourceid . '_' . $cmid . '_attempt' . '.json';
                 $sourcefile = $dirname . $rec->filename;
                 $desfilename = $dirname . $fname;
-                $inp = file_exists($desfilename) ? file_get_contents($desfilename): null;
+                $inp = file_exists($desfilename) ? file_get_contents($desfilename) : null;
                 $temparray = null;
                 if ($inp) {
                     $temparray = json_decode($inp, true);
@@ -183,7 +182,7 @@ class observers {
         }
 
         self::update_cursive_files($event);
-      
+
     }
 
     /**
@@ -209,7 +208,8 @@ class observers {
 
         // Delete associated user writing records and files.
         foreach ($fileids as $file) {
-            $DB->delete_records('tiny_cursive_user_writing', ['id' => $file->id]);
+            $DB->delete_records('tiny_cursive_user_writing', ['file_id' => $file->id]);
+            $DB->delete_records('tiny_cursive_writing_diff', ['file_id' => $file->id]);
 
             $filepath = $CFG->tempdir . "/userdata/" . $file->filename;
             if (file_exists($filepath)) {
@@ -217,5 +217,4 @@ class observers {
             }
         }
     }
-
 }

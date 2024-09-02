@@ -44,6 +44,43 @@ function xmldb_tiny_cursive_upgrade($oldversion) {
         }
         upgrade_plugin_savepoint(true, 2023041937, 'tiny', 'cursive');
     }
+
+    if ($oldversion < 2024060227) {
+        $table = new xmldb_table('tiny_cursive_writing_diff');
+        // Check if the table exists.
+        if ($dbman->table_exists($table)) {
+            // Drop the existing table.
+            $dbman->drop_table($table);
+        }
+
+        // Define table fields.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('file_id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('reconstructed_text', XMLDB_TYPE_TEXT, 'long', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('submitted_text', XMLDB_TYPE_TEXT, 'long', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('meta', XMLDB_TYPE_TEXT, 'medium', null, null, null, null);
+
+        // Define table keys.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+
+        // Create the new table.
+        $dbman->create_table($table);
+
+        // Save upgrade path.
+        upgrade_plugin_savepoint(true, 2024060227, 'tiny', 'cursive');
+
+    }
+
+    if ($oldversion < 2024060228) {
+        $table = new xmldb_table('tiny_cursive_files');
+        $field = new xmldb_field('content', XMLDB_TYPE_TEXT, null, null, null, null, null, 'filename');
+
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        upgrade_plugin_savepoint(true, 2024060228, 'tiny', 'cursive');
+    }
+
     return true;
 }
 

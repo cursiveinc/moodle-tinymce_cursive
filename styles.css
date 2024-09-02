@@ -1,26 +1,507 @@
-.cursive_time_success {
+.tiny_cursive_time_success {
     display: none;
 }
 
-.cursive_time_successfull {
+.tiny_cursive_time_successfull {
     display: none;
 }
 
-.cursive_review_panel_path_mod_assign {
+.tiny_cursive_review_panel_path_mod_assign {
     position: fixed !important;
     height: calc(100vh - 205px) !important;
 }
 
-.cursive_grading-navigation-panel_path_mod_assign {
+.tiny_cursive_grading-navigation-panel_path_mod_assign {
     position: fixed !important;
 }
 
-.cursive_grade-panel_path_mod_assign {
+.tiny_cursive_grade-panel_path_mod_assign {
     position: fixed !important;
     height: calc(100vh - 205px) !important;
 }
 
-.cursive_grade-actions-panel_path_mod_assign {
+.tiny_cursive_grade-actions-panel_path_mod_assign {
     position: fixed !important;
     height: 120px !important;
+}
+
+.tiny_cursive-analytics-btn {
+    background-color: #306ab3;
+    color: white;
+    border-radius: 8vw;
+    text-decoration: none !important;
+}
+
+.tiny_cursive-analytics-btn:hover {
+    background-color: #205aa1;
+}
+
+.tiny_cursive-analytics-btn span {
+    padding: 3px;
+    margin-right: 5px;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.tiny_cursive-analytics-icon {
+    background-color: white;
+    color: #306ab3;
+    border-radius: 5vw;
+    padding: 2px 5px;
+    margin: 3px;
+}
+
+
+.tiny_cursive-analytics-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem;
+    background-color: #f3f3f3;
+}
+
+.tiny_cursive-analytics-header h3 {
+    margin: 0;
+    color: #306BB2;
+}
+
+.tiny_cursive-analytics-header .close-btn {
+    font-size: 1.2rem;
+    cursor: pointer;
+
+}
+
+.tiny_cursive-analytics-header .close-btn span {
+    font-size: 1.5rem;
+    padding: .25rem .7rem;
+    transition: .3s ease-in-out;
+    background-color: #FF3737;
+}
+
+.tiny_cursive-analytics-header .close-btn:hover span {
+    background-color: rgb(211, 0, 0) !important;
+}
+
+.tiny_cursive-nav-tab {
+    background-color: #f3f3f3;
+    max-width: 250px;
+    min-height: auto;
+}
+
+.tiny_cursive-nav-tab .tiny_cursive-nav-item .nav-link {
+    color: gray;
+    font-weight: 600;
+    font-size: 1rem;
+    padding: .8rem 1rem;
+}
+
+.tiny_cursive-nav-tab .tiny_cursive-nav-item .nav-link svg {
+    fill: gray;
+    width: 25px;
+    height: auto;
+}
+
+.tiny_cursive-nav-tab .tiny_cursive-nav-item.show .nav-link,
+.tiny_cursive-nav-tab .nav-link.active {
+    color: white;
+    background-color: #306ab3;
+}
+
+.tiny_cursive-nav-tab .tiny_cursive-nav-item.show .nav-link,
+.tiny_cursive-nav-tab .nav-link.active svg {
+    fill: white;
+
+}
+
+.tiny_cursive {
+    background-color: white;
+    margin: 0 .5rem 1rem 0;
+    border-radius: .2rem .2rem 1.1rem 1.1rem;
+    padding: 1.2rem 1rem 1rem 2rem;
+    height: 500px;
+    text-align: justify;
+    overflow: auto;
+}
+
+/* Scrollbar styles for Chrome/Safari/Edge */
+.tiny_cursive::-webkit-scrollbar {
+    width: 10px;
+    /* Width of the scrollbar track */
+    border-radius: 5px;
+}
+
+.tiny_cursive::-webkit-scrollbar-track {
+    background-color: #f5f5f5;
+    /* Color of the scrollbar track */
+}
+
+.tiny_cursive::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    /* Color of the scrollbar thumb */
+    border-radius: 5px;
+    /* Add rounded corners to the thumb */
+}
+
+.tiny_cursive::-webkit-scrollbar-thumb:hover {
+    background-color: #999;
+    /* Change thumb color on hover */
+}
+
+/* Scrollbar styles for Firefox */
+.tiny_cursive {
+    scrollbar-width: 5px;
+    /* Set the width of the scrollbar */
+    scrollbar-color: #ccc transparent;
+    /* Set thumb and track colors */
+}
+
+.tiny_cursive-main {
+    display: grid;
+    grid-template-columns: 200px auto;
+    background-color: #f3f3f3;
+    height: 100%;
+}
+
+.tiny_cursive .table tr td:nth-child(1) {
+    display: inline-flex;
+    gap: .5rem;
+}
+
+.tiny_cursive-analyticcontent {
+    overflow: hidden;
+    min-height: 100%;
+    border-radius: 30px;
+}
+
+.tiny_cursive .table tbody {
+    width: 100%;
+}
+
+.tiny_cursive .table tr {
+    border-bottom: 1px solid #f3f3f3;
+    /* width: 100% !important; */
+}
+
+.tiny_cursive .table td:first-child {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.tiny_cursive .table td:last-child {
+    color: #306ab3;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.tiny_cursive .table tr td svg {
+    fill: gray;
+    width: 30px;
+    height: auto;
+}
+
+.tiny_cursive .table tr:first-child td svg {
+    width: 22px;
+    height: 30px;
+}
+
+.tiny_cursive .table tr td:nth-child(1) {
+    font-size: 1.18rem;
+}
+
+.tiny_cursive .table tr td:nth-child(1) p {
+    font-size: 14px;
+    color: gray;
+    width: 190px;
+    font-weight: 400;
+    text-wrap: wrap;
+}
+
+.tiny_cursive .table tr td:nth-child(even) {
+    font-size: 1.1rem;
+}
+
+
+.tiny_cursive-chatbox {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 400px;
+    height: 400px;
+    background-color: #fff;
+    font-family: 'Lato', sans-serif;
+
+    -webkit-transition: all 600ms cubic-bezier(0.19, 1, 0.22, 1);
+    transition: all 600ms cubic-bezier(0.19, 1, 0.22, 1);
+    z-index: 999;
+    display: -webkit-flex;
+    display: flex;
+
+    -webkit-flex-direction: column;
+    flex-direction: column;
+}
+
+.tiny_cursive-chatbox--tray {
+    bottom: -350px;
+}
+
+.tiny_cursive-chatbox--closed {
+    bottom: -400px;
+}
+
+.tiny_cursive-chatbox .form-control:focus {
+    border-color: #1f2836;
+}
+
+.tiny_cursive-chatbox__title,
+.tiny_cursive-chatbox__body {
+    border-bottom: none;
+}
+
+.tiny_cursive-chatbox__title {
+    min-height: 50px;
+    padding-right: 10px;
+    background-color: #1f2836cc;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    cursor: pointer;
+
+    display: -webkit-flex;
+    display: flex;
+
+    -webkit-align-items: center;
+    align-items: center;
+}
+
+.tiny_cursive-chatbox__title h5 {
+    height: 50px;
+    margin: 0 0 0 15px;
+    line-height: 50px;
+    position: relative;
+    padding-left: 20px;
+
+    -webkit-flex-grow: 1;
+    flex-grow: 1;
+}
+
+.tiny_cursive-chatbox__title h5 a {
+    color: #fff;
+    max-width: 195px;
+    display: inline-block;
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tiny_cursive-chatbox__title__tray,
+.tiny_cursive-chatbox__title__close {
+    width: 24px;
+    height: 24px;
+    outline: 0;
+    border: none;
+    background-color: transparent;
+    opacity: 0.5;
+    cursor: pointer;
+
+    -webkit-transition: opacity 200ms;
+    transition: opacity 200ms;
+}
+
+.tiny_cursive-chatbox__title__tray:hover,
+.tiny_cursive-chatbox__title__close:hover {
+    opacity: 1;
+}
+
+.tiny_cursive-chatbox__title__tray span {
+    width: 12px;
+    height: 12px;
+    display: inline-block;
+    border-bottom: 2px solid #fff
+}
+
+.tiny_cursive-chatbox__title__close svg {
+    vertical-align: middle;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.2px;
+}
+
+.tiny_cursive-chatbox__body,
+.tiny_cursive-chatbox__credentials {
+    padding: 15px;
+    border-top: 0;
+    background-color: #FAFAFA;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    -webkit-flex-grow: 1;
+    flex-grow: 1;
+}
+
+
+.tiny_cursive-chatbox--empty {
+    height: 262px;
+}
+
+.tiny_cursive-chatbox--empty.chatbox--tray {
+    bottom: -212px;
+}
+
+.tiny_cursive-chatbox--empty.chatbox--closed {
+    bottom: -262px;
+}
+
+.tiny_cursive-chatbox--empty .chatbox__body,
+.tiny_cursive-chatbox--empty .chatbox__message {
+    display: none;
+}
+
+.tiny_cursive-chatbox--empty .chatbox__credentials {
+    display: block;
+}
+
+.tiny_cursive-chat_set_height {
+    height: 40px;
+    margin-top: 1px;
+}
+
+.tiny_cursive-chatbox22 .form-control:focus {
+    border-color: #DCDCDC;
+}
+
+.tiny_cursive-width50 {
+    width: 50%;
+    float: left;
+    background: #ECECEC;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+.tiny_cursive-comparison-content {
+    margin-right: 1rem;
+}
+
+.tiny_cursive-text-block {
+    background: #f7fafc;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s;
+}
+
+.tiny_cursive-text-block:hover {
+    transform: translateY(-5px);
+}
+
+
+#cursive-submitted_text {
+    padding: 15px;
+    border: 1px solid #e2e8f0;
+    background-color: #edf2f7;
+    overflow-y: auto;
+    border-radius: 8px;
+    font-size: 1em;
+    line-height: 1.6;
+    color: #2d3748;
+    font-family: 'Roboto Mono', monospace;
+
+}
+
+.tiny_cursive_added {
+    background-color: #7ad957;
+    color: #22543d;
+    font-weight: bold;
+    padding: 2px 4px;
+    border-radius: 4px;
+    word-wrap: break-word;
+}
+
+.tiny_cursive-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin: 0rem 1rem;
+}
+
+.tiny_cursive-box {
+    width: 20px;
+    height: 20px;
+    border: 1px solid #ccc;
+}
+
+.tiny_cursive-attributed {
+    background-color: white;
+}
+
+.tiny_cursive-legend-item span {
+    font-family: Arial, sans-serif;
+    color: #4a5568;
+}
+
+.tiny_cursive-loader {
+    width: 50px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    margin-left: -2rem;
+    background:
+        radial-gradient(farthest-side, #bdbdbd 94%, #0000) top/8px 8px no-repeat,
+        conic-gradient(#0000 30%, #bdbdbd);
+    -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 8px), #000 0);
+    animation: l13 1s infinite linear;
+}
+
+@keyframes l13 {
+    100% {
+        transform: rotate(1turn)
+    }
+}
+
+.tiny_cursive-quiz-references {
+    background-color: #FCEFDC;
+    font-weight: 500;
+    max-height: 200px;
+    overflow-y: auto !important;
+    margin: 2rem 0rem;
+}
+.tiny_cursive_nosub {
+    vertical-align: middle;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+/* Mobile Responsive */
+
+@media screen and (max-width: 576px) {
+    .tiny_cursive-main {
+        grid-template-columns: 1fr;
+    }
+
+    .tiny_cursive-nav-tab {
+        max-width: 100%;
+        min-height: fit-content;
+        display: flex;
+        justify-content: space-between;
+        background-color: #306ab3;
+    }
+
+    .tiny_cursive-nav-tab .tiny_cursive-nav-item.show .nav-link,
+    .tiny_cursive-nav-tab .nav-link.active {
+        color: #306ab3 !important;
+        background-color: white;
+        min-height: 100%;
+    }
+
+    .tiny_cursive-nav-tab .tiny_cursive-nav-item.show .nav-link,
+    .tiny_cursive-nav-tab .nav-link.active svg {
+        fill: #306ab3 !important;
+
+    }
+
+    .tiny_cursive-nav-tab .tiny_cursive-nav-item .nav-link {
+        color: white;
+
+    }
+
+    .tiny_cursive-nav-tab .tiny_cursive-nav-item .nav-link svg {
+        fill: white;
+    }
 }
