@@ -467,6 +467,11 @@
     text-transform: uppercase;
     font-weight: 500;
 }
+.tiny_cursive_nopayload{
+    vertical-align: middle;
+    text-transform: uppercase;
+    font-weight: 500;
+}
 
 /* Mobile Responsive */
 
