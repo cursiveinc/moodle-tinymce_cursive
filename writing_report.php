@@ -23,11 +23,11 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require (__DIR__ . '/../../../../../config.php');
-require_once ($CFG->dirroot . '/mod/quiz/lib.php');
-require_once ($CFG->dirroot . '/mod/quiz/locallib.php');
-require_once (__DIR__ . '/classes/forms/wrreportform.php');
-require_once (__DIR__ . '/locallib.php');
+require(__DIR__ . '/../../../../../config.php');
+require_once($CFG->dirroot . '/mod/quiz/lib.php');
+require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once(__DIR__ . '/classes/forms/wrreportform.php');
+require_once(__DIR__ . '/locallib.php');
 
 global $CFG, $DB, $USER, $PAGE, $OUTPUT;
 require_login(null, false);
