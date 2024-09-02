@@ -130,7 +130,7 @@ class tiny_cursive_renderer extends plugin_renderer_base {
      * @throws moodle_exception
      */
     public function user_writing_report($users, $userprofile, $userid, $page = 0, $limit = 5, $baseurl = '') {
-        global $CFG, $DB, $PAGE, $USER;
+        global $CFG, $DB, $USER;
         require_once($CFG->dirroot . "/lib/editor/tiny/plugins/cursive/lib.php");
         $courseid = optional_param('courseid', 0, PARAM_INT);
 
