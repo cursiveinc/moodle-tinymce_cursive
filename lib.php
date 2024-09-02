@@ -90,18 +90,20 @@ function tiny_cursive_extend_navigation_course(\navigation_node $navigation, \st
 
     $url = new moodle_url($CFG->wwwroot . '/lib/editor/tiny/plugins/cursive/tiny_cursive_report.php', ['courseid' => $course->id]);
     $cmid = tiny_cursive_get_cmid($course->id);
-    $context = context_module::instance($cmid);
-    $iseditingteacher = has_capability("tiny/cursive:view", $context);
+    if ($cmid) {
+        $context = context_module::instance($cmid);
+        $iseditingteacher = has_capability("tiny/cursive:view", $context);
 
-    if (get_admin()->id == $USER->id || $iseditingteacher) {
-        $navigation->add(
-            get_string('wractivityreport', 'tiny_cursive'),
-            $url,
-            navigation_node::TYPE_SETTING,
-            null,
-            null,
-            new pix_icon('i/report', '')
-        );
+        if (get_admin()->id == $USER->id || $iseditingteacher) {
+            $navigation->add(
+                get_string('wractivityreport', 'tiny_cursive'),
+                $url,
+                navigation_node::TYPE_SETTING,
+                null,
+                null,
+                new pix_icon('i/report', '')
+            );
+        }
     }
 }
 
