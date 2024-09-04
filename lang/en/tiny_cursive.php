@@ -127,6 +127,7 @@ $string['timesave_successfull'] = 'Time save operation was successful';
 $string['tiny_cursive'] = 'Authorship and Analytics';
 $string['total_time'] = 'Total Time';
 $string['total_time_writing'] = 'Total Time Writing:';
+$string['total_word'] = 'Total Words:';
 $string['total_words'] = 'Total Words:';
 $string['total_words_desc'] = 'Estimated total words';
 $string['typeid'] = 'TypeID';
