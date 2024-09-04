@@ -38,7 +38,6 @@ define(["jquery", "core/ajax", "core/templates"], function (
         ]);
         promise1[0].done(function (json) {
           var data = JSON.parse(json);
-        
           var context = {
             data: data.data,
             page: page,

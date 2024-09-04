@@ -53,17 +53,18 @@ class upload_student_json_cron extends \core\task\scheduled_task {
         global $CFG, $DB;
         require_once($CFG->dirroot . '/lib/editor/tiny/plugins/cursive/lib.php');
 
-        $service_shortname = 'moodle_mobile_app'; // Replace with your service shortname
-        $service = $DB->get_record('external_services',['shortname' => $service_shortname]);
+        $serviceshortname = 'moodle_mobile_app'; // Replace with your service shortname.
+        $service = $DB->get_record('external_services', ['shortname' => $serviceshortname]);
 
         $adminuser = get_admin();
-        $token = $DB->get_record_sql("SELECT * FROM {external_tokens} WHERE userid = ? AND externalserviceid = ? order by id DESC LIMIT 1", array($adminuser->id, $service->id));
+        $token = $DB->get_record_sql("SELECT * FROM {external_tokens}
+         WHERE userid = ? AND externalserviceid = ?
+         order by id DESC LIMIT 1", [$adminuser->id, $service->id]);
         $wstoken = $token->token ?? '';
 
-       
-        $sql = "SELECT tcf.* 
-                  FROM {tiny_cursive_files} AS tcf
-                 WHERE tcf.timemodified > tcf.uploaded";
+        $sql = "SELECT tcf.*
+                FROM {tiny_cursive_files} tcf
+                WHERE tcf.timemodified > tcf.uploaded";
         $filerecords = $DB->get_records_sql($sql);
         $dirname = $CFG->dataroot . '/temp/userdata/';
 
@@ -72,18 +73,28 @@ class upload_student_json_cron extends \core\task\scheduled_task {
 
             $answer = "";
             if ($filerecord->modulename == 'quiz') {
-                $answer = tiny_cursive_get_user_essay_quiz_responses($filerecord->userid, $filerecord->courseid, $filerecord->resourceid, $filerecord->modulename, $filerecord->cmid, $filerecord->questionid);
-            }
-            else if ($filerecord->modulename == 'assign') {
-                $answer = tiny_cursive_get_user_onlinetext_assignments($filerecord->userid, $filerecord->courseid, $filerecord->modulename,$filerecord->cmid);
-            }
-            else if ($filerecord->modulename == 'forum') {
+                $answer = tiny_cursive_get_user_essay_quiz_responses(
+                    $filerecord->userid,
+                    $filerecord->courseid,
+                    $filerecord->resourceid,
+                    $filerecord->modulename,
+                    $filerecord->cmid,
+                    $filerecord->questionid
+                );
+            } else if ($filerecord->modulename == 'assign') {
+                $answer = tiny_cursive_get_user_onlinetext_assignments(
+                    $filerecord->userid,
+                    $filerecord->courseid,
+                    $filerecord->modulename,
+                    $filerecord->cmid
+                );
+            } else if ($filerecord->modulename == 'forum') {
                 $answer = tiny_cursive_get_user_forum_posts($filerecord->userid, $filerecord->courseid, $filerecord->resourceid);
             }
 
             $filepath = $dirname . $filerecord->filename;
 
-            if(file_exists($filepath)) {
+            if (file_exists($filepath)) {
                 $filedata = file_get_contents($filepath);
                 $filerecord->content = base64_encode($filedata);
                 $DB->update_record($table, $filerecord);

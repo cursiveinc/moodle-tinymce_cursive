@@ -25,8 +25,6 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$linktext = get_string('questimereport', 'tiny_cursive');
-defined('MOODLE_INTERNAL') || die();
 global $CFG, $PAGE;
 $PAGE->requires->js_call_amd('tiny_cursive/token_approve', 'init', [1]);
 
@@ -53,8 +51,8 @@ if (is_siteadmin()) {
     $settings->add(
         new admin_setting_configtext(
             'tiny_cursive/python_server',
-            get_string('api_url','tiny_cursive'),
-            get_string('api_addr_url','tiny_cursive'),
+            get_string('api_url', 'tiny_cursive'),
+            get_string('api_addr_url', 'tiny_cursive'),
             '',
             PARAM_TEXT
         )
@@ -62,8 +60,8 @@ if (is_siteadmin()) {
     $settings->add(
         new admin_setting_configtext(
             'tiny_cursive/host_url',
-          get_string('moodle_host','tiny_cursive'),
-            get_string('host_domain','tiny_cursive'),
+            get_string('moodle_host', 'tiny_cursive'),
+            get_string('host_domain', 'tiny_cursive'),
             $CFG->wwwroot,
             PARAM_TEXT
         )
@@ -71,8 +69,8 @@ if (is_siteadmin()) {
     $settings->add(
         new admin_setting_configtext(
             'tiny_cursive/confidence_threshold',
-            get_string('confidence_thresholds','tiny_cursive'),
-            get_string('thresold_description','tiny_cursive'),
+            get_string('confidence_thresholds', 'tiny_cursive'),
+            get_string('thresold_description', 'tiny_cursive'),
             '',
             PARAM_TEXT
         )
@@ -80,8 +78,8 @@ if (is_siteadmin()) {
     $settings->add(
         new admin_setting_configcheckbox(
             'tiny_cursive/showcomments',
-            get_string('cite_src',"tiny_cursive"),
-            get_string('cite_src_des','tiny_cursive'),
+            get_string('cite_src', "tiny_cursive"),
+            get_string('cite_src_des', 'tiny_cursive'),
             1
         )
     );
