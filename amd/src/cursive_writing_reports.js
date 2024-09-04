@@ -71,6 +71,16 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
                 }
             })();
 
+            /**
+             * Handles the analytics events for each modal on the page.
+             *
+             * This function iterates over each element with the class `analytic-modal`,
+             * retrieves necessary data attributes, and makes an AJAX call to get writing
+             * statistics. Once the data is retrieved, it processes and displays it within
+             * the modal.
+             *
+             * @param {Object} score_setting - Configuration settings related to scoring.
+             */
             function analyticsEvents(score_setting) {
 
                 $(".analytic-modal").each(function () {

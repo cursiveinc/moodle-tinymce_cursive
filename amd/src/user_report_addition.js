@@ -26,7 +26,7 @@ export const init = () => {
 
     if (!courseNameElement) {
         window.history.back();
-    };
+    }
     const forumTestingText = courseNameElement.textContent.trim();
     const h5Element = document.createElement('div');
 
@@ -44,7 +44,6 @@ export const init = () => {
 
     const moduleIdElement = document.getElementById('fitem_id_moduleid');
     const parentElement = moduleIdElement.parentElement;
-    
     parentElement.insertBefore(h5Element, moduleIdElement);
     document.getElementById('fitem_id_courseid').style.display = 'none';
 };

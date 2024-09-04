@@ -67,7 +67,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                 var divElement = $('.path-mod-assign [data-region="grade-panel"]')[0];
                 var previousContextId = window.location.href;
                 var observer = new MutationObserver(function (mutations) {
-                    mutations.forEach(function (mutation) {
+                    mutations.forEach(function () {
 
                         var currentContextId = window.location.href;
                         if (currentContextId !== previousContextId) {
@@ -124,7 +124,9 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                             $chatbox.addClass('tiny_cursive-chatbox--closed');
                         });
                         $chatbox.on('transitionend', function () {
-                            if ($chatbox.hasClass('tiny_cursive-chatbox--closed')) $chatbox.remove();
+                            if ($chatbox.hasClass('tiny_cursive-chatbox--closed')) {
+                                $chatbox.remove();
+                            }
                         });
 
                         $(document).ready(function () {
@@ -133,7 +135,6 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                                 cbody.append('<div class="border p-2 shadow-sm">' + element.usercomment + '</div>');
 
                             });
-                          
                         });
                     }
 

@@ -60,8 +60,12 @@ export const register = (editor) => {
                     let editorid = editor?.id;
                     let bodyid = jQuery('body').attr('class');
                     let classes = bodyid.split(' ');
-                    let courseid = parseInt(classes.find((classname) => { return classname.startsWith('course-') }).split('-')[1]); // Getting cmid from body classlist.
-                    let cmid = parseInt(classes.find((classname) => { return classname.startsWith('cmid-') }).split('-')[1]); // Getting cmid from body classlist.
+                    let courseid = parseInt(classes.find((classname) => {
+                        return classname.startsWith('course-');
+                    }).split('-')[1]); // Getting cmid from body classlist.
+                    let cmid = parseInt(classes.find((classname) => {
+                        return classname.startsWith('cmid-');
+                    }).split('-')[1]); // Getting cmid from body classlist.
 
 
                     if (ur.includes("attempt.php") || ur.includes("forum") || ur.includes("assign")) { } else {
@@ -99,7 +103,7 @@ export const register = (editor) => {
                     modal.destroy();
                 });
                 modal.getRoot().on(cancel, function () {
-                
+
                     editor.execCommand('Undo');
                     lastEvent = 'cancel';
                 });
@@ -117,7 +121,9 @@ export const register = (editor) => {
         let editorid = editor?.id;
         let bodyid = jQuery('body').attr('class');
         let classes = bodyid.split(' ');
-        let cmid = parseInt(classes.find((classname) => { return classname.startsWith('cmid-') }).split('-')[1]); // Getting cmid from body classlist.
+        let cmid = parseInt(classes.find((classname) => {
+            return classname.startsWith('cmid-');
+        }).split('-')[1]); // Getting cmid from body classlist.
 
         if (ur.includes("attempt.php") || ur.includes("forum") || ur.includes("assign")) { } else {
             return false;

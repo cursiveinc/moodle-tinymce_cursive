@@ -23,6 +23,8 @@
 import MyModal from "./analytic_modal";
 import { call as getContent } from "core/ajax";
 import $ from 'jquery';
+import * as Str from 'core/str';
+
 export default class AnalyticEvents {
 
     createModal(userid, context, questionid = '', authIcon) {
@@ -40,11 +42,11 @@ export default class AnalyticEvents {
     }
 
     analytics(userid, templates, context, questionid = '', replayInstances = null, authIcon) {
-
         $('body').on('click', '#analytic' + userid + questionid, function (e) {
             $('#rep' + userid + questionid).prop('disabled', false);
             e.preventDefault();
-            $('#content' + userid).html($('<div>').addClass('d-flex justify-content-center my-5').append($('<div>').addClass('tiny_cursive-loader')));
+            $('#content' + userid).html($('<div>').addClass('d-flex justify-content-center my-5')
+                .append($('<div>').addClass('tiny_cursive-loader')));
             if (replayInstances && replayInstances[userid]) {
                 replayInstances[userid].stopReplay();
             }
@@ -72,7 +74,8 @@ export default class AnalyticEvents {
         $('body').on('click', '#diff' + userid + questionid, function (e) {
             $('#rep' + userid + questionid).prop('disabled', false);
             e.preventDefault();
-            $('#content' + userid).html($('<div>').addClass('d-flex justify-content-center my-5').append($('<div>').addClass('tiny_cursive-loader')));
+            $('#content' + userid).html($('<div>').addClass('d-flex justify-content-center my-5')
+                .append($('<div>').addClass('tiny_cursive-loader')));
             $('.tiny_cursive-nav-tab').find('.active').removeClass('active');
             $(this).addClass('active'); // Add 'active' class to the clicked element
             if (replayInstances && replayInstances[userid]) {
@@ -80,61 +83,68 @@ export default class AnalyticEvents {
             }
             if (!fileid) {
                 $('#content' + userid).html(nodata);
-                throw new Error('Missing file id or Difference Content not receive yet');
+                throw new Error('Missing file id or Difference Content not received yet');
             }
             getContent([{
                 methodname: 'cursive_get_writing_differences',
-                args: {
-                    fileid: fileid,
-                },
+                args: { fileid: fileid },
             }])[0].done(response => {
                 let responsedata = JSON.parse(response.data);
                 if (responsedata[0]) {
-
                     let submitted_text = atob(responsedata[0].submitted_text);
-                    let reconstructed_text = responsedata[0].reconstructed_text;
-                    const $legend = $('<div class= "d-flex p-2 border rounded  mb-2">');
 
-                    // Create the first legend item
-                    const $attributedItem = $('<div>', { class: 'tiny_cursive-legend-item' });
-                    const $attributedBox = $('<div>', { class: 'tiny_cursive-box attributed' });
-                    const $attributedText = $('<span>').text('Original Text');
-                    $attributedItem.append($attributedBox).append($attributedText);
+                    // Fetch the dynamic strings
+                    Str.get_strings([
+                        {key: 'originaltext', component: 'tiny_cursive'},
+                        {key: 'editspastesai', component: 'tiny_cursive'}
+                    ]).done(strings => {
+                        const originalTextString = strings[0];
+                        const editsPastesAIString = strings[1];
 
-                    // Create the second legend item
-                    const $unattributedItem = $('<div>', { class: 'tiny_cursive-legend-item' });
-                    const $unattributedBox = $('<div>', { class: 'tiny_cursive-box tiny_cursive_added' });
-                    const $unattributedText = $('<span>').text('Edits, Pastes, AI');
-                    $unattributedItem.append($unattributedBox).append($unattributedText);
+                        const $legend = $('<div class="d-flex p-2 border rounded mb-2">');
 
-                    // Append the legend items to the legend container
-                    $legend.append($attributedItem).append($unattributedItem);
+                        // Create the first legend item
+                        const $attributedItem = $('<div>', { class: 'tiny_cursive-legend-item' });
+                        const $attributedBox = $('<div>', { class: 'tiny_cursive-box attributed' });
+                        const $attributedText = $('<span>').text(originalTextString);
+                        $attributedItem.append($attributedBox).append($attributedText);
 
-                    let contents = $('<div>').addClass('tiny_cursive-comparison-content');
+                        // Create the second legend item
+                        const $unattributedItem = $('<div>', { class: 'tiny_cursive-legend-item' });
+                        const $unattributedBox = $('<div>', { class: 'tiny_cursive-box tiny_cursive_added' });
+                        const $unattributedText = $('<span>').text(editsPastesAIString);
+                        $unattributedItem.append($unattributedBox).append($unattributedText);
 
-                    let textBlock2 = $('<div>').addClass('tiny_cursive-text-block').append(
-                        $('<div>').attr('id', 'tiny_cursive-reconstructed_text').html(JSON.parse(submitted_text))
-                    );
+                        // Append the legend items to the legend container
+                        $legend.append($attributedItem).append($unattributedItem);
 
-                    contents.append($legend, textBlock2);
+                        let contents = $('<div>').addClass('tiny_cursive-comparison-content');
+                        let textBlock2 = $('<div>').addClass('tiny_cursive-text-block').append(
+                            $('<div>').attr('id', 'tiny_cursive-reconstructed_text').html(JSON.parse(submitted_text))
+                        );
 
-                    $('#content' + userid).html(contents); // Update content
+                        contents.append($legend, textBlock2);
+                        $('#content' + userid).html(contents); // Update content
+                    }).fail(error => {
+                        console.error("Failed to load language strings:", error);
+                        $('#content' + userid).html(nodata);
+                    });
                 } else {
-                    $('#content' + userid).html(nodata)
+                    $('#content' + userid).html(nodata);
                 }
-
-            }).fail(error => { $('#content' + userid).html(nodata); throw new Error('Error loading JSON file: ' + error.message); });
-
-
+            }).fail(error => {
+                $('#content' + userid).html(nodata);
+                throw new Error('Error loading JSON file: ' + error.message);
+            });
         });
     }
 
     replyWriting(userid, filepath, questionid = '', replayInstances = null) {
-
         $('body').on('click', '#rep' + userid + questionid, function (e) {
             $(this).prop('disabled', true);
             e.preventDefault();
-            $('#content' + userid).html($('<div>').addClass('d-flex justify-content-center my-5').append($('<div>').addClass('tiny_cursive-loader')));
+            $('#content' + userid).html($('<div>').addClass('d-flex justify-content-center my-5')
+                .append($('<div>').addClass('tiny_cursive-loader')));
             $('.tiny_cursive-nav-tab').find('.active').removeClass('active');
             $(this).addClass('active'); // Add 'active' class to the clicked element
             if (replayInstances && replayInstances[userid]) {
@@ -145,47 +155,37 @@ export default class AnalyticEvents {
             } else {
                 video_playback(userid, filepath);
             }
-
-
         });
     }
 
     formatedTime(data) {
-        // Calculate and format total time
         if (data.total_time_seconds) {
             let total_time_seconds = data.total_time_seconds;
             let hours = Math.floor(total_time_seconds / 3600).toString().padStart(2, 0);
             let minutes = Math.floor((total_time_seconds % 3600) / 60).toString().padStart(2, 0);
             let seconds = (total_time_seconds % 60).toString().padStart(2, 0);
-            let formattedTime = `${hours}h ${minutes}m ${seconds}s`;
-            return formattedTime
+            return `${hours}h ${minutes}m ${seconds}s`;
         } else {
-            return "0h 0m 0s"
+            return "0h 0m 0s";
         }
     }
 
     authorshipStatus(firstFile, score, score_setting) {
-
-        var score = parseFloat(score);
         var icon = 'fa fa-circle-o';
         var color = 'font-size:32px;color:black';
+        var score = parseFloat(score);
 
         if (firstFile) {
-            icon = 'fa  fa fa-solid fa-info-circle';
+            icon = 'fa fa-solid fa-info-circle';
             color = 'font-size:32px;color:#000000';
-        } else {
-            if (score >= score_setting) {
-                icon = 'fa fa-check-circle';
-                color = 'font-size:32px;color:green';
-            } else if (score < score_setting) {
-                icon = 'fa fa-question-circle';
-                color = 'font-size:32px;color:#A9A9A9';
-            } else {
-                icon = 'fa fa-circle-o';
-                color = 'font-size:32px;color:black';
-            }
+        } else if (score >= score_setting) {
+            icon = 'fa fa-check-circle';
+            color = 'font-size:32px;color:green';
+        } else if (score < score_setting) {
+            icon = 'fa fa-question-circle';
+            color = 'font-size:32px;color:#A9A9A9';
         }
+
         return $('<i>').addClass(icon).attr('style', color);
     }
-
 }
