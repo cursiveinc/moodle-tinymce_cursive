@@ -134,6 +134,7 @@ $string['typeid'] = 'TypeID';
 $string['userename'] = 'User name';
 $string['username'] = 'User name';
 $string['warning'] = 'You have no permissions to access the page.';
+$string['writing'] = 'Writing Report';
 $string['wordpermin'] = 'Words per minute:';
 $string['words_per_minute'] = 'Words per Minute';
 $string['words_per_minute_desc'] = 'Total duration / total words';
