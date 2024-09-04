@@ -23,6 +23,7 @@
 
 import Modal from 'core/modal';
 import $ from 'jquery';
+import ModalRegistry from 'core/modal_registry';
 export default class MyModal extends Modal {
     static TYPE = "tiny_cursive/analytics_modal";
     static TEMPLATE = "tiny_cursive/analytics_modal";
@@ -73,4 +74,10 @@ export default class MyModal extends Modal {
             }
         });
     }
+}
+
+let registered = false;
+if (!registered) {
+    ModalRegistry.register(MyModal.TYPE, MyModal, MyModal.TEMPLATE);
+    registered = true;
 }
