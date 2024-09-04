@@ -95,7 +95,7 @@ export default class AnalyticEvents {
 
                     // Fetch the dynamic strings
                     Str.get_strings([
-                        {key: 'originaltext', component: 'tiny_cursive'},
+                        {key: 'original_text', component: 'tiny_cursive'},
                         {key: 'editspastesai', component: 'tiny_cursive'}
                     ]).done(strings => {
                         const originalTextString = strings[0];
