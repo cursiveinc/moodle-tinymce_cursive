@@ -93,7 +93,7 @@ class tiny_cursive_renderer extends plugin_renderer_base {
             $row[] = date("l jS \of F Y h:i:s A", $user->timemodified);
             $row[] = '<div class ="analytic-modal" data-cmid="' . $user->cmid .
                 '" data-filepath="' . $filepath . '" data-id="' . $user->attemptid .
-                '" >Analytics</div>';
+                '" >' . get_string('analytics', 'tiny_cursive') . '</div>';
             $row[] = html_writer::link(
                 new moodle_url('/lib/editor/tiny/plugins/cursive/download_json.php', [
                     'fname' => $user->filename,
@@ -130,7 +130,7 @@ class tiny_cursive_renderer extends plugin_renderer_base {
      * @throws moodle_exception
      */
     public function user_writing_report($users, $userprofile, $userid, $page = 0, $limit = 5, $baseurl = '') {
-        global $CFG, $DB, $PAGE, $USER;
+        global $CFG, $DB, $USER;
         require_once($CFG->dirroot . "/lib/editor/tiny/plugins/cursive/lib.php");
         $courseid = optional_param('courseid', 0, PARAM_INT);
 
@@ -233,7 +233,7 @@ class tiny_cursive_renderer extends plugin_renderer_base {
             $row[] = $getmodulename ? $getmodulename->name : '';
             $row[] = date("l jS \of F Y h:i:s A", $user->timemodified);
             $row[] = '<div class ="analytic-modal" data-cmid="' . $user->cmid . '" data-filepath="' . $filepath . '" data-id="' .
-                $user->attemptid . '" >Analytics</div>';
+                $user->attemptid . '" >'. get_string('analytic', 'tiny_cursive') . '</div>';
             $row[] = html_writer::link(
                 new moodle_url('/lib/editor/tiny/plugins/cursive/download_json.php', [
                     'fname' => $user->filename,

@@ -100,14 +100,16 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
 
                         $("#" + entry.id).find('#post-content-' + ids).append(analytic_button_div);
                         if (data.usercomment != 'comments' && parseInt(showcomment)) {
-                          
+
                             let comments = "";
                             data.usercomment.forEach(element => {
                                 // Create the anchor element
-                                comments += '<div class="border-bottom p-3 text-primary" style="font-weight:600;">' + element.usercomment + '</div>';
+                                comments += '<div class="border-bottom p-3 text-primary" style="font-weight:600;">'
+                                    + element.usercomment + '</div>';
                             });
 
-                            $("#" + entry.id).find('#post-content-' + ids).prepend($('<div>').addClass('tiny_cursive-quiz-references rounded').append(comments));
+                            $("#" + entry.id).find('#post-content-' + ids).prepend($('<div>')
+                                .addClass('tiny_cursive-quiz-references rounded').append(comments));
 
                         }
 
