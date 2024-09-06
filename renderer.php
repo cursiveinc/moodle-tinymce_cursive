@@ -162,11 +162,8 @@ class tiny_cursive_renderer extends plugin_renderer_base {
             INNER JOIN {user} u ON u.id = ue.userid
                  WHERE ue.userid = :userid";
 
-        if ($USER->id == $userid || get_admin()->id == $USER->id) {
-            $courses = $DB->get_records_sql($sql, ['userid' => $userid]);
-        } else {
-            $courses = $DB->get_records_sql($sql, ['userid' => $USER->id]);
-        }
+        $courses = $DB->get_records_sql($sql, ['userid' => $USER->id]);
+
 
         $options = [];
         $currenturl = new moodle_url($baseurl, ['userid' => $userid, 'courseid' => null]);
