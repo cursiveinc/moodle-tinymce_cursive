@@ -31,5 +31,5 @@ $plugin->component = 'tiny_cursive';
 $plugin->release = '0.1.2';
 $plugin->version = 2024060243;
 $plugin->requires = 2022041912;
-$plugin->supported = [4.3, 4.4]; // support Moodle 4.3 to 4.4
+$plugin->supported = [43, 44]; // support Moodle 4.3 to 4.4
 $plugin->maturity = MATURITY_STABLE;
