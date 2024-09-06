@@ -56,7 +56,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
                     { key: "field_require", component: "tiny_cursive" },
                 ])
                 .done(function () {
-                    $(document).ready(function ($) {
+                    $(document).ready(function () {
                     });
                     usersTable.getusers(page);
                 });
