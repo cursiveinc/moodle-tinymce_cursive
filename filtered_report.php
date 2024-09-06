@@ -43,12 +43,15 @@ $context = context_module::instance($cm->id);
 $haseditcapability = has_capability('tiny/cursive:view', $context);
 
 $PAGE->requires->js_call_amd('tiny_cursive/filter_writing_report', "init", [0]);
-
 $PAGE->set_url(new moodle_url('/lib/editor/tiny/plugins/cursive/filtered_report.php'));
+
 echo $OUTPUT->header();
+
 $mform = new filterreportform(null, [
     'coursename' => $courseid,
 ], 'post', '', ['class' => 'timer_report', 'id' => 'elstimerreport']);
+
 $mform->display();
-echo "<div id='id_username'></div>";
+echo html_writer::div('', 'id_username');
+
 echo $OUTPUT->footer();

@@ -32,8 +32,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates"], function (
         .get_strings([
           { key: "field_require", component: "tiny_cursive" }
         ])
-        .done(function (s) {
-          
+        .done(function () {
           $(document).ready(function($) {
             $(".popup_item").on('click',function () {
               var mid=$(this).data("id");
@@ -42,7 +41,6 @@ define(["jquery", "core/ajax", "core/str", "core/templates"], function (
             $(".link_icon").on('click',function () {
               var smid=$(this).data("id");
             $("#"+smid).show();
-          
             });
             $(".modal-close ").on('click',function () {$(".modal").hide();});
         } );
@@ -69,8 +67,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates"], function (
           };
           templates
             .render("tiny_cursive/user_list", context)
-            .then(function (html, js) {
-           
+            .then(function (html) {
               var filtered_user = $("#id_username");
               filtered_user.html(html);
             });
@@ -93,7 +90,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates"], function (
           templates
             .render("tiny_cursive/module_list", context)
             .then(function (html) {
-           
+
               var filtered_user = $("#id_modulename");
               filtered_user.html(html);
             });

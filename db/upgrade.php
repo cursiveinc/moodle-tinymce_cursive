@@ -30,8 +30,7 @@
  * @param int $oldversion The old version of atto in the DB.
  * @return bool
  */
-function xmldb_tiny_cursive_upgrade($oldversion)
-{
+function xmldb_tiny_cursive_upgrade($oldversion) {
     global $DB;
 
     $dbman = $DB->get_manager();
@@ -47,28 +46,27 @@ function xmldb_tiny_cursive_upgrade($oldversion)
     }
 
     if ($oldversion < 2024060227) {
-
         $table = new xmldb_table('tiny_cursive_writing_diff');
-        // Check if the table exists
+        // Check if the table exists.
         if ($dbman->table_exists($table)) {
-            // Drop the existing table
+            // Drop the existing table.
             $dbman->drop_table($table);
         }
 
-        // Define table fields
+        // Define table fields.
         $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
         $table->add_field('file_id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
         $table->add_field('reconstructed_text', XMLDB_TYPE_TEXT, 'long', null, XMLDB_NOTNULL, null, null);
         $table->add_field('submitted_text', XMLDB_TYPE_TEXT, 'long', null, XMLDB_NOTNULL, null, null);
         $table->add_field('meta', XMLDB_TYPE_TEXT, 'medium', null, null, null, null);
 
-        // Define table keys
+        // Define table keys.
         $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
 
-        // Create the new table
+        // Create the new table.
         $dbman->create_table($table);
 
-        // Save upgrade path
+        // Save upgrade path.
         upgrade_plugin_savepoint(true, 2024060227, 'tiny', 'cursive');
 
     }

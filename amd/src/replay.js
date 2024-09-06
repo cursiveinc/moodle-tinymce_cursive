@@ -40,23 +40,21 @@ export default class Replay {
         }
         this.loadJSON(filePath)
             .then((data) => {
-
                 if (data.status) {
                     var val = JSON.parse(data.data);
                     this.logData = val;
 
                     if ("data" in this.logData) {
                         this.logData = this.logData['data'];
-                    };
+                    }
                     if ("payload" in this.logData) {
                         this.logData = this.logData['payload'];
-                    };
+                    }
                     this.startReplay();
                 } else {
                     templates.render('tiny_cursive/no_submission').then(html => {
                         let updatedHtml = html.replace('No Submission', "Something Went Wrong! or File Not Found!");
-                        $('.cursive').html(updatedHtml);
-                        
+                        $('.tiny_cursive').html(updatedHtml);
                     });
                 }
             })
@@ -75,9 +73,6 @@ export default class Replay {
         const controller = document.getElementById(controllerId);
 
         if (controller) {
-            // this.buttonElement = document.createElement('button');
-            // this.buttonElement.id = 'playerButton';
-            // this.buttonElement.textContent = 'Play';
             this.scrubberElement = document.createElement('input');
             this.scrubberElement.type = 'range';
             this.scrubberElement.id = 'timelineScrubber';
@@ -113,7 +108,7 @@ export default class Replay {
         // clear previous instances of timeout to prevent multiple running at once
         if (this.replayInProgress) {
             clearTimeout(this.replayTimeout);
-        };
+        }
         this.replayInProgress = true;
         let uid = controllerId.split('_')[1];
         let element = document.getElementById('rep' + uid);
@@ -192,11 +187,13 @@ export default class Replay {
                 return textOutput + "\n";
             case "Backspace":
                 return textOutput.slice(0, -1);
-            case "ControlBackspace":
+            case "ControlBackspace": {
                 let lastSpace = textOutput.lastIndexOf(' ');
                 return textOutput.slice(0, lastSpace);
+            }
             default:
-                return !["Shift", "Ctrl", "Alt", "ArrowDown", "ArrowUp", "Control", "ArrowRight", "ArrowLeft"].includes(key) ? textOutput + key : textOutput;
+                return !["Shift", "Ctrl", "Alt", "ArrowDown", "ArrowUp", "Control", "ArrowRight", "ArrowLeft"]
+                    .includes(key) ? textOutput + key : textOutput;
         }
     }
 }

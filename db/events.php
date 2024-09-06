@@ -49,6 +49,6 @@ $observers = [
         'callback' => '\tiny_cursive\observers::reset_tracking_data',
         'internal' => true,
         'priority' => 9999,
-    ]
+    ],
 ];
 

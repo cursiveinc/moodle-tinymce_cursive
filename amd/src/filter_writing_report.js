@@ -38,7 +38,6 @@ define(["jquery", "core/ajax", "core/templates"], function (
         ]);
         promise1[0].done(function (json) {
           var data = JSON.parse(json);
-        
           var context = {
             data: data.data,
             page: page,
@@ -49,16 +48,6 @@ define(["jquery", "core/ajax", "core/templates"], function (
               var filtered_user = $("#id_username");
               filtered_user.html(html);
             });
-        });
-      });
-      $(document).ready(function ($) {
-        $(window).on('click', function (e) {
-          var mid = $(e.target.parentNode).data("id");
-          $("#score" + mid).show();
-          $("#" + mid).show();
-          if ($(e.target).hasClass('modal-close')) {
-            $(".modal").hide();
-          }
         });
       });
     },
