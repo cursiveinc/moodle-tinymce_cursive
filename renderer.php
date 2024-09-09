@@ -162,19 +162,24 @@ class tiny_cursive_renderer extends plugin_renderer_base {
             INNER JOIN {user} u ON u.id = ue.userid
                  WHERE ue.userid = :userid";
 
-        if ($USER->id == $userid || get_admin()->id == $USER->id) {
+        if (is_siteadmin($USER->id)) {
+            // The user is a site admin.
             $courses = $DB->get_records_sql($sql, ['userid' => $userid]);
+        } else if ($USER->id != $userid) {
+            // The user is not a site admin.
+            $courses = $DB->get_records_sql($sql, ['userid' => $USER->id]);
         } else {
+            // Not a site admin.
             $courses = $DB->get_records_sql($sql, ['userid' => $USER->id]);
         }
-
         $options = [];
         $currenturl = new moodle_url($baseurl, ['userid' => $userid, 'courseid' => null]);
         $allcoursesurl = $currenturl->out(false, ['courseid' => null]);
         $allcoursesattributes =
             empty($courseid) ? ['value' => $allcoursesurl, 'selected' => 'selected'] : ['value' => $allcoursesurl];
-        $options[] = html_writer::tag('option', 'All Courses', $allcoursesattributes);
-
+        if (is_siteadmin($USER->id)) {
+            $options[] = html_writer::tag('option', 'All Courses', $allcoursesattributes);
+        }
         foreach ($courses as $course) {
             $courseurl = new moodle_url($baseurl, ['userid' => $userid, 'courseid' => $course->id]);
             $courseattributes = (isset($courseid) && $courseid == $course->id) ? ['value' => $courseurl, 'selected' => 'selected'] :
