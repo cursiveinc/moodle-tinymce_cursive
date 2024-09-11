@@ -36,12 +36,7 @@ define(["jquery", "core/config", "core/str"], function ($, mdlcfg, Str) {
 
                 let statsString = await Str.get_string('stats', 'tiny_cursive');
 
-                $(h_tr).find('th').eq(6).after('<th>' + statsString + '</th>' +
-                    '<div class="commands"><a title="Hide Groups" aria-expanded="true" ' +
-                    'data-action="hide" data-column="groups" role="button" ' +
-                    'href='+mdlcfg.wwwroot+'"/user/index.php?id=6&thide=stats">' +
-                    '<i class="icon fa fa-minus fa-fw " aria-hidden="true"></i>' +
-                    '</a></div>');
+                $(h_tr).find('th').eq(6).after('<th>' + statsString + '</th>');
                 $('tbody').find("tr").get().forEach(function (tr) {
                     let td_user = $(tr).find("td").get()[0];
                     let userid = $(td_user).find("input").get()[0]?.id;
