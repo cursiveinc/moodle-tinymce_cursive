@@ -238,7 +238,7 @@ class tiny_cursive_renderer extends plugin_renderer_base {
             $row[] = $getmodulename ? $getmodulename->name : '';
             $row[] = date("l jS \of F Y h:i:s A", $user->timemodified);
             $row[] = '<div class ="analytic-modal" data-cmid="' . $user->cmid . '" data-filepath="' . $filepath . '" data-id="' .
-                $user->attemptid . '" >'. get_string('analytic', 'tiny_cursive') . '</div>';
+                $user->attemptid . '" >'. get_string('analytics', 'tiny_cursive') . '</div>';
             $row[] = html_writer::link(
                 new moodle_url('/lib/editor/tiny/plugins/cursive/download_json.php', [
                     'fname' => $user->filename,

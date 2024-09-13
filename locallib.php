@@ -248,9 +248,9 @@ function get_user_submissions_data($resourceid, $modulename, $cmid, $courseid = 
     if (!isset($data['filename'])) {
         $sql = 'SELECT id as fileid, userid, filename
                   FROM {tiny_cursive_files}
-                 WHERE userid = ' . $resourceid .
-            ' AND cmid = :cmid
-                       AND modulename = :modulename';
+                 WHERE userid = :userid
+                   AND cmid = :cmid
+                   AND modulename = :modulename';
         $filename = $DB->get_record_sql($sql, ['userid' => $resourceid, 'cmid' => $cmid, 'modulename' => $modulename]);
 
         if ($filename) {

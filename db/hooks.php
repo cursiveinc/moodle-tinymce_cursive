@@ -15,20 +15,20 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Tiny cursive plugin version.
+ * Tiny cursive plugin hooks.
  *
  * @package tiny_cursive
- * @copyright  Cursive Technology, Inc. <info@cursivetechnology.com>
- * @author kuldeep singh & Brainstation23
- *
+ * @copyright  CTI <info@cursivetechnology.com>
+ * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'tiny_cursive';
-$plugin->release = '0.1.2';
-$plugin->version = 2024060251;
-$plugin->requires = 2022041912;
-$plugin->maturity = MATURITY_STABLE;
+$callbacks = [
+    [
+        'hook' => \core\hook\output\before_footer_html_generation::class,
+        'callback' => \tiny_cursive\hook_callbacks::class . '::before_footer_html_generation',
+        'priority' => 0,
+    ],
+];

@@ -205,55 +205,6 @@ function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath
 }
 
 /**
- * tiny_cursive_before_footer
- *
- * @return void
- * @throws coding_exception
- * @throws dml_exception
- */
-function tiny_cursive_before_footer() {
-    global $PAGE, $COURSE, $USER;
-    $confidencethreshold = get_config('tiny_cursive', 'confidence_threshold');
-    $confidencethreshold = !empty($confidencethreshold) ? $confidencethreshold : .65;
-    $confidencethreshold = floatval($confidencethreshold);
-    $showcomments = get_config('tiny_cursive', 'showcomments');
-    $context = context_course::instance($COURSE->id);
-    $userrole = '';
-    if (has_capability('report/courseoverview:view', $context, $USER->id, false) || is_siteadmin()) {
-        $userrole = 'teacher_admin';
-    }
-    $PAGE->requires->js_call_amd('tiny_cursive/settings', 'init', [$showcomments, $userrole]);
-
-    if ($PAGE->bodyid == 'page-mod-forum-discuss' || $PAGE->bodyid == 'page-mod-forum-view') {
-        $PAGE->requires->js_call_amd(
-            'tiny_cursive/append_fourm_post',
-            'init',
-            [$confidencethreshold, $showcomments]
-        );
-    }
-
-    if ($PAGE->bodyid == 'page-mod-assign-grader') {
-        $PAGE->requires->js_call_amd(
-            'tiny_cursive/show_url_in_submission_grade',
-            'init',
-            [$confidencethreshold, $showcomments]
-        );
-    }
-
-    if ($PAGE->bodyid == 'page-mod-assign-grading') {
-        $PAGE->requires->js_call_amd('tiny_cursive/append_submissions_table', 'init', [$confidencethreshold, $showcomments]);
-    }
-
-    if ($PAGE->bodyid == 'page-mod-quiz-review') {
-        $PAGE->requires->js_call_amd('tiny_cursive/show_url_in_quiz_detail', 'init', [$confidencethreshold, $showcomments]);
-    }
-
-    if ($PAGE->bodyid == 'page-course-view-participants') {
-        $PAGE->requires->js_call_amd('tiny_cursive/append_participants_table', 'init', [$confidencethreshold, $showcomments]);
-    }
-}
-
-/**
  * file_urlcreate
  *
  * @param $context
