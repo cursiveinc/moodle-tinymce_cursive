@@ -1469,17 +1469,17 @@ class cursive_json_func_data extends external_api {
             $data = $recordexists ? $DB->get_record('tiny_cursive_user_writing', ['file_id' => $params['fileid']]) : new stdClass();
 
             // Populate data attributes.
-            $data->file_id = $params['fileid'];
-            $data->total_time_seconds = $params['totaltimeseconds'];
-            $data->key_count = $params['keycount'];
-            $data->keys_per_minute = $params['keysperminute'];
-            $data->character_count = $params['charactercount'];
-            $data->characters_per_minute = $params['charactersperminute'];
-            $data->word_count = $params['wordcount'];
-            $data->words_per_minute = $params['wordsperminute'];
-            $data->backspace_percent = $params['backspacepercent'];
+            $data->file_id = $params['file_id'];
+            $data->total_time_seconds = $params['total_time_seconds'];
+            $data->key_count = $params['key_count'];
+            $data->keys_per_minute = $params['keys_per_minute'];
+            $data->character_count = $params['character_count'];
+            $data->characters_per_minute = $params['characters_per_minute'];
+            $data->word_count = $params['word_count'];
+            $data->words_per_minute = $params['words_per_minute'];
+            $data->backspace_percent = $params['backspace_percent'];
             $data->score = $params['score'];
-            $data->copy_behavior = $params['copybehavior'];
+            $data->copy_behavior = $params['copy_behavior'];
 
             // Update or insert the record.
             if ($recordexists) {
