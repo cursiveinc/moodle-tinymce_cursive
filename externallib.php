@@ -1439,7 +1439,7 @@ class cursive_json_func_data extends external_api {
         $params = self::validate_parameters(
             self::store_user_writing_parameters(),
             [
-                'personid' => $personid,
+                'person_id' => $personid,
                 'fileid' => $fileid,
                 'charactercount' => $charactercount,
                 'totaltimeseconds' => $totaltimeseconds,
@@ -1705,8 +1705,8 @@ class cursive_json_func_data extends external_api {
             self::cursive_store_writing_differencs_parameters(),
             [
                 'fileid' => $fileid,
-                'reconstructedtext' => $reconstructedtext,
-                'submittedtext' => $submittedtext,
+                'reconstructed_text' => $reconstructedtext,
+                'submitted_text' => $submittedtext,
                 'meta' => $meta,
             ]
         );
@@ -1718,8 +1718,8 @@ class cursive_json_func_data extends external_api {
         $recordexists = $DB->record_exists('tiny_cursive_writing_diff', ['file_id' => $params['fileid']]);
         $record = $recordexists ? $DB->get_record('tiny_cursive_writing_diff', ['file_id' => $params['fileid']]) : new stdClass();
         $record->file_id = $params['fileid'];
-        $record->reconstructed_text = $params['reconstructedtext'];
-        $record->submitted_text = $params['submittedtext'];
+        $record->reconstructed_text = $params['reconstructed_text'];
+        $record->submitted_text = $params['submitted_text'];
         $record->meta = $params['meta']; // Add the meta field.
 
         try {
@@ -1768,7 +1768,7 @@ class cursive_json_func_data extends external_api {
     }
 
     /**
-     * Method store_user_writing_parameters
+     * Method cursive_get_writing_differencs
      *
      * @param array $fileid
      */
@@ -1801,7 +1801,7 @@ class cursive_json_func_data extends external_api {
     }
 
     /**
-     * Method store_user_writing_parameters
+     * Method cursive_get_writing_differencs_returns
      *
      * @return object [explicite description]
      */
