@@ -1448,7 +1448,7 @@ class cursive_json_func_data extends external_api {
                 'keys_per_minute' => $keysperminute,
                 'word_count' => $wordcount,
                 'words_per_minute' => $wordsperminute,
-                'back_space_percent' => $backspacepercent,
+                'backspace_percent' => $backspacepercent,
                 'copy_behavior' => $copybehavior,
                 'score' => $score,
             ]
@@ -1461,7 +1461,7 @@ class cursive_json_func_data extends external_api {
             self::validate_context($context);
             require_capability('tiny/cursive:editsettings', $context);
 
-            $backspacepercent = round($params['back_space_percent'], 4);
+            $backspacepercent = round($params['backspace_percent'], 4);
 
             // Check if the record exists.
             $recordexists = $DB->record_exists('tiny_cursive_user_writing', ['file_id' => $params['fileid']]);
