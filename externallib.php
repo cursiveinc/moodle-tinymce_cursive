@@ -1466,7 +1466,8 @@ class cursive_json_func_data extends external_api {
             // Check if the record exists.
             $recordexists = $DB->record_exists('tiny_cursive_user_writing', ['file_id' => $params['file_id']]);
             // Retrieve existing data or initialize a new stdClass object.
-            $data = $recordexists ? $DB->get_record('tiny_cursive_user_writing', ['file_id' => $params['file_id']]) : new stdClass();
+            $data =
+                $recordexists ? $DB->get_record('tiny_cursive_user_writing', ['file_id' => $params['file_id']]) : new stdClass();
 
             // Populate data attributes.
             $data->file_id = $params['file_id'];

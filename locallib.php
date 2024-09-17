@@ -82,10 +82,10 @@ function get_user_attempts_data($userid, $courseid, $moduleid, $orderby = 'id', 
     $params['odby'] = $odby;
     $params['order'] = $order;
 
-    $sql .= " GROUP BY uf.id, u.id, uw.id, u.firstname, u.lastname, u.email, 
-                  uf.courseid, uf.timemodified, uf.cmid, uf.filename, 
-                  uw.total_time_seconds, uw.key_count, uw.keys_per_minute, 
-                  uw.character_count, uw.characters_per_minute, uw.word_count, 
+    $sql .= " GROUP BY uf.id, u.id, uw.id, u.firstname, u.lastname, u.email,
+                  uf.courseid, uf.timemodified, uf.cmid, uf.filename,
+                  uw.total_time_seconds, uw.key_count, uw.keys_per_minute,
+                  uw.character_count, uw.characters_per_minute, uw.word_count,
                   uw.words_per_minute, uw.backspace_percent, uw.score, uw.copy_behavior
           ORDER BY :odby :order";
 
