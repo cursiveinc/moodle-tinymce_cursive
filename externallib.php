@@ -1784,7 +1784,7 @@ class cursive_json_func_data extends external_api {
 
         $filename = $DB->get_record('tiny_cursive_files',
             ['id' => $vparams['fileid']], 'filename');
-        $parts = explode('_', $filename);
+        $parts = explode('_', $filename->filename);
         $cmid = $parts[2];
 
         $context = context_module::instance($cmid);
