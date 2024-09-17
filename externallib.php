@@ -1776,7 +1776,7 @@ class cursive_json_func_data extends external_api {
         global $DB;
 
         $vparams = self::validate_parameters(
-            self::cursive_store_writing_differencs_parameters(),
+            self::cursive_get_writing_differencs_parameters(),
             [
                 'fileid' => $fileid,
             ]
