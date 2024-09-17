@@ -684,7 +684,7 @@ class cursive_json_func_data extends external_api {
                 ]
             );
             $filep = $CFG->dataroot . "/temp/userdata/" . $filename->filename;
-            $data['filename'] = file_exists($filep) ? $filep : null;
+            $data['filename'] = $filep;
             $data['questionid'] = $params['questionid'];
 
             if ($data['filename']) {
@@ -760,7 +760,7 @@ class cursive_json_func_data extends external_api {
                 ]);
 
                 $filep = $CFG->dataroot . "/temp/userdata/" . $filename->filename;
-                $data['filename'] = file_exists($filep) ? $filep : null;
+                $data['filename'] = $filep;
 
             }
 
@@ -870,7 +870,7 @@ class cursive_json_func_data extends external_api {
 
             $filep = $CFG->dataroot . "/temp/userdata/" . $filename->filename;
 
-            $data['filename'] = file_exists($filep) ? $filep : null;
+            $data['filename'] = $filep;
 
             $sql = 'SELECT *
                       FROM {tiny_cursive_files}
@@ -881,7 +881,7 @@ class cursive_json_func_data extends external_api {
             }
         } else {
             $filep = $CFG->dataroot . "/temp/userdata/" . $data['filename'];
-            $data['filename'] = file_exists($filep) ? $filep : null;
+            $data['filename'] = $filep;
         }
         $sql = 'SELECT *
                   FROM {tiny_cursive_files}
@@ -998,7 +998,7 @@ class cursive_json_func_data extends external_api {
                 );
 
                 $filep = $CFG->dataroot . "/temp/userdata/" . $filename->filename;
-                $data['filename'] = file_exists($filep) ? $filep : null;
+                $data['filename'] = $filep;
             }
 
         } else {
@@ -1031,7 +1031,7 @@ class cursive_json_func_data extends external_api {
                 );
 
                 $filep = $CFG->dataroot . "/temp/userdata/" . $filename->filename;
-                $data['filename'] = file_exists($filep) ? $filep : null;
+                $data['filename'] = $filep;
             }
         }
         $usercomment = [];
@@ -1215,7 +1215,7 @@ class cursive_json_func_data extends external_api {
         if ($data['filename']) {
 
             $filep = $CFG->dataroot . "/temp/userdata/" . $data['filename'];
-            $data['filename'] = file_exists($filep) ? $filep : null;
+            $data['filename'] = $filep;
 
             $sql = 'SELECT id AS fileid
                       FROM {tiny_cursive_files}
