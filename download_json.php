@@ -25,6 +25,7 @@
 
 require(__DIR__ . '/../../../../../config.php');
 require_once(__DIR__.'/locallib.php');
+global $DB, $CFG;
 require_login();
 
 $resourceid = optional_param('resourceid', 0, PARAM_INT);
@@ -37,8 +38,13 @@ $dirname = $CFG->dataroot . '/temp/userdata/';
 if ($fname) {
     $filename = $dirname . $fname;
     if (!file_exists($filename)) {
-        $url = new moodle_url('/lib/editor/tiny/plugins/cursive/writing_report.php?userid=' . $userid);
-        return redirect($url, get_string('filenotfound', 'tiny_cursive'));
+        $filerow = $DB->get_record('tiny_cursive_files', ['filename' => $fname]);
+        if ($filerow->content) {
+            filestream($filerow->content, $fname);
+        } else {
+            $url = new moodle_url('/lib/editor/tiny/plugins/cursive/writing_report.php?userid=' . $userid);
+            return redirect($url, get_string('filenotfound', 'tiny_cursive'));
+        }
     }
 } else {
     $filename = $dirname . $userid . '_' . $resourceid . '_' . $cmid . '_attempt' . '.json';
@@ -52,15 +58,32 @@ if (!$haseditcapability) {
 }
 
 if ($haseditcapability) {
-
-    header("Content-Description: File Transfer");
-    header("Content-Type: application/octet-stream");
-    header("Content-Disposition: attachment; filename=\"" . basename($filename) . "\"");
-    flush();
-    $inp = file_get_contents($filename);
-    echo $inp;
-    die();
+    filestream($filename, $filename);
 } else {
     $url = new moodle_url('/course/index.php');
     return redirect($url, get_string('warning', 'tiny_cursive'));
+}
+
+/**
+ * Method filestream
+ *
+ * @param $file $file [explicite description]
+ * @param $fname $fname [explicite description]
+ *
+ * @return void
+ */
+function filestream($file, $fname) {
+    header("Content-Description: File Transfer");
+    header("Content-Type: application/octet-stream");
+    header("Content-Disposition: attachment; filename=\"" . basename($fname) . "\"");
+    flush();
+
+    if (file_exists($file)) {
+        $inp = file_get_contents($file);
+    } else {
+        $inp = base64_decode($file);
+    }
+
+    echo $inp;
+    die();
 }
