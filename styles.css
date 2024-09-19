@@ -510,3 +510,9 @@
         fill: white;
     }
 }
+
+.tiny_cursive_show_url_in_submission_grade .cursive_grade-actions-panel_path_mod_assign{
+    height: 120px !important;
+    background: #ddd;
+    z-index: 2;
+}

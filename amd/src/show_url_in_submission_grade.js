@@ -34,11 +34,11 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
         if (filepath !== '') {
             // $("#playback" + mid).show();
             const replay = new Replay(
-                elementId = 'content' + mid,
-                filePath = filepath,
-                speed = 10,
-                loop = false,
-                controllerId = 'player_' + mid
+                'content' + mid,
+                filepath,
+                10,
+                false,
+                'player_' + mid
             );
             replayInstances[mid] = replay;
         }
@@ -53,6 +53,11 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
 
     var usersTable = {
         init: function (score_setting, showcomment) {
+
+            if (!$('#show_url_in_submission_grade').hasClass('tiny_cursive_show_url_in_submission_grade')) {
+                alert('Please add the class.');
+                $('#show_url_in_submission_grade').addClass('tiny_cursive_show_url_in_submission_grade');
+            }
             str
                 .get_strings([
                     { key: "field_require", component: "tiny_cursive" },
