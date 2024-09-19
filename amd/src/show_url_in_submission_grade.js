@@ -32,13 +32,13 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
     const replayInstances = {};
     window.video_playback = function (mid, filepath) {
         if (filepath !== '') {
-            // $("#playback" + mid).show();
+            var elementId = 'content' + mid;
+            var filePath = filepath;
+            var speed = 10;
+            var loop = false;
+            var controllerId = 'player_' + mid;
             const replay = new Replay(
-                'content' + mid,
-                filepath,
-                10,
-                false,
-                'player_' + mid
+                elementId, filePath, speed, loop, controllerId
             );
             replayInstances[mid] = replay;
         }
