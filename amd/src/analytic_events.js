@@ -24,17 +24,22 @@ import MyModal from "./analytic_modal";
 import { call as getContent } from "core/ajax";
 import $ from 'jquery';
 import * as Str from 'core/str';
+import ModalFactory from 'core/modal_factory';
 
 export default class AnalyticEvents {
 
     createModal(userid, context, questionid = '', authIcon) {
         $('#analytics' + userid + questionid).on('click', function (e) {
             e.preventDefault();
+            ModalFactory.create({ type: MyModal.TYPE, templateContext: context }).then(modal => {
 
-            // Create Moodle modal
-            MyModal.create({ templateContext: context }).then(modal => {
-                $('#content' + userid + ' .table tbody tr:first-child td:nth-child(2)').html(authIcon);
                 modal.show();
+                const targetElement = $('#content' + userid + ' .table tbody tr:first-child td:nth-child(2)');
+                if (targetElement.length > 0) {
+                    targetElement.html(authIcon);
+                } else {
+                    console.error('Target element not found');
+                }
             }).catch(error => {
                 console.error("Failed to create modal:", error);
             });
