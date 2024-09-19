@@ -53,6 +53,9 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
 
     var usersTable = {
         init: function (score_setting, showcomment) {
+            if (!$('#show_url_in_submission_grade').hasClass('tiny_cursive_show_url_in_submission_grade')) {
+                $('#show_url_in_submission_grade').addClass('tiny_cursive_show_url_in_submission_grade');
+            }
             str
                 .get_strings([
                     { key: "field_require", component: "tiny_cursive" },
