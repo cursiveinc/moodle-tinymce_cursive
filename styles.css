@@ -511,8 +511,8 @@
     }
 }
 
-.tiny_cursive_show_url_in_submission_grade .cursive_grade-actions-panel_path_mod_assign{
-    height: 120px !important;
+.tiny_cursive_mod_assign_grader .cursive_grade-actions-panel_path_mod_assign{
+    height: 100px !important;
     background: #ddd;
     z-index: 2;
 }
