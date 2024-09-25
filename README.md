@@ -26,7 +26,7 @@ $ php admin/cli/upgrade.php
 to complete the installation from the command line.
 
 License
-2023 Cursive Technology, Inc.
+2024 Cursive Technology, Inc.
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
