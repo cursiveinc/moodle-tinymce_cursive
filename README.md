@@ -8,7 +8,7 @@ We also provide an optional integration via the plugin to our Machine Learning/A
 
 Ultimately, we believe in human contribution as captured through the writing process, the beautiful production of written work expressing your individual thoughts that cannot be completed by a third party nor replicated by generative AI. We're excited to work with you.
 
-If you have questions or comments, please reach out to us at contact@cursivetechnology.com
+If you have questions, comments, or would like to request a trial API key, please reach out to us at contact@cursivetechnology.com
 
 Installing via uploaded ZIP file
 Log in to your Moodle site as an admin and go to Site Administration > Plugins > Install plugins.
