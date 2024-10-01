@@ -164,7 +164,7 @@ function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath
     try {
         $token = get_config('tiny_cursive', 'secretkey');
         $remoteurl = get_config('tiny_cursive', 'python_server') . "/upload_file";
-        $fileToSend = '';
+        $filetosend = '';
 
         // Check if file exists or create one from base64 content.
         if (file_exists($filenamewithfullpath)) {
@@ -172,8 +172,8 @@ function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath
             if (filesize($filenamewithfullpath) > 16 * 1024 * 1024) {
                 throw new Exception("File exceeds the 16MB size limit.");
             }
-            // Use the file directly
-            $fileToSend = new CURLFILE($filenamewithfullpath);
+            // Use the file directly.
+            $filetosend = new CURLFILE($filenamewithfullpath);
         } else {
             // Save base64 decoded content to a temporary JSON file.
             $tempfilepath = tempnam(sys_get_temp_dir(), 'upload');
@@ -184,11 +184,11 @@ function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath
                 throw new Exception("Invalid JSON content in file.");
             }
             file_put_contents($tempfilepath, json_encode($jsoncontent));
-            $fileToSend = new CURLFILE($tempfilepath, 'application/json', 'uploaded.json');
+            $filetosend = new CURLFILE($tempfilepath, 'application/json', 'uploaded.json');
 
-            // Ensure the temporary file does not exceed the size limit
+            // Ensure the temporary file does not exceed the size limit.
             if (filesize($tempfilepath) > 16 * 1024 * 1024) {
-                unlink($tempfilepath); // Remove temporary file
+                unlink($tempfilepath);
                 throw new Exception("File exceeds the 16MB size limit.");
             }
         }
@@ -198,7 +198,7 @@ function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath
         curl_setopt($ch, CURLOPT_URL, $remoteurl);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, [
-            'file' => $fileToSend,
+            'file' => $filetosend,
             'resource_id' => $filerecord->id,
             'person_id' => $filerecord->userid,
             'ws_token' => $wstoken,
@@ -207,7 +207,7 @@ function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             'Authorization: Bearer ' . $token,
             'X-Moodle-Url:' . $moodleurl,
-            'Content-Type: multipart/form-data',  // multipart is needed for file uploads
+            'Content-Type: multipart/form-data',
         ]);
 
         $result = curl_exec($ch);
