@@ -17,11 +17,12 @@
  * This module defines a custom modal for analytics.
  *
  * @module     tiny_cursive/analytic_modal
- * @copyright  2024  CTI <info@cursivetechnology.com>
+ * @copyright  2024 YOUR NAME <your@email.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 import Modal from 'core/modal';
+import ModalRegistry from 'core/modal_registry';
 import $ from 'jquery';
 export default class MyModal extends Modal {
     static TYPE = "tiny_cursive/analytics_modal";
@@ -46,9 +47,13 @@ export default class MyModal extends Modal {
         const root = this.getRoot();
 
 
+
         // Hide the default modal header.
         root.find('.modal-header').hide();
 
+        root.find('.modal-content').css({
+            'border-radius':'30px'
+        }).addClass('shadow-none border-none');
         root.find('.modal-content').css({
             'border-radius':'30px'
         }).addClass('shadow-none border-none');
@@ -57,9 +62,14 @@ export default class MyModal extends Modal {
             'padding':'0',
             'border-radius':'30px'
         });
+        root.find('.modal-body').css({
+            'padding':'0',
+            'border-radius':'30px'
+        });
         root.find('.modal-dialog').css({
             'max-width': '800px',
-        });
+
+        }).addClass('border-none shadow-none');
 
         // Ensure modal closes on 'analytic-close' button click.
         root.find('#analytic-close').on('click', () => {
@@ -73,4 +83,10 @@ export default class MyModal extends Modal {
             }
         });
     }
+}
+
+let registered = false;
+if (!registered) {
+    ModalRegistry.register(MyModal.TYPE, MyModal, MyModal.TEMPLATE);
+    registered = true;
 }

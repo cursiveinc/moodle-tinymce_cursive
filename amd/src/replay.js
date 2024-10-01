@@ -22,6 +22,7 @@
 
 import { call as fetchJson } from 'core/ajax';
 import templates from 'core/templates';
+import $ from 'jquery';
 export default class Replay {
     constructor(elementId, filePath, speed = 1, loop = false, controllerId) {
 
