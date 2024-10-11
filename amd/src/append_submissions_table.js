@@ -21,7 +21,6 @@
  */
 
 define([
-    "jquery",
     "core/ajax",
     "core/str",
     "core/templates",
@@ -29,19 +28,17 @@ define([
     './analytic_button',
     './analytic_events',
     'core/str'], function (
-    $,
-    AJAX,
-    str,
-    templates,
-    Replay,
-    analyticButton,
-    AnalyticEvents,
-    Str
-) {
+        AJAX,
+        str,
+        templates,
+        Replay,
+        analyticButton,
+        AnalyticEvents,
+        Str
+    ) {
     const replayInstances = {};
 
     window.video_playback = function (mid, filepath) {
-
         if (filepath !== '') {
             const replay = new Replay(
                 elementId = 'content' + mid,
@@ -53,42 +50,48 @@ define([
             replayInstances[mid] = replay;
         } else {
             templates.render('tiny_cursive/no_submission').then(html => {
-                $('#content' + mid).html(html);
+                document.getElementById('content' + mid).innerHTML = html;
             }).catch(e => window.console.error(e));
         }
         return false;
-
     };
 
     var usersTable = {
         init: function (score_setting, showcomment) {
             str
                 .get_strings([
-                    {key: "confidence_threshold", component: "tiny_cursive"},
+                    { key: "confidence_threshold", component: "tiny_cursive" },
                 ]).done(function () {
-                usersTable.appendTable(score_setting, showcomment);
-            });
+                    usersTable.appendTable(score_setting, showcomment);
+                });
         },
         appendTable: function (score_setting) {
             let sub_url = window.location.href;
             let parm = new URL(sub_url);
-            let h_tr = $('thead').find('tr').get()[0];
+            let h_tr = document.querySelector('thead tr');
             Str.get_string('analytics', 'tiny_cursive')
                 .then(analyticString => {
-                    $(h_tr).find('th').eq(3).after('<th class="header c4" scope="col">'
-                        + analyticString + '<div class="commands">' +
-                        '<i class="icon fa fa-minus fa-fw " aria-hidden="true"></i></div></th>');
-                    $('tbody').find("tr").get().forEach(function (tr) {
-                        let td_user = $(tr).find("td").get()[0];
-                        let userid = $(td_user).find("input[type='checkbox']").get()[0].value;
+                    let th = document.createElement('th');
+                    th.className = "header c4";
+                    th.scope = "col";
+                    th.innerHTML = analyticString + '<div class="commands">' +
+                        '<i class="icon fa fa-minus fa-fw " aria-hidden="true"></i></div>';
+                    h_tr.children[3].insertAdjacentElement('afterend', th);
+
+                    document.querySelectorAll('tbody tr').forEach(function (tr) {
+                        let td_user = tr.querySelector("td");
+                        let userid = td_user.querySelector("input[type='checkbox']").value;
                         let cmid = parm.searchParams.get('id');
+
                         // Create the table cell element and append the anchor
                         const tableCell = document.createElement('td');
                         tableCell.appendChild(analyticButton(userid));
-                        $(tr).find('td').eq(3).after(tableCell);
-                        let args = {id: userid, modulename: "assign", cmid: cmid};
+                        tr.children[3].insertAdjacentElement('afterend', tableCell);
+
+                        let args = { id: userid, modulename: "assign", cmid: cmid };
                         let methodname = 'cursive_user_list_submission_stats';
-                        let com = AJAX.call([{methodname, args}]);
+                        let com = AJAX.call([{ methodname, args }]);
+
                         try {
                             com[0].done(function (json) {
                                 var data = JSON.parse(json);
@@ -96,9 +99,9 @@ define([
                                 if (data.res.filename) {
                                     filepath = data.res.filename;
                                 }
-                                // Get Module Name from element.
+
+                                // Get Module Name from element
                                 let element = document.querySelector('.page-header-headings h1');
-                                // Selects the h1 element within the .page-header-headings class
                                 let textContent = element.textContent; // Extracts the text content from the h1 element
 
                                 let myEvents = new AnalyticEvents();

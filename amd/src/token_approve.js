@@ -20,45 +20,40 @@
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  */
 
-define(["jquery", "core/ajax", "core/str"], function (
-    $,
-    AJAX,
-    str,
-  ) {
-    var usersTable = {
-      init: function (page) {
-        str
-          .get_strings([
-            { key: "field_require", component: "tiny_cursive" },
-          ])
-          .done(function () {
-            usersTable.getToken(page);
-          });
-      },
-      getToken: function () {
-        $("#approve_token").click(function () {
-          var token = $('#id_s_tiny_cursive_secretkey').val();
-          var promise1 = AJAX.call([
-            {
-              methodname: "cursive_approve_token",
-              args: {
-                token: token,
-              },
-            },
-          ]);
-          promise1[0].done(function (json) {
-            var data = JSON.parse(json);
-            var message_alert='';
-            if(data.status==true){
-              message_alert="<span class='alert alert-success' role='alert'>"+data.message+"</span>";
-            }else{
-              message_alert="<span class='alert alert-danger' role='alert'>"+data.message+"</span>";
-            }
-            $("#token_message").html(message_alert);
-          });
-
+define(["core/ajax", "core/str"], function (AJAX, str) {
+  var usersTable = {
+    init: function (page) {
+      str
+        .get_strings([
+          { key: "field_require", component: "tiny_cursive" },
+        ])
+        .then(function () {
+          usersTable.getToken(page);
         });
-      },
-    };
-    return usersTable;
-  });
+    },
+    getToken: function () {
+      document.getElementById("approve_token").addEventListener("click", function () {
+        var token = document.getElementById('id_s_tiny_cursive_secretkey').value;
+        var promise1 = AJAX.call([
+          {
+            methodname: "cursive_approve_token",
+            args: {
+              token: token,
+            },
+          },
+        ]);
+        promise1[0].done(function (json) {
+          var data = JSON.parse(json);
+          var message_alert = '';
+          if (data.status === true) {
+            message_alert = "<span class='alert alert-success' role='alert'>" + data.message + "</span>";
+          } else {
+            message_alert = "<span class='alert alert-danger' role='alert'>" + data.message + "</span>";
+          }
+          document.getElementById("token_message").innerHTML = message_alert;
+        });
+      });
+    },
+  };
+  return usersTable;
+});

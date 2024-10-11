@@ -20,8 +20,14 @@
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  */
 
-define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./analytic_button", "./analytic_events"], function (
-    $,
+define([
+    "core/ajax",
+    "core/str",
+    "core/templates",
+    "./replay",
+    "./analytic_button",
+    "./analytic_events"
+], function (
     AJAX,
     str,
     templates,
@@ -30,9 +36,9 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
     AnalyticEvents
 ) {
     const replayInstances = {};
+
     window.video_playback = function (mid, filepath) {
         if (filepath !== '') {
-            // $("#playback" + mid).show();
             const replay = new Replay(
                 elementId = 'content' + mid,
                 filePath = filepath,
@@ -44,138 +50,168 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
         }
         else {
             templates.render('tiny_cursive/no_submission').then(html => {
-                $('#content' + mid).html(html);
+                const contentElement = document.getElementById('content' + mid);
+                if (contentElement) {
+                    contentElement.innerHTML = html;
+                }
             }).catch(e => window.console.error(e));
         }
         return false;
-
     };
 
     var usersTable = {
         init: function (score_setting, showcomment) {
-            $(document).ready(function () {
-                $('#page-mod-assign-grader').addClass('tiny_cursive_mod_assign_grader');
-            });
-            str
-                .get_strings([
-                    {key: "field_require", component: "tiny_cursive"},
-                ])
-                .done(function () {
+
+            const graderElement = document.getElementById('page-mod-assign-grader');
+            if (graderElement) {
+                graderElement.classList.add('tiny_cursive_mod_assign_grader');
+            }
+
+            str.get_strings([{ key: "field_require", component: "tiny_cursive" }])
+                .then(() => {
                     usersTable.appendSubmissionDetail(score_setting, showcomment);
                 });
         },
+
         appendSubmissionDetail: function (score_setting, showcomment) {
-            $(document).ready(function ($) {
 
-                var divElement = $('.path-mod-assign [data-region="grade-panel"]')[0];
-                var previousContextId = window.location.href;
-                var observer = new MutationObserver(function (mutations) {
-                    mutations.forEach(function () {
+            const divElement = document.querySelector('.path-mod-assign [data-region="grade-panel"]');
+            let previousContextId = window.location.href;
 
-                        var currentContextId = window.location.href;
-                        if (currentContextId !== previousContextId) {
-                            window.location.reload();
-                            previousContextId = currentContextId;
+            const observer = new MutationObserver(function (mutations) {
+                mutations.forEach(function () {
+                    let currentContextId = window.location.href;
+                    if (currentContextId !== previousContextId) {
+                        window.location.reload();
+                        previousContextId = currentContextId;
+                    }
+                });
+            });
+
+            const config = { childList: true, subtree: true };
+            observer.observe(divElement, config);
+
+            const sub_url = window.location.href;
+            const parm = new URL(sub_url);
+            const userid = parm.searchParams.get('userid');
+            const cmid = parm.searchParams.get('id');
+
+            const args = { id: userid, modulename: "assign", cmid: cmid };
+            const methodname = 'cursive_get_assign_grade_comment';
+            const com = AJAX.call([{ methodname, args }]);
+
+            com[0].done(function (json) {
+                const data = JSON.parse(json);
+                let filepath = '';
+                if (data.data.filename) {
+                    filepath = data.data.filename;
+                }
+
+                if (data.usercomment !== 'comments' && parseInt(showcomment)) {
+                    const container = document.createElement('div');
+                    const row = document.createElement('div');
+                    row.classList.add('row');
+
+                    const chatbox = document.createElement('div');
+                    chatbox.classList.add('tiny_cursive-chatbox', 'tiny_cursive-chatbox22', 'tiny_cursive-chatbox--tray');
+
+                    const chatboxTitle = document.createElement('div');
+                    chatboxTitle.classList.add('tiny_cursive-chatbox__title');
+
+                    const titleH5 = document.createElement('h5');
+                    titleH5.classList.add('text-white');
+                    titleH5.textContent = "References";
+                    chatboxTitle.appendChild(titleH5);
+
+                    const cbody = document.createElement('div');
+                    cbody.classList.add('tiny_cursive-chatbox__body');
+
+                    chatbox.appendChild(chatboxTitle);
+                    chatbox.appendChild(cbody);
+                    row.appendChild(chatbox);
+                    container.appendChild(row);
+
+                    const gradeActionsPanel = document.querySelector('div[data-region="grade-actions-panel"]');
+                    gradeActionsPanel.parentNode.insertBefore(container, gradeActionsPanel);
+
+                    const chatboxTitleClose = document.querySelector('.tiny_cursive-chatbox__title__close');
+                    chatboxTitle.addEventListener('click', function () {
+                        chatbox.classList.toggle('tiny_cursive-chatbox--tray');
+                    });
+
+                    if (chatboxTitleClose) {
+                        chatboxTitleClose.addEventListener('click', function (e) {
+                            e.stopPropagation();
+                            chatbox.classList.add('tiny_cursive-chatbox--closed');
+                        });
+                    }
+
+                    chatbox.addEventListener('transitionend', function () {
+                        if (chatbox.classList.contains('tiny_cursive-chatbox--closed')) {
+                            chatbox.remove();
                         }
                     });
-                });
-                // Configuration of the observer:
-                var config = { childList: true, subtree: true };
-                // Start observing the target node for configured mutations
-                observer.observe(divElement, config);
 
-                let sub_url = window.location.href;
-                let parm = new URL(sub_url);
-                let userid = parm.searchParams.get('userid');
-                let cmid = parm.searchParams.get('id');
 
-                let args = { id: userid, modulename: "assign", 'cmid': cmid };
-                let methodname = 'cursive_get_assign_grade_comment';
-                let com = AJAX.call([{ methodname, args }]);
-                com[0].done(function (json) {
-                    var data = JSON.parse(json);
-                    var filepath = '';
-                    if (data.data.filename) {
-                        filepath = data.data.filename;
+                    const gradePanel = document.querySelector('div[data-region="grade-panel"]');
+                    if (gradePanel) {
+                        const dropdownDiv = document.createElement('div');
+                        dropdownDiv.classList.add('dropdown');
+                        gradePanel.appendChild(dropdownDiv);
                     }
 
-                    if (data.usercomment != 'comments' && parseInt(showcomment)) {
+                    data.usercomment.forEach(element => {
+                        const commentDiv = document.createElement('div');
+                        commentDiv.classList.add('border', 'p-2', 'shadow-sm');
+                        commentDiv.textContent = element.usercomment;
+                        cbody.appendChild(commentDiv);
+                    });
+                }
 
-                        let container = $('<div>');
-                        let row = $('<div>').addClass('row');
-                        let chatbox = $('<div>').addClass('tiny_cursive-chatbox tiny_cursive-chatbox22 tiny_cursive-chatbox--tray');
+                const analytic_button_div = document.createElement('div');
+                analytic_button_div.classList.add('text-center', 'mt-2');
+                analytic_button_div.appendChild(analyticButton(userid));
 
-                        let chatboxTitle = $('<div>').addClass('tiny_cursive-chatbox__title');
-                        let titleH5 = $('<h5 class="text-white">').text("References");
+                const gradeActions = document.querySelector('div[data-region="grade-actions"]');
+                gradeActions.parentNode.insertBefore(analytic_button_div, gradeActions);
 
+                const reviewPanel = document.querySelector('div[data-region="review-panel"]');
+                if (reviewPanel) {
+                    reviewPanel.classList.add('cursive_review_panel_path_mod_assign');
+                }
 
-                        chatboxTitle.append(titleH5);
-                        let cbody = $('<div>').addClass('tiny_cursive-chatbox__body');
-                        chatbox.append(chatboxTitle, cbody);
-                        row.append(chatbox);
-                        container.append(row);
-                        $('div[data-region="grade-actions-panel"]').before(container);
+                const gradingNavigationPanel = document.querySelector('div[data-region="grading-navigation-panel"]');
+                if (gradingNavigationPanel) {
+                    gradingNavigationPanel.classList.add('cursive_grading-navigation-panel_path_mod_assign');
+                }
 
-                        var $chatbox = $('.tiny_cursive-chatbox'),
-                            $chatboxTitle = $('.tiny_cursive-chatbox__title'),
-                            $chatboxTitleClose = $('.tiny_cursive-chatbox__title__close');
-                        $chatboxTitle.on('click', function () {
-                            $chatbox.toggleClass('tiny_cursive-chatbox--tray');
-                        });
-                        $chatboxTitleClose.on('click', function (e) {
-                            e.stopPropagation();
-                            $chatbox.addClass('tiny_cursive-chatbox--closed');
-                        });
-                        $chatbox.on('transitionend', function () {
-                            if ($chatbox.hasClass('tiny_cursive-chatbox--closed')) {
-                                $chatbox.remove();
-                            }
-                        });
+                const gradePanel = document.querySelector('div[data-region="grade-panel"]');
+                if (gradePanel) {
+                    gradePanel.classList.add('cursive_grade-panel_path_mod_assign');
+                }
 
-                        $(document).ready(function () {
-                            $('div[data-region="grade-panel"]').append('<div class="dropdown">');
-                            data.usercomment.forEach(element => {
-                                cbody.append('<div class="border p-2 shadow-sm">' + element.usercomment + '</div>');
+                const gradeActionsPanel = document.querySelector('div[data-region="grade-actions-panel"]');
+                if (gradeActionsPanel) {
+                    gradeActionsPanel.classList.add('cursive_grade-actions-panel_path_mod_assign');
+                }
 
-                            });
-                        });
-                    }
+                const myEvents = new AnalyticEvents();
+                const context = {
+                    tabledata: data.data,
+                    formattime: myEvents.formatedTime(data.data),
+                    page: score_setting,
+                    userid: userid,
+                };
 
-                    let analytic_button_div = document.createElement('div');
-                    analytic_button_div.append(analyticButton(userid));
-                    analytic_button_div.classList.add('text-center', 'mt-2');
-
-                    $('div[data-region="grade-actions"]').before(analytic_button_div);
-
-                    $('div[data-region="review-panel"]').addClass('cursive_review_panel_path_mod_assign');
-
-                    $('div[data-region="grading-navigation-panel"]').addClass('cursive_grading-navigation-panel_path_mod_assign');
-
-                    $('div[data-region="grade-panel"]').addClass('cursive_grade-panel_path_mod_assign');
-
-                    $('div[data-region="grade-actions-panel"]').addClass('cursive_grade-actions-panel_path_mod_assign');
-
-
-                    let myEvents = new AnalyticEvents();
-                    var context = {
-                        tabledata: data.data,
-                        formattime: myEvents.formatedTime(data.data),
-                        page: score_setting,
-                        userid: userid,
-                    };
-
-                    let authIcon = myEvents.authorshipStatus(data.data.first_file, data.data.score, score_setting);
-                    myEvents.createModal(userid, context, '', authIcon);
-                    myEvents.analytics(userid, templates, context, '', replayInstances, '', authIcon);
-                    myEvents.checkDiff(userid, data.data.file_id, '', replayInstances);
-                    myEvents.replyWriting(userid, filepath, '', replayInstances);
-
-                });
-                return com.usercomment;
+                const authIcon = myEvents.authorshipStatus(data.data.first_file, data.data.score, score_setting);
+                myEvents.createModal(userid, context, '', authIcon);
+                myEvents.analytics(userid, templates, context, '', replayInstances, '', authIcon);
+                myEvents.checkDiff(userid, data.data.file_id, '', replayInstances);
+                myEvents.replyWriting(userid, filepath, '', replayInstances);
             });
+            return com.usercomment;
         },
     };
+
     return usersTable;
 });
-
-

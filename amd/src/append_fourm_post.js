@@ -20,8 +20,7 @@
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  */
 
-define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./analytic_button", "./analytic_events"], function (
-    $,
+define(["core/ajax", "core/str", "core/templates", "./replay", "./analytic_button", "./analytic_events"], function (
     AJAX,
     str,
     templates,
@@ -43,11 +42,10 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
         }
         else {
             templates.render('tiny_cursive/no_submission').then(html => {
-                $('#content' + mid).html(html);
+                document.getElementById('content' + mid).innerHTML = html;
             }).catch(e => window.console.error(e));
         }
         return false;
-
     };
 
     var usersTable = {
@@ -61,23 +59,26 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                 });
         },
         getToken: function (score_setting, showcomment) {
-            $('#page-mod-forum-discuss').find("article").get().forEach(function (entry) {
-                $(document).ready(function () {
-                    var replyButton = $('a[data-region="post-action"][title="Reply"]');
+            const articles = document.querySelectorAll('#page-mod-forum-discuss article');
+            articles.forEach(function (entry) {
+                document.addEventListener("DOMContentLoaded", function () {
+                    const replyButton = document.querySelectorAll('a[data-region="post-action"][title="Reply"]');
                     if (replyButton.length > 0) {
-                        replyButton.on('click', function (event) {
-                            event.preventDefault();
-                            var url = $(this).attr('href');
-                            window.location.href = url;
+                        replyButton.forEach(button => {
+                            button.addEventListener('click', function (event) {
+                                event.preventDefault();
+                                const url = this.getAttribute('href');
+                                window.location.href = url;
+                            });
                         });
                     }
                 });
 
-                var ids = $("#" + entry.id).data("post-id");
-                var anchorTag = $('a.nav-link.active.active_tree_node[href*="mod/forum/view.php?id="]');
-                var cmid = 0;
-                if (anchorTag.length > 0) {
-                    var hrefValue = anchorTag.attr('href');
+                const ids = document.getElementById(entry.id).getAttribute('data-post-id');
+                const anchorTag = document.querySelector('a.nav-link.active.active_tree_node[href*="mod/forum/view.php?id="]');
+                let cmid = 0;
+                if (anchorTag) {
+                    const hrefValue = anchorTag.getAttribute('href');
                     cmid = hrefValue.match(/id=(\d+)/)[1];
                 }
 
@@ -85,55 +86,52 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                 let methodname = 'cursive_get_forum_comment_link';
                 let com = AJAX.call([{ methodname, args }]);
                 com[0].done(function (json) {
-                    var data = JSON.parse(json);
+                    const data = JSON.parse(json);
 
-                    var filepath = '';
+                    let filepath = '';
                     if (data.data.filename) {
-                        var filepath = data.data.filename;
+                        filepath = data.data.filename;
                     }
+
                     if (filepath) {
+                        const analyticButtonDiv = document.createElement('div');
+                        analyticButtonDiv.append(analyticButton(ids));
+                        analyticButtonDiv.classList.add('text-center', 'mt-2');
+                        analyticButtonDiv.setAttribute('data-region', "analytic-div" + ids);
 
-                        let analytic_button_div = document.createElement('div');
-                        analytic_button_div.append(analyticButton(ids));
-                        analytic_button_div.classList.add('text-center', 'mt-2');
-                        analytic_button_div.dataset.region = "analytic-div" + ids;
+                        document.getElementById('post-content-' + ids).append(analyticButtonDiv);
 
-                        $("#" + entry.id).find('#post-content-' + ids).append(analytic_button_div);
-                        if (data.usercomment != 'comments' && parseInt(showcomment)) {
-
+                        if (data.usercomment !== 'comments' && parseInt(showcomment)) {
                             let comments = "";
                             data.usercomment.forEach(element => {
-                                // Create the anchor element
-                                comments += '<div class="border-bottom p-3 text-primary" style="font-weight:600;">'
-                                    + element.usercomment + '</div>';
+                                comments += '<div class="border-bottom p-3 text-primary" style="font-weight:600;">' + element.usercomment + '</div>';
                             });
 
-                            $("#" + entry.id).find('#post-content-' + ids).prepend($('<div>')
-                                .addClass('tiny_cursive-quiz-references rounded').append(comments));
+                            const commentDiv = document.createElement('div');
+                            commentDiv.classList.add('tiny_cursive-quiz-references', 'rounded');
+                            commentDiv.innerHTML = comments;
 
+                            document.getElementById('post-content-' + ids).prepend(commentDiv);
                         }
 
-                        let myEvents = new AnalyticEvents();
-                        var context = {
+                        const myEvents = new AnalyticEvents();
+                        const context = {
                             tabledata: data.data,
                             formattime: myEvents.formatedTime(data.data),
                             page: score_setting,
                             userid: ids,
                         };
 
-                        let authIcon = myEvents.authorshipStatus(data.data.first_file, data.data.score, score_setting);
+                        const authIcon = myEvents.authorshipStatus(data.data.first_file, data.data.score, score_setting);
                         myEvents.createModal(ids, context, '', authIcon);
                         myEvents.analytics(ids, templates, context, '', replayInstances, authIcon);
                         myEvents.checkDiff(ids, data.data.file_id, '', replayInstances);
                         myEvents.replyWriting(ids, filepath, '', replayInstances);
                     }
-
                 });
                 return com.usercomment;
             });
         },
     };
     return usersTable;
-
-
 });
