@@ -260,7 +260,7 @@ function get_user_submissions_data($resourceid, $modulename, $cmid, $courseid = 
 
         if ($filename) {
             $filep = $CFG->dataroot . "/temp/userdata/" . $filename->filename;
-            $data['filename'] = file_exists($filep) ? $filep : null;
+            $data['filename'] = $filep;
             $data['file_id'] = $filename->fileid ?? '';
         }
     } else {
