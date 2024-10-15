@@ -30,12 +30,12 @@ export const register = (editor) => {
         methodname,
         args,
     }])[0];
-
+    var is_student, intervention;
     document.addEventListener('DOMContentLoaded', function () {
         var bodyElement = document.querySelector('#body');
         if (bodyElement) {
-            var is_student = !bodyElement.classList.contains('teacher_admin'); // true or false
-            var intervention = bodyElement.classList.contains('intervention'); // true or false
+            is_student = !bodyElement.classList.contains('teacher_admin'); // true or false
+            intervention = bodyElement.classList.contains('intervention'); // true or false
         } else {
             console.error('#body element not found');
         }
