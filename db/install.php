@@ -66,12 +66,14 @@ function enable_webservice_protocol($protocol) {
  * @return string The created token
  */
 function create_token_for_user() {
-    global $DB;
-    $amdinid = get_admin();
+    global $DB, $CFG;
+    require_once($CFG->libdir . '/externallib.php');
 
+    $amdinid = get_admin();
     $serviceshortname = 'moodle_mobile_app'; // Replace with your service shortname.
     $service = $DB->get_record('external_services', ['shortname' => $serviceshortname]);
-    $token = util::generate_token(EXTERNAL_TOKEN_PERMANENT, $service, $amdinid->id, context_system::instance());
+    $token = external_generate_token_for_current_user($service);
+    external_log_token_request($token); // In order to protect the privatetoken, we remove it from the event params.
 
     return $token;
 }
