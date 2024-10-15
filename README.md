@@ -1,4 +1,4 @@
-# Cursive Moodle TinyMCE Plugin #
+# Cursive Moodle TinyMCE Plugin
 
 At Cursive Technology, Inc., we're focused on the writing process. By capturing key event data (also known by the scary euphemism "key logging"), we can make new opportunities for teaching, learning, and research in a low-cost, low-effort way, all in the existing workflows of your course and site.
 
@@ -25,7 +25,41 @@ Alternatively, you can run
 $ php admin/cli/upgrade.php
 to complete the installation from the command line.
 
-License
+## How to Set TinyMCE as the Default Editor in Moodle 4.1
+
+Moodle 4.1 allows administrators to switch the default editor from **Atto** to **TinyMCE**. Follow the steps below to set TinyMCE as the default editor:
+
+## Steps
+
+### 1. Log in as Admin
+
+- Navigate to your Moodle site and log in with your **Administrator** credentials.
+
+### 2. Go to Site Administration
+
+- In the menu, click on **Site administration**.
+- Then go to **Plugins > Text editors > Manage editors**.
+
+### 3. Rearrange Editors
+
+- You will see a list of available editors, with **Atto** set as the default.
+- Drag **TinyMCE** to the top of the list to make it the default editor.
+
+### 4. Save Changes
+
+- Scroll down and click **Save changes**.
+- **TinyMCE** is now set as the default editor for all users on the platform.
+
+### 5. Optional: User-Specific Setting
+
+- Users can individually select TinyMCE as their preferred editor by going to their **Profile settings**.
+
+---
+
+**Note:** If you need to install additional plugins like the **Cursive Plugin** for TinyMCE, make sure TinyMCE is set as the default or preferred editor before doing so.
+
+### License
+
 2023 Cursive Technology, Inc.
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
