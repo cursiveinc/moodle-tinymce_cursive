@@ -683,7 +683,7 @@ class cursive_json_func_data extends external_api {
                     "userid" => $params['userid'],
                 ]
             );
-            $filep = $CFG->dataroot . "/temp/userdata/" . $filename->filename;
+            $filep = $CFG->tempdir . "/userdata/" . $filename->filename;
             $data['filename'] = $filep;
             $data['questionid'] = $params['questionid'];
 
@@ -759,7 +759,7 @@ class cursive_json_func_data extends external_api {
                     'modulename' => $params['modulename'],
                 ]);
 
-                $filep = $CFG->dataroot . "/temp/userdata/" . $filename->filename;
+                $filep = $CFG->tempdir . "/userdata/" . $filename->filename;
                 $data['filename'] = $filep;
 
             }
@@ -868,7 +868,7 @@ class cursive_json_func_data extends external_api {
                 ['resourceid' => $params['id'], 'cmid' => $params['cmid'], 'modulename' => $params['modulename']]
             );
 
-            $filep = $CFG->dataroot . "/temp/userdata/" . $filename->filename;
+            $filep = $CFG->tempdir . "/userdata/" . $filename->filename;
 
             $data['filename'] = $filep;
 
@@ -880,7 +880,7 @@ class cursive_json_func_data extends external_api {
                 $data['first_file'] = 1;
             }
         } else {
-            $filep = $CFG->dataroot . "/temp/userdata/" . $data['filename'];
+            $filep = $CFG->tempdir . "/userdata/" . $data['filename'];
             $data['filename'] = $filep;
         }
         $sql = 'SELECT *
@@ -997,7 +997,7 @@ class cursive_json_func_data extends external_api {
                     ['resourceid' => $params['id'], 'cmid' => $params['cmid'], 'modulename' => $params['modulename']]
                 );
 
-                $filep = $CFG->dataroot . "/temp/userdata/" . $filename->filename;
+                $filep = $CFG->tempdir . "/userdata/" . $filename->filename;
                 $data['filename'] = $filep;
             }
 
@@ -1030,7 +1030,7 @@ class cursive_json_func_data extends external_api {
                     ['resourceid' => $params['id'], 'cmid' => $params['cmid'], 'modulename' => $params['modulename']]
                 );
 
-                $filep = $CFG->dataroot . "/temp/userdata/" . $filename->filename;
+                $filep = $CFG->tempdir . "/userdata/" . $filename->filename;
                 $data['filename'] = $filep;
             }
         }
@@ -1214,7 +1214,7 @@ class cursive_json_func_data extends external_api {
         }
         if ($data['filename']) {
 
-            $filep = $CFG->dataroot . "/temp/userdata/" . $data['filename'];
+            $filep = $CFG->tempdir . "/userdata/" . $data['filename'];
             $data['filename'] = $filep;
 
             $sql = 'SELECT id AS fileid
