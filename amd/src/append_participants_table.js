@@ -27,39 +27,54 @@ define(["jquery", "core/config", "core/str"], function ($, mdlcfg, Str) {
         },
         appendTable: async function () {
             $(document).ready(async function ($) {
+                // Get the first row in the table header
                 let h_tr = $('thead').find('tr').get()[0];
                 let bodyid = $('body').attr('class');
                 let classes = bodyid.split(' ');
+
+                // Extract course ID
                 let courseid = parseInt(classes.find((classname) => {
                     return classname.startsWith('course-');
                 }).split('-')[1]);
 
+                // Fetch string for stats header
                 let statsString = await Str.get_string('stats', 'tiny_cursive');
 
-                $(h_tr).find('th').eq(6).after('<th>' + statsString + '</th>' +
-                    '<div class="commands"><a title="Hide Groups" aria-expanded="true" ' +
-                    'data-action="hide" data-column="groups" role="button" ' +
-                    'href='+mdlcfg.wwwroot+'"/user/index.php?id=6&thide=stats">' +
-                    '<i class="icon fa fa-minus fa-fw " aria-hidden="true"></i>' +
-                    '</a></div>');
+                // Add the stats header if it doesn't already exist
+                if (!$(h_tr).find('#stats').length) {
+                    $(h_tr).find('th').eq(6).after('<th class="header c7" id="stats">' + statsString + '</th>');
+                }
+
+                // Iterate over each row in the table body
                 $('tbody').find("tr").get().forEach(function (tr) {
                     let td_user = $(tr).find("td").get()[0];
                     let userid = $(td_user).find("input").get()[0]?.id;
-                    userid = userid?.slice(4);
+                    userid = userid?.slice(4); // Extract userid from input id
 
-                    var color = 'font-size:24px;color:black ;text-decoration : none';
-                    let link = mdlcfg.wwwroot + "/lib/editor/tiny/plugins/cursive/writing_report.php?userid="
-                        + userid + "&courseid=" + courseid;
-                    var icon = 'fa fa-area-chart';
-                    let thunder_icon = '<td><a href="' + link + '" data-id=' + userid + '' + '>' +
-                        '<i class="' + icon + '" aria-hidden="true" style="' + color + '"></a></td>';
-                    $(tr).find('td').eq(5).after(thunder_icon);
+                    if (userid) {
+                        // Avoid duplicating the icon by checking if the icon is already added
+                        if (!$(tr).find('td').eq(6).find('i').length) {
+                            let color = 'font-size:24px;color:black;text-decoration:none';
+                            let link = mdlcfg.wwwroot + "/lib/editor/tiny/plugins/cursive/writing_report.php?userid="
+                                + userid + "&courseid=" + courseid;
+                            let icon = 'fa fa-area-chart';
+
+                            // Add the icon link to the 6th column
+                            let thunder_icon = '<td><a href="' + link + '" data-id=' + userid + '>' +
+                                '<i class="' + icon + '" aria-hidden="true" style="' + color + '"></i></a></td>';
+                            $(tr).find('td').eq(5).after(thunder_icon); // Insert after the 5th column
+                        }
+                    }
                 });
 
-                $(".page-item ,.header ").on('click', function () {
+                // Add event listener for page change or other events triggering table update
+                $(".page-item, .header").on('click', function () {
                     setTimeout(() => {
-                        usersTable.init();
-                    }, 1800);
+                        // Prevent multiple initializations by checking if already initialized
+                        if (!$('#stats').length) {
+                            usersTable.init(); // Initialize the table if needed
+                        }
+                    }, 1800); // Slight delay to ensure the DOM is fully updated
                 });
             });
         }

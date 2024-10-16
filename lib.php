@@ -163,20 +163,42 @@ function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath
     $moodleurl = get_config('tiny_cursive', 'host_url');
     try {
         $token = get_config('tiny_cursive', 'secretkey');
-        $remoteurl = get_config('tiny_cursive', 'python_server');
-        $remoteurl = $remoteurl . "/upload_file";
-        $filecontent = "";
+        $remoteurl = get_config('tiny_cursive', 'python_server') . "/upload_file";
+        $filetosend = '';
 
-        if (!file_exists($filenamewithfullpath)) {
-            $filecontentdata = base64_decode($filerecord->content);
-            $filecontent = $filecontentdata;
+        // Check if file exists or create one from base64 content.
+        if (file_exists($filenamewithfullpath)) {
+            // Check if file size is within the limit.
+            if (filesize($filenamewithfullpath) > 16 * 1024 * 1024) {
+                throw new Exception("File exceeds the 16MB size limit.");
+            }
+            // Use the file directly.
+            $filetosend = new CURLFILE($filenamewithfullpath);
+        } else {
+            // Save base64 decoded content to a temporary JSON file.
+            $tempfilepath = tempnam(sys_get_temp_dir(), 'upload');
+            $filecontent = base64_decode($filerecord->content);
+            $jsoncontent = json_decode($filecontent, true);
+
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new Exception("Invalid JSON content in file.");
+            }
+            file_put_contents($tempfilepath, json_encode($jsoncontent));
+            $filetosend = new CURLFILE($tempfilepath, 'application/json', 'uploaded.json');
+
+            // Ensure the temporary file does not exceed the size limit.
+            if (filesize($tempfilepath) > 16 * 1024 * 1024) {
+                unlink($tempfilepath);
+                throw new Exception("File exceeds the 16MB size limit.");
+            }
         }
+
         echo $remoteurl;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $remoteurl);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, [
-            'file' => $filecontent ? $filecontent : new CURLFILE($filenamewithfullpath),
+            'file' => $filetosend,
             'resource_id' => $filerecord->id,
             'person_id' => $filerecord->userid,
             'ws_token' => $wstoken,
@@ -187,8 +209,10 @@ function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath
             'X-Moodle-Url:' . $moodleurl,
             'Content-Type: multipart/form-data',
         ]);
+
         $result = curl_exec($ch);
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
         if ($result === false) {
             echo "File not found: " . $filenamewithfullpath . "\n";
             echo "cURL Error: " . curl_error($ch) . "\n";
@@ -196,61 +220,17 @@ function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath
             echo "HTTP Status Code: " . $httpcode . "\n";
             echo "File Id: " . $filerecord->id . "\n";
         }
+
         curl_close($ch);
+        // Remove the temporary file if it was created.
+        if (isset($tempfilepath) && file_exists($tempfilepath)) {
+            unlink($tempfilepath);
+        }
     } catch (Exception $e) {
         echo $e->getMessage();
     }
 
     return $result;
-}
-
-/**
- * tiny_cursive_before_footer
- *
- * @return void
- * @throws coding_exception
- * @throws dml_exception
- */
-function tiny_cursive_before_footer() {
-    global $PAGE, $COURSE, $USER;
-    $confidencethreshold = get_config('tiny_cursive', 'confidence_threshold');
-    $confidencethreshold = !empty($confidencethreshold) ? $confidencethreshold : .65;
-    $confidencethreshold = floatval($confidencethreshold);
-    $showcomments = get_config('tiny_cursive', 'showcomments');
-    $context = context_course::instance($COURSE->id);
-    $userrole = '';
-    if (has_capability('report/courseoverview:view', $context, $USER->id, false) || is_siteadmin()) {
-        $userrole = 'teacher_admin';
-    }
-    $PAGE->requires->js_call_amd('tiny_cursive/settings', 'init', [$showcomments, $userrole]);
-
-    if ($PAGE->bodyid == 'page-mod-forum-discuss' || $PAGE->bodyid == 'page-mod-forum-view') {
-        $PAGE->requires->js_call_amd(
-            'tiny_cursive/append_fourm_post',
-            'init',
-            [$confidencethreshold, $showcomments]
-        );
-    }
-
-    if ($PAGE->bodyid == 'page-mod-assign-grader') {
-        $PAGE->requires->js_call_amd(
-            'tiny_cursive/show_url_in_submission_grade',
-            'init',
-            [$confidencethreshold, $showcomments]
-        );
-    }
-
-    if ($PAGE->bodyid == 'page-mod-assign-grading') {
-        $PAGE->requires->js_call_amd('tiny_cursive/append_submissions_table', 'init', [$confidencethreshold, $showcomments]);
-    }
-
-    if ($PAGE->bodyid == 'page-mod-quiz-review') {
-        $PAGE->requires->js_call_amd('tiny_cursive/show_url_in_quiz_detail', 'init', [$confidencethreshold, $showcomments]);
-    }
-
-    if ($PAGE->bodyid == 'page-course-view-participants') {
-        $PAGE->requires->js_call_amd('tiny_cursive/append_participants_table', 'init', [$confidencethreshold, $showcomments]);
-    }
 }
 
 /**

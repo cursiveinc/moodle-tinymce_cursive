@@ -138,4 +138,6 @@ $string['wordpermin'] = 'Words per minute:';
 $string['words_per_minute'] = 'Words per Minute';
 $string['words_per_minute_desc'] = 'Total duration / total words';
 $string['wractivityreport'] = 'Writing Activity Report';
+$string['writing'] = 'Writing Report';
+
 

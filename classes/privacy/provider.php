@@ -212,24 +212,27 @@ class provider implements
         [$contextsql, $contextparams] = $DB->get_in_or_equal($contextlist->get_contextids(), SQL_PARAMS_NAMED);
         $contextparams['userid'] = $user->id;
 
-        $sql = "SELECT *
-                  FROM {tiny_cursive_files}
-                 WHERE cmid {$contextsql}";
-        $autosaves = $DB->delete_records_select(
+        // Fetch all records from tiny_cursive_files for this user and context.
+        $filerecords = $DB->get_records_select(
             'tiny_cursive_files',
             "userid = :userid AND cmid {$contextsql}",
             $contextparams
         );
-        $autosaves = $DB->delete_records_select(
-            'tiny_cursive_comments',
-            "userid = :userid AND cmid {$contextsql}",
-            $contextparams
-        );
-        $autosaves = $DB->delete_records_select(
-            'tiny_cursive_user_writing',
-            "userid = :userid AND cmid {$contextsql}",
-            $contextparams
-        );
+
+        if ($filerecords) {
+            // Collect file ids for deletion in related tables.
+            $fileids = array_keys($filerecords);
+
+            // Delete from tiny_cursive_user_writing using file_id.
+            $DB->delete_records_list('tiny_cursive_user_writing', 'file_id', $fileids);
+
+            // Delete from tiny_cursive_writing_diff using file_id.
+            $DB->delete_records_list('tiny_cursive_writing_diff', 'file_id', $fileids);
+        }
+
+        // Delete from tiny_cursive_files, tiny_cursive_comments using the context and user.
+        $DB->delete_records_select('tiny_cursive_files', "userid = :userid AND cmid {$contextsql}", $contextparams);
+        $DB->delete_records_select('tiny_cursive_comments', "userid = :userid AND cmid {$contextsql}", $contextparams);
     }
 
     /**

@@ -84,7 +84,7 @@ class tiny_cursive_renderer extends plugin_renderer_base {
             $getmodulename = get_coursemodule_from_id($cm?->modname, $user->cmid, 0, false, MUST_EXIST);
 
             $filep = $CFG->dataroot . '/temp/userdata/' . $user->filename;
-            $filepath = file_exists($filep) ? $filep : null;
+            $filepath = $filep;
             $row = [];
             $row[] = $user->fileid;
             $row[] = $user->firstname . ' ' . $user->lastname ?? '';
@@ -162,19 +162,24 @@ class tiny_cursive_renderer extends plugin_renderer_base {
             INNER JOIN {user} u ON u.id = ue.userid
                  WHERE ue.userid = :userid";
 
-        if ($USER->id == $userid || get_admin()->id == $USER->id) {
+        if (is_siteadmin($USER->id)) {
+            // The user is a site admin.
             $courses = $DB->get_records_sql($sql, ['userid' => $userid]);
+        } else if ($USER->id != $userid) {
+            // The user is not a site admin.
+            $courses = $DB->get_records_sql($sql, ['userid' => $USER->id]);
         } else {
+            // Not a site admin.
             $courses = $DB->get_records_sql($sql, ['userid' => $USER->id]);
         }
-
         $options = [];
         $currenturl = new moodle_url($baseurl, ['userid' => $userid, 'courseid' => null]);
         $allcoursesurl = $currenturl->out(false, ['courseid' => null]);
         $allcoursesattributes =
             empty($courseid) ? ['value' => $allcoursesurl, 'selected' => 'selected'] : ['value' => $allcoursesurl];
-        $options[] = html_writer::tag('option', 'All Courses', $allcoursesattributes);
-
+        if (is_siteadmin($USER->id) || $courseid == '' || !isset($courseid) || $courseid == null) {
+            $options[] = html_writer::tag('option', 'All Courses', $allcoursesattributes);
+        }
         foreach ($courses as $course) {
             $courseurl = new moodle_url($baseurl, ['userid' => $userid, 'courseid' => $course->id]);
             $courseattributes = (isset($courseid) && $courseid == $course->id) ? ['value' => $courseurl, 'selected' => 'selected'] :
@@ -228,12 +233,12 @@ class tiny_cursive_renderer extends plugin_renderer_base {
             $getmodulename = $cm ? get_coursemodule_from_id($cm->modname, $user->cmid, 0, false, MUST_EXIST) : null;
 
             $filep = "$CFG->dataroot/temp/userdata/$user->filename";
-            $filepath = file_exists($filep) ? $filep : null;
+            $filepath = $filep;
             $row   = [];
             $row[] = $getmodulename ? $getmodulename->name : '';
             $row[] = date("l jS \of F Y h:i:s A", $user->timemodified);
             $row[] = '<div class ="analytic-modal" data-cmid="' . $user->cmid . '" data-filepath="' . $filepath . '" data-id="' .
-                $user->attemptid . '" >'. get_string('analytic', 'tiny_cursive') . '</div>';
+                $user->attemptid . '" >'. get_string('analytics', 'tiny_cursive') . '</div>';
             $row[] = html_writer::link(
                 new moodle_url('/lib/editor/tiny/plugins/cursive/download_json.php', [
                     'fname' => $user->filename,

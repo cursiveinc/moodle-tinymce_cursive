@@ -55,7 +55,7 @@ if (optional_param('course', 0, PARAM_INT) && !is_siteadmin($USER->id) && option
     $courseid = optional_param('course', 0, PARAM_INT);
 }
 
-$limit = 5;
+$limit = 10;
 $isvalid = false;
 
 $context = context_system::instance();

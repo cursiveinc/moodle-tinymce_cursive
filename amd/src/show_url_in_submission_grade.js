@@ -53,9 +53,12 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
 
     var usersTable = {
         init: function (score_setting, showcomment) {
+            $(document).ready(function () {
+                $('#page-mod-assign-grader').addClass('tiny_cursive_mod_assign_grader');
+            });
             str
                 .get_strings([
-                    { key: "field_require", component: "tiny_cursive" },
+                    {key: "field_require", component: "tiny_cursive"},
                 ])
                 .done(function () {
                     usersTable.appendSubmissionDetail(score_setting, showcomment);
@@ -166,12 +169,6 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                     myEvents.analytics(userid, templates, context, '', replayInstances, '', authIcon);
                     myEvents.checkDiff(userid, data.data.file_id, '', replayInstances);
                     myEvents.replyWriting(userid, filepath, '', replayInstances);
-
-                    templates
-                        .render("tiny_cursive/pop_modal", context)
-                        .then(function (html) {
-                            $("body").append(html);
-                        }).catch(e => window.console.error(e));
 
                 });
                 return com.usercomment;
