@@ -25,6 +25,8 @@ Alternatively, you can run
 $ php admin/cli/upgrade.php
 to complete the installation from the command line.
 
+Once installed, there are several configuration options for the plugin. The free version allows you to enable or disable "Cite Source" student copy/paste comment features. By entering an agreement with Cursive, an API URL and key will be provided to manage the premium ML features. A custom threshold for API-generated values of identify verification is also available to tune the threshold for displaying a green check verification. 
+
 License
 2024 Cursive Technology, Inc.
 
