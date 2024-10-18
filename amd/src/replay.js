@@ -192,7 +192,7 @@ export default class Replay {
                 return textOutput.slice(0, lastSpace);
             }
             default:
-                return !["Shift", "Ctrl", "Alt", "ArrowDown", "ArrowUp", "Control", "ArrowRight", "ArrowLeft"]
+                return !["Shift", "Ctrl", "Alt", "ArrowDown", "ArrowUp", "Control", "ArrowRight", "ArrowLeft", "Meta"]
                     .includes(key) ? textOutput + key : textOutput;
         }
     }
