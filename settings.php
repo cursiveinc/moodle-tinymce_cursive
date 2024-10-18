@@ -27,6 +27,8 @@ defined('MOODLE_INTERNAL') || die;
 
 global $CFG, $PAGE;
 $PAGE->requires->js_call_amd('tiny_cursive/token_approve', 'init', [1]);
+require_once(__DIR__.'/db/install.php');
+$token = optional_param('token', 0, PARAM_INT);
 
 if (is_siteadmin()) {
     $settings->add(
@@ -83,5 +85,21 @@ if (is_siteadmin()) {
             1
         )
     );
+
+    $settings->add(
+        new admin_setting_configtext(
+            'tiny_cursive/cursivetoken',
+            get_string('webservicetoken', "tiny_cursive"),
+            "<a id='generate_token' href='?section=tiny_cursive_settings&token=1' class=''>  " .
+            get_string('generate', 'tiny_cursive') . " </a><span id='token_'></span>".' '.
+            get_string('webservicetoken_des', 'tiny_cursive'),
+            '',
+            PARAM_TEXT
+        )
+    );
+
+    if ($token && !get_config('tiny_cursive', 'cursivetoken')) {
+        set_config('cursivetoken', create_token_for_user()->token, 'tiny_cursive');
+    }
 
 }
