@@ -47,8 +47,9 @@ export default class AnalyticEvents {
     analytics(userid, templates, context, questionid = '', replayInstances = null, authIcon) {
         document.body.addEventListener('click', function (e) {
             if (e.target && e.target.id === 'analytic' + userid + questionid) {
+                
                 const repElement = document.getElementById('rep' + userid + questionid);
-                if (repElement) repElement.disabled = false;
+                if (repElement.getAttribute('disabled') === 'true') repElement.setAttribute('disabled','false');
 
                 e.preventDefault();
 
@@ -92,8 +93,9 @@ export default class AnalyticEvents {
 
         document.body.addEventListener('click', function (e) {
             if (e.target && e.target.id === 'diff' + userid + questionid) {
+
                 const repElement = document.getElementById('rep' + userid + questionid);
-                if (repElement) repElement.disabled = false;
+                if (repElement.getAttribute('disabled') === 'true') repElement.setAttribute('disabled','false');
 
                 e.preventDefault();
 
@@ -196,7 +198,11 @@ export default class AnalyticEvents {
     replyWriting(userid, filepath, questionid = '', replayInstances = null) {
         document.body.addEventListener('click', function (e) {
             if (e.target && e.target.id === 'rep' + userid + questionid) {
-                e.target.disabled = true;
+                let replyBtn = document.getElementById('rep' + userid + questionid);
+
+                if(replyBtn.getAttribute('disabled') == 'true') return;
+                replyBtn.setAttribute('disabled', 'true');
+
                 e.preventDefault();
 
                 const content = document.getElementById('content' + userid);

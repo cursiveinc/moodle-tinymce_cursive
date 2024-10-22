@@ -301,5 +301,6 @@ function tiny_cursive_get_cmid($courseid) {
 
     $params = ['courseid' => $courseid];
     $cm = $DB->get_record_sql($sql, $params);
-    return $cm->id;
+    $cmid = isset($cm->id) ? $cm->id : 0;
+    return $cmid;
 }
