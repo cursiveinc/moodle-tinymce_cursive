@@ -27,7 +27,6 @@ defined('MOODLE_INTERNAL') || die;
 
 global $CFG, $PAGE;
 $PAGE->requires->js_call_amd('tiny_cursive/token_approve', 'init', [1]);
-require_once(__DIR__.'/db/install.php');
 
 if (is_siteadmin()) {
     $settings->add(

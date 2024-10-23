@@ -74,14 +74,16 @@ define(["jquery", "core/ajax", "core/str"], function (
         promise1[0].done(function (data) {
           var message_alert = '';
           if (data.token) {
+            $('#id_s_tiny_cursive_cursivetoken').val(data.token);
             message_alert = "<span class='text-success' role='alert'>Webservice Token Generation Success</span>";
-            setTimeout(() => {
-              window.location.reload();
-            }, 3000);
           } else {
             message_alert = "<span class='text-danger' role='alert'>Webservice Token Generation Failed</span>";
           }
           $("#cursivetoken_").html(message_alert);
+          setTimeout(() => {
+            $("#cursivetoken_").empty();
+          }, 3000);
+         
         });
       });
       
