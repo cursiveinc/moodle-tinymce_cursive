@@ -105,7 +105,6 @@ $string['random_reflex'] = 'Your Random Reflection Prompt';
 $string['replay'] = 'Replay';
 $string['secretkey'] = 'Cursive Secret Key';
 $string['secretkey_desc'] = 'The API Secret Key of Cursive account';
-$string['generate'] = 'Generate';
 $string['select_course'] = 'Select Course';
 $string['select_module'] = 'Select Module';
 $string['select_time'] = 'Select time option';
