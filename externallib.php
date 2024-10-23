@@ -262,6 +262,7 @@ class cursive_json_func_data extends external_api {
         $userdata['unixTimestamp'] = $timestampinmilliseconds;
         $userdata["clientId"] = $CFG->wwwroot;
         $userdata["personId"] = $USER->id;
+        $questionid = '';
         $editoridarr = explode(':', $params['editorid']);
         if (count($editoridarr) > 1) {
             $uniqueid = substr($editoridarr[0] . "\n", 1);
