@@ -283,7 +283,7 @@ class cursive_json_func_data extends external_api {
         $inp = file_get_contents($filename);
 
         $temparray = null;
-        if ($inp) {
+        if ($inp && $DB->record_exists($table, ['cmid' => $params['cmid'], 'modulename' => $params['modulename'], 'userid' => $USER->id])) {
 
             $temparray = json_decode($inp, true);
             array_push($temparray, $userdata);

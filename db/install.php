@@ -66,15 +66,19 @@ function enable_webservice_protocol($protocol) {
  * @return string The created token
  */
 function create_token_for_user() {
-    global $DB;
-    $admin = get_admin();
-
+    global $DB, $USER;
+    $token = '';
     $serviceshortname = 'cursive_json_service'; // Replace with your service shortname.
     $service = $DB->get_record('external_services', ['shortname' => $serviceshortname]);
-    $token = util::generate_token(EXTERNAL_TOKEN_PERMANENT, $service, $admin->id, context_system::instance());
-    $tokenrecord = $DB->get_record('external_tokens', ['token' => $token]);
-    $tokenrecord->creatorid = $admin->id;
-    $DB->update_record('external_tokens', $tokenrecord);
-
+    if ($USER->id && is_siteadmin() && $service) {
+        $admin = get_admin();
+        $token = util::generate_token(EXTERNAL_TOKEN_PERMANENT, $service, $admin->id, context_system::instance());
+        if ($token) {
+            set_config('cursivetemptoken', $token, 'tiny_cursive');
+        }
+        $tokenrecord = $DB->get_record('external_tokens', ['token' => $token]);
+        $tokenrecord->creatorid = $admin->id;
+        $DB->update_record('external_tokens', $tokenrecord);
+    }
     return $token;
 }
