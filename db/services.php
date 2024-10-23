@@ -180,6 +180,15 @@ $functions = [
         'ajax' => true,
         'capabilities' => 'tiny/cursive:view',
     ],
+    'cursive_generate_webtoken' => [
+        'classname' => 'cursive_json_func_data',
+        'methodname' => 'generate_webtoken',
+        'classpath' => '/lib/editor/tiny/plugins/cursive/externallib.php',
+        'description' => 'Generate a webservice token',
+        'type' => 'read',
+        'ajax' => true,
+        'capabilities' => 'tiny/cursive:view',
+    ],
 ];
 
 // We define the services to install as pre-build services.
@@ -205,6 +214,7 @@ $services = [
             'cursive_get_writing_statistics',
             'cursive_store_writing_differences',
             'cursive_get_writing_differences',
+            'cursive_generate_webtoken',
         ],
         'shortname' => 'cursive_json_service',
         'downloadfiles' => 1, // Allow file downloads.

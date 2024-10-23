@@ -21,7 +21,7 @@
  * @copyright 2024, CTI <info@cursivetechnology.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
+ use core_external\util;
 /**
  * get_user_attempts_data
  *
@@ -305,4 +305,23 @@ function tiny_cursive_get_cmid($courseid) {
     $cmid = isset($cm->id) ? $cm->id : 0;
 
     return $cmid;
+}
+
+/**
+ * Create a token for a given user
+ *
+ * @package tiny_cursive
+ * @param int $userid The ID of the user to create the token for
+ * @return string The created token
+ */
+function create_token_for_user() {
+    global $DB, $USER;
+    $token = '';
+    $serviceshortname = 'cursive_json_service'; // Replace with your service shortname.
+    $service = $DB->get_record('external_services', ['shortname' => $serviceshortname]);
+    if ($USER->id && is_siteadmin() && $service) {
+        $admin = get_admin();
+        $token = util::generate_token(EXTERNAL_TOKEN_PERMANENT, $service, $admin->id, context_system::instance());
+    }
+    return $token;
 }

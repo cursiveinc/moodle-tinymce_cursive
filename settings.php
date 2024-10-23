@@ -92,16 +92,12 @@ if (is_siteadmin()) {
         new admin_setting_configtext(
             'tiny_cursive/cursivetoken',
             get_string('webservicetoken', "tiny_cursive"),
-            "<a id='generate_token' href='$url' class=''>  " .
-            get_string('generate', 'tiny_cursive') . " </a><span id='token_'></span>".' '.
-            get_string('webservicetoken_des', 'tiny_cursive'),
-            get_config('tiny_cursive', 'cursivetemptoken'),
+            "<a id='generate_cursivetoken' href='$url' class=''>  " .
+            get_string('generate', 'tiny_cursive') . " </a>".' '.
+            get_string('webservicetoken_des', 'tiny_cursive')."<br><span id='cursivetoken_'></span>",
+            '',
             PARAM_TEXT
         )
     );
-
-    if ($token && !get_config('tiny_cursive', 'cursivetoken')) {
-        set_config('cursivetemptoken', create_token_for_user(), 'tiny_cursive');
-    }
 
 }

@@ -22,7 +22,6 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use editor_tiny\cursive\forms\fileupload;
 
 /**
  * Given an array with a file path, it returns the itemid and the filepath for the defined filearea.

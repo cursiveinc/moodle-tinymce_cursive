@@ -1811,4 +1811,37 @@ class cursive_json_func_data extends external_api {
             'data' => new external_value(PARAM_TEXT, 'content data'),
         ]);
     }
+
+    /**
+     * Method generate_webtoken_parameters
+     *
+     * @return external_function_parameters
+     */
+    public static function generate_webtoken_parameters() {
+        return new external_function_parameters([]);
+    }
+
+    /**
+     * Method generate_webtoken
+     *
+     * @return array
+     */
+    public static function generate_webtoken() {
+        $token = create_token_for_user();
+        if ($token) {
+            set_config('cursivetoken', $token, 'tiny_cursive');
+        }
+        return ['token' => $token];
+    }
+
+    /**
+     * Method generate_webtoken_returns
+     *
+     * @return external_single_structure
+     */
+    public static function generate_webtoken_returns() {
+        return new external_single_structure([
+            'token' => new external_value(PARAM_TEXT, 'token'),
+        ]);
+    }
 }
