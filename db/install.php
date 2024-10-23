@@ -67,11 +67,14 @@ function enable_webservice_protocol($protocol) {
  */
 function create_token_for_user() {
     global $DB;
-    $amdinid = get_admin();
+    $admin = get_admin();
 
-    $serviceshortname = 'moodle_mobile_app'; // Replace with your service shortname.
+    $serviceshortname = 'cursive_json_service'; // Replace with your service shortname.
     $service = $DB->get_record('external_services', ['shortname' => $serviceshortname]);
-    $token = util::generate_token(EXTERNAL_TOKEN_PERMANENT, $service, $amdinid->id, context_system::instance());
+    $token = util::generate_token(EXTERNAL_TOKEN_PERMANENT, $service, $admin->id, context_system::instance());
+    $tokenrecord = $DB->get_record('external_tokens', ['token' => $token]);
+    $tokenrecord->creatorid = $admin->id;
+    $DB->update_record('external_tokens', $tokenrecord);
 
     return $token;
 }

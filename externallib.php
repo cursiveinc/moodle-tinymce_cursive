@@ -738,7 +738,7 @@ class cursive_json_func_data extends external_api {
                                  uw.backspace_percent,uw.score,uw.copy_behavior,uf.resourceid,
                                  uf.modulename,uf.userid, uf.filename
                            FROM {tiny_cursive_user_writing} uw
-                     INNER JOIN {tiny_cursive_files} uf ON uw.file_id = uf.id
+                           JOIN {tiny_cursive_files} uf ON uw.file_id = uf.id
                           WHERE uf.resourceid = :id
                                 AND uf.cmid = :cmid
                                 AND uf.modulename = :modulename";
@@ -751,8 +751,8 @@ class cursive_json_func_data extends external_api {
             if (!isset($data->filename)) {
                 $sql = 'SELECT filename from {tiny_cursive_files}
                          WHERE resourceid = :resourceid
-                                AND cmid = :cmid
-                                AND modulename = :modulename';
+                               AND cmid = :cmid
+                               AND modulename = :modulename';
                 $filename = $DB->get_record_sql($sql, [
                     'resourceid' => $params['id'],
                     'cmid' => $params['cmid'],
@@ -1590,7 +1590,7 @@ class cursive_json_func_data extends external_api {
     /**
      * Method storing_user_writing_param
      *
-     * @return object [explicite description]
+     * @return array [explicite description]
      */
     public static function storing_user_writing_param() {
         return [

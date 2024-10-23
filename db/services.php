@@ -106,7 +106,6 @@ $functions = [
         'type' => 'read',
         'ajax' => true,
         'capabilities' => 'tiny/cursive:view',
-        'services' => [MOODLE_OFFICIAL_MOBILE_SERVICE],
     ],
     'cursive_get_assign_grade_comment' => [
         'classname' => 'cursive_json_func_data',
@@ -144,7 +143,6 @@ $functions = [
         'type' => 'write',
         'ajax' => true,
         'capabilities' => 'tiny/cursive:write',
-        'services' => [MOODLE_OFFICIAL_MOBILE_SERVICE],
     ],
     'cursive_get_reply_json' => [
         'classname' => 'cursive_json_func_data',
@@ -154,7 +152,6 @@ $functions = [
         'type' => 'read',
         'ajax' => true,
         'capabilities' => 'tiny/cursive:view',
-        'services' => [MOODLE_OFFICIAL_MOBILE_SERVICE],
     ],
     'cursive_get_writing_statistics' => [
         'classname' => 'cursive_json_func_data',
@@ -164,7 +161,6 @@ $functions = [
         'type' => 'read',
         'ajax' => true,
         'capabilities' => 'tiny/cursive:view',
-        'services' => [MOODLE_OFFICIAL_MOBILE_SERVICE],
     ],
     'cursive_store_writing_differences' => [
         'classname' => 'cursive_json_func_data',
@@ -174,7 +170,6 @@ $functions = [
         'type' => 'write',
         'ajax' => true,
         'capabilities' => 'tiny/cursive:write',
-        'services' => [MOODLE_OFFICIAL_MOBILE_SERVICE],
     ],
     'cursive_get_writing_differences' => [
         'classname' => 'cursive_json_func_data',
@@ -184,7 +179,6 @@ $functions = [
         'type' => 'read',
         'ajax' => true,
         'capabilities' => 'tiny/cursive:view',
-        'services' => [MOODLE_OFFICIAL_MOBILE_SERVICE],
     ],
 ];
 
@@ -192,7 +186,7 @@ $functions = [
 // A pre-build service is not editable by administrator.
 
 $services = [
-    'cursive_json_service' => [
+    'Cursive Json Service' => [
         'functions' => [
             'cursive_json',
             'cursive_reports',
@@ -205,9 +199,20 @@ $services = [
             'cursive_get_assign_comment_link',
             'cursive_get_forum_comment_link',
             'cursive_get_assign_grade_comment',
+            'cursive_store_user_writing',
+            'cursive_get_reply_json',
+            'cursive_filtered_writing',
+            'cursive_get_writing_statistics',
+            'cursive_store_writing_differences',
+            'cursive_get_writing_differences',
         ],
+        'shortname' => 'cursive_json_service',
+        'downloadfiles' => 1, // Allow file downloads.
+        'uploadfiles' => 1, // Allow file uploads.
         'restrictedusers' => 0,
         'enabled' => 1,
+        'timecreated' => time(), // Time the service was created.
+        'timemodified' => time(), // Time the service was last modified.
     ],
 ];
 
