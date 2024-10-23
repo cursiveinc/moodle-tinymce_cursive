@@ -83,10 +83,10 @@ define(["jquery", "core/ajax", "core/str"], function (
           setTimeout(() => {
             $("#cursivetoken_").empty();
           }, 3000);
-         
+
         });
       });
-      
+
     }
   };
   return usersTable;
