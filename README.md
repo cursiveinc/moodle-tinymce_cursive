@@ -10,20 +10,40 @@ Ultimately, we believe in human contribution as captured through the writing pro
 
 If you have questions or comments, please reach out to us at contact@cursivetechnology.com
 
-Installing via uploaded ZIP file
-Log in to your Moodle site as an admin and go to Site Administration > Plugins > Install plugins.
-Upload the ZIP file with the plugin code. You should only be prompted to add extra details if your plugin type is not automatically detected.
-Check the plugin validation report and finish the installation.
-Installing manually
-The plugin can also be installed by putting the contents of this directory to
 
-{your/moodle/dirroot}/lib/editor/tiny/plugins/cursive
-Afterward, log in to your Moodle site as an admin and go to Site Administration > Notifications to complete the installation.
+## Instatllation
 
-Alternatively, you can run
+### Install by downloading the ZIP file
+- Install by downloading the ZIP file from Moodle plugins directory
+- Download zip file from GitHub
+- Unzip the zip file in /path/to/moodle/lib/editor/tiny/plugins/cursive folder or upload the zip file in the install plugins options from site administration : Site Administration -> Plugins -> Install Plugins -> Upload zip file
 
-$ php admin/cli/upgrade.php
+### Install using git clone
+
+Go to Moodle Project `root/lib/editor/tiny/plugins/cursive` directory and clone code by using following commands:
+
+```
+git clone https://github.com/cursiveinc/moodle-tinymce_cursive.git cursive
+```
+- In your Moodle site (as admin), Visit site administration to finish the installation.
+
+**Alternatively, you can run**
+``$ php admin/cli/upgrade.php``
 to complete the installation from the command line.
+
+## Configuration
+After installing the plugin, you can update the settings.
+
+## Settings
+
+To update the plugin settings, navigate to plugin settings: 
+ `Site Administration->Plugins->Cursive`
+  
+![Screenshot 2024-10-24 132422](https://github.com/user-attachments/assets/f176ce08-37d7-4c52-8a09-cade09fcbb99)
+
+if you want to use Analytics And Diff future then you need to fill up those information.
+for subscription please reach out to us at **contact@cursivetechnology.com**
+
 
 License
 2023 Cursive Technology, Inc.
