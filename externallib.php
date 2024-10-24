@@ -41,6 +41,7 @@ require_once(__DIR__ . '/locallib.php');
  */
 class cursive_json_func_data extends external_api {
 
+
     /**
      * get_user_list_parameters.
      *
@@ -263,10 +264,11 @@ class cursive_json_func_data extends external_api {
         $userdata["clientId"] = $CFG->wwwroot;
         $userdata["personId"] = $USER->id;
         $editoridarr = explode(':', $params['editorid']);
+        $questionid = '';
         if (count($editoridarr) > 1) {
             $uniqueid = substr($editoridarr[0] . "\n", 1);
             $slot = substr($editoridarr[1] . "\n", 0, -11);
-            $quba = question_engine::load_questions_usage_by_activity($uniqueid);
+            $quba = question_engine::load_questions_usage_by_activity(trim($uniqueid));
             $question = $quba->get_question($slot, false);
             $questionid = $question->id;
         }
@@ -481,7 +483,7 @@ class cursive_json_func_data extends external_api {
         if (count($editoridarr) > 1) {
             $uniqueid = substr($editoridarr[0] . "\n", 1);
             $slot = substr($editoridarr[1] . "\n", 0, -11);
-            $quba = question_engine::load_questions_usage_by_activity($uniqueid);
+            $quba = question_engine::load_questions_usage_by_activity(trim($uniqueid));
             $question = $quba->get_question($slot, false);
             $questionid = $question->id;
         }
@@ -638,7 +640,7 @@ class cursive_json_func_data extends external_api {
      * @throws moodle_exception
      * @throws require_login_exception
      */
-    public static function get_comment_link($id, $modulename, $cmid , $questionid , $userid ) {
+    public static function get_comment_link($id, $modulename, $cmid, $questionid, $userid) {
         global $DB, $CFG;
         require_once($CFG->dirroot . '/config.php');
         require_once($CFG->dirroot . '/lib/accesslib.php');
@@ -851,7 +853,9 @@ class cursive_json_func_data extends external_api {
                            AND uf.modulename = :modulename";
 
         $data =
-            $DB->get_record_sql($attempts, ['id' => $params['id'], 'cmid' => $params['cmid'], 'modulename' => $params['modulename']]
+            $DB->get_record_sql(
+                $attempts,
+                ['id' => $params['id'], 'cmid' => $params['cmid'], 'modulename' => $params['modulename']]
             );
 
         $data = (array) $data;
@@ -1065,7 +1069,7 @@ class cursive_json_func_data extends external_api {
             [
                 'id' => new external_value(PARAM_INT, 'id', VALUE_REQUIRED),
                 'modulename' => new external_value(PARAM_TEXT, 'modulename', VALUE_REQUIRED),
-                'cmid' => new external_value(PARAM_INT, 'cmid', VALUE_REQUIRED ),
+                'cmid' => new external_value(PARAM_INT, 'cmid', VALUE_REQUIRED),
             ]
         );
     }
@@ -1135,7 +1139,7 @@ class cursive_json_func_data extends external_api {
     public static function get_assign_grade_comment_parameters() {
         return new external_function_parameters(
             [
-                'id' => new external_value(PARAM_INT, 'id', VALUE_REQUIRED ),
+                'id' => new external_value(PARAM_INT, 'id', VALUE_REQUIRED),
                 'modulename' => new external_value(PARAM_TEXT, 'modulename', VALUE_REQUIRED),
                 'cmid' => new external_value(PARAM_INT, 'cmid', VALUE_REQUIRED),
             ]
@@ -1189,7 +1193,8 @@ class cursive_json_func_data extends external_api {
                             AND uf.modulename = :modulename";
 
         $data =
-            $DB->get_record_sql($attempts,
+            $DB->get_record_sql(
+                $attempts,
                 [
                     'id' => $params['id'],
                     'cmid' => $params['cmid'],
@@ -1783,8 +1788,11 @@ class cursive_json_func_data extends external_api {
             ]
         );
 
-        $filename = $DB->get_record('tiny_cursive_files',
-            ['id' => $vparams['fileid']], 'filename');
+        $filename = $DB->get_record(
+            'tiny_cursive_files',
+            ['id' => $vparams['fileid']],
+            'filename'
+        );
         $parts = explode('_', $filename->filename);
         $cmid = $parts[2];
 
@@ -1809,6 +1817,39 @@ class cursive_json_func_data extends external_api {
     public static function cursive_get_writing_differencs_returns() {
         return new external_single_structure([
             'data' => new external_value(PARAM_TEXT, 'content data'),
+        ]);
+    }
+
+    /**
+     * Method generate_webtoken_parameters
+     *
+     * @return external_function_parameters
+     */
+    public static function generate_webtoken_parameters() {
+        return new external_function_parameters([]);
+    }
+
+    /**
+     * Method generate_webtoken
+     *
+     * @return array
+     */
+    public static function generate_webtoken() {
+        $token = create_token_for_user();
+        if ($token) {
+            set_config('cursivetoken', $token, 'tiny_cursive');
+        }
+        return ['token' => $token];
+    }
+
+    /**
+     * Method generate_webtoken_returns
+     *
+     * @return external_single_structure
+     */
+    public static function generate_webtoken_returns() {
+        return new external_single_structure([
+            'token' => new external_value(PARAM_TEXT, 'token'),
         ]);
     }
 }

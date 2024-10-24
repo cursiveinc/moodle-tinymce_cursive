@@ -27,8 +27,6 @@ defined('MOODLE_INTERNAL') || die;
 
 global $CFG, $PAGE;
 $PAGE->requires->js_call_amd('tiny_cursive/token_approve', 'init', [1]);
-require_once(__DIR__.'/db/install.php');
-$token = optional_param('token', 0, PARAM_INT);
 
 if (is_siteadmin()) {
     $settings->add(
@@ -47,7 +45,7 @@ if (is_siteadmin()) {
             get_string('secretkey_desc', 'tiny_cursive') . '' .
             "<br/><a id='approve_token' href='#' class='btn btn-primary'>  " . get_string('test_token', 'tiny_cursive') . " </a>
             <span id='token_message'></span>",
-            PARAM_TEXT
+            '', PARAM_TEXT
         )
     );
     $settings->add(
@@ -90,16 +88,12 @@ if (is_siteadmin()) {
         new admin_setting_configtext(
             'tiny_cursive/cursivetoken',
             get_string('webservicetoken', "tiny_cursive"),
-            "<a id='generate_token' href='?section=tiny_cursive_settings&token=1' class=''>  " .
-            get_string('generate', 'tiny_cursive') . " </a><span id='token_'></span>".' '.
-            get_string('webservicetoken_des', 'tiny_cursive'),
+            "<a id='generate_cursivetoken' href='#' class=''>  " .
+            get_string('generate', 'tiny_cursive') . " </a>".' '.
+            get_string('webservicetoken_des', 'tiny_cursive')."<br><span id='cursivetoken_'></span>",
             '',
             PARAM_TEXT
         )
     );
-
-    if ($token && !get_config('tiny_cursive', 'cursivetoken')) {
-        set_config('cursivetoken', create_token_for_user()->token, 'tiny_cursive');
-    }
 
 }
