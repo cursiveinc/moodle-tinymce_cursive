@@ -10,27 +10,44 @@ Ultimately, we believe in human contribution as captured through the writing pro
 
 If you have questions, comments, or would like to request a trial API key, please reach out to us at contact@cursivetechnology.com
 
-Installing via uploaded ZIP file
-Log in to your Moodle site as an admin and go to Site Administration > Plugins > Install plugins.
-Upload the ZIP file with the plugin code. You should only be prompted to add extra details if your plugin type is not automatically detected.
-Check the plugin validation report and finish the installation.
-Installing manually
-The plugin can also be installed by putting the contents of this directory to
 
-{your/moodle/dirroot}/lib/editor/tiny/plugins/cursive
-Afterward, log in to your Moodle site as an admin and go to Site Administration > Notifications to complete the installation.
+## Instatllation
 
-Alternatively, you can run
+### Install by downloading the ZIP file
+- Install by downloading the ZIP file from the Moodle plugins directory
+- Download the zip file from GitHub
+- Unzip the zip file in /path/to/moodle/lib/editor/tiny/plugins/cursive folder or upload the zip file in the install plugins options from site administration: Site Administration -> Plugins -> Install Plugins -> Upload zip file
 
-$ php admin/cli/upgrade.php
+### Install using git clone
+
+Go to Moodle Project `root/lib/editor/tiny/plugins/cursive` directory and clone code by using the following commands:
+
+```
+git clone https://github.com/cursiveinc/moodle-tinymce_cursive.git cursive
+```
+- In your Moodle site (as admin), Visit site administration to finish the installation.
+
+**Alternatively, you can run**
+``$ php admin/cli/upgrade.php``
 to complete the installation from the command line.
 
-If installing from CLI, please note that you must manually create an admin user in for the moodle_mobile_app via the Token Management page of your Moodle site. This action creates a valid wstoken required to return data securely to your Moodle's webhook. 
 
+## Configuration
+After installing the plugin, you can update the settings.
+
+To update the plugin settings, navigate to plugin settings: 
+
+ `Site Administration->Plugins->Cursive`
+  
+![Screenshot 2024-10-24 132422](https://github.com/user-attachments/assets/f176ce08-37d7-4c52-8a09-cade09fcbb99)
+
+If you want to use Analytics And Diff feature then you need to fill up that informations.
+for subscription please reach out to us at **contact@cursivetechnology.com**
 There are several configuration options for the plugin. The free version allows you to enable or disable "Cite Source" student copy/paste comment features. By entering an agreement with Cursive, an API URL and key will be provided to manage the premium ML features. A custom threshold for API-generated values of identify verification is also available to tune the threshold for displaying a green check verification. 
 
-License
-2024 Cursive Technology, Inc.
+
+## License
+2023 Cursive Technology, Inc.
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 

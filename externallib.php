@@ -262,6 +262,7 @@ class cursive_json_func_data extends external_api {
         $userdata['unixTimestamp'] = $timestampinmilliseconds;
         $userdata["clientId"] = $CFG->wwwroot;
         $userdata["personId"] = $USER->id;
+        $questionid = '';
         $editoridarr = explode(':', $params['editorid']);
         if (count($editoridarr) > 1) {
             $uniqueid = substr($editoridarr[0] . "\n", 1);
@@ -283,7 +284,8 @@ class cursive_json_func_data extends external_api {
         $inp = file_get_contents($filename);
 
         $temparray = null;
-        if ($inp) {
+        if ($inp && $DB->record_exists($table, ['cmid' => $params['cmid'],
+                                        'modulename' => $params['modulename'], 'userid' => $USER->id])) {
 
             $temparray = json_decode($inp, true);
             array_push($temparray, $userdata);
@@ -683,7 +685,7 @@ class cursive_json_func_data extends external_api {
                     "userid" => $params['userid'],
                 ]
             );
-            $filep = $CFG->dataroot . "/temp/userdata/" . $filename->filename;
+            $filep = $CFG->tempdir . "/userdata/" . $filename->filename;
             $data['filename'] = $filep;
             $data['questionid'] = $params['questionid'];
 
@@ -738,7 +740,7 @@ class cursive_json_func_data extends external_api {
                                  uw.backspace_percent,uw.score,uw.copy_behavior,uf.resourceid,
                                  uf.modulename,uf.userid, uf.filename
                            FROM {tiny_cursive_user_writing} uw
-                     INNER JOIN {tiny_cursive_files} uf ON uw.file_id = uf.id
+                           JOIN {tiny_cursive_files} uf ON uw.file_id = uf.id
                           WHERE uf.resourceid = :id
                                 AND uf.cmid = :cmid
                                 AND uf.modulename = :modulename";
@@ -751,15 +753,15 @@ class cursive_json_func_data extends external_api {
             if (!isset($data->filename)) {
                 $sql = 'SELECT filename from {tiny_cursive_files}
                          WHERE resourceid = :resourceid
-                                AND cmid = :cmid
-                                AND modulename = :modulename';
+                               AND cmid = :cmid
+                               AND modulename = :modulename';
                 $filename = $DB->get_record_sql($sql, [
                     'resourceid' => $params['id'],
                     'cmid' => $params['cmid'],
                     'modulename' => $params['modulename'],
                 ]);
 
-                $filep = $CFG->dataroot . "/temp/userdata/" . $filename->filename;
+                $filep = $CFG->tempdir . "/userdata/" . $filename->filename;
                 $data['filename'] = $filep;
 
             }
@@ -868,7 +870,7 @@ class cursive_json_func_data extends external_api {
                 ['resourceid' => $params['id'], 'cmid' => $params['cmid'], 'modulename' => $params['modulename']]
             );
 
-            $filep = $CFG->dataroot . "/temp/userdata/" . $filename->filename;
+            $filep = $CFG->tempdir . "/userdata/" . $filename->filename;
 
             $data['filename'] = $filep;
 
@@ -880,7 +882,7 @@ class cursive_json_func_data extends external_api {
                 $data['first_file'] = 1;
             }
         } else {
-            $filep = $CFG->dataroot . "/temp/userdata/" . $data['filename'];
+            $filep = $CFG->tempdir . "/userdata/" . $data['filename'];
             $data['filename'] = $filep;
         }
         $sql = 'SELECT *
@@ -997,7 +999,7 @@ class cursive_json_func_data extends external_api {
                     ['resourceid' => $params['id'], 'cmid' => $params['cmid'], 'modulename' => $params['modulename']]
                 );
 
-                $filep = $CFG->dataroot . "/temp/userdata/" . $filename->filename;
+                $filep = $CFG->tempdir . "/userdata/" . $filename->filename;
                 $data['filename'] = $filep;
             }
 
@@ -1030,7 +1032,7 @@ class cursive_json_func_data extends external_api {
                     ['resourceid' => $params['id'], 'cmid' => $params['cmid'], 'modulename' => $params['modulename']]
                 );
 
-                $filep = $CFG->dataroot . "/temp/userdata/" . $filename->filename;
+                $filep = $CFG->tempdir . "/userdata/" . $filename->filename;
                 $data['filename'] = $filep;
             }
         }
@@ -1214,7 +1216,7 @@ class cursive_json_func_data extends external_api {
         }
         if ($data['filename']) {
 
-            $filep = $CFG->dataroot . "/temp/userdata/" . $data['filename'];
+            $filep = $CFG->tempdir . "/userdata/" . $data['filename'];
             $data['filename'] = $filep;
 
             $sql = 'SELECT id AS fileid
@@ -1590,7 +1592,7 @@ class cursive_json_func_data extends external_api {
     /**
      * Method storing_user_writing_param
      *
-     * @return object [explicite description]
+     * @return array [explicite description]
      */
     public static function storing_user_writing_param() {
         return [
@@ -1809,6 +1811,39 @@ class cursive_json_func_data extends external_api {
     public static function cursive_get_writing_differencs_returns() {
         return new external_single_structure([
             'data' => new external_value(PARAM_TEXT, 'content data'),
+        ]);
+    }
+
+    /**
+     * Method generate_webtoken_parameters
+     *
+     * @return external_function_parameters
+     */
+    public static function generate_webtoken_parameters() {
+        return new external_function_parameters([]);
+    }
+
+    /**
+     * Method generate_webtoken
+     *
+     * @return array
+     */
+    public static function generate_webtoken() {
+        $token = create_token_for_user();
+        if ($token) {
+            set_config('cursivetoken', $token, 'tiny_cursive');
+        }
+        return ['token' => $token];
+    }
+
+    /**
+     * Method generate_webtoken_returns
+     *
+     * @return external_single_structure
+     */
+    public static function generate_webtoken_returns() {
+        return new external_single_structure([
+            'token' => new external_value(PARAM_TEXT, 'token'),
         ]);
     }
 }
