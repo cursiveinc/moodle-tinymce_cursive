@@ -73,6 +73,7 @@ $string['field_require'] = 'This field is required';
 $string['field_required'] = 'This field is required';
 $string['filenotfound'] = 'File not found!';
 $string['fulname'] = 'Full Name';
+$string['generate'] = 'Generate';
 $string['helplinktext'] = 'Cursive';
 $string['host_domain'] = 'You Host domain.';
 $string['last_modified'] = 'Last modified';
@@ -132,12 +133,11 @@ $string['total_words'] = 'Total Words:';
 $string['total_words_desc'] = 'Estimated total words';
 $string['typeid'] = 'TypeID';
 $string['userename'] = 'User name';
-$string['username'] = 'User name';
 $string['warning'] = 'You have no permissions to access the page.';
+$string['webservicetoken'] = 'Web Service Token';
+$string['webservicetoken_des'] = 'Webservice token';
 $string['wordpermin'] = 'Words per minute:';
 $string['words_per_minute'] = 'Words per Minute';
 $string['words_per_minute_desc'] = 'Total duration / total words';
 $string['wractivityreport'] = 'Writing Activity Report';
 $string['writing'] = 'Writing Report';
-
-
