@@ -133,22 +133,22 @@ function get_user_writing_data(
 
     $params = [];
     $select = "SELECT uf.id AS fileid, u.id AS usrid, uw.id AS uniqueid,
-                u.firstname, u.email, uf.courseid, uf.resourceid AS attemptid, uf.timemodified,
-                uf.cmid AS cmid, uf.filename,
-                uw.total_time_seconds AS total_time_seconds,
-                uw.key_count AS key_count,
-                uw.keys_per_minute AS keys_per_minute,
-                uw.character_count AS character_count,
-                uw.characters_per_minute AS characters_per_minute,
-                uw.word_count AS word_count,
-                uw.words_per_minute AS words_per_minute,
-                uw.backspace_percent AS backspace_percent,
-                uw.score AS score,
-                uw.copy_behavior AS copy_behavior
-             FROM {tiny_cursive_files} uf
-             INNER JOIN {user} u ON uf.userid = u.id
-             LEFT JOIN {tiny_cursive_user_writing} uw ON uw.file_id = uf.id
-             WHERE uf.userid != ?";
+                      u.firstname, u.email, uf.courseid, uf.resourceid AS attemptid, uf.timemodified,
+                      uf.cmid AS cmid, uf.filename,
+                      uw.total_time_seconds AS total_time_seconds,
+                      uw.key_count AS key_count,
+                      uw.keys_per_minute AS keys_per_minute,
+                      uw.character_count AS character_count,
+                      uw.characters_per_minute AS characters_per_minute,
+                      uw.word_count AS word_count,
+                      uw.words_per_minute AS words_per_minute,
+                      uw.backspace_percent AS backspace_percent,
+                      uw.score AS score,
+                      uw.copy_behavior AS copy_behavior
+                FROM {tiny_cursive_files} uf
+                JOIN {user} u ON uf.userid = u.id
+           LEFT JOIN {tiny_cursive_user_writing} uw ON uw.file_id = uf.id
+               WHERE uf.userid != ?";
 
     $params[] = 1; // Exclude user ID 1.
 
@@ -259,12 +259,12 @@ function get_user_submissions_data($resourceid, $modulename, $cmid, $courseid = 
         $filename = $DB->get_record_sql($sql, ['userid' => $resourceid, 'cmid' => $cmid, 'modulename' => $modulename]);
 
         if ($filename) {
-            $filep = $CFG->dataroot . "/temp/userdata/" . $filename->filename;
+            $filep = $CFG->tempdir . '/userdata/' . $filename->filename;
             $data['filename'] = $filep;
             $data['file_id'] = $filename->fileid ?? '';
         }
     } else {
-        $data['filename'] = $CFG->dataroot . "/temp/userdata/" . $data['filename'];
+        $data['filename'] = $CFG->tempdir . '/userdata/' . $data['filename'];
     }
 
     if ($data['filename']) {
@@ -301,5 +301,25 @@ function tiny_cursive_get_cmid($courseid) {
 
     $params = ['courseid' => $courseid];
     $cm = $DB->get_record_sql($sql, $params);
-    return $cm->id;
+    $cmid = isset($cm->id) ? $cm->id : 0;
+    return $cmid;
+}
+
+/**
+ * Create a token for a given user
+ *
+ * @package tiny_cursive
+ * @param int $userid The ID of the user to create the token for
+ * @return string The created token
+ */
+function create_token_for_user() {
+    global $DB, $CFG, $USER;
+    require_once($CFG->libdir . '/externallib.php');
+
+    $token = '';
+    $serviceshortname = 'cursive_json_service';
+    $service = $DB->get_record('external_services', ['shortname' => $serviceshortname]);
+    $token = $token = external_generate_token(EXTERNAL_TOKEN_PERMANENT, $service, $USER->id, context_system::instance());
+
+    return $token;
 }
