@@ -14,13 +14,13 @@ If you have questions or comments, please reach out to us at contact@cursivetech
 ## Instatllation
 
 ### Install by downloading the ZIP file
-- Install by downloading the ZIP file from Moodle plugins directory
-- Download zip file from GitHub
-- Unzip the zip file in /path/to/moodle/lib/editor/tiny/plugins/cursive folder or upload the zip file in the install plugins options from site administration : Site Administration -> Plugins -> Install Plugins -> Upload zip file
+- Install by downloading the ZIP file from the Moodle plugins directory
+- Download the zip file from GitHub
+- Unzip the zip file in /path/to/moodle/lib/editor/tiny/plugins/cursive folder or upload the zip file in the install plugins options from site administration: Site Administration -> Plugins -> Install Plugins -> Upload zip file
 
 ### Install using git clone
 
-Go to Moodle Project `root/lib/editor/tiny/plugins/cursive` directory and clone code by using following commands:
+Go to Moodle Project `root/lib/editor/tiny/plugins/cursive` directory and clone code by using the following commands:
 
 ```
 git clone https://github.com/cursiveinc/moodle-tinymce_cursive.git cursive
@@ -34,18 +34,16 @@ to complete the installation from the command line.
 ## Configuration
 After installing the plugin, you can update the settings.
 
-## Settings
-
 To update the plugin settings, navigate to plugin settings: 
+
  `Site Administration->Plugins->Cursive`
   
 ![Screenshot 2024-10-24 132422](https://github.com/user-attachments/assets/f176ce08-37d7-4c52-8a09-cade09fcbb99)
 
-if you want to use Analytics And Diff future then you need to fill up those information.
+If you want to use Analytics And Diff feature then you need to fill up that informations.
 for subscription please reach out to us at **contact@cursivetechnology.com**
 
-
-License
+## License
 2023 Cursive Technology, Inc.
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
