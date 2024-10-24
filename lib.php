@@ -161,6 +161,7 @@ function tiny_cursive_myprofile_navigation(core_user\output\myprofile\tree $tree
  */
 function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath, $wstoken, $answertext) {
     $moodleurl = get_config('tiny_cursive', 'host_url');
+    $result = '';
     try {
         $token = get_config('tiny_cursive', 'secretkey');
         $remoteurl = get_config('tiny_cursive', 'python_server') . "/upload_file";
@@ -287,16 +288,15 @@ function tiny_cursive_get_user_essay_quiz_responses($userid, $courseid, $resourc
                JOIN {quiz} qz ON qa.quiz = qz.id
                JOIN {question} q ON qna.questionid = q.id
                JOIN {course_modules} cm ON qz.id = cm.instance AND cm.module = (
-                   SELECT id FROM {modules} WHERE name = 'quiz'
-               )
-         WHERE qa.userid = :userid
-               AND qz.course = :courseid
-               AND qa.id = :resourceid
-               AND cm.id = :cmid
-               AND q.id = :questionid
-               AND q.qtype = 'essay'
-               AND qas.state = 'complete'
-         ORDER BY qa.attempt, qna.id, qas.sequencenumber";
+                    SELECT id FROM {modules} WHERE name = 'quiz')
+              WHERE qa.userid = :userid
+                    AND qz.course = :courseid
+                    AND qa.id = :resourceid
+                    AND cm.id = :cmid
+                    AND q.id = :questionid
+                    AND q.qtype = 'essay'
+                    AND qas.state = 'complete'
+           ORDER BY qa.attempt, qna.id, qas.sequencenumber";
 
     $result = $DB->get_record_sql(
         $sql,
