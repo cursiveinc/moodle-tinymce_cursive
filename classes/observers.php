@@ -93,7 +93,7 @@ class observers {
                 $userid = $eventdata['userid'];
                 $cmid = $eventdata['contextinstanceid'];
                 $resourceid = $eventdata['objectid'];
-                $dirname = $CFG->dataroot . '/temp/userdata/';
+                $dirname = $CFG->tempdir . '/userdata/';
                 $fname = $userid . '_' . $resourceid . '_' . $cmid . '_attempt' . '.json';
                 $sourcefile = $dirname . $rec->filename;
                 $desfilename = $dirname . $fname;
