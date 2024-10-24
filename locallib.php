@@ -259,12 +259,12 @@ function get_user_submissions_data($resourceid, $modulename, $cmid, $courseid = 
         $filename = $DB->get_record_sql($sql, ['userid' => $resourceid, 'cmid' => $cmid, 'modulename' => $modulename]);
 
         if ($filename) {
-            $filep = $CFG->dataroot . "/temp/userdata/" . $filename->filename;
+            $filep = $CFG->tempdir . "/userdata/" . $filename->filename;
             $data['filename'] = $filep;
             $data['file_id'] = $filename->fileid ?? '';
         }
     } else {
-        $data['filename'] = $CFG->dataroot . "/temp/userdata/" . $data['filename'];
+        $data['filename'] = $CFG->tempdir . "/userdata/" . $data['filename'];
     }
 
     if ($data['filename']) {
