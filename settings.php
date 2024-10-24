@@ -45,7 +45,7 @@ if (is_siteadmin()) {
             get_string('secretkey_desc', 'tiny_cursive') . '' .
             "<br/><a id='approve_token' href='#' class='btn btn-primary'>  " . get_string('test_token', 'tiny_cursive') . " </a>
             <span id='token_message'></span>",
-            PARAM_TEXT
+            "", PARAM_TEXT
         )
     );
     $settings->add(
@@ -81,6 +81,18 @@ if (is_siteadmin()) {
             get_string('cite_src', "tiny_cursive"),
             get_string('cite_src_des', 'tiny_cursive'),
             1
+        )
+    );
+
+    $settings->add(
+        new admin_setting_configtext(
+            'tiny_cursive/cursivetoken',
+            get_string('webservicetoken', "tiny_cursive"),
+            "<a id='generate_cursivetoken' href='#' class=''>  " .
+            get_string('generate', 'tiny_cursive') . " </a>".' '.
+            get_string('webservicetoken_des', 'tiny_cursive')."<br><span id='cursivetoken_'></span>",
+            '',
+            PARAM_TEXT
         )
     );
 
