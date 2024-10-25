@@ -197,7 +197,12 @@ export const register = (editor) => {
         let parm = new URL(ur);
         ed = ed;
         event = event;
-        cmid = parseInt(classes.find((classname) => { return classname.startsWith('cmid-') }).split('-')[1]); // Getting cmid from body classlist.
+        let bodyid = jQuery('body').attr('id');
+
+        if (bodyid == 'page-mod-quiz-attempt' || bodyid == 'page-mod-quiz-summary' || bodyid == 'page-mod-assign-editsubmission' || bodyid == 'page-mod-forum-view' || bodyid == 'page-mod-forum-post') {
+            cmid = parseInt(classes.find((classname) => { return classname.startsWith('cmid-') }).split('-')[1]); // Getting cmid from body classlist.
+        }
+        
 
 
         if (ur.includes("attempt.php") || ur.includes("forum") || ur.includes("assign")) { } else {
