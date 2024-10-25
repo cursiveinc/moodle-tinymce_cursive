@@ -53,7 +53,7 @@ class upload_student_json_cron extends \core\task\scheduled_task {
         global $CFG, $DB;
         require_once($CFG->dirroot . '/lib/editor/tiny/plugins/cursive/lib.php');
 
-        $serviceshortname = 'moodle_mobile_app'; // Replace with your service shortname.
+        $serviceshortname = 'cursive_json_service'; // Replace with your service shortname.
         $service = $DB->get_record('external_services', ['shortname' => $serviceshortname]);
 
         $adminuser = get_admin();
