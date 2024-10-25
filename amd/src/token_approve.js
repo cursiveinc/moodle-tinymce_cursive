@@ -33,6 +33,7 @@ define(["jquery", "core/ajax", "core/str"], function (
           ])
           .done(function () {
             usersTable.getToken(page);
+            usersTable.generateToken();
           });
       },
       getToken: function () {
@@ -59,6 +60,42 @@ define(["jquery", "core/ajax", "core/str"], function (
 
         });
       },
+
+      generateToken() {
+        var generateToken = $('#generate_cursivetoken');
+        generateToken.on('click', function (e) {
+          e.preventDefault();
+          var promise1 = AJAX.call([
+            {
+              methodname: "cursive_generate_webtoken",
+              args: []
+            },
+          ]);
+          promise1[0].done(function (data) {
+            var message_alert = '';
+            if (data.token) {
+              $('#id_s_tiny_cursive_cursivetoken').val(data.token);
+              message_alert = "<span class='text-success' role='alert'>Webservice Token Generation Success</span>";
+            } else {
+              message_alert = "<span class='text-danger' role='alert'>Webservice Token Generation Failed</span>";
+            }
+            $("#cursivetoken_").html(message_alert);
+            setTimeout(() => {
+              $("#cursivetoken_").empty();
+            }, 3000);
+          });
+          promise1[0].fail(function (jqXHR, textStatus, errorThrown) {
+            var errorMessage = "<span class='text-danger' role='alert'>An error occurred while generating the token: " + textStatus + "</span>";
+            $("#cursivetoken_").html(errorMessage);
+            // Clear the error message after 3 seconds
+            setTimeout(function () {
+              $("#cursivetoken_").empty();
+            }, 3000);
+          });
+        });
+  
+      }
+
     };
     return usersTable;
   });
