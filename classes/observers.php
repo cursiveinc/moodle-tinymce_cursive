@@ -25,10 +25,7 @@
 
 namespace tiny_cursive;
 defined('MOODLE_INTERNAL') || die();
-
 require_once($CFG->dirroot . '/config.php');
-
-require_login();
 
 /**
  * Tiny cursive plugin observer class.
@@ -96,7 +93,7 @@ class observers {
                 $userid = $eventdata['userid'];
                 $cmid = $eventdata['contextinstanceid'];
                 $resourceid = $eventdata['objectid'];
-                $dirname = $CFG->dataroot . '/temp/userdata/';
+                $dirname = $CFG->tempdir . '/userdata/';
                 $fname = $userid . '_' . $resourceid . '_' . $cmid . '_attempt' . '.json';
                 $sourcefile = $dirname . $rec->filename;
                 $desfilename = $dirname . $fname;
