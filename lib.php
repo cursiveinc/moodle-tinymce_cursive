@@ -358,7 +358,6 @@ function tiny_cursive_get_user_forum_posts($userid, $courseid, $resourceid) {
              WHERE fp.userid = :userid
                    AND fd.course = :courseid
                    AND fp.id = :resourceid";
-
     $result = $DB->get_record_sql($sql, ['userid' => $userid, 'courseid' => $courseid, 'resourceid' => $resourceid]);
     return $result->message;
 }
