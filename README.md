@@ -8,7 +8,7 @@ Premium/Subscription: Cursive's plugin is designed to interact with our ML serve
 
 Ultimately, we believe in human contribution as captured through the writing process, the beautiful production of written work expressing your individual thoughts that cannot be completed by a third party nor replicated by generative AI. We're excited to work with you.
 
-If you have questions, comments, or would like to request a trial API key, please reach out to us at contact@cursivetechnology.com
+If you have questions, or comments, or would like to request a trial API key, please reach out to us at contact@cursivetechnology.com
 
 
 ## Instatllation
@@ -32,6 +32,40 @@ git clone https://github.com/cursiveinc/moodle-tinymce_cursive.git cursive
 to complete the installation from the command line.
 
 
+## How to Set TinyMCE as the Default Editor in Moodle 4.1
+
+Moodle 4.1 allows administrators to switch the default editor from **Atto** to **TinyMCE**. Follow the steps below to set TinyMCE as the default editor:
+
+## Steps
+
+### 1. Log in as Admin
+
+- Navigate to your Moodle site and log in with your **Administrator** credentials.
+
+### 2. Go to Site Administration
+
+- In the menu, click on **Site administration**.
+- Then go to **Plugins > Text editors > Manage editors**.
+
+### 3. Rearrange Editors
+
+- You will see a list of available editors, with **Atto** set as the default.
+- Drag **TinyMCE** to the top of the list to make it the default editor.
+
+### 4. Save Changes
+
+- Scroll down and click **Save changes**.
+- **TinyMCE** is now set as the default editor for all users on the platform.
+
+### 5. Optional: User-Specific Setting
+
+- Users can individually select TinyMCE as their preferred editor by going to their **Profile settings**.
+- 
+**Note:** If you need to install additional plugins like the **Cursive Plugin** for TinyMCE, make sure TinyMCE is set as the default or preferred editor before doing so.
+
+---
+
+
 ## Configuration
 After installing the plugin, you can update the settings.
 
@@ -41,12 +75,14 @@ To update the plugin settings, navigate to plugin settings:
   
 ![Screenshot 2024-10-24 132422](https://github.com/user-attachments/assets/f176ce08-37d7-4c52-8a09-cade09fcbb99)
 
-If you want to use Analytics And Diff feature then you need to fill up that informations.
+If you want to use the Analytics And Diff feature then you need to fill up those informations.
 for subscription please reach out to us at **contact@cursivetechnology.com**
-There are several configuration options for the plugin. The free version allows you to enable or disable "Cite Source" student copy/paste comment features. By entering an agreement with Cursive, an API URL and key will be provided to manage the premium ML features. A custom threshold for API-generated values of identify verification is also available to tune the threshold for displaying a green check verification. 
+
+There are several configuration options for the plugin. The free version allows you to enable or disable "Cite Source" student copy/paste comment features. By entering an agreement with Cursive, an API URL and key will be provided to manage the premium ML features. A custom threshold for API-generated values of identify verification is also available to tune the threshold to display a green check verification. 
 
 
-## License
+### License
+
 2023 Cursive Technology, Inc.
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
