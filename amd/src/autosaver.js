@@ -44,6 +44,8 @@ export const register = (editor) => {
     var is_student = !(jQuery('#body').hasClass('teacher_admin'));
     var intervention = jQuery('#body').hasClass('intervention');
     var userid = null;
+    var host = null;
+    var courseid = null;
     var filename = "";
     var quizSubmit = jQuery('#mod_quiz-next-nav');
     var ed = "";
@@ -228,8 +230,9 @@ export const register = (editor) => {
         if (ur.includes("attempt")) {
             modulename = "quiz";
         }
-
+        // console.log(courseid,userid,host);
         filename = `${userid}_${recourceId}_${cmid}_${modulename}_attempt`;
+        // console.log(filename);
         if (modulename === 'quiz') {
             questionid = editorid.split(':')[1].split('_')[0];
             filename = `${userid}_${recourceId}_${cmid}_${questionid}_${modulename}_attempt`;
@@ -244,6 +247,10 @@ export const register = (editor) => {
                 key: ed.key,
                 keyCode: ed.keyCode,
                 event: event,
+                courseId:courseid,
+                unixTimestamp: Date.now(),
+                clientId: host,
+                personId: userid
             });
             localStorage.setItem(filename, JSON.stringify(data));
         } else {
@@ -253,6 +260,10 @@ export const register = (editor) => {
                 key: ed.key,
                 keyCode: ed.keyCode,
                 event: event,
+                courseId:courseid,
+                unixTimestamp: Date.now(),
+                clientId: host,
+                personId: userid
             });
             localStorage.setItem(filename, JSON.stringify(data));
         }
@@ -284,6 +295,9 @@ export const register = (editor) => {
         sendKeyEvent("keyDown", editor);
     });
     editor.on('init', () => {
-        userid = user.getUserId();
+        let userdata = user.getUserId();
+        userid = userdata.userid;
+        host = userdata.host;
+        courseid = userdata.courseid;
     });
 };
