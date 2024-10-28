@@ -177,7 +177,9 @@ class tiny_cursive_renderer extends plugin_renderer_base {
         $allcoursesurl = $currenturl->out(false, ['courseid' => null]);
         $allcoursesattributes =
             empty($courseid) ? ['value' => $allcoursesurl, 'selected' => 'selected'] : ['value' => $allcoursesurl];
-        $options[] = html_writer::tag('option', 'All Courses', $allcoursesattributes);
+        if (is_siteadmin($USER->id) || $courseid == '' || !isset($courseid) || $courseid == null) {
+                $options[] = html_writer::tag('option', 'All Courses', $allcoursesattributes);
+        }
         foreach ($courses as $course) {
             $courseurl = new moodle_url($baseurl, ['userid' => $userid, 'courseid' => $course->id]);
             $courseattributes = (isset($courseid) && $courseid == $course->id) ? ['value' => $courseurl, 'selected' => 'selected'] :
