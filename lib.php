@@ -161,6 +161,7 @@ function tiny_cursive_myprofile_navigation(core_user\output\myprofile\tree $tree
  */
 function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath, $wstoken, $answertext) {
     $moodleurl = get_config('tiny_cursive', 'host_url');
+    $result = '';
     try {
         $token = get_config('tiny_cursive', 'secretkey');
         $remoteurl = get_config('tiny_cursive', 'python_server') . "/upload_file";
