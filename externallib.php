@@ -1950,9 +1950,6 @@ class cursive_json_func_data extends external_api {
             $jsondata = json_decode($params['json_data'], true);
             foreach ($jsondata as $value) {
                 $userdata = $value;
-                $timearr = explode('.', microtime("now") * 1000);
-                $timestampinmilliseconds = $timearr[0];
-                $userdata['unixTimestamp'] = $timestampinmilliseconds;
                 array_push($temparray, $userdata);
             }
 
@@ -1972,9 +1969,6 @@ class cursive_json_func_data extends external_api {
             $jsondata = json_decode($params['json_data'], true);
             foreach ($jsondata as $value) {
                 $userdata = $value;
-                $timearr = explode('.', microtime("now") * 1000);
-                $timestampinmilliseconds = $timearr[0];
-                $userdata['unixTimestamp'] = $timestampinmilliseconds;
                 array_push($temparray, $userdata);
             }
             $dataobj = new stdClass();

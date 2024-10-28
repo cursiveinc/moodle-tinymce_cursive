@@ -43,7 +43,7 @@ class hook_callbacks {
      * @param core\hook\output\before_footer_html_generation $hook
      */
     public static function before_footer_html_generation(before_footer_html_generation $hook) {
-        global $PAGE, $COURSE, $USER;
+        global $PAGE, $COURSE, $USER, $CFG;
 
         if (!empty($COURSE) && !during_initial_install()) {
 
@@ -90,7 +90,7 @@ class hook_callbacks {
             if ($PAGE->bodyid == 'page-mod-quiz-attempt' || $PAGE->bodyid == 'page-mod-quiz-summary'
                             || $PAGE->bodyid == 'page-mod-assign-editsubmission' || $PAGE->bodyid == 'page-mod-forum-view'
                             || $PAGE->bodyid == 'page-mod-forum-post') {
-                $PAGE->requires->js_call_amd('tiny_cursive/user', 'setUserId', [$USER->id]);
+                $PAGE->requires->js_call_amd('tiny_cursive/user', 'setUserId', [$USER->id, $CFG->wwwroot, $COURSE->id]);
             }
         }
     }

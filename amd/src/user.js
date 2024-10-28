@@ -46,13 +46,21 @@
 
 define([], function() {
     let userId = null;
+    let host = null;
+    let courseid = null;
 
     return {
-        setUserId: function(id) {
+        setUserId: function(id,hostadd,cid) {
             userId = id;
+            host = hostadd,
+            courseid = cid;
         },
         getUserId: function() {
-            return userId;
+            return {
+                userid: userId,
+                host: host,
+                courseid:courseid
+            };
         }
     };
 });
