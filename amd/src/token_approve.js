@@ -68,7 +68,7 @@ define(["jquery", "core/ajax", "core/str"], function (
         var promise1 = AJAX.call([
           {
             methodname: "cursive_generate_webtoken",
-            args:[]
+            args: []
           },
         ]);
         promise1[0].done(function (data) {

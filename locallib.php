@@ -227,7 +227,7 @@ function get_user_submissions_data($resourceid, $modulename, $cmid, $courseid = 
                    uf.modulename, uf.userid, uw.file_id, uf.filename,
                    diff.meta AS effort_ratio
               FROM {tiny_cursive_user_writing} uw
-        INNER JOIN {tiny_cursive_files} uf ON uw.file_id = uf.id
+              JOIN {tiny_cursive_files} uf ON uw.file_id = uf.id
          LEFT JOIN {tiny_cursive_writing_diff} diff ON uw.file_id = diff.file_id
              WHERE uf.userid = :resourceid
                    AND uf.cmid = :cmid
