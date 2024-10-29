@@ -28,19 +28,7 @@ import jQuery from 'jquery';
 import user from 'tiny_cursive/user';
 
 export const register = (editor) => {
-    const postOne = async (methodname, args) => {
-        try {
-            const response = await call([{
-                methodname,
-                args,
-            }])[0];
-            return response;
-        } catch (error) {
-            console.error('Error in postOne:', error);
-            throw error;
-        }
-    };
-    
+
     var is_student = !(jQuery('#body').hasClass('teacher_admin'));
     var intervention = jQuery('#body').hasClass('intervention');
     var userid = null;
@@ -58,65 +46,46 @@ export const register = (editor) => {
     var cmid = 0;
     var questionid = 0;
     let assignSubmit = jQuery('#id_submitbutton');
-    
+    var syncInterval = 10000; // Sync Every 10s.
+
+    const postOne = async (methodname, args) => {
+        try {
+            const response = await call([{
+                methodname,
+                args,
+            }])[0];
+            return response;
+        } catch (error) {
+            console.error('Error in postOne:', error);
+            throw error;
+        }
+    };
+
     assignSubmit.on('click', async function (e) {
         e.preventDefault();
         if (filename) {
-            let data = localStorage.getItem(filename);
-            localStorage.removeItem(filename);
-    
-            try {
-                await postOne('cursive_write_local_to_json', {
-                    key: ed.key,
-                    event: event,
-                    keyCode: ed.keyCode,
-                    resourceId: recourceId,
-                    cmid: cmid,
-                    modulename: modulename,
-                    editorid: editorid,
-                    json_data: data,
-                });
-                // Custom logic completed, re-enable default action or other logic
+            SyncData().then((res) => {
+                console.log(res);
                 assignSubmit.off('click').click();
-            } catch (error) {
-                console.error('Error submitting data:', error);
-                // Handle the error, if needed
-            }
+            })
         } else {
             // No filename, proceed with any other default actions
             assignSubmit.off('click').click();
         }
     });
-    
+
     quizSubmit.on('click', async function (e) {
         e.preventDefault();
         if (filename) {
-            let data = localStorage.getItem(filename);
-            localStorage.removeItem(filename);
-    
-            try {
-                await postOne('cursive_write_local_to_json', {
-                    key: ed.key,
-                    event: event,
-                    keyCode: ed.keyCode,
-                    resourceId: recourceId,
-                    cmid: cmid,
-                    modulename: modulename,
-                    editorid: editorid,
-                    json_data: data,
-                });
-                // Custom logic completed, re-enable default action or other logic
+            SyncData().then((res) => {
+                console.log(res);
                 quizSubmit.off('click').click();
-            } catch (error) {
-                console.error('Error submitting data:', error);
-                // Handle the error, if needed
-            }
+            })
         } else {
             // No filename, proceed with any other default actions
             quizSubmit.off('click').click();
         }
     });
-    
 
     const getModal = (e) => {
         return create({
@@ -204,8 +173,6 @@ export const register = (editor) => {
         if (bodyid == 'page-mod-quiz-attempt' || bodyid == 'page-mod-quiz-summary' || bodyid == 'page-mod-assign-editsubmission' || bodyid == 'page-mod-forum-view' || bodyid == 'page-mod-forum-post') {
             cmid = parseInt(classes.find((classname) => { return classname.startsWith('cmid-') }).split('-')[1]); // Getting cmid from body classlist.
         }
-        
-
 
         if (ur.includes("attempt.php") || ur.includes("forum") || ur.includes("assign")) { } else {
             return false;
@@ -247,7 +214,7 @@ export const register = (editor) => {
                 key: ed.key,
                 keyCode: ed.keyCode,
                 event: event,
-                courseId:courseid,
+                courseId: courseid,
                 unixTimestamp: Date.now(),
                 clientId: host,
                 personId: userid
@@ -260,7 +227,7 @@ export const register = (editor) => {
                 key: ed.key,
                 keyCode: ed.keyCode,
                 event: event,
-                courseId:courseid,
+                courseId: courseid,
                 unixTimestamp: Date.now(),
                 clientId: host,
                 personId: userid
@@ -300,4 +267,35 @@ export const register = (editor) => {
         host = userdata.host;
         courseid = userdata.courseid;
     });
+
+    async function SyncData() {
+
+        let data = localStorage.getItem(filename);
+
+        if (!data || data.length === 0) {
+            return;
+        } else {
+            localStorage.removeItem(filename);
+            try {
+                return await postOne('cursive_write_local_to_json', {
+                    key: ed.key,
+                    event: event,
+                    keyCode: ed.keyCode,
+                    resourceId: recourceId,
+                    cmid: cmid,
+                    modulename: modulename,
+                    editorid: editorid,
+                    json_data: data,
+                });
+            } catch (error) {
+                console.error('Error submitting data:', error);
+            }
+        }
+    }
+
+    window.addEventListener('unload', (e) => {
+        SyncData();
+    });
+
+    setInterval(SyncData, syncInterval);
 };
