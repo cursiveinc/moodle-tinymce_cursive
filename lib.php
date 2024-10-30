@@ -177,20 +177,22 @@ function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath
             $filetosend = new CURLFILE($filenamewithfullpath);
         } else {
             // Save base64 decoded content to a temporary JSON file.
-            $tempfilepath = tempnam(sys_get_temp_dir(), 'upload');
-            $filecontent = base64_decode($filerecord->content);
-            $jsoncontent = json_decode($filecontent, true);
+            if (isset($filerecord->content)) {
+                $tempfilepath = tempnam(sys_get_temp_dir(), 'upload');
+                $filecontent = base64_decode($filerecord->content);
+                $jsoncontent = json_decode($filecontent, true);
 
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new Exception("Invalid JSON content in file.");
-            }
-            file_put_contents($tempfilepath, json_encode($jsoncontent));
-            $filetosend = new CURLFILE($tempfilepath, 'application/json', 'uploaded.json');
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    throw new Exception("Invalid JSON content in file.");
+                }
+                file_put_contents($tempfilepath, json_encode($jsoncontent));
+                $filetosend = new CURLFILE($tempfilepath, 'application/json', 'uploaded.json');
 
-            // Ensure the temporary file does not exceed the size limit.
-            if (filesize($tempfilepath) > 16 * 1024 * 1024) {
-                unlink($tempfilepath);
-                throw new Exception("File exceeds the 16MB size limit.");
+                // Ensure the temporary file does not exceed the size limit.
+                if (filesize($tempfilepath) > 16 * 1024 * 1024) {
+                    unlink($tempfilepath);
+                    throw new Exception("File exceeds the 16MB size limit.");
+                }
             }
         }
 
