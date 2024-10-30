@@ -34,7 +34,7 @@ $cmid = optional_param('cmid', 0, PARAM_INT);
 $fname = optional_param('fname', '', PARAM_TEXT);
 
 $filename = '';
-$dirname = $CFG->dataroot . '/temp/userdata/';
+$dirname = $CFG->tempdir . '/userdata/';
 if ($fname) {
     $filename = $dirname . $fname;
     if (!file_exists($filename)) {

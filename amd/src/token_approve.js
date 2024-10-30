@@ -29,6 +29,7 @@ define(["core/ajax", "core/str"], function (AJAX, str) {
         ])
         .then(function () {
           usersTable.getToken(page);
+          usersTable.generateToken();
         });
     },
     getToken: function () {
@@ -54,6 +55,53 @@ define(["core/ajax", "core/str"], function (AJAX, str) {
         });
       });
     },
+
+    generateToken() {
+      const generateTokenButton = document.querySelector('#generate_cursivetoken');
+      generateTokenButton.addEventListener('click', function (e) {
+        console.log("Button clicked");
+        e.preventDefault();
+
+        // Call AJAX with the required methodname and arguments
+        const promise = AJAX.call([{
+          methodname: "cursive_generate_webtoken",
+          args: []
+        }])[0];
+
+        // Handle the success response
+        promise.done((data) => {
+          let message_alert = '';
+          if (data.token) {
+            document.querySelector('#id_s_tiny_cursive_cursivetoken').value = data.token;
+            message_alert = "<span class='text-success' role='alert'>Webservice Token Generation Success</span>";
+          } else {
+            message_alert = "<span class='text-danger' role='alert'>Webservice Token Generation Failed</span>";
+          }
+
+          // Set success or failure message
+          const alertContainer = document.querySelector('#cursivetoken_');
+          alertContainer.innerHTML = message_alert;
+
+          // Clear the message after 3 seconds
+          setTimeout(() => {
+            alertContainer.innerHTML = '';
+          }, 3000);
+        });
+
+        // Handle the failure response
+        promise.fail((jqXHR, textStatus) => {
+          const errorMessage = `<span class='text-danger' role='alert'>An error occurred while generating the token: ${textStatus}</span>`;
+          const alertContainer = document.querySelector('#cursivetoken_');
+          alertContainer.innerHTML = errorMessage;
+
+          // Clear the error message after 3 seconds 
+          setTimeout(() => {
+            alertContainer.innerHTML = '';
+          }, 3000);
+        });
+      });
+    }
+
   };
   return usersTable;
 });

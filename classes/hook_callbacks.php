@@ -40,54 +40,58 @@ class hook_callbacks {
     /**
      * Hook to modify the output before footer HTML is generated.
      *
-     * @param core\hook\output\before_footer_html_generation $hook
+     * @param before_footer_html_generation $hook
      */
     public static function before_footer_html_generation(before_footer_html_generation $hook) {
-        global $PAGE, $COURSE, $USER;
+        global $PAGE, $COURSE, $USER, $CFG;
 
-        if (empty($COURSE)) {
-            return;
-        }
+        if (!empty($COURSE) && !during_initial_install()) {
 
-        $confidencethreshold = get_config('tiny_cursive', 'confidence_threshold');
-        $confidencethreshold = !empty($confidencethreshold) ? floatval($confidencethreshold) : 0.65;
-        $showcomments = get_config('tiny_cursive', 'showcomments');
+            $confidencethreshold = get_config('tiny_cursive', 'confidence_threshold');
+            $confidencethreshold = !empty($confidencethreshold) ? floatval($confidencethreshold) : 0.65;
+            $showcomments = get_config('tiny_cursive', 'showcomments');
 
-        $context = context_course::instance($COURSE->id);
-        $userrole = '';
-        if (has_capability('report/courseoverview:view', $context, $USER->id, false) || is_siteadmin()) {
-            $userrole = 'teacher_admin';
-        }
+            $context = context_course::instance($COURSE->id);
+            $userrole = '';
+            if (has_capability('report/courseoverview:view', $context, $USER->id, false) || is_siteadmin()) {
+                $userrole = 'teacher_admin';
+            }
 
-        $PAGE->requires->js_call_amd('tiny_cursive/settings', 'init', [$showcomments, $userrole]);
+            $PAGE->requires->js_call_amd('tiny_cursive/settings', 'init', [$showcomments, $userrole]);
 
-        switch ($PAGE->bodyid) {
-            case 'page-mod-forum-discuss':
-            case 'page-mod-forum-view':
-                $PAGE->requires->js_call_amd('tiny_cursive/append_fourm_post', 'init',
+            switch ($PAGE->bodyid) {
+                case 'page-mod-forum-discuss':
+                case 'page-mod-forum-view':
+                    $PAGE->requires->js_call_amd('tiny_cursive/append_fourm_post', 'init',
                     [$confidencethreshold, $showcomments]);
-                break;
+                    break;
 
-            case 'page-mod-assign-grader':
-                $PAGE->requires->js_call_amd('tiny_cursive/show_url_in_submission_grade', 'init',
+                case 'page-mod-assign-grader':
+                    $PAGE->requires->js_call_amd('tiny_cursive/show_url_in_submission_grade', 'init',
                     [$confidencethreshold, $showcomments]);
-                break;
+                    break;
 
-            case 'page-mod-assign-grading':
-                $PAGE->requires->js_call_amd('tiny_cursive/append_submissions_table', 'init',
+                case 'page-mod-assign-grading':
+                    $PAGE->requires->js_call_amd('tiny_cursive/append_submissions_table', 'init',
                     [$confidencethreshold, $showcomments]);
-                break;
+                    break;
 
-            case 'page-mod-quiz-review':
-                $PAGE->requires->js_call_amd('tiny_cursive/show_url_in_quiz_detail', 'init',
+                case 'page-mod-quiz-review':
+                    $PAGE->requires->js_call_amd('tiny_cursive/show_url_in_quiz_detail', 'init',
                     [$confidencethreshold, $showcomments]);
-                break;
+                    break;
 
-            case 'page-course-view-participants':
-                $PAGE->requires->js_call_amd('tiny_cursive/append_participants_table', 'init',
+                case 'page-course-view-participants':
+                    $PAGE->requires->js_call_amd('tiny_cursive/append_participants_table', 'init',
                     [$confidencethreshold, $showcomments]);
-                break;
+                    break;
+            }
+
+            if ($PAGE->bodyid == 'page-mod-quiz-attempt' || $PAGE->bodyid == 'page-mod-quiz-summary'
+                            || $PAGE->bodyid == 'page-mod-assign-editsubmission' || $PAGE->bodyid == 'page-mod-forum-view'
+                            || $PAGE->bodyid == 'page-mod-forum-post') {
+                $PAGE->requires->js_call_amd('tiny_cursive/user', 'setUserId', [$USER->id, $CFG->wwwroot, $COURSE->id]);
+            }
         }
     }
 }
-

@@ -1,4 +1,6 @@
 <?php
+
+use core_external\util;
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -259,12 +261,12 @@ function get_user_submissions_data($resourceid, $modulename, $cmid, $courseid = 
         $filename = $DB->get_record_sql($sql, ['userid' => $resourceid, 'cmid' => $cmid, 'modulename' => $modulename]);
 
         if ($filename) {
-            $filep = $CFG->dataroot . "/temp/userdata/" . $filename->filename;
+            $filep = $CFG->tempdir . '/userdata/' . $filename->filename;
             $data['filename'] = $filep;
             $data['file_id'] = $filename->fileid ?? '';
         }
     } else {
-        $data['filename'] = $CFG->dataroot . "/temp/userdata/" . $data['filename'];
+        $data['filename'] = $CFG->tempdir . '/userdata/' . $data['filename'];
     }
 
     if ($data['filename']) {
@@ -303,4 +305,22 @@ function tiny_cursive_get_cmid($courseid) {
     $cm = $DB->get_record_sql($sql, $params);
     $cmid = isset($cm->id) ? $cm->id : 0;
     return $cmid;
+}
+
+/**
+ * Create a token for a given user
+ *
+ * @package tiny_cursive
+ * @param int $userid The ID of the user to create the token for
+ * @return string The created token
+ */
+function create_token_for_user() {
+    global $DB;
+    $amdinid = get_admin();
+
+    $serviceshortname = 'cursive_json_service'; // Replace with your service shortname.
+    $service = $DB->get_record('external_services', ['shortname' => $serviceshortname]);
+    $token = util::generate_token(EXTERNAL_TOKEN_PERMANENT, $service, $amdinid->id, context_system::instance());
+
+    return $token;
 }
