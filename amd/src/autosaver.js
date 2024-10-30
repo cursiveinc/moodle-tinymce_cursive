@@ -74,7 +74,6 @@ export const register = (editor) => {
             e.preventDefault();
             if (filename) {
                 await SyncData().then((res) => {
-                    console.log(res);
                     assignSubmit.removeEventListener('click', arguments.callee);
                     assignSubmit.click();
                     assignSubmit.removeEventListener('click', arguments.callee);
@@ -91,7 +90,6 @@ export const register = (editor) => {
         quizSubmit.addEventListener('click', async (e) => {
             if (filename) {
                 await SyncData().then(res => {
-                    console.log(res);
                     document.querySelector('#responseform').submit();
                 });
             }
