@@ -1,6 +1,4 @@
 <?php
-
-use core_external\util;
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -23,7 +21,7 @@ use core_external\util;
  * @copyright 2024, CTI <info@cursivetechnology.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
+use core_external\util;
 /**
  * get_user_attempts_data
  *

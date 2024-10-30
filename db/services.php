@@ -233,5 +233,5 @@ $services = [
         'enabled' => 1,
         'timecreated' => time(), // Time the service was created.
         'timemodified' => time(), // Time the service was last modified.
-    ]
+    ],
 ];

@@ -852,9 +852,8 @@ class cursive_json_func_data extends external_api {
                            AND uf.cmid = :cmid
                            AND uf.modulename = :modulename";
 
-        $data =
-            $DB->get_record_sql($attempts, ['id' => $params['id'], 'cmid' => $params['cmid'], 'modulename' => $params['modulename']]
-            );
+        $data = $DB->get_record_sql($attempts, ['id' => $params['id'], 'cmid' => $params['cmid'],
+                                    'modulename' => $params['modulename']]);
 
         $data = (array) $data;
         $data['first_file'] = 0;
@@ -1592,7 +1591,7 @@ class cursive_json_func_data extends external_api {
     /**
      * Method storing_user_writing_param
      *
-     * @return object [explicite description]
+     * @return array [explicite description]
      */
     public static function storing_user_writing_param() {
         return [
@@ -1862,7 +1861,7 @@ class cursive_json_func_data extends external_api {
                 'cmid' => new external_value(PARAM_INT, 'cmid', VALUE_DEFAULT, 0),
                 'modulename' => new external_value(PARAM_TEXT, 'Modulename', VALUE_DEFAULT, ""),
                 'editorid' => new external_value(PARAM_TEXT, 'editorid', VALUE_DEFAULT, ""),
-                'json_data' => new external_value(PARAM_TEXT, 'JSON Data', VALUE_DEFAULT, "")
+                'json_data' => new external_value(PARAM_TEXT, 'JSON Data', VALUE_DEFAULT, ""),
             ]
         );
     }
@@ -1881,7 +1880,8 @@ class cursive_json_func_data extends external_api {
      *
      * @return string
      */
-    public static function write_local_to_json($resourceid = 0, $key = null, $keycode = null, $event = 'keyUp', $cmid = 0, $modulename = 'quiz', $editorid = null, $jsondata) {
+    public static function write_local_to_json($resourceid, $key, $keycode , $event,
+                                                $cmid, $modulename, $editorid, $jsondata) {
         require_login();
         global $USER, $DB, $CFG;
 
@@ -1895,7 +1895,7 @@ class cursive_json_func_data extends external_api {
                 'cmid' => $cmid,
                 'modulename' => $modulename,
                 'editorid' => $editorid,
-                'json_data' => $jsondata
+                'json_data' => $jsondata,
             ]
         );
 
@@ -1912,7 +1912,7 @@ class cursive_json_func_data extends external_api {
             $courseid = $cm->course;
             $userdata["courseId"] = $courseid;
 
-            // Get course context
+            // Get course context.
             $context = context_module::instance($params['cmid']);
             self::validate_context($context);
             require_capability('tiny/cursive:write', $context);
@@ -1945,7 +1945,8 @@ class cursive_json_func_data extends external_api {
         $inp = file_get_contents($filename);
 
         $temparray = [];
-        if ($inp) {
+        if ($inp && $DB->record_exists($table, ['cmid' => $params['cmid'],
+                                        'modulename' => $params['modulename'], 'userid' => $USER->id])) {
 
             $temparray = json_decode($inp, true);
             $jsondata = json_decode($params['json_data'], true);
@@ -1954,7 +1955,8 @@ class cursive_json_func_data extends external_api {
                 array_push($temparray, $userdata);
             }
 
-            $filerec = $DB->get_record($table, ['cmid' => $params['cmid'], 'modulename' => $params['modulename'], 'userid' => $USER->id]);
+            $filerec = $DB->get_record($table, ['cmid' => $params['cmid'],
+                                        'modulename' => $params['modulename'], 'userid' => $USER->id]);
             if ($questionid) {
                 $filerec = $DB->get_record($table, [
                     'cmid' => $params['cmid'],
