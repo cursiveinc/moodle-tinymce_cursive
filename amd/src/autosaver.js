@@ -29,22 +29,18 @@ import user from 'tiny_cursive/user';
 export const register = (editor) => {
 
     var is_student, intervention, quizSubmit, assignSubmit;
-    document.addEventListener('DOMContentLoaded', function () {
 
-        quizSubmit = document.querySelector('#mod_quiz-next-nav');
-        assignSubmit = document.querySelector('#id_submitbutton');
+    quizSubmit = document.querySelector('#responseform');
+    assignSubmit = document.querySelector('#id_submitbutton');
 
-        assignSubmit.addEventListener('click', clickHandler.assign_submit_button);
-        quizSubmit.addEventListener('click', clickHandler.quiz_submit_button);
+    var bodyElement = document.querySelector('#body');
+    if (bodyElement) {
+        is_student = !bodyElement.classList.contains('teacher_admin'); // true or false
+        intervention = bodyElement.classList.contains('intervention'); // true or false
+    } else {
+        console.error('#body element not found');
+    }
 
-        var bodyElement = document.querySelector('#body');
-        if (bodyElement) {
-            is_student = !bodyElement.classList.contains('teacher_admin'); // true or false
-            intervention = bodyElement.classList.contains('intervention'); // true or false
-        } else {
-            console.error('#body element not found');
-        }
-    });
 
     var userid = null;
     var host = null;
@@ -73,32 +69,36 @@ export const register = (editor) => {
         }
     };
 
-    // Common async handler function
-    const handleClick = async (e, element) => {
-        e.preventDefault();
-        if (filename) {
-            try {
-                const res = await SyncData();
-                console.log(res);
-                // Remove event listener, then trigger a click
-                element.removeEventListener('click', clickHandler[element.id]);
-                element.click();
-            } catch (error) {
-                console.error('Error in SyncData:', error);
+    if (assignSubmit) {
+        assignSubmit.addEventListener('click', async function (e) {
+            e.preventDefault();
+            if (filename) {
+                await SyncData().then((res) => {
+                    console.log(res);
+                    assignSubmit.removeEventListener('click', arguments.callee);
+                    assignSubmit.click();
+                    assignSubmit.removeEventListener('click', arguments.callee);
+                })
+            } else {
+                assignSubmit.removeEventListener('click', arguments.callee);
+                assignSubmit.click();
+                assignSubmit.removeEventListener('click', arguments.callee);
             }
-        } else {
-            // Remove event listener, then trigger a click
-            element.removeEventListener('click', clickHandler[element.id]);
-            element.click();
-        }
-    };
+        });
+    }
 
-    const clickHandler = {
-        assign_submit_button: (e) => handleClick(e, assignSubmit),
-        quiz_submit_button: (e) => handleClick(e, quizSubmit)
-    };
+    if (quizSubmit) {
+        quizSubmit.addEventListener('click', async (e) => {
+            if (filename) {
+                await SyncData().then(res => {
+                    console.log(res);
+                    document.querySelector('#responseform').submit();
+                });
+            }
+            
+        });
+    }
 
-    
     const getModal = (e) => {
         return create({
             type: 'SAVE_CANCEL',
@@ -208,15 +208,14 @@ export const register = (editor) => {
         if (ur.includes("attempt")) {
             modulename = "quiz";
         }
-        // console.log(courseid,userid,host);
+
         filename = `${userid}_${recourceId}_${cmid}_${modulename}_attempt`;
-        // console.log(filename);
+
         if (modulename === 'quiz') {
             questionid = editorid.split(':')[1].split('_')[0];
             filename = `${userid}_${recourceId}_${cmid}_${questionid}_${modulename}_attempt`;
-            // console.log(editorid);
         }
-        // console.log(filename,cmid,classes);
+
         if (localStorage.getItem(filename)) {
 
             let data = JSON.parse(localStorage.getItem(filename));
@@ -245,16 +244,6 @@ export const register = (editor) => {
             });
             localStorage.setItem(filename, JSON.stringify(data));
         }
-
-        // postOne('cursive_json', {
-        //     key: ed.key,
-        //     event: event,
-        //     keyCode: ed.keyCode,
-        //     resourceId: recourceId,
-        //     cmid: cmid,
-        //     modulename: modulename,
-        //     editorid: editorid ? editorid : ""
-        // });
     };
     editor.on('keyUp', (editor) => {
         sendKeyEvent("keyUp", editor);

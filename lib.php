@@ -288,16 +288,15 @@ function tiny_cursive_get_user_essay_quiz_responses($userid, $courseid, $resourc
                JOIN {quiz} qz ON qa.quiz = qz.id
                JOIN {question} q ON qna.questionid = q.id
                JOIN {course_modules} cm ON qz.id = cm.instance AND cm.module = (
-                   SELECT id FROM {modules} WHERE name = 'quiz'
-               )
-         WHERE qa.userid = :userid
-               AND qz.course = :courseid
-               AND qa.id = :resourceid
-               AND cm.id = :cmid
-               AND q.id = :questionid
-               AND q.qtype = 'essay'
-               AND qas.state = 'complete'
-         ORDER BY qa.attempt, qna.id, qas.sequencenumber";
+                     SELECT id FROM {modules} WHERE name = 'quiz')
+              WHERE qa.userid = :userid
+                    AND qz.course = :courseid
+                    AND qa.id = :resourceid
+                    AND cm.id = :cmid
+                    AND q.id = :questionid
+                    AND q.qtype = 'essay'
+                    AND qas.state = 'complete'
+                    ORDER BY qa.attempt, qna.id, qas.sequencenumber";
 
     $result = $DB->get_record_sql(
         $sql,
@@ -327,16 +326,15 @@ function tiny_cursive_get_user_onlinetext_assignments($userid, $courseid, $modul
     global $DB;
 
     $sql = "SELECT cm.instance as assignmentid, ontext.onlinetext, :modulename AS modulename
-          FROM {assign_submission} asub
-               JOIN {assign} a ON asub.assignment = a.id
-               JOIN {assignsubmission_onlinetext} ontext ON asub.id = ontext.submission
-               JOIN {course_modules} cm ON a.id = cm.instance AND cm.module = (
-                   SELECT id FROM {modules} WHERE name = 'assign'
-               )
-         WHERE asub.userid = :userid
-               AND a.course = :courseid
-               AND asub.status = 'submitted'
-               AND cm.id = :cmid";
+              FROM {assign_submission} asub
+              JOIN {assign} a ON asub.assignment = a.id
+              JOIN {assignsubmission_onlinetext} ontext ON asub.id = ontext.submission
+              JOIN {course_modules} cm ON a.id = cm.instance AND cm.module = (
+                    SELECT id FROM {modules} WHERE name = 'assign')
+             WHERE asub.userid = :userid
+                    AND a.course = :courseid
+                    AND asub.status = 'submitted'
+                    AND cm.id = :cmid";
 
     $result =
         $DB->get_record_sql($sql, ['userid' => $userid, 'courseid' => $courseid, 'modulename' => $modulename, 'cmid' => $cmid]);
@@ -355,12 +353,12 @@ function tiny_cursive_get_user_forum_posts($userid, $courseid, $resourceid) {
     global $DB;
 
     $sql = "SELECT fp.id AS postid, fp.subject, fp.message
-                  FROM {forum_posts} fp
-                       JOIN {forum_discussions} fd ON fp.discussion = fd.id
-                       JOIN {forum} f ON fd.forum = f.id
-                 WHERE fp.userid = :userid
-                       AND fd.course = :courseid
-                       AND fp.id = :resourceid";
+              FROM {forum_posts} fp
+              JOIN {forum_discussions} fd ON fp.discussion = fd.id
+              JOIN {forum} f ON fd.forum = f.id
+             WHERE fp.userid = :userid
+                   AND fd.course = :courseid
+                   AND fp.id = :resourceid";
 
     $result = $DB->get_record_sql($sql, ['userid' => $userid, 'courseid' => $courseid, 'resourceid' => $resourceid]);
     return $result->message;
