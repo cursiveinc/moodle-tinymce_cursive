@@ -28,8 +28,6 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/config.php');
 
-require_login();
-
 /**
  * Tiny cursive plugin observer class.
  *

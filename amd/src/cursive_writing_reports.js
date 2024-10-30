@@ -20,8 +20,7 @@
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  */
 
-define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './analytic_button', "./analytic_events"], function (
-    $,
+define(["core/ajax", "core/str", "core/templates", "./replay", './analytic_button', "./analytic_events"], function (
     AJAX,
     str,
     templates,
@@ -30,6 +29,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
     AnalyticEvents
 ) {
     const replayInstances = {};
+
     window.video_playback = function (mid, filepath) {
         if (filepath !== '') {
             const replay = new Replay(
@@ -40,23 +40,20 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
                 controllerId = 'player_' + mid
             );
             replayInstances[mid] = replay;
-        }
-        else {
+        } else {
             templates.render('tiny_cursive/no_submission').then(html => {
-                $('#content' + mid).html(html);
+                document.getElementById('content' + mid).innerHTML = html;
             }).catch(e => window.console.error(e));
         }
         return false;
-
     };
+
     var usersTable = {
         init: function (page) {
-            str
-                .get_strings([
-                    { key: "field_require", component: "tiny_cursive" },
-                ])
+            str.get_strings([{ key: "field_require", component: "tiny_cursive" }])
                 .done(function () {
-                    $(document).ready(function ($) {
+                    document.addEventListener("DOMContentLoaded", function () {
+                        // Placeholder for any action on document ready
                     });
                     usersTable.getusers(page);
                 });
@@ -82,14 +79,20 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
              * @param {Object} score_setting - Configuration settings related to scoring.
              */
             function analyticsEvents(score_setting) {
+                const analyticModals = document.querySelectorAll(".analytic-modal");
 
-                $(".analytic-modal").each(function () {
-                    var mid = $(this).data("id");
-                    var filepath = $(this).data("filepath");
+                analyticModals.forEach(modalElement => {
+                    var mid = modalElement.dataset.id;
+                    var filepath = modalElement.dataset.filepath;
                     let context = {};
                     context.userid = mid;
-                    let cmid = $(this).data("cmid");
-                    $(this).html(analyticButton($(this).data('id')));
+                    let cmid = modalElement.dataset.cmid;
+                    let analyticBtn = analyticButton(mid);
+                    if (analyticBtn) {
+                        modalElement.innerHTML = '';
+                        modalElement.appendChild(analyticBtn);
+                    }
+
 
                     AJAX.call([{
                         methodname: 'cursive_get_writing_statistics',
@@ -102,7 +105,6 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
 
                         context.formattime = myEvents.formatedTime(data);
                         context.tabledata = data;
-                        // Perform actions that require context.tabledata
                         let authIcon = myEvents.authorshipStatus(data.first_file, data.score, score_setting);
                         myEvents.createModal(mid, context, '', authIcon);
                         myEvents.analytics(mid, templates, context, '', replayInstances, authIcon);
@@ -115,56 +117,47 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
                 });
             }
         },
+
         getusers: function (page) {
-            $("#id_coursename").change(function () {
-                var courseid = $(this).val();
-                var promise1 = AJAX.call([
-                    {
-                        methodname: "cursive_get_user_list",
-                        args: {
-                            courseid: courseid,
-                        },
+            document.getElementById("id_coursename").addEventListener('change', function () {
+                var courseid = this.value;
+
+                AJAX.call([{
+                    methodname: "cursive_get_user_list",
+                    args: {
+                        courseid: courseid,
                     },
-                ]);
-                promise1[0].done(function (json) {
+                }])[0].done(function (json) {
                     var data = JSON.parse(json);
                     var context = {
                         tabledata: data,
                         page: page,
                     };
-                    templates
-                        .render("tiny_cursive/user_list", context)
+                    templates.render("tiny_cursive/user_list", context)
                         .then(function (html) {
-
-                            var filtered_user = $("#id_username");
-                            filtered_user.html(html);
+                            document.getElementById("id_username").innerHTML = html;
                         });
                 });
 
-                var promise2 = AJAX.call([
-                    {
-                        methodname: "cursive_get_module_list",
-                        args: {
-                            courseid: courseid,
-                        },
+                AJAX.call([{
+                    methodname: "cursive_get_module_list",
+                    args: {
+                        courseid: courseid,
                     },
-                ]);
-                promise2[0].done(function (json) {
+                }])[0].done(function (json) {
                     var data = JSON.parse(json);
                     var context = {
                         tabledata: data,
                         page: page,
                     };
-                    templates
-                        .render("tiny_cursive/module_list", context)
+                    templates.render("tiny_cursive/module_list", context)
                         .then(function (html) {
-
-                            var filtered_user = $("#id_modulename");
-                            filtered_user.html(html);
+                            document.getElementById("id_modulename").innerHTML = html;
                         });
                 });
             });
         },
     };
+
     return usersTable;
 });

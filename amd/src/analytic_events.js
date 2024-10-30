@@ -22,138 +22,212 @@
  */
 import MyModal from "./analytic_modal";
 import { call as getContent } from "core/ajax";
-import $ from 'jquery';
 import * as Str from 'core/str';
 
 export default class AnalyticEvents {
 
     createModal(userid, context, questionid = '', authIcon) {
-        $('#analytics' + userid + questionid).on('click', function (e) {
-            e.preventDefault();
+        const element = document.getElementById('analytics' + userid + questionid);
+        if (element) {
+            element.addEventListener('click', function (e) {
+                e.preventDefault();
 
-            // Create Moodle modal
-            MyModal.create({ templateContext: context }).then(modal => {
-                $('#content' + userid + ' .table tbody tr:first-child td:nth-child(2)').html(authIcon);
-                modal.show();
-            }).catch(error => {
-                console.error("Failed to create modal:", error);
+                // Create Moodle modal
+                MyModal.create({ templateContext: context }).then(modal => {
+                    const content = document.querySelector('#content' + userid + ' .table tbody tr:first-child td:nth-child(2)');
+                    if (content) content.innerHTML = authIcon;
+                    modal.show();
+                }).catch(error => {
+                    console.error("Failed to create modal:", error);
+                });
             });
-        });
+        }
     }
 
     analytics(userid, templates, context, questionid = '', replayInstances = null, authIcon) {
-        $('body').on('click', '#analytic' + userid + questionid, function (e) {
-            $('#rep' + userid + questionid).prop('disabled', false);
-            e.preventDefault();
-            $('#content' + userid).html($('<div>').addClass('d-flex justify-content-center my-5')
-                .append($('<div>').addClass('tiny_cursive-loader')));
-            if (replayInstances && replayInstances[userid]) {
-                replayInstances[userid].stopReplay();
+        document.body.addEventListener('click', function (e) {
+            if (e.target && e.target.id === 'analytic' + userid + questionid) {
+                
+                const repElement = document.getElementById('rep' + userid + questionid);
+                if (repElement.getAttribute('disabled') === 'true') repElement.setAttribute('disabled','false');
+
+                e.preventDefault();
+
+                const content = document.getElementById('content' + userid);
+                if (content) {
+                    content.innerHTML = '';
+                    const loaderDiv = document.createElement('div');
+                    loaderDiv.className = 'd-flex justify-content-center my-5';
+                    const loader = document.createElement('div');
+                    loader.className = 'tiny_cursive-loader';
+                    loaderDiv.appendChild(loader);
+                    content.appendChild(loaderDiv);
+                }
+
+                if (replayInstances && replayInstances[userid]) {
+                    replayInstances[userid].stopReplay();
+                }
+
+                document.querySelectorAll('.tiny_cursive-nav-tab .active').forEach(el => el.classList.remove('active'));
+                e.target.classList.add('active');
+
+                templates.render('tiny_cursive/analytics_table', context).then(function (html) {
+                    const content = document.getElementById('content' + userid);
+                    if (content) content.innerHTML = html;
+                    const firstCell = document.querySelector('#content' + userid + ' .table tbody tr:first-child td:nth-child(2)');
+                    if (firstCell) firstCell.innerHTML = authIcon;
+                }).catch(function (error) {
+                    console.error("Failed to render template:", error);
+                });
             }
-            $('.tiny_cursive-nav-tab').find('.active').removeClass('active');
-            $(this).addClass('active'); // Add 'active' class to the clicked element
-
-            templates.render('tiny_cursive/analytics_table', context).then(function (html) {
-                $('#content' + userid).html(html);
-                $('#content' + userid + ' .table tbody tr:first-child td:nth-child(2)').html(authIcon);
-
-            }).fail(function (error) {
-                console.error("Failed to render template:", error);
-            });
         });
     }
 
     checkDiff(userid, fileid, questionid = '', replayInstances = null) {
         const nodata = document.createElement('p');
-        nodata.classList.add('text-center', 'p-5', 'bg-light', 'rounded', 'm-5', 'text-primary');
+        nodata.className = 'text-center p-5 bg-light rounded m-5 text-primary';
         nodata.style.verticalAlign = 'middle';
         nodata.style.textTransform = 'uppercase';
         nodata.style.fontWeight = '500';
         nodata.textContent = "no data received yet";
 
-        $('body').on('click', '#diff' + userid + questionid, function (e) {
-            $('#rep' + userid + questionid).prop('disabled', false);
-            e.preventDefault();
-            $('#content' + userid).html($('<div>').addClass('d-flex justify-content-center my-5')
-                .append($('<div>').addClass('tiny_cursive-loader')));
-            $('.tiny_cursive-nav-tab').find('.active').removeClass('active');
-            $(this).addClass('active'); // Add 'active' class to the clicked element
-            if (replayInstances && replayInstances[userid]) {
-                replayInstances[userid].stopReplay();
-            }
-            if (!fileid) {
-                $('#content' + userid).html(nodata);
-                throw new Error('Missing file id or Difference Content not received yet');
-            }
-            getContent([{
-                methodname: 'cursive_get_writing_differences',
-                args: { fileid: fileid },
-            }])[0].done(response => {
-                let responsedata = JSON.parse(response.data);
-                if (responsedata[0]) {
-                    let submitted_text = atob(responsedata[0].submitted_text);
+        document.body.addEventListener('click', function (e) {
+            if (e.target && e.target.id === 'diff' + userid + questionid) {
 
-                    // Fetch the dynamic strings
-                    Str.get_strings([
-                        {key: 'original_text', component: 'tiny_cursive'},
-                        {key: 'editspastesai', component: 'tiny_cursive'}
-                    ]).done(strings => {
-                        const originalTextString = strings[0];
-                        const editsPastesAIString = strings[1];
+                const repElement = document.getElementById('rep' + userid + questionid);
+                if (repElement.getAttribute('disabled') === 'true') repElement.setAttribute('disabled','false');
 
-                        const $legend = $('<div class="d-flex p-2 border rounded mb-2">');
+                e.preventDefault();
 
-                        // Create the first legend item
-                        const $attributedItem = $('<div>', { class: 'tiny_cursive-legend-item' });
-                        const $attributedBox = $('<div>', { class: 'tiny_cursive-box attributed' });
-                        const $attributedText = $('<span>').text(originalTextString);
-                        $attributedItem.append($attributedBox).append($attributedText);
-
-                        // Create the second legend item
-                        const $unattributedItem = $('<div>', { class: 'tiny_cursive-legend-item' });
-                        const $unattributedBox = $('<div>', { class: 'tiny_cursive-box tiny_cursive_added' });
-                        const $unattributedText = $('<span>').text(editsPastesAIString);
-                        $unattributedItem.append($unattributedBox).append($unattributedText);
-
-                        // Append the legend items to the legend container
-                        $legend.append($attributedItem).append($unattributedItem);
-
-                        let contents = $('<div>').addClass('tiny_cursive-comparison-content');
-                        let textBlock2 = $('<div>').addClass('tiny_cursive-text-block').append(
-                            $('<div>').attr('id', 'tiny_cursive-reconstructed_text').html(JSON.parse(submitted_text))
-                        );
-
-                        contents.append($legend, textBlock2);
-                        $('#content' + userid).html(contents); // Update content
-                    }).fail(error => {
-                        console.error("Failed to load language strings:", error);
-                        $('#content' + userid).html(nodata);
-                    });
-                } else {
-                    $('#content' + userid).html(nodata);
+                const content = document.getElementById('content' + userid);
+                if (content) {
+                    content.innerHTML = '';
+                    const loaderDiv = document.createElement('div');
+                    loaderDiv.className = 'd-flex justify-content-center my-5';
+                    const loader = document.createElement('div');
+                    loader.className = 'tiny_cursive-loader';
+                    loaderDiv.appendChild(loader);
+                    content.appendChild(loaderDiv);
                 }
-            }).fail(error => {
-                $('#content' + userid).html(nodata);
-                throw new Error('Error loading JSON file: ' + error.message);
-            });
+
+                document.querySelectorAll('.tiny_cursive-nav-tab .active').forEach(el => el.classList.remove('active'));
+                e.target.classList.add('active');
+
+                if (replayInstances && replayInstances[userid]) {
+                    replayInstances[userid].stopReplay();
+                }
+
+                if (!fileid) {
+                    const content = document.getElementById('content' + userid);
+                    if (content) content.innerHTML = nodata.outerHTML;
+                    throw new Error('Missing file id or Difference Content not received yet');
+                }
+
+                getContent([{
+                    methodname: 'cursive_get_writing_differences',
+                    args: { fileid: fileid },
+                }])[0].done(response => {
+                    let responsedata = JSON.parse(response.data);
+                    if (responsedata[0]) {
+                        let submitted_text = atob(responsedata[0].submitted_text);
+
+                        // Fetch the dynamic strings
+                        Str.get_strings([
+                            { key: 'original_text', component: 'tiny_cursive' },
+                            { key: 'editspastesai', component: 'tiny_cursive' }
+                        ]).done(strings => {
+                            const originalTextString = strings[0];
+                            const editsPastesAIString = strings[1];
+
+                            const legend = document.createElement('div');
+                            legend.className = 'd-flex p-2 border rounded mb-2';
+
+                            // Create the first legend item
+                            const attributedItem = document.createElement('div');
+                            attributedItem.className = 'tiny_cursive-legend-item';
+                            const attributedBox = document.createElement('div');
+                            attributedBox.className = 'tiny_cursive-box attributed';
+                            const attributedText = document.createElement('span');
+                            attributedText.textContent = originalTextString;
+                            attributedItem.appendChild(attributedBox);
+                            attributedItem.appendChild(attributedText);
+
+                            // Create the second legend item
+                            const unattributedItem = document.createElement('div');
+                            unattributedItem.className = 'tiny_cursive-legend-item';
+                            const unattributedBox = document.createElement('div');
+                            unattributedBox.className = 'tiny_cursive-box tiny_cursive_added';
+                            const unattributedText = document.createElement('span');
+                            unattributedText.textContent = editsPastesAIString;
+                            unattributedItem.appendChild(unattributedBox);
+                            unattributedItem.appendChild(unattributedText);
+
+                            // Append the legend items to the legend container
+                            legend.appendChild(attributedItem);
+                            legend.appendChild(unattributedItem);
+
+                            let contents = document.createElement('div');
+                            contents.className = 'tiny_cursive-comparison-content';
+                            let textBlock2 = document.createElement('div');
+                            textBlock2.className = 'tiny_cursive-text-block';
+                            textBlock2.innerHTML = `<div id="tiny_cursive-reconstructed_text">${JSON.parse(submitted_text)}</div>`;
+
+                            contents.appendChild(legend);
+                            contents.appendChild(textBlock2);
+
+                            const content = document.getElementById('content' + userid);
+                            if (content) content.innerHTML = contents.outerHTML;
+                        }).catch(error => {
+                            console.error("Failed to load language strings:", error);
+                            const content = document.getElementById('content' + userid);
+                            if (content) content.innerHTML = nodata.outerHTML;
+                        });
+                    } else {
+                        const content = document.getElementById('content' + userid);
+                        if (content) content.innerHTML = nodata.outerHTML;
+                    }
+                }).catch(error => {
+                    const content = document.getElementById('content' + userid);
+                    if (content) content.innerHTML = nodata.outerHTML;
+                    throw new Error('Error loading JSON file: ' + error.message);
+                });
+            }
         });
     }
 
     replyWriting(userid, filepath, questionid = '', replayInstances = null) {
-        $('body').on('click', '#rep' + userid + questionid, function (e) {
-            $(this).prop('disabled', true);
-            e.preventDefault();
-            $('#content' + userid).html($('<div>').addClass('d-flex justify-content-center my-5')
-                .append($('<div>').addClass('tiny_cursive-loader')));
-            $('.tiny_cursive-nav-tab').find('.active').removeClass('active');
-            $(this).addClass('active'); // Add 'active' class to the clicked element
-            if (replayInstances && replayInstances[userid]) {
-                replayInstances[userid].stopReplay();
-            }
-            if (questionid) {
-                video_playback(userid, filepath, questionid);
-            } else {
-                video_playback(userid, filepath);
+        document.body.addEventListener('click', function (e) {
+            if (e.target && e.target.id === 'rep' + userid + questionid) {
+                let replyBtn = document.getElementById('rep' + userid + questionid);
+
+                if(replyBtn.getAttribute('disabled') == 'true') return;
+                replyBtn.setAttribute('disabled', 'true');
+
+                e.preventDefault();
+
+                const content = document.getElementById('content' + userid);
+                if (content) {
+                    content.innerHTML = '';
+                    const loaderDiv = document.createElement('div');
+                    loaderDiv.className = 'd-flex justify-content-center my-5';
+                    const loader = document.createElement('div');
+                    loader.className = 'tiny_cursive-loader';
+                    loaderDiv.appendChild(loader);
+                    content.appendChild(loaderDiv);
+                }
+
+                document.querySelectorAll('.tiny_cursive-nav-tab .active').forEach(el => el.classList.remove('active'));
+                e.target.classList.add('active');
+
+                if (replayInstances && replayInstances[userid]) {
+                    replayInstances[userid].stopReplay();
+                }
+
+                if (questionid) {
+                    video_playback(userid, filepath, questionid);
+                } else {
+                    video_playback(userid, filepath);
+                }
             }
         });
     }
@@ -186,6 +260,9 @@ export default class AnalyticEvents {
             color = 'font-size:32px;color:#A9A9A9';
         }
 
-        return $('<i>').addClass(icon).attr('style', color);
+        const iconElement = document.createElement('i');
+        iconElement.className = icon;
+        iconElement.style = color;
+        return iconElement;
     }
 }

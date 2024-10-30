@@ -20,12 +20,7 @@
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  */
 
-define(["jquery", "core/ajax", "core/str", "core/templates"], function (
-  $,
-  AJAX,
-  str,
-  templates,
-) {
+define(["core/ajax", "core/str", "core/templates"], function (AJAX, str, templates) {
   var usersTable = {
     init: function (page) {
       str
@@ -33,24 +28,39 @@ define(["jquery", "core/ajax", "core/str", "core/templates"], function (
           { key: "field_require", component: "tiny_cursive" }
         ])
         .done(function () {
-          $(document).ready(function($) {
-            $(".popup_item").on('click',function () {
-              var mid=$(this).data("id");
-            $("#"+mid).show();
+          document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".popup_item").forEach(function (element) {
+              element.addEventListener("click", function () {
+                var mid = this.dataset.id;
+                document.getElementById(mid).style.display = 'block';
+              });
             });
-            $(".link_icon").on('click',function () {
-              var smid=$(this).data("id");
-            $("#"+smid).show();
+
+            document.querySelectorAll(".link_icon").forEach(function (element) {
+              element.addEventListener("click", function () {
+                var smid = this.dataset.id;
+                document.getElementById(smid).style.display = 'block';
+              });
             });
-            $(".modal-close ").on('click',function () {$(".modal").hide();});
-        } );
+
+            document.querySelectorAll(".modal-close").forEach(function (element) {
+              element.addEventListener("click", function () {
+                document.querySelectorAll(".modal").forEach(function (modal) {
+                  modal.style.display = 'none';
+                });
+              });
+            });
+          });
+
           usersTable.getusers(page);
         });
     },
+
     getusers: function (page) {
-      $("#fgroup_id_buttonar").hide();
-      $("#id_coursename").change(function () {
-        var courseid = $(this).val();
+      document.getElementById("fgroup_id_buttonar").style.display = 'none';
+      document.getElementById("id_coursename").addEventListener("change", function () {
+        var courseid = this.value;
+
         var promise1 = AJAX.call([
           {
             methodname: "cursive_get_user_list",
@@ -59,18 +69,16 @@ define(["jquery", "core/ajax", "core/str", "core/templates"], function (
             },
           },
         ]);
+
         promise1[0].done(function (json) {
           var data = JSON.parse(json);
           var context = {
             tabledata: data,
             page: page,
           };
-          templates
-            .render("tiny_cursive/user_list", context)
-            .then(function (html) {
-              var filtered_user = $("#id_username");
-              filtered_user.html(html);
-            });
+          templates.render("tiny_cursive/user_list", context).then(function (html) {
+            document.getElementById("id_username").innerHTML = html;
+          });
         });
 
         var promise2 = AJAX.call([
@@ -81,22 +89,20 @@ define(["jquery", "core/ajax", "core/str", "core/templates"], function (
             },
           },
         ]);
+
         promise2[0].done(function (json) {
           var data = JSON.parse(json);
           var context = {
             tabledata: data,
             page: page,
           };
-          templates
-            .render("tiny_cursive/module_list", context)
-            .then(function (html) {
-
-              var filtered_user = $("#id_modulename");
-              filtered_user.html(html);
-            });
+          templates.render("tiny_cursive/module_list", context).then(function (html) {
+            document.getElementById("id_modulename").innerHTML = html;
+          });
         });
       });
     },
   };
+
   return usersTable;
 });

@@ -263,6 +263,7 @@ class cursive_json_func_data extends external_api {
         $userdata["clientId"] = $CFG->wwwroot;
         $userdata["personId"] = $USER->id;
         $editoridarr = explode(':', $params['editorid']);
+        $questionid = '';
         if (count($editoridarr) > 1) {
             $uniqueid = substr($editoridarr[0] . "\n", 1);
             $slot = substr($editoridarr[1] . "\n", 0, -11);
@@ -283,7 +284,8 @@ class cursive_json_func_data extends external_api {
         $inp = file_get_contents($filename);
 
         $temparray = null;
-        if ($inp) {
+        if ($inp && $DB->record_exists($table, ['cmid' => $params['cmid'],
+        'modulename' => $params['modulename'], 'userid' => $USER->id])) {
 
             $temparray = json_decode($inp, true);
             array_push($temparray, $userdata);
@@ -683,7 +685,7 @@ class cursive_json_func_data extends external_api {
                     "userid" => $params['userid'],
                 ]
             );
-            $filep = $CFG->dataroot . "/temp/userdata/" . $filename->filename;
+            $filep = $CFG->tempdir . '/userdata/' . $filename->filename;
             $data['filename'] = $filep;
             $data['questionid'] = $params['questionid'];
 
@@ -759,7 +761,7 @@ class cursive_json_func_data extends external_api {
                     'modulename' => $params['modulename'],
                 ]);
 
-                $filep = $CFG->dataroot . "/temp/userdata/" . $filename->filename;
+                $filep = $CFG->tempdir . '/userdata/' . $filename->filename;
                 $data['filename'] = $filep;
 
             }
@@ -850,9 +852,8 @@ class cursive_json_func_data extends external_api {
                            AND uf.cmid = :cmid
                            AND uf.modulename = :modulename";
 
-        $data =
-            $DB->get_record_sql($attempts, ['id' => $params['id'], 'cmid' => $params['cmid'], 'modulename' => $params['modulename']]
-            );
+        $data = $DB->get_record_sql($attempts, ['id' => $params['id'], 'cmid' => $params['cmid'],
+                                    'modulename' => $params['modulename']]);
 
         $data = (array) $data;
         $data['first_file'] = 0;
@@ -868,7 +869,7 @@ class cursive_json_func_data extends external_api {
                 ['resourceid' => $params['id'], 'cmid' => $params['cmid'], 'modulename' => $params['modulename']]
             );
 
-            $filep = $CFG->dataroot . "/temp/userdata/" . $filename->filename;
+            $filep = $CFG->tempdir . '/userdata/' . $filename->filename;
 
             $data['filename'] = $filep;
 
@@ -880,7 +881,7 @@ class cursive_json_func_data extends external_api {
                 $data['first_file'] = 1;
             }
         } else {
-            $filep = $CFG->dataroot . "/temp/userdata/" . $data['filename'];
+            $filep = $CFG->tempdir . '/userdata/' . $data['filename'];
             $data['filename'] = $filep;
         }
         $sql = 'SELECT *
@@ -997,7 +998,7 @@ class cursive_json_func_data extends external_api {
                     ['resourceid' => $params['id'], 'cmid' => $params['cmid'], 'modulename' => $params['modulename']]
                 );
 
-                $filep = $CFG->dataroot . "/temp/userdata/" . $filename->filename;
+                $filep = $CFG->tempdir . '/userdata/' . $filename->filename;
                 $data['filename'] = $filep;
             }
 
@@ -1030,7 +1031,7 @@ class cursive_json_func_data extends external_api {
                     ['resourceid' => $params['id'], 'cmid' => $params['cmid'], 'modulename' => $params['modulename']]
                 );
 
-                $filep = $CFG->dataroot . "/temp/userdata/" . $filename->filename;
+                $filep = $CFG->tempdir . '/userdata/' . $filename->filename;
                 $data['filename'] = $filep;
             }
         }
@@ -1214,7 +1215,7 @@ class cursive_json_func_data extends external_api {
         }
         if ($data['filename']) {
 
-            $filep = $CFG->dataroot . "/temp/userdata/" . $data['filename'];
+            $filep = $CFG->tempdir . '/userdata/' . $data['filename'];
             $data['filename'] = $filep;
 
             $sql = 'SELECT id AS fileid
@@ -1590,7 +1591,7 @@ class cursive_json_func_data extends external_api {
     /**
      * Method storing_user_writing_param
      *
-     * @return object [explicite description]
+     * @return array [explicite description]
      */
     public static function storing_user_writing_param() {
         return [
@@ -1810,5 +1811,197 @@ class cursive_json_func_data extends external_api {
         return new external_single_structure([
             'data' => new external_value(PARAM_TEXT, 'content data'),
         ]);
+    }
+
+        /**
+         * Method generate_webtoken_parameters
+         *
+         * @return external_function_parameters
+         */
+    public static function generate_webtoken_parameters() {
+        return new external_function_parameters([]);
+    }
+
+    /**
+     * Method generate_webtoken
+     *
+     * @return array
+     */
+    public static function generate_webtoken() {
+        $token = create_token_for_user();
+        if ($token) {
+            set_config('cursivetoken', $token, 'tiny_cursive');
+        }
+        return ['token' => $token];
+    }
+
+    /**
+     * Method generate_webtoken_returns
+     *
+     * @return external_single_structure
+     */
+    public static function generate_webtoken_returns() {
+        return new external_single_structure([
+            'token' => new external_value(PARAM_TEXT, 'token'),
+        ]);
+    }
+
+    /**
+     * Method write_local_to_json_parameters
+     *
+     * @return external_function_parameters
+     */
+    public static function write_local_to_json_parameters() {
+        return new external_function_parameters(
+            [
+                'resourceId' => new external_value(PARAM_INT, 'resourceId', VALUE_DEFAULT, 0),
+                'key' => new external_value(PARAM_TEXT, 'key detail', VALUE_DEFAULT, ""),
+                'keyCode' => new external_value(PARAM_INT, 'key code ', VALUE_DEFAULT, 0),
+                'event' => new external_value(PARAM_TEXT, 'event', VALUE_DEFAULT, 0),
+                'cmid' => new external_value(PARAM_INT, 'cmid', VALUE_DEFAULT, 0),
+                'modulename' => new external_value(PARAM_TEXT, 'Modulename', VALUE_DEFAULT, ""),
+                'editorid' => new external_value(PARAM_TEXT, 'editorid', VALUE_DEFAULT, ""),
+                'json_data' => new external_value(PARAM_TEXT, 'JSON Data', VALUE_DEFAULT, ""),
+            ]
+        );
+    }
+
+    /**
+     * Method write_local_to_json
+     *
+     * @param $resourceid $resourceid [explicite description]
+     * @param $key $key [explicite description]
+     * @param $keycode $keycode [explicite description]
+     * @param $event $event [explicite description]
+     * @param $cmid $cmid [explicite description]
+     * @param $modulename $modulename [explicite description]
+     * @param $editorid $editorid [explicite description]
+     * @param $jsondata $jsondata [explicite description]
+     *
+     * @return string
+     */
+    public static function write_local_to_json($resourceid, $key, $keycode , $event,
+                                                $cmid, $modulename, $editorid, $jsondata) {
+        require_login();
+        global $USER, $DB, $CFG;
+
+        $params = self::validate_parameters(
+            self::write_local_to_json_parameters(),
+            [
+                'resourceId' => $resourceid,
+                'key' => $key,
+                'keyCode' => $keycode,
+                'event' => $event,
+                'cmid' => $cmid,
+                'modulename' => $modulename,
+                'editorid' => $editorid,
+                'json_data' => $jsondata,
+            ]
+        );
+
+        if ($params['resourceId'] == 0 && $params['modulename'] !== 'forum') {
+            // For Quiz and Assignment there is no resourceid that's why cmid is resourceid.
+            $params['resourceId'] = $params['cmid'];
+        }
+
+        $courseid = 0;
+
+        $userdata = [];
+        if ($params['cmid']) {
+            $cm = $DB->get_record('course_modules', ['id' => $params['cmid']]);
+            $courseid = $cm->course;
+            $userdata["courseId"] = $courseid;
+
+            // Get course context.
+            $context = context_module::instance($params['cmid']);
+            self::validate_context($context);
+            require_capability('tiny/cursive:write', $context);
+
+        } else {
+            $userdata["courseId"] = 0;
+        }
+
+        $userdata["clientId"] = $CFG->wwwroot;
+        $userdata["personId"] = $USER->id;
+        $editoridarr = explode(':', $params['editorid']);
+
+        if (count($editoridarr) > 1) {
+            $uniqueid = substr($editoridarr[0] . "\n", 1);
+            $slot = substr($editoridarr[1] . "\n", 0, -11);
+            $quba = question_engine::load_questions_usage_by_activity($uniqueid);
+            $question = $quba->get_question($slot, false);
+            $questionid = $question->id;
+        }
+        $dirname = make_temp_directory('userdata');
+
+        $fname = $USER->id . '_' . $params['resourceId'] . '_' . $params['cmid'] . '_attempt' . '.json';
+        if ($questionid) {
+            $fname = $USER->id . '_' . $params['resourceId'] . '_' . $params['cmid'] . '_' . $questionid . '_attempt' . '.json';
+        }
+        // File path.
+        $filename = $dirname . '/' . $fname;
+
+        $table = 'tiny_cursive_files';
+        $inp = file_get_contents($filename);
+
+        $temparray = [];
+        if ($inp && $DB->record_exists($table, ['cmid' => $params['cmid'],
+                                        'modulename' => $params['modulename'], 'userid' => $USER->id])) {
+
+            $temparray = json_decode($inp, true);
+            $jsondata = json_decode($params['json_data'], true);
+            foreach ($jsondata as $value) {
+                $userdata = $value;
+                array_push($temparray, $userdata);
+            }
+
+            $filerec = $DB->get_record($table, ['cmid' => $params['cmid'],
+                                        'modulename' => $params['modulename'], 'userid' => $USER->id]);
+            if ($questionid) {
+                $filerec = $DB->get_record($table, [
+                    'cmid' => $params['cmid'],
+                    'modulename' => $params['modulename'],
+                    'userid' => $USER->id,
+                    'questionid' => $questionid,
+                ]);
+            }
+            $filerec->uploaded = 0;
+            $DB->update_record($table, $filerec);
+        } else {
+
+            $jsondata = json_decode($params['json_data'], true);
+            foreach ($jsondata as $value) {
+                $userdata = $value;
+                array_push($temparray, $userdata);
+            }
+            $dataobj = new stdClass();
+            $dataobj->userid = $USER->id;
+            $dataobj->resourceid = $params['resourceId'];
+            $dataobj->cmid = $params['cmid'];
+            $dataobj->modulename = $params['modulename'];
+            $dataobj->courseid = $courseid;
+            $dataobj->timemodified = time();
+            $dataobj->filename = $fname;
+            $dataobj->questionid = $questionid ?? 0;
+            $dataobj->uploaded = 0;
+            $DB->insert_record($table, $dataobj);
+        }
+
+        $jsondata = json_encode($temparray);
+
+        if (is_array($temparray)) {
+            file_put_contents($filename, $jsondata);
+        }
+
+        return $filename;
+    }
+
+    /**
+     * Method write_local_to_json_returns
+     *
+     * @return external_value
+     */
+    public static function write_local_to_json_returns() {
+        return new external_value(PARAM_TEXT, 'filename');
     }
 }

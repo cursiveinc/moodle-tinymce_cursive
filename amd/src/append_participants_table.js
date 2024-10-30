@@ -20,63 +20,89 @@
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  */
 
-define(["jquery", "core/config", "core/str"], function ($, mdlcfg, Str) {
+define(["core/config", "core/str"], function (mdlcfg, Str) {
     var usersTable = {
-        init: async function(page) {
+        init: async function (page) {
             await usersTable.appendTable(page);
         },
         appendTable: async function () {
-            $(document).ready(async function ($) {
-                // Get the first row in the table header
-                let h_tr = $('thead').find('tr').get()[0];
-                let bodyid = $('body').attr('class');
-                let classes = bodyid.split(' ');
+            // $(document).ready(async function ($) {
+            // Get the first row in the table header
 
-                // Extract course ID
-                let courseid = parseInt(classes.find((classname) => {
-                    return classname.startsWith('course-');
-                }).split('-')[1]);
+            let h_tr = document.querySelector('thead tr');
+            const bodyElement = document.querySelector('body');
+            const bodyid = bodyElement.className;
+            let classes = bodyid.split(' ');
 
-                // Fetch string for stats header
-                let statsString = await Str.get_string('stats', 'tiny_cursive');
+            // Extract course ID
+            let courseid = parseInt(classes.find((classname) => {
+                return classname.startsWith('course-');
+            }).split('-')[1]);
 
-                // Add the stats header if it doesn't already exist
-                if (!$(h_tr).find('#stats').length) {
-                    $(h_tr).find('th').eq(6).after('<th class="header c7" id="stats">' + statsString + '</th>');
-                }
+            // Fetch string for stats header
+            let statsString = await Str.get_string('stats', 'tiny_cursive');
 
-                // Iterate over each row in the table body
-                $('tbody').find("tr").get().forEach(function (tr) {
-                    let td_user = $(tr).find("td").get()[0];
-                    let userid = $(td_user).find("input").get()[0]?.id;
-                    userid = userid?.slice(4); // Extract userid from input id
+            // Add the stats header if it doesn't already exist
+            if (!h_tr.querySelector('#stats')) {
+                const sixthHeader = h_tr.querySelector('th:nth-child(7)'); // Adjust index if needed
+                const newHeader = document.createElement('th');
+                newHeader.className = 'header c7';
+                newHeader.setAttribute('scope', 'col');
+                newHeader.id = 'stats';
+                newHeader.textContent = statsString;
+                sixthHeader.after(newHeader);
+            }
 
-                    if (userid) {
-                        // Avoid duplicating the icon by checking if the icon is already added
-                        if (!$(tr).find('td').eq(6).find('i').length) {
-                            let color = 'font-size:24px;color:black;text-decoration:none';
-                            let link = mdlcfg.wwwroot + "/lib/editor/tiny/plugins/cursive/writing_report.php?userid="
-                                + userid + "&courseid=" + courseid;
-                            let icon = 'fa fa-area-chart';
+            // Iterate over each row in the table body
+            const tbody = document.querySelector('tbody');
+            const rows = tbody.querySelectorAll('tr');
 
-                            // Add the icon link to the 6th column
-                            let thunder_icon = '<td><a href="' + link + '" data-id=' + userid + '>' +
-                                '<i class="' + icon + '" aria-hidden="true" style="' + color + '"></i></a></td>';
-                            $(tr).find('td').eq(5).after(thunder_icon); // Insert after the 5th column
-                        }
+            rows.forEach((row) => {
+                const tdUser = row.querySelector('td');
+                const input = tdUser.querySelector('input');
+
+                if (input) {
+                    const userId = input.id.slice(4);
+
+                    if (userId) {
+                        const sixthTd = row.querySelector('td:last-child');
+
+                        // if (!sixthTd.querySelector('i:last-child')) {
+                        const color = 'font-size:24px;color:black;text-decoration:none';
+                        const link = mdlcfg.wwwroot + "/lib/editor/tiny/plugins/cursive/writing_report.php?userid=" + userId + "&courseid=" + courseid;
+                        const icon = 'fa fa-area-chart';
+
+                        const thunderIcon = document.createElement('td');
+                        const anchor = document.createElement('a');
+                        const iconElement = document.createElement('i');
+
+                        anchor.href = link;
+                        anchor.dataset.id = userId;
+                        iconElement.className = icon;
+                        iconElement.style = color;
+
+                        anchor.appendChild(iconElement);
+                        thunderIcon.appendChild(anchor);
+
+                        sixthTd.after(thunderIcon);
+                        // }
                     }
-                });
+                }
+            });
 
-                // Add event listener for page change or other events triggering table update
-                $(".page-item, .header").on('click', function () {
+            // Add event listener for page change or other events triggering table update
+            const pageItems = document.querySelectorAll('.page-item, .header');
+
+            pageItems.forEach((element) => {
+                element.addEventListener('click', () => {
                     setTimeout(() => {
-                        // Prevent multiple initializations by checking if already initialized
-                        if (!$('#stats').length) {
-                            usersTable.init(); // Initialize the table if needed
+                        if (!document.querySelector('#stats')) {
+                            usersTable.init();
                         }
-                    }, 1800); // Slight delay to ensure the DOM is fully updated
+                    }, 1800);
                 });
             });
+            // });
         }
     };
     return usersTable;

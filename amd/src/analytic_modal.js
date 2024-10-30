@@ -22,7 +22,6 @@
  */
 
 import Modal from 'core/modal';
-import $ from 'jquery';
 export default class MyModal extends Modal {
     static TYPE = "tiny_cursive/analytics_modal";
     static TEMPLATE = "tiny_cursive/analytics_modal";
@@ -50,12 +49,12 @@ export default class MyModal extends Modal {
         root.find('.modal-header').hide();
 
         root.find('.modal-content').css({
-            'border-radius':'30px'
+            'border-radius': '30px'
         }).addClass('shadow-none border-none');
         // Remove padding from the modal content.
         root.find('.modal-body').css({
-            'padding':'0',
-            'border-radius':'30px'
+            'padding': '0',
+            'border-radius': '30px'
         });
         root.find('.modal-dialog').css({
             'max-width': '800px',
@@ -68,9 +67,10 @@ export default class MyModal extends Modal {
 
         // Ensure modal closes on backdrop click.
         root.on('click', (e) => {
-            if ($(e.target).hasClass('modal')) {
+            if (e.target.classList.contains('modal')) {
                 this.destroy();
             }
         });
     }
 }
+
