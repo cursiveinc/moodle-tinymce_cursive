@@ -35,7 +35,7 @@ export default class AnalyticEvents {
                 // Create Moodle modal
                 MyModal.create({ templateContext: context }).then(modal => {
                     const content = document.querySelector('#content' + userid + ' .table tbody tr:first-child td:nth-child(2)');
-                    if (content) content.innerHTML = authIcon;
+                    if (content) content.innerHTML = authIcon.outerHTML;
                     modal.show();
                 }).catch(error => {
                     console.error("Failed to create modal:", error);
@@ -75,7 +75,7 @@ export default class AnalyticEvents {
                     const content = document.getElementById('content' + userid);
                     if (content) content.innerHTML = html;
                     const firstCell = document.querySelector('#content' + userid + ' .table tbody tr:first-child td:nth-child(2)');
-                    if (firstCell) firstCell.innerHTML = authIcon;
+                    if (firstCell) firstCell.innerHTML = authIcon.outerHTML;
                 }).catch(function (error) {
                     console.error("Failed to render template:", error);
                 });
