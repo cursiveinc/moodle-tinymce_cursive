@@ -325,3 +325,22 @@ function create_token_for_user() {
     }
     return $token;
 }
+
+/**
+ * Method filestream
+ *
+ * @param $file $file [explicite description]
+ * @param $fname $fname [explicite description]
+ *
+ * @return string
+ */
+function file_stream($file, $fname) {
+    $inp = '';
+    if (file_exists($file)) {
+        $inp = file_get_contents($file);
+    } else {
+        $inp = base64_decode($file);
+    }
+
+    return $inp;
+}
