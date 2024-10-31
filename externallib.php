@@ -70,7 +70,6 @@ class cursive_json_func_data extends external_api {
     public static function get_user_list($page, $courseid) {
 
         global $CFG, $DB;
-        require_login();
 
         // Validate parameters.
         $params = self::validate_parameters(
@@ -131,7 +130,6 @@ class cursive_json_func_data extends external_api {
     public static function get_module_list($page, $courseid) {
 
         global $CFG, $DB;
-        require_login();
         require_once($CFG->libdir . '/accesslib.php');
 
         // Validate parameters.
@@ -214,7 +212,6 @@ class cursive_json_func_data extends external_api {
         $modulename = 'quiz',
         $editorid = null
     ) {
-        require_login();
 
         global $USER, $DB, $CFG;
 
@@ -371,7 +368,6 @@ class cursive_json_func_data extends external_api {
         $quizname = null,
         $username = 'keyUp'
     ) {
-        require_login();
         global $DB, $CFG;
         require_once($CFG->libdir . '/accesslib.php');
         // Include accesslib.php for capability checks.
@@ -458,7 +454,6 @@ class cursive_json_func_data extends external_api {
         $editorid
     ) {
         global $DB, $USER, $CFG;
-        require_login();
 
         $params = self::validate_parameters(
             self::cursive_user_comments_func_parameters(),
@@ -541,7 +536,6 @@ class cursive_json_func_data extends external_api {
      */
     public static function cursive_approve_token_func($token) {
         global $CFG;
-        require_login();
         $params = self::validate_parameters(
             self::cursive_approve_token_func_parameters(),
             [
@@ -642,10 +636,8 @@ class cursive_json_func_data extends external_api {
      */
     public static function get_comment_link($id, $modulename, $cmid, $questionid, $userid) {
         global $DB, $CFG;
-        require_once($CFG->dirroot . '/config.php');
         require_once($CFG->dirroot . '/lib/accesslib.php');
         require_once($CFG->dirroot . '/question/lib.php');
-        require_login();
         $params = self::validate_parameters(
             self::get_comment_link_parameters(),
             [
@@ -819,10 +811,8 @@ class cursive_json_func_data extends external_api {
      */
     public static function get_forum_comment_link($id, $modulename, $cmid = null) {
         global $DB, $CFG;
-        require_once($CFG->dirroot . '/config.php');
         require_once($CFG->dirroot . '/lib/accesslib.php');
         require_once($CFG->dirroot . '/question/lib.php');
-        require_login();
 
         $params = self::validate_parameters(
             self::get_forum_comment_link_parameters(),
@@ -954,10 +944,8 @@ class cursive_json_func_data extends external_api {
         $questionid = null
     ) {
         global $DB, $CFG;
-        require_once($CFG->dirroot . '/config.php');
         require_once($CFG->dirroot . '/lib/accesslib.php');
         require_once($CFG->dirroot . '/question/lib.php');
-        require_login();
         $params = self::validate_parameters(
             self::get_comment_link_parameters(),
             [
@@ -1089,7 +1077,6 @@ class cursive_json_func_data extends external_api {
      */
     public static function get_assign_comment_link($id, $modulename, $cmid) {
         global $DB;
-        require_login();
 
         $params = self::validate_parameters(
             self::get_assign_comment_link_parameters(),
@@ -1161,7 +1148,6 @@ class cursive_json_func_data extends external_api {
      */
     public static function get_assign_grade_comment($id, $modulename, $cmid) {
         global $DB, $CFG;
-        require_login();
 
         $params = self::validate_parameters(
             self::get_assign_grade_comment_parameters(),
@@ -1285,7 +1271,6 @@ class cursive_json_func_data extends external_api {
      */
     public static function get_user_list_submission_stats($id, $modulename, $cmid) {
         global $DB;
-        require_login();
         $params = self::validate_parameters(
             self::get_user_list_submission_stats_parameters(),
             [
@@ -1338,7 +1323,6 @@ class cursive_json_func_data extends external_api {
      */
     public static function cursive_filtered_writing_func($id) {
         global $DB, $USER;
-        require_login();
 
         $vparams = self::validate_parameters(
             self::cursive_filtered_writing_func_parameters(),
