@@ -159,6 +159,9 @@ function tiny_cursive_myprofile_navigation(core_user\output\myprofile\tree $tree
  * @throws dml_exception
  */
 function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath, $wstoken, $answertext) {
+    global $CFG;
+    require_once($CFG->libdir . '/filelib.php');
+
     $moodleurl = get_config('tiny_cursive', 'host_url');
     $result = '';
     try {
@@ -168,60 +171,65 @@ function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath
 
         // Check if file exists or create one from base64 content.
         if (file_exists($filenamewithfullpath)) {
-            // Check if file size is within the limit.
             if (filesize($filenamewithfullpath) > 16 * 1024 * 1024) {
                 throw new Exception("File exceeds the 16MB size limit.");
             }
-            // Use the file directly.
             $filetosend = new CURLFILE($filenamewithfullpath);
         } else {
-            // Save base64 decoded content to a temporary JSON file.
             $tempfilepath = tempnam(sys_get_temp_dir(), 'upload');
             $filecontent = base64_decode($filerecord->content);
+
+            if ($filecontent === false) {
+                throw new Exception("Failed to decode base64 content.");
+            }
+
             $jsoncontent = json_decode($filecontent, true);
 
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new Exception("Invalid JSON content in file.");
-            }
             file_put_contents($tempfilepath, json_encode($jsoncontent));
             $filetosend = new CURLFILE($tempfilepath, 'application/json', 'uploaded.json');
 
-            // Ensure the temporary file does not exceed the size limit.
             if (filesize($tempfilepath) > 16 * 1024 * 1024) {
                 unlink($tempfilepath);
                 throw new Exception("File exceeds the 16MB size limit.");
             }
         }
 
-        echo $remoteurl;
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $remoteurl);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, [
+        // Initialize Moodle's curl class.
+        $curl = new curl();
+        $headers = [
+            'Authorization: Bearer ' . $token,
+            'X-Moodle-Url: ' . $moodleurl,
+            'Content-Type: multipart/form-data',
+        ];
+
+        $postfields = [
             'file' => $filetosend,
             'resource_id' => $filerecord->id,
             'person_id' => $filerecord->userid,
             'ws_token' => $wstoken,
             'originalsubmission' => $answertext,
-        ]);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Authorization: Bearer ' . $token,
-            'X-Moodle-Url:' . $moodleurl,
-            'Content-Type: multipart/form-data',
-        ]);
+        ];
 
-        $result = curl_exec($ch);
-        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        // Perform the POST request using Moodle's curl.
+        $options = [
+            'CURLOPT_HTTPHEADER' => $headers,
+            'CURLOPT_RETURNTRANSFER' => true,
+        ];
+
+        $result = $curl->post($remoteurl, $postfields, $options);
+
+        // Get HTTP status code as an integer.
+        $httpcode = $curl->get_info(CURLINFO_HTTP_CODE);
 
         if ($result === false) {
             echo "File not found: " . $filenamewithfullpath . "\n";
-            echo "cURL Error: " . curl_error($ch) . "\n";
+            echo "cURL Error: " . $curl->error . "\n";
         } else {
-            echo "HTTP Status Code: " . $httpcode . "\n";
+            echo "HTTP Status Code: " . json_encode($httpcode['http_code']) . "\n";
             echo "File Id: " . $filerecord->id . "\n";
+            echo "File Id: " . json_encode($result) . "\n";
         }
 
-        curl_close($ch);
         // Remove the temporary file if it was created.
         if (isset($tempfilepath) && file_exists($tempfilepath)) {
             unlink($tempfilepath);
