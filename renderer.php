@@ -155,9 +155,9 @@ class tiny_cursive_renderer extends plugin_renderer_base {
         echo get_string('average_min', 'tiny_cursive') . " " . $avgwords . "</br></br>";
         $sql = "SELECT c.fullname, c.id, u.id AS userid, u.firstname, u.lastname
                   FROM {course} c
-            INNER JOIN {enrol} en ON en.courseid = c.id
-            INNER JOIN {user_enrolments} ue ON ue.enrolid = en.id
-            INNER JOIN {user} u ON u.id = ue.userid
+                  JOIN {enrol} en ON en.courseid = c.id
+                  JOIN {user_enrolments} ue ON ue.enrolid = en.id
+                  JOIN {user} u ON u.id = ue.userid
                  WHERE ue.userid = :userid";
 
         if (is_siteadmin($USER->id)) {
