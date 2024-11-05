@@ -194,34 +194,37 @@ function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath
         }
 
         echo $remoteurl;
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $remoteurl);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, [
+
+        $curl = new curl();
+        $postdata = [
             'file' => $filetosend,
             'resource_id' => $filerecord->id,
             'person_id' => $filerecord->userid,
             'ws_token' => $wstoken,
             'originalsubmission' => $answertext,
-        ]);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        ];
+
+        $headers = [
             'Authorization: Bearer ' . $token,
-            'X-Moodle-Url:' . $moodleurl,
+            'X-Moodle-Url: ' . $moodleurl,
             'Content-Type: multipart/form-data',
+        ];
+
+        $result = $curl->post($remoteurl, $postdata, [
+            'CURLOPT_HTTPHEADER' => $headers,
+            'CURLOPT_RETURNTRANSFER' => true,
         ]);
 
-        $result = curl_exec($ch);
-        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $httpcode = $curl->get_info()['http_code'];
 
         if ($result === false) {
             echo "File not found: " . $filenamewithfullpath . "\n";
-            echo "cURL Error: " . curl_error($ch) . "\n";
+            echo "cURL Error: " . $curl->error . "\n";
         } else {
             echo "HTTP Status Code: " . $httpcode . "\n";
             echo "File Id: " . $filerecord->id . "\n";
         }
 
-        curl_close($ch);
         // Remove the temporary file if it was created.
         if (isset($tempfilepath) && file_exists($tempfilepath)) {
             unlink($tempfilepath);

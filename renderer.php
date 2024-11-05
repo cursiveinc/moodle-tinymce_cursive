@@ -25,8 +25,6 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-require_login();
-
 /**
  * Tiny cursive plugin.
  *
@@ -116,7 +114,7 @@ class tiny_cursive_renderer extends plugin_renderer_base {
     }
 
     /**
-     * user_writing_report
+     * tiny_cursive_user_writing_report
      *
      * @param $users
      * @param $userprofile
@@ -129,7 +127,7 @@ class tiny_cursive_renderer extends plugin_renderer_base {
      * @throws dml_exception
      * @throws moodle_exception
      */
-    public function user_writing_report($users, $userprofile, $userid, $page = 0, $limit = 5, $baseurl = '') {
+    public function tiny_cursive_user_writing_report($users, $userprofile, $userid, $page = 0, $limit = 5, $baseurl = '') {
         global $CFG, $DB, $USER;
         require_once($CFG->dirroot . "/lib/editor/tiny/plugins/cursive/lib.php");
         $courseid = optional_param('courseid', 0, PARAM_INT);
