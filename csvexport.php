@@ -26,8 +26,8 @@
 require(__DIR__ . '/../../../../../config.php');
 require_login();
 require_once($CFG->libdir . "/csvlib.class.php");
-
-require_once('lib.php');
+require_once(__DIR__.'/locallib.php');
+require_once(__DIR__.'/lib.php');
 
 $courseid = optional_param('courseid', 0, PARAM_INT);
 $userid = optional_param('userid', 0, PARAM_INT);
@@ -36,8 +36,8 @@ $moduleid = optional_param('moduleid', 0, PARAM_INT);
 if ($moduleid != 0) {
     $context = context_module::instance($moduleid);
 } else {
-    $cm = $DB->get_record('course_modules', ['course' => $courseid]);
-    $context = context_module::instance($cm->id);
+    $cmid = tiny_cursive_get_cmid($courseid);
+    $context = context_module::instance($cmid);
 }
 
 $haseditcapability = has_capability('tiny/cursive:view', $context);

@@ -33,7 +33,7 @@
  * @param $perpage
  * @param $limit
  * */
-function get_user_attempts_data($userid, $courseid, $moduleid, $orderby = 'id', $order = 'ASC', $page = 0, $limit = 10) {
+function tiny_cursive_get_user_attempts_data($userid, $courseid, $moduleid, $orderby = 'id', $order = 'ASC', $page = 0, $limit = 10) {
     global $DB;
 
     $params = [];
@@ -124,7 +124,7 @@ function get_user_attempts_data($userid, $courseid, $moduleid, $orderby = 'id', 
  * @return array
  * @throws dml_exception
  */
-function get_user_writing_data(
+function tiny_cursive_get_user_writing_data(
     $userid = 0,
     $courseid = 0,
     $moduleid = 0,
@@ -197,12 +197,12 @@ function get_user_writing_data(
  * @return false|mixed
  * @throws dml_exception
  */
-function get_user_profile_data($userid, $courseid = 0) {
+function tiny_cursive_get_user_profile_data($userid, $courseid = 0) {
     global $DB;
     $attempts = [];
     $attempts = "SELECT sum(uw.total_time_seconds) AS total_time,sum(uw.word_count) AS word_count
                    FROM {tiny_cursive_user_writing} uw
-             INNER JOIN {tiny_cursive_files} uf
+                   JOIN {tiny_cursive_files} uf
                         ON uw.file_id = uf.id
                   WHERE uf.userid = :userid";
     if ($courseid != 0) {
@@ -222,7 +222,7 @@ function get_user_profile_data($userid, $courseid = 0) {
  * @return array[]
  * @throws dml_exception
  */
-function get_user_submissions_data($resourceid, $modulename, $cmid, $courseid = 0) {
+function tiny_cursive_get_user_submissions_data($resourceid, $modulename, $cmid, $courseid = 0) {
     global $CFG, $DB;
     require_once($CFG->dirroot . "/lib/editor/tiny/plugins/cursive/lib.php");
     $userid = $resourceid;
@@ -231,7 +231,7 @@ function get_user_submissions_data($resourceid, $modulename, $cmid, $courseid = 
                    uf.modulename, uf.userid, uw.file_id, uf.filename,
                    diff.meta AS effort_ratio
               FROM {tiny_cursive_user_writing} uw
-        INNER JOIN {tiny_cursive_files} uf ON uw.file_id = uf.id
+              JOIN {tiny_cursive_files} uf ON uw.file_id = uf.id
          LEFT JOIN {tiny_cursive_writing_diff} diff ON uw.file_id = diff.file_id
              WHERE uf.userid = :resourceid
                    AND uf.cmid = :cmid
@@ -318,7 +318,7 @@ function tiny_cursive_get_cmid($courseid) {
  * @param int $userid The ID of the user to create the token for
  * @return string The created token
  */
-function create_token_for_user() {
+function tiny_cursive_create_token_for_user() {
     global $DB, $USER;
     $token = '';
     $serviceshortname = 'cursive_json_service'; // Replace with your service shortname.
@@ -338,7 +338,7 @@ function create_token_for_user() {
  *
  * @return string
  */
-function file_stream($file, $fname) {
+function tiny_cursive_file_stream($file, $fname) {
     $inp = '';
     if (file_exists($file)) {
         $inp = file_get_contents($file);

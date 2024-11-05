@@ -64,7 +64,6 @@ class cursive_json_func_data extends external_api {
      * @throws coding_exception
      * @throws invalid_parameter_exception
      * @throws moodle_exception
-     * @throws require_login_exception
      */
     public static function get_user_list($page, $courseid) {
 
@@ -124,7 +123,6 @@ class cursive_json_func_data extends external_api {
      * @throws coding_exception
      * @throws invalid_parameter_exception
      * @throws moodle_exception
-     * @throws require_login_exception
      */
     public static function get_module_list($page, $courseid) {
 
@@ -199,7 +197,6 @@ class cursive_json_func_data extends external_api {
      * @throws file_exception
      * @throws invalid_parameter_exception
      * @throws moodle_exception
-     * @throws require_login_exception
      * @throws stored_file_creation_exception
      */
     public static function cursive_json_func(
@@ -361,7 +358,6 @@ class cursive_json_func_data extends external_api {
      * @throws coding_exception
      * @throws invalid_parameter_exception
      * @throws moodle_exception
-     * @throws require_login_exception
      */
     public static function cursive_reports_func(
         $courseid = 0,
@@ -442,7 +438,6 @@ class cursive_json_func_data extends external_api {
      * @return bool
      * @throws coding_exception
      * @throws moodle_exception
-     * @throws require_login_exception
      */
     public static function cursive_user_comments_func(
         $modulename,
@@ -532,7 +527,6 @@ class cursive_json_func_data extends external_api {
      * @throws coding_exception
      * @throws dml_exception
      * @throws moodle_exception
-     * @throws require_login_exception
      */
     public static function cursive_approve_token_func($token) {
         global $CFG;
@@ -632,11 +626,9 @@ class cursive_json_func_data extends external_api {
      * @throws dml_exception
      * @throws invalid_parameter_exception
      * @throws moodle_exception
-     * @throws require_login_exception
      */
     public static function get_comment_link($id, $modulename, $cmid , $questionid , $userid ) {
         global $DB, $CFG;
-        require_once($CFG->dirroot . '/config.php');
         require_once($CFG->dirroot . '/lib/accesslib.php');
         require_once($CFG->dirroot . '/question/lib.php');
         $params = self::validate_parameters(
@@ -808,11 +800,9 @@ class cursive_json_func_data extends external_api {
      * @throws coding_exception
      * @throws invalid_parameter_exception
      * @throws moodle_exception
-     * @throws require_login_exception
      */
     public static function get_forum_comment_link($id, $modulename, $cmid = null) {
         global $DB, $CFG;
-        require_once($CFG->dirroot . '/config.php');
         require_once($CFG->dirroot . '/lib/accesslib.php');
         require_once($CFG->dirroot . '/question/lib.php');
 
@@ -935,7 +925,6 @@ class cursive_json_func_data extends external_api {
      * @throws dml_exception
      * @throws invalid_parameter_exception
      * @throws moodle_exception
-     * @throws require_login_exception
      */
     public static function get_quiz_comment_link(
         $id,
@@ -944,7 +933,6 @@ class cursive_json_func_data extends external_api {
         $questionid = null
     ) {
         global $DB, $CFG;
-        require_once($CFG->dirroot . '/config.php');
         require_once($CFG->dirroot . '/lib/accesslib.php');
         require_once($CFG->dirroot . '/question/lib.php');
         $params = self::validate_parameters(
@@ -1074,7 +1062,6 @@ class cursive_json_func_data extends external_api {
      * @throws dml_exception
      * @throws invalid_parameter_exception
      * @throws moodle_exception
-     * @throws require_login_exception
      */
     public static function get_assign_comment_link($id, $modulename, $cmid) {
         global $DB;
@@ -1145,7 +1132,6 @@ class cursive_json_func_data extends external_api {
      * @throws dml_exception
      * @throws invalid_parameter_exception
      * @throws moodle_exception
-     * @throws require_login_exception
      */
     public static function get_assign_grade_comment($id, $modulename, $cmid) {
         global $DB, $CFG;
@@ -1267,7 +1253,6 @@ class cursive_json_func_data extends external_api {
      * @throws coding_exception
      * @throws invalid_parameter_exception
      * @throws moodle_exception
-     * @throws require_login_exception
      */
     public static function get_user_list_submission_stats($id, $modulename, $cmid) {
         global $DB;
@@ -1283,7 +1268,7 @@ class cursive_json_func_data extends external_api {
         self::validate_context($context);
         require_capability("tiny/cursive:view", $context);
 
-        $rec = get_user_submissions_data($params['id'], $params['modulename'], $params['cmid']);
+        $rec = tiny_cursive_get_user_submissions_data($params['id'], $params['modulename'], $params['cmid']);
 
         return json_encode($rec);
     }
@@ -1319,7 +1304,6 @@ class cursive_json_func_data extends external_api {
      * @throws dml_exception
      * @throws invalid_parameter_exception
      * @throws moodle_exception
-     * @throws require_login_exception
      */
     public static function cursive_filtered_writing_func($id) {
         global $DB, $USER;
@@ -1816,7 +1800,7 @@ class cursive_json_func_data extends external_api {
      * @return array
      */
     public static function generate_webtoken() {
-        $token = create_token_for_user();
+        $token = tiny_cursive_create_token_for_user();
         if ($token) {
             set_config('cursivetoken', $token, 'tiny_cursive');
         }
