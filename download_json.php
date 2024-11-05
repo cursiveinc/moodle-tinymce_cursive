@@ -33,57 +33,36 @@ $userid = optional_param('user_id', 0, PARAM_INT);
 $cmid = optional_param('cmid', 0, PARAM_INT);
 $fname = optional_param('fname', '', PARAM_TEXT);
 
+$context = context_module::instance($cmid);
+require_capability('tiny/cursive:writingreport', $context);
+
 $filename = '';
 $dirname = $CFG->tempdir . '/userdata/';
+
+header("Content-Description: File Transfer");
+header("Content-Type: application/octet-stream");
+header("Content-Disposition: attachment; filename=\"" . basename($fname) . "\"");
+flush();
+
 if ($fname) {
     $filename = $dirname . $fname;
     if (!file_exists($filename)) {
         $filerow = $DB->get_record('tiny_cursive_files', ['filename' => $fname]);
         if ($filerow->content) {
-            filestream($filerow->content, $fname);
+            $content = tiny_cursive_file_stream($filerow->content, $fname);
+            echo $content;
+            die();
         } else {
             $url = new moodle_url('/lib/editor/tiny/plugins/cursive/writing_report.php?userid=' . $userid);
             return redirect($url, get_string('filenotfound', 'tiny_cursive'));
         }
+    } else {
+        readfile($filename);
+        die();
     }
 } else {
     $filename = $dirname . $userid . '_' . $resourceid . '_' . $cmid . '_attempt' . '.json';
-}
-
-$context = context_module::instance($cmid);
-$haseditcapability = has_capability('tiny/cursive:view', $context);
-
-if (!$haseditcapability) {
-    return redirect(new moodle_url('/course/index.php'), get_string('warning', 'tiny_cursive'));
-}
-
-if ($haseditcapability) {
-    filestream($filename, $filename);
-} else {
-    $url = new moodle_url('/course/index.php');
-    return redirect($url, get_string('warning', 'tiny_cursive'));
-}
-
-/**
- * Method filestream
- *
- * @param $file $file [explicite description]
- * @param $fname $fname [explicite description]
- *
- * @return void
- */
-function filestream($file, $fname) {
-    header("Content-Description: File Transfer");
-    header("Content-Type: application/octet-stream");
-    header("Content-Disposition: attachment; filename=\"" . basename($fname) . "\"");
-    flush();
-
-    if (file_exists($file)) {
-        $inp = file_get_contents($file);
-    } else {
-        $inp = base64_decode($file);
-    }
-
-    echo $inp;
+    $content = tiny_cursive_file_stream($filename, $filename);
+    echo $content;
     die();
 }

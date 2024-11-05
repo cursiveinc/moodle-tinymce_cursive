@@ -22,14 +22,12 @@
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
+use tiny_cursive\forms\user_report_form;
 require(__DIR__ . '/../../../../../config.php');
-global $CFG, $DB, $USER, $PAGE, $SESSION, $OUTPUT;
-
 require_once($CFG->dirroot . '/mod/quiz/lib.php');
 require_once($CFG->dirroot . '/mod/quiz/locallib.php');
-require_once(__DIR__ . '/classes/forms/userreportform.php');
 require_once(__DIR__ . '/locallib.php');
+global $CFG, $DB, $USER, $PAGE, $SESSION, $OUTPUT;
 
 require_login(); // Teacher and admin can see this page.
 $courseid = optional_param('courseid', 0, PARAM_INT);
@@ -74,7 +72,7 @@ $PAGE->requires->js_call_amd('tiny_cursive/cursive_writing_reports', 'init', [])
 
 echo $OUTPUT->header();
 
-$mform = new userreportform(null, [
+$mform = new user_report_form(null, [
     'courseid' => $courseid,
     'userid' => $userid,
     'moduleid' => $moduleid,
@@ -88,7 +86,7 @@ if ($formdata = $mform->get_data()) {
         $context = context_course::instance($courseid);
         require_capability('mod/quiz:viewreports', $context);
     }
-    $users = get_user_attempts_data(
+    $users = tiny_cursive_get_user_attempts_data(
         $formdata->userid,
         $formdata->courseid,
         $formdata->moduleid,

@@ -23,6 +23,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace tiny_cursive\forms;
+use moodleform;
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->libdir . '/formslib.php');
 
@@ -34,18 +36,29 @@ require_once($CFG->libdir . '/formslib.php');
  * @author eLearningstack
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class wrreportform extends moodleform {
+class user_report_form extends moodleform {
     /**
-     * Tiny cursive plugin report form.
+     * Tiny cursive plugin user report form.
      */
     public function definition() {
         // Start dropdowns of course, quiz and user email search field in mform.
-
+        global $PAGE;
         $mform = &$this->_form;
         $attributes = '';
+        $courseid = $this->_customdata['courseid'];
+        $users = self::get_user($courseid);
+        $modules = self::get_modules($courseid);
         $options = ['multiple' => false, 'includefrontpage' => false];
-        $mform->addElement('course', 'coursename', get_string('coursename', 'tiny_cursive'), $options);
-        $mform->addRule('coursename', null, 'required', null, 'client');
+        $mform->addElement('course', 'courseid', get_string('coursename', 'tiny_cursive'), $options);
+        if ($courseid) {
+            $mform->setDefault('courseid', $courseid);
+        }
+
+        $mform->addRule('courseid', null, 'required', null, 'client');
+        $mform->addElement('select', 'moduleid', get_string('modulename', 'tiny_cursive'), $modules, $attributes);
+        $mform->setType('moduleid', PARAM_TEXT);
+        $mform->addElement('select', 'userid', get_string('userename', 'tiny_cursive'), $users, $attributes);
+        $mform->setType('userid', PARAM_TEXT);
         $options = [
             'id' => 'ID',
             'name' => 'Name',
@@ -55,6 +68,10 @@ class wrreportform extends moodleform {
         $mform->addElement('select', 'orderby', get_string('orderby', 'tiny_cursive'), $options, $attributes);
         $mform->setType('orderby', PARAM_TEXT);
         $this->add_action_buttons(false, get_string('submit'));
+
+        if (!is_siteadmin()) {
+            $PAGE->requires->js_call_amd('tiny_cursive/user_report_addition', 'init', []);
+        }
     }
 
     /**
@@ -76,6 +93,9 @@ class wrreportform extends moodleform {
             if (!empty($mform->_submitValues['moduleid'])) {
                 $data->moduleid = $mform->_submitValues['moduleid'];
             }
+            if (!empty($mform->_submitValues['orderby'])) {
+                $data->orderby = $mform->_submitValues['orderby'];
+            }
         }
         return $data;
     }
@@ -94,7 +114,7 @@ class wrreportform extends moodleform {
         if ($courseid) {
             $sql = "SELECT id, instance
                       FROM {course_modules}
-                     WHERE course = :courseid ";
+                      WHERE course = :courseid";
             $modules = $DB->get_records_sql($sql, ['courseid' => $courseid]);
             foreach ($modules as $cm) {
                 $modinfo = get_fast_modinfo($courseid);
@@ -103,7 +123,35 @@ class wrreportform extends moodleform {
                 $mdetail[$cm->id] = $getmodulename->name;
             }
         }
-
         return $mdetail;
+    }
+
+    /**
+     * Tiny cursive plugin get all users.
+     *
+     * @param integer $courseid
+     * @return array
+     */
+    public function get_user($courseid) {
+        global $DB;
+        $udetail = [];
+
+        $udetail[0] = get_string('alluser', 'tiny_cursive');
+
+        if (!empty($courseid)) {
+            $sql = "SELECT ue.id, u.id AS userid, u.firstname, u.lastname
+                      FROM {enrol} e
+                INNER JOIN {user_enrolments} ue ON e.id = ue.enrolid
+                INNER JOIN {user} u ON u.id = ue.userid
+                     WHERE e.courseid = :courseid
+                           AND u.id != 1";
+            $users = $DB->get_records_sql($sql, ['courseid' => $courseid]);
+
+            foreach ($users as $user) {
+                $udetail[$user->userid] = $user->firstname . ' ' . $user->lastname;
+            }
+        }
+
+        return $udetail;
     }
 }

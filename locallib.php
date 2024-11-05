@@ -33,7 +33,7 @@
  * @param $perpage
  * @param $limit
  * */
-function get_user_attempts_data($userid, $courseid, $moduleid, $orderby = 'id', $order = 'ASC', $page = 0, $limit = 10) {
+function tiny_cursive_get_user_attempts_data($userid, $courseid, $moduleid, $orderby = 'id', $order = 'ASC', $page = 0, $limit = 10) {
     global $DB;
 
     $params = [];
@@ -51,23 +51,26 @@ function get_user_attempts_data($userid, $courseid, $moduleid, $orderby = 'id', 
             break;
     }
 
-    $sql = "SELECT uf.id AS fileid, u.id AS usrid,uw.id AS uniqueid, u.firstname, u.lastname,u.email,uf.courseid,
-                    uf.id AS attemptid,uf.timemodified, uf.cmid AS cmid,
-                    uf.filename, uw.total_time_seconds AS total_time_seconds,
-                    uw.key_count AS key_count, uw.keys_per_minute AS keys_per_minute,
-                    uw.character_count AS character_count,
-                    uw.characters_per_minute AS characters_per_minute,
-                    uw.word_count AS word_count, uw.words_per_minute AS words_per_minute,
-                    uw.backspace_percent AS backspace_percent, uw.score AS score,
-                    uw.copy_behavior AS copy_behavior
-              FROM  {tiny_cursive_files} uf
-        INNER JOIN {user} u ON uf.userid = u.id
+    $sql = "SELECT uf.id AS fileid, u.id AS usrid, uw.id AS uniqueid,
+                   u.firstname, u.lastname, u.email, uf.courseid,
+                   uf.id AS attemptid, uf.timemodified, uf.cmid AS cmid,
+                   uf.filename, uw.total_time_seconds AS total_time_seconds,
+                   uw.key_count AS key_count, uw.keys_per_minute AS keys_per_minute,
+                   uw.character_count AS character_count,
+                   uw.characters_per_minute AS characters_per_minute,
+                   uw.word_count AS word_count, uw.words_per_minute AS words_per_minute,
+                   uw.backspace_percent AS backspace_percent, uw.score AS score,
+                   uw.copy_behavior AS copy_behavior
+              FROM {tiny_cursive_files} uf
+              JOIN {user} u ON uf.userid = u.id
          LEFT JOIN {tiny_cursive_user_writing} uw ON uw.file_id = uf.id
-             WHERE uf.userid != 1 ";
+             WHERE uf.userid <> :userid1";
+
+    $params['userid1'] = 1;
 
     if ($userid != 0) {
-        $sql .= " AND uf.userid = :userid";
-        $params['userid'] = $userid;
+        $sql .= " AND uf.userid = :userid2";
+        $params['userid2'] = $userid;
     }
 
     if ($courseid != 0) {
@@ -76,34 +79,35 @@ function get_user_attempts_data($userid, $courseid, $moduleid, $orderby = 'id', 
     }
 
     if ($moduleid != 0) {
-        $sql .= " AND uf.cmid = :moduleid";
-        $params['moduleid'] = $moduleid;
+        $sql .= " AND uf.cmid = :cmid";
+        $params['cmid'] = $moduleid;
     }
-    $params['odby'] = $odby;
-    $params['order'] = $order;
 
     $sql .= " GROUP BY uf.id, u.id, uw.id, u.firstname, u.lastname, u.email,
-                  uf.courseid, uf.timemodified, uf.cmid, uf.filename,
-                  uw.total_time_seconds, uw.key_count, uw.keys_per_minute,
-                  uw.character_count, uw.characters_per_minute, uw.word_count,
-                  uw.words_per_minute, uw.backspace_percent, uw.score, uw.copy_behavior
-          ORDER BY :odby :order";
+                       uf.courseid, uf.timemodified, uf.cmid, uf.filename,
+                       uw.total_time_seconds, uw.key_count, uw.keys_per_minute,
+                       uw.character_count, uw.characters_per_minute, uw.word_count,
+                       uw.words_per_minute, uw.backspace_percent, uw.score, uw.copy_behavior
+              ORDER BY $odby $order";
 
-    // Calculate the total count for pagination.
     $countsql = "SELECT COUNT(*)
-                   FROM ($sql) subquery";
+                        FROM ($sql) subquery";
     $totalcount = $DB->count_records_sql($countsql, $params);
 
-    // Add LIMIT and OFFSET for pagination.
-    $offset = ($page * $limit);
-    $sql .= " LIMIT $limit OFFSET $offset";
-
+    if ($limit) {
+        $sql .= " LIMIT " . $limit;
+        if ($page) {
+            $offset = $page * $limit;
+            $sql .= " OFFSET " . $offset;
+        }
+    }
     try {
         $res = $DB->get_records_sql($sql, $params);
     } catch (Exception $e) {
         debugging("Error executing query: " . $e->getMessage());
         throw new moodle_exception('errorreadingfromdatabase', 'error', '', null, $e->getMessage());
     }
+
     return ['count' => $totalcount, 'data' => $res];
 }
 
@@ -120,7 +124,7 @@ function get_user_attempts_data($userid, $courseid, $moduleid, $orderby = 'id', 
  * @return array
  * @throws dml_exception
  */
-function get_user_writing_data(
+function tiny_cursive_get_user_writing_data(
     $userid = 0,
     $courseid = 0,
     $moduleid = 0,
@@ -193,12 +197,12 @@ function get_user_writing_data(
  * @return false|mixed
  * @throws dml_exception
  */
-function get_user_profile_data($userid, $courseid = 0) {
+function tiny_cursive_get_user_profile_data($userid, $courseid = 0) {
     global $DB;
     $attempts = [];
     $attempts = "SELECT sum(uw.total_time_seconds) AS total_time,sum(uw.word_count) AS word_count
                    FROM {tiny_cursive_user_writing} uw
-             INNER JOIN {tiny_cursive_files} uf
+                   JOIN {tiny_cursive_files} uf
                         ON uw.file_id = uf.id
                   WHERE uf.userid = :userid";
     if ($courseid != 0) {
@@ -218,7 +222,7 @@ function get_user_profile_data($userid, $courseid = 0) {
  * @return array[]
  * @throws dml_exception
  */
-function get_user_submissions_data($resourceid, $modulename, $cmid, $courseid = 0) {
+function tiny_cursive_get_user_submissions_data($resourceid, $modulename, $cmid, $courseid = 0) {
     global $CFG, $DB;
     require_once($CFG->dirroot . "/lib/editor/tiny/plugins/cursive/lib.php");
     $userid = $resourceid;
@@ -227,7 +231,7 @@ function get_user_submissions_data($resourceid, $modulename, $cmid, $courseid = 
                    uf.modulename, uf.userid, uw.file_id, uf.filename,
                    diff.meta AS effort_ratio
               FROM {tiny_cursive_user_writing} uw
-        INNER JOIN {tiny_cursive_files} uf ON uw.file_id = uf.id
+              JOIN {tiny_cursive_files} uf ON uw.file_id = uf.id
          LEFT JOIN {tiny_cursive_writing_diff} diff ON uw.file_id = diff.file_id
              WHERE uf.userid = :resourceid
                    AND uf.cmid = :cmid
@@ -314,7 +318,7 @@ function tiny_cursive_get_cmid($courseid) {
  * @param int $userid The ID of the user to create the token for
  * @return string The created token
  */
-function create_token_for_user() {
+function tiny_cursive_create_token_for_user() {
     global $DB, $USER;
     $token = '';
     $serviceshortname = 'cursive_json_service'; // Replace with your service shortname.
@@ -324,4 +328,23 @@ function create_token_for_user() {
         $token = util::generate_token(EXTERNAL_TOKEN_PERMANENT, $service, $admin->id, context_system::instance());
     }
     return $token;
+}
+
+/**
+ * Method filestream
+ *
+ * @param $file $file [explicite description]
+ * @param $fname $fname [explicite description]
+ *
+ * @return string
+ */
+function tiny_cursive_file_stream($file, $fname) {
+    $inp = '';
+    if (file_exists($file)) {
+        $inp = file_get_contents($file);
+    } else {
+        $inp = base64_decode($file);
+    }
+
+    return $inp;
 }
