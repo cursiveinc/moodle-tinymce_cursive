@@ -24,7 +24,6 @@
  */
 
 use tiny_cursive\tiny_cursive_data;
-
 defined('MOODLE_INTERNAL') || die;
 
 require_once("$CFG->libdir/externallib.php");
@@ -530,6 +529,7 @@ class cursive_json_func_data extends external_api {
      */
     public static function cursive_approve_token_func($token) {
         global $CFG;
+        require_once("$CFG->libdir/filelib.php");
         $params = self::validate_parameters(
             self::cursive_approve_token_func_parameters(),
             [

@@ -24,10 +24,7 @@
 
 namespace tiny_cursive\forms;
 use moodleform;
-
 defined('MOODLE_INTERNAL') || die;
-
-require_once($CFG->libdir . '/formslib.php');
 
 /**
  * Form for file upload in Tiny cursive plugin.

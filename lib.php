@@ -22,7 +22,6 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 /**
  * Given an array with a file path, it returns the itemid and the filepath for the defined filearea.
  *
@@ -159,6 +158,8 @@ function tiny_cursive_myprofile_navigation(core_user\output\myprofile\tree $tree
  * @throws dml_exception
  */
 function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath, $wstoken, $answertext) {
+    global $CFG;
+    require_once("$CFG->libdir/filelib.php");
     $moodleurl = get_config('tiny_cursive', 'host_url');
     $result = '';
     try {
