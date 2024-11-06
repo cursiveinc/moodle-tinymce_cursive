@@ -118,11 +118,11 @@ function tiny_cursive_extend_navigation(global_navigation $navigation) {
 }
 
 /**
- * tiny_cursive_myprofile_navigation
+ * Add a node to the myprofile navigation tree for writing reports.
  *
- * @param \core_user\output\myprofile\tree $tree
- * @param $user
- * @param $course
+ * @param \core_user\output\myprofile\tree $tree Navigation tree to add node to
+ * @param stdClass $user The user object
+ * @param stdClass $course The course object
  * @return void
  * @throws coding_exception
  * @throws moodle_exception
@@ -150,16 +150,18 @@ function tiny_cursive_myprofile_navigation(core_user\output\myprofile\tree $tree
 }
 
 /**
- * upload_multipart_record
+ * Uploads a file record using multipart form data
  *
- * @param $filerecord
- * @param $filenamewithfullpath
- * @return bool|string
+ * @param object $filerecord The file record object containing metadata
+ * @param string $filenamewithfullpath Full path to the file to upload
+ * @param string $wstoken Web service token for authentication
+ * @param string $answertext Original submission text
+ * @return bool|string Returns response from server or false on failure
  * @throws dml_exception
  */
 function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath, $wstoken, $answertext) {
     global $CFG;
-    require_once("$CFG->libdir/filelib.php");
+    require_once($CFG->dirroot . '/lib/filelib.php');
     $moodleurl = get_config('tiny_cursive', 'host_url');
     $result = '';
     try {
@@ -238,11 +240,11 @@ function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath
 }
 
 /**
- * file_urlcreate
+ * Creates a URL for a file in the tiny_cursive file area
  *
- * @param $context
- * @param $user
- * @return false|string
+ * @param \context $context The context object
+ * @param stdClass $user The user object containing fileid
+ * @return string|false Returns the download URL for the file, or false if no file found
  * @throws coding_exception
  */
 function tiny_cursive_file_urlcreate($context, $user) {
@@ -271,16 +273,15 @@ function tiny_cursive_file_urlcreate($context, $user) {
 }
 
 /**
- * Method tiny_cursive_get_user_essay_quiz_responses
+ * Gets the essay quiz responses for a specific user
  *
- * @param $userid [explicite description]
- * @param $courseid [explicite description]
- * @param $resourceid [explicite description]
- * @param $modulename [explicite description]
- * @param $cmid [explicite description]
- * @param $questionid [explicite description]
- *
- * @return string
+ * @param int $userid The ID of the user
+ * @param int $courseid The ID of the course
+ * @param int $resourceid The ID of the quiz attempt
+ * @param string $modulename The name of the module ('quiz')
+ * @param int $cmid The course module ID
+ * @param int $questionid The ID of the essay question
+ * @return string The response summary text for the essay question
  */
 function tiny_cursive_get_user_essay_quiz_responses($userid, $courseid, $resourceid, $modulename, $cmid, $questionid) {
     global $DB;
@@ -316,14 +317,13 @@ function tiny_cursive_get_user_essay_quiz_responses($userid, $courseid, $resourc
 }
 
 /**
- * Method tiny_cursive_get_user_onlinetext_assignments
+ * Gets the online text submissions for a specific assignment
  *
- * @param $userid [explicite description]
- * @param $courseid [explicite description]
- * @param $modulename [explicite description]
- * @param $cmid [explicite description]
- *
- * @return string
+ * @param int $userid The ID of the user
+ * @param int $courseid The ID of the course
+ * @param string $modulename The name of the module ('assign')
+ * @param int $cmid The course module ID
+ * @return string The online text submission content
  */
 function tiny_cursive_get_user_onlinetext_assignments($userid, $courseid, $modulename, $cmid) {
     global $DB;
@@ -345,12 +345,12 @@ function tiny_cursive_get_user_onlinetext_assignments($userid, $courseid, $modul
 }
 
 /**
- * get_user_forum_posts
+ * Gets forum posts for a specific user
  *
- * @param $userid
- * @param $courseid
- * @param $resourceid
- * @return string
+ * @param int $userid The ID of the user
+ * @param int $courseid The ID of the course
+ * @param int $resourceid The ID of the forum post
+ * @return string The message content of the forum post
  */
 function tiny_cursive_get_user_forum_posts($userid, $courseid, $resourceid) {
     global $DB;

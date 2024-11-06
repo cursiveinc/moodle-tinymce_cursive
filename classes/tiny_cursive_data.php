@@ -45,10 +45,10 @@ use stdClass;
 class tiny_cursive_data {
 
     /**
-     * get_courses_users
+     * Get list of users enrolled in a course.
      *
-     * @param $params
-     * @return stdClass
+     * @param array $params Parameters containing courseid
+     * @return stdClass Object containing array of users
      * @throws \dml_exception
      */
     public static function get_courses_users($params) {
@@ -59,8 +59,8 @@ class tiny_cursive_data {
         $udetail2 = [];
         $courseid = (int)$params['courseid'];
         $sql = "SELECT ue.id as enrolid,u.id as id,u.firstname,u.lastname FROM {enrol} e
-            INNER JOIN {user_enrolments} ue ON e.id = ue.enrolid
-            INNER JOIN {user} u ON u.id = ue.userid
+                  JOIN {user_enrolments} ue ON e.id = ue.enrolid
+                  JOIN {user} u ON u.id = ue.userid
                  WHERE e.courseid = :courseid
                        AND u.id != 1";
         $users = $DB->get_records_sql($sql, ['courseid' => $courseid]);
@@ -79,10 +79,10 @@ class tiny_cursive_data {
     }
 
     /**
-     * get_courses_modules
+     * Get list of modules in a course.
      *
-     * @param $params
-     * @return stdClass
+     * @param array $params Parameters containing courseid
+     * @return stdClass Object containing array of course modules
      * @throws \coding_exception
      * @throws \dml_exception
      * @throws \moodle_exception
