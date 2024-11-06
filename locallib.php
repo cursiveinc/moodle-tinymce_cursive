@@ -33,7 +33,15 @@
  * @param $perpage
  * @param $limit
  * */
-function tiny_cursive_get_user_attempts_data($userid, $courseid, $moduleid, $orderby = 'id', $order = 'ASC', $page = 0, $limit = 10) {
+function tiny_cursive_get_user_attempts_data(
+    $userid,
+    $courseid,
+    $moduleid,
+    $orderby = 'id',
+    $order = 'ASC',
+    $page = 0,
+    $limit = 10
+) {
     global $DB;
 
     $params = [];

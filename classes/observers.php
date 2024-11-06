@@ -25,9 +25,6 @@
 
 namespace tiny_cursive;
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->dirroot . '/config.php');
-
-
 
 /**
  * Tiny cursive plugin observer class.
