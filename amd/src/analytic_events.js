@@ -151,8 +151,10 @@ export default class AnalyticEvents {
                 replayInstances[userid].stopReplay();
             }
             if (questionid) {
+                // eslint-disable-next-line
                 video_playback(userid, filepath, questionid);
             } else {
+                 // eslint-disable-next-line
                 video_playback(userid, filepath);
             }
         });
