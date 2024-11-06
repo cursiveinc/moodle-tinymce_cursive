@@ -24,7 +24,6 @@
  */
 namespace tiny_cursive\forms;
 use moodleform;
-defined('MOODLE_INTERNAL') || die;
 
 /**
  * Tiny cursive plugin.

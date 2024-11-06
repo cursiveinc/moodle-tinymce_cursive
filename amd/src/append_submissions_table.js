@@ -44,11 +44,11 @@ define([
 
         if (filepath !== '') {
             const replay = new Replay(
-                elementId = 'content' + mid,
-                filePath = filepath,
-                speed = 10,
-                loop = false,
-                controllerId = 'player_' + mid
+                'content' + mid,
+                filepath,
+                10,
+                false,
+                'player_' + mid
             );
             replayInstances[mid] = replay;
         } else {

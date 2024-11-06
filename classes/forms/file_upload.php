@@ -24,7 +24,6 @@
 
 namespace tiny_cursive\forms;
 use moodleform;
-defined('MOODLE_INTERNAL') || die;
 
 /**
  * Form for file upload in Tiny cursive plugin.

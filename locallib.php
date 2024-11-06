@@ -23,17 +23,18 @@
  */
  use core_external\util;
 /**
- * get_user_attempts_data
+ * Get user attempts data from the database
  *
- * @param $userid
- * @param $courseid
- * @param $moduleid
- * @param $orderby
- * @param $order
- * @param $perpage
- * @param $limit
- * */
-function tiny_cursive_get_user_attempts_data(
+ * @param int $userid The user ID to get attempts for
+ * @param int $courseid The course ID to filter by
+ * @param int $moduleid The module ID to filter by
+ * @param string $orderby Field to order results by (id, name, email, date)
+ * @param string $order Sort order (ASC or DESC)
+ * @param int $page Page number for pagination
+ * @param int $limit Number of records per page
+ * @return array Array containing total count and data records
+ * @throws dml_exception
+ */function tiny_cursive_get_user_attempts_data(
     $userid,
     $courseid,
     $moduleid,
@@ -120,16 +121,16 @@ function tiny_cursive_get_user_attempts_data(
 }
 
 /**
- * get_user_writing_data
+ * Get user writing data from the database with pagination
  *
- * @param $userid
- * @param $courseid
- * @param $moduleid
- * @param $orderby
- * @param $order
- * @param $perpage
- * @param $limit
- * @return array
+ * @param int $userid The user ID to get writing data for (0 for all users)
+ * @param int $courseid The course ID to filter by (0 for all courses)
+ * @param int $moduleid The module ID to filter by (0 for all modules)
+ * @param string $orderby Field to order results by (id, name, email, date)
+ * @param string $order Sort order (ASC or DESC)
+ * @param int $perpage Number of records to skip (for pagination)
+ * @param int $limit Maximum number of records to return
+ * @return array Array containing total count and data records
  * @throws dml_exception
  */
 function tiny_cursive_get_user_writing_data(
@@ -198,11 +199,11 @@ function tiny_cursive_get_user_writing_data(
 }
 
 /**
- * get_user_profile_data
+ * Get user profile data including total time and word count
  *
- * @param $userid
- * @param $courseid
- * @return false|mixed
+ * @param int $userid The ID of the user to get profile data for
+ * @param int $courseid Optional course ID to filter results (0 for all courses)
+ * @return false|mixed Returns false on failure or object with total_time and word_count on success
  * @throws dml_exception
  */
 function tiny_cursive_get_user_profile_data($userid, $courseid = 0) {
@@ -221,13 +222,13 @@ function tiny_cursive_get_user_profile_data($userid, $courseid = 0) {
 }
 
 /**
- * get_user_submissions_data
+ * Get user submissions data including writing metrics and file information
  *
- * @param $resourceid
- * @param $modulename
- * @param $cmid
- * @param $courseid
- * @return array[]
+ * @param int $resourceid The resource ID (user ID) to get submissions for
+ * @param string $modulename The name of the module
+ * @param int $cmid The course module ID
+ * @param int $courseid Optional course ID to filter results (0 for all courses)
+ * @return array[] Array containing submission data and file information
  * @throws dml_exception
  */
 function tiny_cursive_get_user_submissions_data($resourceid, $modulename, $cmid, $courseid = 0) {
@@ -301,7 +302,11 @@ function tiny_cursive_get_user_submissions_data($resourceid, $modulename, $cmid,
 }
 
 /**
- * get_user_submissions_data
+ * Get course module ID for a given course
+ *
+ * @param int $courseid The ID of the course to get the module ID for
+ * @return int The course module ID, or 0 if not found
+ * @throws dml_exception
  */
 function tiny_cursive_get_cmid($courseid) {
     global $DB;
@@ -323,7 +328,6 @@ function tiny_cursive_get_cmid($courseid) {
  * Create a token for a given user
  *
  * @package tiny_cursive
- * @param int $userid The ID of the user to create the token for
  * @return string The created token
  */
 function tiny_cursive_create_token_for_user() {

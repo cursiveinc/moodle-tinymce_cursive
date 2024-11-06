@@ -62,7 +62,7 @@ define(["jquery", "core/ajax", "core/str"], function (
     },
 
     generateToken() {
-      var generateToken = $('#generate_cursivetoken')
+      var generateToken = $('#generate_cursivetoken');
       generateToken.on('click', function (e) {
         e.preventDefault();
         var promise1 = AJAX.call([
