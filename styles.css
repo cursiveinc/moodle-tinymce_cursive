@@ -188,7 +188,7 @@
     color: gray;
     width: 190px;
     font-weight: 400;
-    /* stylelint-disable-next-line declaration-no-important */
+    /* stylelint-disable-next-line csstree/validator */
     text-wrap: wrap;
 }
 
@@ -365,7 +365,8 @@
     display: flex;
     align-items: center;
     gap: 5px;
-    margin: 0 1rem;}
+    margin: 0 1rem;
+}
 
 .tiny_cursive-box {
     width: 20px;
@@ -396,7 +397,7 @@
 
 @keyframes l13 {
     100% {
-        transform: rotate(1turn)
+        transform: rotate(1turn);
     }
 }
 
