@@ -84,9 +84,12 @@ define(["jquery", "core/ajax", "core/str"], function (
             $("#cursivetoken_").empty();
           }, 3000);
         });
-        promise1[0].fail(function (jqXHR, textStatus, errorThrown) {
-          var errorMessage = "<span class='text-danger' role='alert'>An error occurred while generating the token: " + textStatus + "</span>";
-          $("#cursivetoken_").html(errorMessage);
+        promise1[0].fail(function (jqXHR, textStatus) {
+          // Break the error message into multiple concatenated strings for better readability
+          var errorMessage = "<span class='text-danger' role='alert'>" +
+            "An error occurred while generating the token: " +
+            textStatus +
+            "</span>"; $("#cursivetoken_").html(errorMessage);
           // Clear the error message after 3 seconds
           setTimeout(function () {
             $("#cursivetoken_").empty();
