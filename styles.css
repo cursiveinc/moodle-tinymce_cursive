@@ -1,29 +1,4 @@
-.tiny_cursive_time_success {
-    display: none;
-}
-
-.tiny_cursive_time_successfull {
-    display: none;
-}
-
-.tiny_cursive_review_panel_path_mod_assign {
-    position: fixed !important;
-    height: calc(100vh - 205px) !important;
-}
-
-.tiny_cursive_grading-navigation-panel_path_mod_assign {
-    position: fixed !important;
-}
-
-.tiny_cursive_grade-panel_path_mod_assign {
-    position: fixed !important;
-    height: calc(100vh - 205px) !important;
-}
-
-.tiny_cursive_grade-actions-panel_path_mod_assign {
-    position: fixed !important;
-    height: 120px !important;
-}
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
 .tiny_cursive-analytics-btn {
     background-color: #306ab3;
@@ -316,7 +291,7 @@
     width: 12px;
     height: 12px;
     display: inline-block;
-    border-bottom: 2px solid #fff
+    border-bottom: 2px solid #fff;
 }
 
 .tiny_cursive-chatbox__title__close svg {
@@ -330,7 +305,7 @@
 .tiny_cursive-chatbox__credentials {
     padding: 15px;
     border-top: 0;
-    background-color: #FAFAFA;
+    background-color: #fafafa;
     border-left: 1px solid #ddd;
     border-right: 1px solid #ddd;
     -webkit-flex-grow: 1;
@@ -359,22 +334,9 @@
     display: block;
 }
 
-.tiny_cursive-chat_set_height {
-    height: 40px;
-    margin-top: 1px;
-}
-
 .tiny_cursive-chatbox22 .form-control:focus {
-    border-color: #DCDCDC;
+    border-color: #dcdcdc;
 }
-
-.tiny_cursive-width50 {
-    width: 50%;
-    float: left;
-    background: #ECECEC;
-}
-
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
 .tiny_cursive-comparison-content {
     margin-right: 1rem;
@@ -390,20 +352,6 @@
 
 .tiny_cursive-text-block:hover {
     transform: translateY(-5px);
-}
-
-
-#cursive-submitted_text {
-    padding: 15px;
-    border: 1px solid #e2e8f0;
-    background-color: #edf2f7;
-    overflow-y: auto;
-    border-radius: 8px;
-    font-size: 1em;
-    line-height: 1.6;
-    color: #2d3748;
-    font-family: 'Roboto Mono', monospace;
-
 }
 
 .tiny_cursive_added {
@@ -456,18 +404,19 @@
 }
 
 .tiny_cursive-quiz-references {
-    background-color: #FCEFDC;
-    font-weight: 500;
+    background-color: #fcefdc;
     max-height: 200px;
     overflow-y: auto !important;
     margin: 2rem 0rem;
 }
+
 .tiny_cursive_nosub {
     vertical-align: middle;
     text-transform: uppercase;
     font-weight: 500;
 }
-.tiny_cursive_nopayload{
+
+.tiny_cursive_nopayload {
     vertical-align: middle;
     text-transform: uppercase;
     font-weight: 500;
@@ -511,7 +460,7 @@
     }
 }
 
-.tiny_cursive_mod_assign_grader .cursive_grade-actions-panel_path_mod_assign{
+.tiny_cursive_mod_assign_grader .cursive_grade-actions-panel_path_mod_assign {
     height: 100px !important;
     background: #ddd;
     z-index: 2;
