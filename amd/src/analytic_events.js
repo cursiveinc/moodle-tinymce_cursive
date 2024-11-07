@@ -21,7 +21,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 import MyModal from "./analytic_modal";
-import { call as getContent } from "core/ajax";
+import {call as getContent} from "core/ajax";
 import $ from 'jquery';
 import * as Str from 'core/str';
 
@@ -95,8 +95,8 @@ export default class AnalyticEvents {
 
                     // Fetch the dynamic strings
                     Str.get_strings([
-                        {key: 'original_text', component: 'tiny_cursive'},
-                        {key: 'editspastesai', component: 'tiny_cursive'}
+                        { key: 'original_text', component: 'tiny_cursive' },
+                        { key: 'editspastesai', component: 'tiny_cursive' }
                     ]).done(strings => {
                         const originalTextString = strings[0];
                         const editsPastesAIString = strings[1];
@@ -154,7 +154,7 @@ export default class AnalyticEvents {
                 // eslint-disable-next-line
                 video_playback(userid, filepath, questionid);
             } else {
-                 // eslint-disable-next-line
+                // eslint-disable-next-line
                 video_playback(userid, filepath);
             }
         });
