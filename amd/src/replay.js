@@ -22,9 +22,11 @@
 
 import { call as fetchJson } from 'core/ajax';
 import templates from 'core/templates';
+import $ from 'jquery';
 export default class Replay {
+    controllerId = '';
     constructor(elementId, filePath, speed = 1, loop = false, controllerId) {
-
+        this.controllerId = controllerId;
         this.replayInProgress = false;
         this.speed = speed;
         this.loop = loop;
@@ -110,7 +112,7 @@ export default class Replay {
             clearTimeout(this.replayTimeout);
         }
         this.replayInProgress = true;
-        let uid = controllerId.split('_')[1];
+        let uid = this.controllerId.split('_')[1];
         let element = document.getElementById('rep' + uid);
         let isactive = element.classList.contains('active');
         if (!isactive) {
@@ -141,7 +143,6 @@ export default class Replay {
                     if (this.loop) {
                         this.startReplay();
                     }
-                    ;
                 }
             }
         };
@@ -192,7 +193,7 @@ export default class Replay {
                 return textOutput.slice(0, lastSpace);
             }
             default:
-                return !["Shift", "Ctrl", "Alt", "ArrowDown", "ArrowUp", "Control", "ArrowRight", "ArrowLeft"]
+                return !["Shift", "Ctrl", "Alt", "ArrowDown", "ArrowUp", "Control", "ArrowRight", "ArrowLeft", "Meta"]
                     .includes(key) ? textOutput + key : textOutput;
         }
     }
