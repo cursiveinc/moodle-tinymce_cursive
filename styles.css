@@ -1,34 +1,10 @@
-.tiny_cursive_time_success {
-    display: none;
-}
-
-.tiny_cursive_time_successfull {
-    display: none;
-}
-
-.tiny_cursive_review_panel_path_mod_assign {
-    position: fixed !important;
-    height: calc(100vh - 205px) !important;
-}
-
-.tiny_cursive_grading-navigation-panel_path_mod_assign {
-    position: fixed !important;
-}
-
-.tiny_cursive_grade-panel_path_mod_assign {
-    position: fixed !important;
-    height: calc(100vh - 205px) !important;
-}
-
-.tiny_cursive_grade-actions-panel_path_mod_assign {
-    position: fixed !important;
-    height: 120px !important;
-}
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
 .tiny_cursive-analytics-btn {
     background-color: #306ab3;
     color: white;
     border-radius: 8vw;
+    /* stylelint-disable-next-line declaration-no-important */
     text-decoration: none !important;
 }
 
@@ -62,7 +38,7 @@
 
 .tiny_cursive-analytics-header h3 {
     margin: 0;
-    color: #306BB2;
+    color: #306bb2;
 }
 
 .tiny_cursive-analytics-header .close-btn {
@@ -75,10 +51,11 @@
     font-size: 1.5rem;
     padding: .25rem .7rem;
     transition: .3s ease-in-out;
-    background-color: #FF3737;
+    background-color: #ff3737;
 }
 
 .tiny_cursive-analytics-header .close-btn:hover span {
+    /* stylelint-disable-next-line declaration-no-important */
     background-color: rgb(211, 0, 0) !important;
 }
 
@@ -149,10 +126,8 @@
 
 /* Scrollbar styles for Firefox */
 .tiny_cursive {
-    scrollbar-width: 5px;
-    /* Set the width of the scrollbar */
+    scrollbar-width: thin;
     scrollbar-color: #ccc transparent;
-    /* Set thumb and track colors */
 }
 
 .tiny_cursive-main {
@@ -213,6 +188,7 @@
     color: gray;
     width: 190px;
     font-weight: 400;
+    /* stylelint-disable-next-line csstree/validator */
     text-wrap: wrap;
 }
 
@@ -233,7 +209,6 @@
     -webkit-transition: all 600ms cubic-bezier(0.19, 1, 0.22, 1);
     transition: all 600ms cubic-bezier(0.19, 1, 0.22, 1);
     z-index: 999;
-    display: -webkit-flex;
     display: flex;
 
     -webkit-flex-direction: column;
@@ -264,8 +239,6 @@
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
     cursor: pointer;
-
-    display: -webkit-flex;
     display: flex;
 
     -webkit-align-items: center;
@@ -316,7 +289,7 @@
     width: 12px;
     height: 12px;
     display: inline-block;
-    border-bottom: 2px solid #fff
+    border-bottom: 2px solid #fff;
 }
 
 .tiny_cursive-chatbox__title__close svg {
@@ -330,7 +303,7 @@
 .tiny_cursive-chatbox__credentials {
     padding: 15px;
     border-top: 0;
-    background-color: #FAFAFA;
+    background-color: #fafafa;
     border-left: 1px solid #ddd;
     border-right: 1px solid #ddd;
     -webkit-flex-grow: 1;
@@ -359,22 +332,9 @@
     display: block;
 }
 
-.tiny_cursive-chat_set_height {
-    height: 40px;
-    margin-top: 1px;
-}
-
 .tiny_cursive-chatbox22 .form-control:focus {
-    border-color: #DCDCDC;
+    border-color: #dcdcdc;
 }
-
-.tiny_cursive-width50 {
-    width: 50%;
-    float: left;
-    background: #ECECEC;
-}
-
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
 .tiny_cursive-comparison-content {
     margin-right: 1rem;
@@ -392,20 +352,6 @@
     transform: translateY(-5px);
 }
 
-
-#cursive-submitted_text {
-    padding: 15px;
-    border: 1px solid #e2e8f0;
-    background-color: #edf2f7;
-    overflow-y: auto;
-    border-radius: 8px;
-    font-size: 1em;
-    line-height: 1.6;
-    color: #2d3748;
-    font-family: 'Roboto Mono', monospace;
-
-}
-
 .tiny_cursive_added {
     background-color: #7ad957;
     color: #22543d;
@@ -419,7 +365,7 @@
     display: flex;
     align-items: center;
     gap: 5px;
-    margin: 0rem 1rem;
+    margin: 0 1rem;
 }
 
 .tiny_cursive-box {
@@ -451,23 +397,25 @@
 
 @keyframes l13 {
     100% {
-        transform: rotate(1turn)
+        transform: rotate(1turn);
     }
 }
 
 .tiny_cursive-quiz-references {
-    background-color: #FCEFDC;
-    font-weight: 500;
+    background-color: #fcefdc;
     max-height: 200px;
+    /* stylelint-disable-next-line declaration-no-important */
     overflow-y: auto !important;
-    margin: 2rem 0rem;
+    margin: 2rem 0;
 }
+
 .tiny_cursive_nosub {
     vertical-align: middle;
     text-transform: uppercase;
     font-weight: 500;
 }
-.tiny_cursive_nopayload{
+
+.tiny_cursive_nopayload {
     vertical-align: middle;
     text-transform: uppercase;
     font-weight: 500;
@@ -490,6 +438,7 @@
 
     .tiny_cursive-nav-tab .tiny_cursive-nav-item.show .nav-link,
     .tiny_cursive-nav-tab .nav-link.active {
+        /* stylelint-disable-next-line declaration-no-important */
         color: #306ab3 !important;
         background-color: white;
         min-height: 100%;
@@ -497,6 +446,7 @@
 
     .tiny_cursive-nav-tab .tiny_cursive-nav-item.show .nav-link,
     .tiny_cursive-nav-tab .nav-link.active svg {
+        /* stylelint-disable-next-line declaration-no-important */
         fill: #306ab3 !important;
 
     }
@@ -511,7 +461,8 @@
     }
 }
 
-.tiny_cursive_mod_assign_grader .cursive_grade-actions-panel_path_mod_assign{
+.tiny_cursive_mod_assign_grader .cursive_grade-actions-panel_path_mod_assign {
+    /* stylelint-disable-next-line declaration-no-important */
     height: 100px !important;
     background: #ddd;
     z-index: 2;

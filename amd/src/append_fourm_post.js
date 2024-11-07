@@ -33,11 +33,11 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
     window.video_playback = function (mid, filepath) {
         if (filepath !== '') {
             const replay = new Replay(
-                elementId = 'content' + mid,
-                filePath = filepath,
-                speed = 10,
-                loop = false,
-                controllerId = 'player_' + mid
+                'content' + mid,
+                filepath,
+                10,
+                false,
+                'player_' + mid
             );
             replayInstances[mid] = replay;
         }
