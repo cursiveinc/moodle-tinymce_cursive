@@ -30,10 +30,9 @@
  */
 function xmldb_tiny_cursive_install() {
     global $DB;
-    // Ensure the web service is enabled.
+
     enable_webservice();
     enable_webservice_protocol('rest');
-
 }
 /**
  * Enable web services in Moodle
