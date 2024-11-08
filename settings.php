@@ -45,7 +45,7 @@ if (is_siteadmin()) {
             get_string('secretkey_desc', 'tiny_cursive') . '' .
             "<br/><a id='approve_token' href='#' class='btn btn-primary'>  " . get_string('test_token', 'tiny_cursive') . " </a>
             <span id='token_message'></span>",
-            '', PARAM_TEXT
+            "", PARAM_TEXT
         )
     );
     $settings->add(
@@ -95,4 +95,5 @@ if (is_siteadmin()) {
             PARAM_TEXT
         )
     );
+
 }
