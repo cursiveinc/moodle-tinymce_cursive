@@ -5,11 +5,31 @@ At Cursive Technology, Inc., we're focused on the writing process. By capturing 
 Currently, the extension captures key event data in a structured JSON file, which a teacher or administrator can download and review. This is for each use of the TinyMCE text editor by a student, sortable by course, assignment, student, and attempt. This data can be utilized with the shared Excel or Google document which provide analysis that may help determine the level of effort by a student.
 
 Premium/Subscription: Cursive's plugin is designed to interact with our ML server as a paid service. This integration is optional and adds the following capabilities: 1 identify student authorship across their submissions, 2 provide writing analytics automatically, 3 provide students a running total of their words, pages, typing speed, and assignments across their courses.
+Premium/Subscription: Cursive's plugin is designed to interact with our ML server as a paid service. This integration is optional and adds the following capabilities: 1 identify student authorship across their submissions, 2 provide writing analytics automatically, 3 provide students a running total of their words, pages, typing speed, and assignments across their courses.
 
 Ultimately, we believe in human contribution as captured through the writing process, the beautiful production of written work expressing your individual thoughts that cannot be completed by a third party nor replicated by generative AI. We're excited to work with you.
 
 If you have questions, or comments, or would like to request a trial API key, please reach out to us at contact@cursivetechnology.com
 
+
+## Instatllation
+
+### Install by downloading the ZIP file
+- Install by downloading the ZIP file from the Moodle plugins directory
+- Download the zip file from GitHub
+- Unzip the zip file in /path/to/moodle/lib/editor/tiny/plugins/cursive folder or upload the zip file in the install plugins options from site administration: Site Administration -> Plugins -> Install Plugins -> Upload zip file
+
+### Install using git clone
+
+Go to Moodle Project `root/lib/editor/tiny/plugins/cursive` directory and clone code by using the following commands:
+
+```
+git clone https://github.com/cursiveinc/moodle-tinymce_cursive.git cursive
+```
+- In your Moodle site (as admin), Visit site administration to finish the installation.
+
+**Alternatively, you can run**
+``$ php admin/cli/upgrade.php``
 
 ## Instatllation
 

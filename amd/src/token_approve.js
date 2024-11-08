@@ -60,10 +60,10 @@ define(["jquery", "core/ajax", "core/str"], function (
 
       });
     },
+
     generateToken() {
-      var generateToken = $('#generate_cursivetoken')
+      var generateToken = $('#generate_cursivetoken');
       generateToken.on('click', function (e) {
-        console.log("object");
         e.preventDefault();
         var promise1 = AJAX.call([
           {
@@ -83,18 +83,18 @@ define(["jquery", "core/ajax", "core/str"], function (
           setTimeout(() => {
             $("#cursivetoken_").empty();
           }, 3000);
-
         });
-        
-        promise1[0].fail(function (jqXHR, textStatus, errorThrown) {
-          var errorMessage = "<span class='text-danger' role='alert'>An error occurred while generating the token: " + textStatus + "</span>";
-          $("#cursivetoken_").html(errorMessage);
-  
+        promise1[0].fail(function (jqXHR, textStatus) {
+          // Break the error message into multiple concatenated strings for better readability
+          var errorMessage = "<span class='text-danger' role='alert'>" +
+            "An error occurred while generating the token: " +
+            textStatus +
+            "</span>"; $("#cursivetoken_").html(errorMessage);
           // Clear the error message after 3 seconds
           setTimeout(function () {
-              $("#cursivetoken_").empty();
+            $("#cursivetoken_").empty();
           }, 3000);
-      });
+        });
       });
 
     }

@@ -22,12 +22,11 @@
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
+use tiny_cursive\forms\filter_report_form;
 require(__DIR__ . '/../../../../../config.php');
 global $CFG, $DB, $USER, $PAGE;
 require_once($CFG->dirroot . '/mod/quiz/lib.php');
 require_once($CFG->dirroot . '/mod/quiz/locallib.php');
-require_once(__DIR__ . '/classes/forms/filterreportform.php');
 require_once(__DIR__ . '/locallib.php');
 
 require_login();
@@ -96,9 +95,9 @@ echo $OUTPUT->header();
 
 echo $OUTPUT->heading(get_string('student_writing_statics', 'tiny_cursive'));
 $renderer = $PAGE->get_renderer('tiny_cursive');
-$attempts = get_user_attempts_data($userid, $courseid, null, $orderby, $order, $page, $limit);
-$userprofile = get_user_profile_data($userid, $courseid);
-echo $renderer->user_writing_report($attempts, $userprofile, $userid, $page, $limit, $linkurl);
+$attempts = tiny_cursive_get_user_attempts_data($userid, $courseid, null, $orderby, $order, $page, $limit);
+$userprofile = tiny_cursive_get_user_profile_data($userid, $courseid);
+echo $renderer->tiny_cursive_user_writing_report($attempts, $userprofile, $userid, $page, $limit, $linkurl);
 
 echo $OUTPUT->footer();
 
