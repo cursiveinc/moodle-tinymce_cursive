@@ -23,25 +23,18 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
-
 /**
- * Tiny cursive plugin.
- *
- * @package tiny_cursive
- * @copyright  CTI <info@cursivetechnology.com>
- * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * tiny_cursive_renderer
  */
 class tiny_cursive_renderer extends plugin_renderer_base {
     /**
-     * timer_report
+     * Generates a timer report table with user attempt data
      *
-     * @param $users
-     * @param $courseid
-     * @param $page
-     * @param $limit
-     * @param $baseurl
+     * @param array $users Array containing user attempt data and count
+     * @param int $courseid ID of the course
+     * @param int $page Current page number for pagination
+     * @param int $limit Number of records per page
+     * @param string $baseurl Base URL for pagination links
      * @return void
      * @throws coding_exception
      * @throws dml_exception
@@ -114,14 +107,14 @@ class tiny_cursive_renderer extends plugin_renderer_base {
     }
 
     /**
-     * tiny_cursive_user_writing_report
+     * Generates a user writing report with analytics and download options
      *
-     * @param $users
-     * @param $userprofile
-     * @param $username
-     * @param $page
-     * @param $limit
-     * @param $baseurl
+     * @param array $users Array containing user attempt data and count
+     * @param object $userprofile User profile data including word count and time stats
+     * @param int $userid ID of the user
+     * @param int $page Current page number for pagination
+     * @param int $limit Number of records per page
+     * @param string $baseurl Base URL for pagination links
      * @return void
      * @throws coding_exception
      * @throws dml_exception

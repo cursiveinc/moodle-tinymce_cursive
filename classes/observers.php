@@ -24,7 +24,6 @@
  */
 
 namespace tiny_cursive;
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * Tiny cursive plugin observer class.
@@ -38,7 +37,7 @@ class observers {
     /**
      * Tiny cursive plugin update comment observer.
      *
-     * @param $event
+     * @param \core\event\base $event The event object
      * @return void
      * @throws \dml_exception
      */
@@ -64,7 +63,7 @@ class observers {
     /**
      * Tiny cursive plugin update cursive files observer.
      *
-     * @param $event
+     * @param \core\event\base $event The event object
      * @return void
      * @throws \dml_exception
      */
