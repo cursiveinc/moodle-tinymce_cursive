@@ -21,81 +21,83 @@
  */
 
 define(["jquery", "core/ajax", "core/str"], function (
-    $,
-    AJAX,
-    str,
-  ) {
-    var usersTable = {
-      init: function (page) {
-        str
-          .get_strings([
-            { key: "field_require", component: "tiny_cursive" },
-          ])
-          .done(function () {
-            usersTable.getToken(page);
-            usersTable.generateToken();
-          });
-      },
-      getToken: function () {
-        $("#approve_token").click(function () {
-          var token = $('#id_s_tiny_cursive_secretkey').val();
-          var promise1 = AJAX.call([
-            {
-              methodname: "cursive_approve_token",
-              args: {
-                token: token,
-              },
-            },
-          ]);
-          promise1[0].done(function (json) {
-            var data = JSON.parse(json);
-            var message_alert='';
-            if(data.status==true){
-              message_alert="<span class='alert alert-success' role='alert'>"+data.message+"</span>";
-            }else{
-              message_alert="<span class='alert alert-danger' role='alert'>"+data.message+"</span>";
-            }
-            $("#token_message").html(message_alert);
-          });
-
+  $,
+  AJAX,
+  str,
+) {
+  var usersTable = {
+    init: function (page) {
+      str
+        .get_strings([
+          { key: "field_require", component: "tiny_cursive" },
+        ])
+        .done(function () {
+          usersTable.getToken(page);
+          usersTable.generateToken();
         });
-      },
-
-      generateToken() {
-        var generateToken = $('#generate_cursivetoken');
-        generateToken.on('click', function (e) {
-          e.preventDefault();
-          var promise1 = AJAX.call([
-            {
-              methodname: "cursive_generate_webtoken",
-              args: []
+    },
+    getToken: function () {
+      $("#approve_token").click(function () {
+        var token = $('#id_s_tiny_cursive_secretkey').val();
+        var promise1 = AJAX.call([
+          {
+            methodname: "cursive_approve_token",
+            args: {
+              token: token,
             },
-          ]);
-          promise1[0].done(function (data) {
-            var message_alert = '';
-            if (data.token) {
-              $('#id_s_tiny_cursive_cursivetoken').val(data.token);
-              message_alert = "<span class='text-success' role='alert'>Webservice Token Generation Success</span>";
-            } else {
-              message_alert = "<span class='text-danger' role='alert'>Webservice Token Generation Failed</span>";
-            }
-            $("#cursivetoken_").html(message_alert);
-            setTimeout(() => {
-              $("#cursivetoken_").empty();
-            }, 3000);
-          });
-          promise1[0].fail(function (jqXHR, textStatus, errorThrown) {
-            var errorMessage = "<span class='text-danger' role='alert'>An error occurred while generating the token: " + textStatus + "</span>";
-            $("#cursivetoken_").html(errorMessage);
-            // Clear the error message after 3 seconds
-            setTimeout(function () {
-              $("#cursivetoken_").empty();
-            }, 3000);
-          });
+          },
+        ]);
+        promise1[0].done(function (json) {
+          var data = JSON.parse(json);
+          var message_alert = '';
+          if (data.status == true) {
+            message_alert = "<span class='alert alert-success' role='alert'>" + data.message + "</span>";
+          } else {
+            message_alert = "<span class='alert alert-danger' role='alert'>" + data.message + "</span>";
+          }
+          $("#token_message").html(message_alert);
         });
-  
-      }
 
-    };
-    return usersTable;
-  });
+      });
+    },
+
+    generateToken() {
+      var generateToken = $('#generate_cursivetoken');
+      generateToken.on('click', function (e) {
+        e.preventDefault();
+        var promise1 = AJAX.call([
+          {
+            methodname: "cursive_generate_webtoken",
+            args: []
+          },
+        ]);
+        promise1[0].done(function (data) {
+          var message_alert = '';
+          if (data.token) {
+            $('#id_s_tiny_cursive_cursivetoken').val(data.token);
+            message_alert = "<span class='text-success' role='alert'>Webservice Token Generation Success</span>";
+          } else {
+            message_alert = "<span class='text-danger' role='alert'>Webservice Token Generation Failed</span>";
+          }
+          $("#cursivetoken_").html(message_alert);
+          setTimeout(() => {
+            $("#cursivetoken_").empty();
+          }, 3000);
+        });
+        promise1[0].fail(function (jqXHR, textStatus) {
+          // Break the error message into multiple concatenated strings for better readability
+          var errorMessage = "<span class='text-danger' role='alert'>" +
+            "An error occurred while generating the token: " +
+            textStatus +
+            "</span>"; $("#cursivetoken_").html(errorMessage);
+          // Clear the error message after 3 seconds
+          setTimeout(function () {
+            $("#cursivetoken_").empty();
+          }, 3000);
+        });
+      });
+
+    }
+  };
+  return usersTable;
+});

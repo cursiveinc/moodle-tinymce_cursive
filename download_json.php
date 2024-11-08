@@ -34,7 +34,7 @@ $cmid = optional_param('cmid', 0, PARAM_INT);
 $fname = optional_param('fname', '', PARAM_TEXT);
 
 $context = context_module::instance($cmid);
-require_capability('tiny/cursive:view', $context);
+require_capability('tiny/cursive:writingreport', $context);
 
 $filename = '';
 $dirname = $CFG->tempdir . '/userdata/';
@@ -49,7 +49,7 @@ if ($fname) {
     if (!file_exists($filename)) {
         $filerow = $DB->get_record('tiny_cursive_files', ['filename' => $fname]);
         if ($filerow->content) {
-            $content = file_stream($filerow->content, $fname);
+            $content = tiny_cursive_file_stream($filerow->content, $fname);
             echo $content;
             die();
         } else {
@@ -62,7 +62,7 @@ if ($fname) {
     }
 } else {
     $filename = $dirname . $userid . '_' . $resourceid . '_' . $cmid . '_attempt' . '.json';
-    $content = file_stream($filename, $filename);
+    $content = tiny_cursive_file_stream($filename, $filename);
     echo $content;
     die();
 }

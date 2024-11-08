@@ -79,8 +79,11 @@ define(['core/str', 'jquery', 'core/config'], function (Str) {
         const textNode = document.createElement('span');
         Str.get_string('analytics', 'tiny_cursive').then(analyticsString => {
             textNode.textContent = analyticsString;
+            return true;
+        }).catch(error => {
+            window.console.error('Error fetching string:', error);
         });
-        // textNode.textContent = 'Analytics';
+
         anchor.appendChild(icon);
         anchor.appendChild(textNode);
 
