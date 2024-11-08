@@ -58,7 +58,7 @@ class upload_student_json_cron extends \core\task\scheduled_task {
 
         $adminuser = get_admin();
         $cursivetoken = get_config('tiny_cursive', 'cursivetoken');
-
+        $token = '';
         if (!$cursivetoken) {
             $sql = "SELECT *
                       FROM {external_tokens}
