@@ -23,16 +23,13 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use tiny_cursive\tiny_cursive_data;
-use core_external\external_api;
-use core_external\external_function_parameters;
-use core_external\external_single_structure;
-use core_external\external_value;
+
 
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 require_once(__DIR__ . '/locallib.php');
+require_once($CFG->libdir.'/externallib.php');
 
 /**
  * Tiny cursive plugin.

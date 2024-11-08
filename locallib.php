@@ -327,7 +327,6 @@ function tiny_cursive_get_cmid($courseid) {
  * Create a token for a given user
  *
  * @package tiny_cursive
- * @param int $userid The ID of the user to create the token for
  * @return string The created token
  */
 function tiny_cursive_create_token_for_user() {
