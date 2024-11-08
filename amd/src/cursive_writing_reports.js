@@ -33,11 +33,11 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
     window.video_playback = function (mid, filepath) {
         if (filepath !== '') {
             const replay = new Replay(
-                elementId = 'content' + mid,
-                filePath = filepath,
-                speed = 10,
-                loop = false,
-                controllerId = 'player_' + mid
+                'content' + mid,
+                filepath,
+                10,
+                false,
+                'player_' + mid
             );
             replayInstances[mid] = replay;
         }
@@ -56,8 +56,6 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
                     { key: "field_require", component: "tiny_cursive" },
                 ])
                 .done(function () {
-                    $(document).ready(function ($) {
-                    });
                     usersTable.getusers(page);
                 });
 
@@ -67,7 +65,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
                     let score_setting = await str.get_string('confidence_threshold', 'tiny_cursive');
                     analyticsEvents(score_setting);
                 } catch (error) {
-                    console.error('Error fetching string:', error);
+                    window.console.error('Error fetching string:', error);
                 }
             })();
 
