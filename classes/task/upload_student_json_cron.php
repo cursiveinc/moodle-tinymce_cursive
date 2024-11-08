@@ -24,7 +24,7 @@
  */
 
 namespace tiny_cursive\task;
-
+use core\task\scheduled_task;
 /**
  * Tiny cursive plugin upload file using cron to the api server.
  *
@@ -33,7 +33,7 @@ namespace tiny_cursive\task;
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class upload_student_json_cron extends \core\task\scheduled_task {
+class upload_student_json_cron extends scheduled_task {
     /**
      * Return the task's name as shown in admin screens.
      *
@@ -56,6 +56,7 @@ class upload_student_json_cron extends \core\task\scheduled_task {
         $serviceshortname = 'cursive_json_service'; // Replace with your service shortname.
         $service = $DB->get_record('external_services', ['shortname' => $serviceshortname]);
 
+        $token = '';
         $adminuser = get_admin();
         $cursivetoken = get_config('tiny_cursive', 'cursivetoken');
 

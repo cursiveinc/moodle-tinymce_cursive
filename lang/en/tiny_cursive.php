@@ -133,7 +133,6 @@ $string['total_words'] = 'Total Words:';
 $string['total_words_desc'] = 'Estimated total words';
 $string['typeid'] = 'TypeID';
 $string['userename'] = 'User name';
-$string['username'] = 'User name';
 $string['warning'] = 'You have no permissions to access the page.';
 $string['webservicetoken'] = 'Web Service Token';
 $string['webservicetoken_des'] = 'Webservice token';
@@ -142,5 +141,3 @@ $string['words_per_minute'] = 'Words per Minute';
 $string['words_per_minute_desc'] = 'Total duration / total words';
 $string['wractivityreport'] = 'Writing Activity Report';
 $string['writing'] = 'Writing Report';
-
-

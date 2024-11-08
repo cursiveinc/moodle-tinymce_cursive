@@ -34,11 +34,11 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
         if (filepath !== '') {
             // $("#playback" + mid).show();
             const replay = new Replay(
-                elementId = 'content' + mid,
-                filePath = filepath,
-                speed = 10,
-                loop = false,
-                controllerId = 'player_' + mid
+                'content' + mid,
+                filepath,
+                10,
+                false,
+                'player_' + mid
             );
             replayInstances[mid] = replay;
         }
@@ -53,12 +53,12 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
 
     var usersTable = {
         init: function (score_setting, showcomment) {
-            if (!$('#page-mod-assign-grader').hasClass('tiny_cursive_show_url_in_submission_grade')) {
+            $(document).ready(function () {
                 $('#page-mod-assign-grader').addClass('tiny_cursive_mod_assign_grader');
-            }
+            });
             str
                 .get_strings([
-                    { key: "field_require", component: "tiny_cursive" },
+                    {key: "field_require", component: "tiny_cursive"},
                 ])
                 .done(function () {
                     usersTable.appendSubmissionDetail(score_setting, showcomment);
