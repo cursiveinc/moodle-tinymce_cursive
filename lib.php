@@ -22,8 +22,6 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use editor_tiny\cursive\forms\fileupload;
-
 /**
  * Given an array with a file path, it returns the itemid and the filepath for the defined filearea.
  *
@@ -120,11 +118,11 @@ function tiny_cursive_extend_navigation(global_navigation $navigation) {
 }
 
 /**
- * tiny_cursive_myprofile_navigation
+ * Add a node to the myprofile navigation tree for writing reports.
  *
- * @param \core_user\output\myprofile\tree $tree
- * @param $user
- * @param $course
+ * @param \core_user\output\myprofile\tree $tree Navigation tree to add node to
+ * @param stdClass $user The user object
+ * @param stdClass $course The course object
  * @return void
  * @throws coding_exception
  * @throws moodle_exception
@@ -152,14 +150,18 @@ function tiny_cursive_myprofile_navigation(core_user\output\myprofile\tree $tree
 }
 
 /**
- * upload_multipart_record
+ * Uploads a file record using multipart form data
  *
- * @param $filerecord
- * @param $filenamewithfullpath
- * @return bool|string
+ * @param object $filerecord The file record object containing metadata
+ * @param string $filenamewithfullpath Full path to the file to upload
+ * @param string $wstoken Web service token for authentication
+ * @param string $answertext Original submission text
+ * @return bool|string Returns response from server or false on failure
  * @throws dml_exception
  */
 function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath, $wstoken, $answertext) {
+    global $CFG;
+    require_once($CFG->dirroot . '/lib/filelib.php');
     $moodleurl = get_config('tiny_cursive', 'host_url');
     $result = '';
     try {
@@ -195,34 +197,37 @@ function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath
         }
 
         echo $remoteurl;
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $remoteurl);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, [
+
+        $curl = new curl();
+        $postdata = [
             'file' => $filetosend,
             'resource_id' => $filerecord->id,
             'person_id' => $filerecord->userid,
             'ws_token' => $wstoken,
             'originalsubmission' => $answertext,
-        ]);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        ];
+
+        $headers = [
             'Authorization: Bearer ' . $token,
-            'X-Moodle-Url:' . $moodleurl,
+            'X-Moodle-Url: ' . $moodleurl,
             'Content-Type: multipart/form-data',
+        ];
+
+        $result = $curl->post($remoteurl, $postdata, [
+            'CURLOPT_HTTPHEADER' => $headers,
+            'CURLOPT_RETURNTRANSFER' => true,
         ]);
 
-        $result = curl_exec($ch);
-        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $httpcode = $curl->get_info()['http_code'];
 
         if ($result === false) {
             echo "File not found: " . $filenamewithfullpath . "\n";
-            echo "cURL Error: " . curl_error($ch) . "\n";
+            echo "cURL Error: " . $curl->error . "\n";
         } else {
             echo "HTTP Status Code: " . $httpcode . "\n";
             echo "File Id: " . $filerecord->id . "\n";
         }
 
-        curl_close($ch);
         // Remove the temporary file if it was created.
         if (isset($tempfilepath) && file_exists($tempfilepath)) {
             unlink($tempfilepath);
@@ -235,11 +240,11 @@ function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath
 }
 
 /**
- * file_urlcreate
+ * Creates a URL for a file in the tiny_cursive file area
  *
- * @param $context
- * @param $user
- * @return false|string
+ * @param \context $context The context object
+ * @param stdClass $user The user object containing fileid
+ * @return string|false Returns the download URL for the file, or false if no file found
  * @throws coding_exception
  */
 function tiny_cursive_file_urlcreate($context, $user) {
@@ -268,35 +273,34 @@ function tiny_cursive_file_urlcreate($context, $user) {
 }
 
 /**
- * Method tiny_cursive_get_user_essay_quiz_responses
+ * Gets the essay quiz responses for a specific user
  *
- * @param $userid [explicite description]
- * @param $courseid [explicite description]
- * @param $resourceid [explicite description]
- * @param $modulename [explicite description]
- * @param $cmid [explicite description]
- * @param $questionid [explicite description]
- *
- * @return string
+ * @param int $userid The ID of the user
+ * @param int $courseid The ID of the course
+ * @param int $resourceid The ID of the quiz attempt
+ * @param string $modulename The name of the module ('quiz')
+ * @param int $cmid The course module ID
+ * @param int $questionid The ID of the essay question
+ * @return string The response summary text for the essay question
  */
 function tiny_cursive_get_user_essay_quiz_responses($userid, $courseid, $resourceid, $modulename, $cmid, $questionid) {
     global $DB;
     $sql = "SELECT q.name AS question_name, qna.questionsummary, qna.responsesummary
-          FROM {question_attempt_steps} qas
-               JOIN {question_attempts} qna ON qas.questionattemptid = qna.id
-               JOIN {quiz_attempts} qa ON qna.questionusageid = qa.uniqueid
-               JOIN {quiz} qz ON qa.quiz = qz.id
-               JOIN {question} q ON qna.questionid = q.id
-               JOIN {course_modules} cm ON qz.id = cm.instance AND cm.module = (
-                    SELECT id FROM {modules} WHERE name = 'quiz')
-              WHERE qa.userid = :userid
-                    AND qz.course = :courseid
-                    AND qa.id = :resourceid
-                    AND cm.id = :cmid
-                    AND q.id = :questionid
-                    AND q.qtype = 'essay'
-                    AND qas.state = 'complete'
-           ORDER BY qa.attempt, qna.id, qas.sequencenumber";
+              FROM {question_attempt_steps} qas
+              JOIN {question_attempts} qna ON qas.questionattemptid = qna.id
+              JOIN {quiz_attempts} qa ON qna.questionusageid = qa.uniqueid
+              JOIN {quiz} qz ON qa.quiz = qz.id
+              JOIN {question} q ON qna.questionid = q.id
+              JOIN {course_modules} cm ON qz.id = cm.instance AND cm.module = (
+                   SELECT id FROM {modules} WHERE name = 'quiz')
+             WHERE qa.userid = :userid
+                   AND qz.course = :courseid
+                   AND qa.id = :resourceid
+                   AND cm.id = :cmid
+                   AND q.id = :questionid
+                   AND q.qtype = 'essay'
+                   AND qas.state = 'complete'
+          ORDER BY qa.attempt, qna.id, qas.sequencenumber";
 
     $result = $DB->get_record_sql(
         $sql,
@@ -364,27 +368,25 @@ function tiny_cursive_before_footer() {
 /**
  * Method tiny_cursive_get_user_onlinetext_assignments
  *
- * @param $userid [explicite description]
- * @param $courseid [explicite description]
- * @param $modulename [explicite description]
- * @param $cmid [explicite description]
- *
- * @return string
+ * @param int $userid The ID of the user
+ * @param int $courseid The ID of the course
+ * @param string $modulename The name of the module ('assign')
+ * @param int $cmid The course module ID
+ * @return string The online text submission content
  */
 function tiny_cursive_get_user_onlinetext_assignments($userid, $courseid, $modulename, $cmid) {
     global $DB;
 
     $sql = "SELECT cm.instance as assignmentid, ontext.onlinetext, :modulename AS modulename
-          FROM {assign_submission} asub
-               JOIN {assign} a ON asub.assignment = a.id
-               JOIN {assignsubmission_onlinetext} ontext ON asub.id = ontext.submission
-               JOIN {course_modules} cm ON a.id = cm.instance AND cm.module = (
-                   SELECT id FROM {modules} WHERE name = 'assign'
-               )
-         WHERE asub.userid = :userid
-               AND a.course = :courseid
-               AND asub.status = 'submitted'
-               AND cm.id = :cmid";
+              FROM {assign_submission} asub
+              JOIN {assign} a ON asub.assignment = a.id
+              JOIN {assignsubmission_onlinetext} ontext ON asub.id = ontext.submission
+              JOIN {course_modules} cm ON a.id = cm.instance AND cm.module = (
+                   SELECT id FROM {modules} WHERE name = 'assign')
+             WHERE asub.userid = :userid
+                   AND a.course = :courseid
+                   AND asub.status = 'submitted'
+                   AND cm.id = :cmid";
 
     $result =
         $DB->get_record_sql($sql, ['userid' => $userid, 'courseid' => $courseid, 'modulename' => $modulename, 'cmid' => $cmid]);
@@ -392,23 +394,23 @@ function tiny_cursive_get_user_onlinetext_assignments($userid, $courseid, $modul
 }
 
 /**
- * get_user_forum_posts
+ * Gets forum posts for a specific user
  *
- * @param $userid
- * @param $courseid
- * @param $resourceid
- * @return string
+ * @param int $userid The ID of the user
+ * @param int $courseid The ID of the course
+ * @param int $resourceid The ID of the forum post
+ * @return string The message content of the forum post
  */
 function tiny_cursive_get_user_forum_posts($userid, $courseid, $resourceid) {
     global $DB;
 
     $sql = "SELECT fp.id AS postid, fp.subject, fp.message
-                  FROM {forum_posts} fp
-                       JOIN {forum_discussions} fd ON fp.discussion = fd.id
-                       JOIN {forum} f ON fd.forum = f.id
-                 WHERE fp.userid = :userid
-                       AND fd.course = :courseid
-                       AND fp.id = :resourceid";
+              FROM {forum_posts} fp
+              JOIN {forum_discussions} fd ON fp.discussion = fd.id
+              JOIN {forum} f ON fd.forum = f.id
+             WHERE fp.userid = :userid
+                   AND fd.course = :courseid
+                   AND fp.id = :resourceid";
 
     $result = $DB->get_record_sql($sql, ['userid' => $userid, 'courseid' => $courseid, 'resourceid' => $resourceid]);
     return $result->message;
