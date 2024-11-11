@@ -52,7 +52,7 @@ class set_timer_form extends moodleform {
         $mform->addElement('hidden', 'quizid', '0');
         $mform->setType('quizid', PARAM_INT);
         $select->setMultiple(false);
-        $mform->addRule('quizname', get_string('field_required', 'tiny_cursive'), 'required', null, 'client');
+        $mform->addRule('quizname', get_string('field_require', 'tiny_cursive'), 'required', null, 'client');
 
         $radioarray = [];
         $radioarray[] = $mform->createElement('radio', 'time', '', get_string('stndtime', 'tiny_cursive'), 1);
