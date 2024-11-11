@@ -62,6 +62,7 @@
 
     $sql = "SELECT uf.id AS fileid, u.id AS usrid, uw.id AS uniqueid,
                    u.firstname, u.lastname, u.email, uf.courseid,
+                   u.firstnamephonetic, u.lastnamephonetic, u.middlename, u.alternatename,
                    uf.id AS attemptid, uf.timemodified, uf.cmid AS cmid,
                    uf.filename, uw.total_time_seconds AS total_time_seconds,
                    uw.key_count AS key_count, uw.keys_per_minute AS keys_per_minute,
@@ -343,19 +344,31 @@ function tiny_cursive_create_token_for_user() {
 }
 
 /**
- * Method filestream
+ * Stream contents of a JSON file
  *
- * @param $file $file [explicite description]
- * @param $fname $fname [explicite description]
- *
- * @return string
+ * @param string $file Path to the JSON file to stream
+ * @return string Contents of the file as a string
+ * @throws moodle_exception If file access denied, invalid type, or not found
  */
-function tiny_cursive_file_stream($file, $fname) {
-    $inp = '';
+function tiny_cursive_file_stream($file) {
+    $file = realpath($file);
+    $alloweddir = realpath(dirname(__FILE__));
+    if ($file === false || strpos($file, $alloweddir) !== 0) {
+        throw new moodle_exception('accessdenied', 'admin');
+    }
+
     if (file_exists($file)) {
+        $mimetype = mime_content_type($file);
+        $allowedtypes = ['application/json'];
+        if (!in_array($mimetype, $allowedtypes) || pathinfo($file, PATHINFO_EXTENSION) !== 'json') {
+            throw new moodle_exception('invalidfiletype', 'error');
+        }
         $inp = file_get_contents($file);
+        if ($inp === false) {
+            throw new moodle_exception('errorreadingfile', 'error');
+        }
     } else {
-        $inp = base64_decode($file);
+        throw new moodle_exception('filenotfound', 'error');
     }
 
     return $inp;
