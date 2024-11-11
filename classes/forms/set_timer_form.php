@@ -45,7 +45,7 @@ class set_timer_form extends moodleform {
         $mform =& $this->_form;
         $options = ['multiple' => false, 'includefrontpage' => false];
         $mform->addElement('course', 'courseid', get_string('coursename', 'tiny_cursive'), $options);
-        $mform->addRule('courseid', get_string('field_required', 'tiny_cursive'), 'required', null, 'client');
+        $mform->addRule('courseid', get_string('field_require', 'tiny_cursive'), 'required', null, 'client');
 
         $select = $mform->addElement('select', 'quizname', get_string('quizname', 'tiny_cursive'),
             [get_string('selectquiz', 'tiny_cursive')], $attributes);

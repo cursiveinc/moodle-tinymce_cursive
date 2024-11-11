@@ -137,16 +137,16 @@ class user_report_form extends moodleform {
         $udetail[0] = get_string('alluser', 'tiny_cursive');
 
         if (!empty($courseid)) {
-            $sql = "SELECT ue.id, u.id AS userid, u.firstname, u.lastname
+            $sql = "SELECT ue.id, u.id AS userid, u.*
                       FROM {enrol} e
-                INNER JOIN {user_enrolments} ue ON e.id = ue.enrolid
-                INNER JOIN {user} u ON u.id = ue.userid
+                      JOIN {user_enrolments} ue ON e.id = ue.enrolid
+                      JOIN {user} u ON u.id = ue.userid
                      WHERE e.courseid = :courseid
                            AND u.id != 1";
             $users = $DB->get_records_sql($sql, ['courseid' => $courseid]);
 
             foreach ($users as $user) {
-                $udetail[$user->userid] = $user->firstname . ' ' . $user->lastname;
+                $udetail[$user->userid] = fullname($user);
             }
         }
 
