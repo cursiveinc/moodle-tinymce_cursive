@@ -332,14 +332,15 @@ function tiny_cursive_get_cmid($courseid) {
  * @return string The created token
  */
 function tiny_cursive_create_token_for_user() {
-    global $DB, $USER;
+    global $DB, $CFG, $USER;
+    require_once($CFG->libdir . '/externallib.php');
+
     $token = '';
-    $serviceshortname = 'cursive_json_service'; // Replace with your service shortname.
+    $serviceshortname = 'cursive_json_service';
     $service = $DB->get_record('external_services', ['shortname' => $serviceshortname]);
-    if ($USER->id && is_siteadmin() && $service) {
-        $admin = get_admin();
-        $token = util::generate_token(EXTERNAL_TOKEN_PERMANENT, $service, $admin->id, context_system::instance());
-    }
+    $token = $token = external_generate_token(EXTERNAL_TOKEN_PERMANENT, $service, $USER->id,
+     context_system::instance());
+
     return $token;
 }
 
