@@ -60,12 +60,4 @@ $capabilities = [
             'editingteacher' => CAP_ALLOW,
         ],
     ],
-    'tiny/cursive:mywritingreport' => [
-        'captype' => 'read',
-        'contextlevel' => CONTEXT_SYSTEM,
-        'archetypes' => [
-            'user' => CAP_ALLOW,
-            'editingteacher' => CAP_ALLOW,
-        ],
-    ],
 ];
