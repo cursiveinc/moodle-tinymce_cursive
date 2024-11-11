@@ -51,7 +51,7 @@ class filter_report_form extends moodleform {
             $options[$course->id] = $course->fullname;
         }
         $mform = &$this->_form;
-        $mform->addElement('select', 'coursename', 'Course', $options);
+        $mform->addElement('select', 'coursename', get_string('course', 'tiny_cursive'), $options);
         $mform->addRule('coursename', null, 'required', null, 'client');
     }
 }
