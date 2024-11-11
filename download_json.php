@@ -65,7 +65,8 @@ if ($fname) {
             echo tiny_cursive_file_stream($filerow->content);
             die();
         } else {
-            redirect(new moodle_url('/lib/editor/tiny/plugins/cursive/writing_report.php', ['userid' => $userid]), get_string('filenotfound', 'tiny_cursive'));
+            redirect(new moodle_url('/lib/editor/tiny/plugins/cursive/writing_report.php',
+            ['userid' => $userid]), get_string('filenotfound', 'tiny_cursive'));
         }
     } else {
         readfile($filename);
