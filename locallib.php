@@ -344,13 +344,12 @@ function tiny_cursive_create_token_for_user() {
 }
 
 /**
- * Method filestream
+ * Stream contents of a JSON file
  *
- * @param string $file [explicite description]
- *
- * @return string
+ * @param string $file Path to the JSON file to stream
+ * @return string Contents of the file as a string
+ * @throws moodle_exception If file access denied, invalid type, or not found
  */
-
 function tiny_cursive_file_stream($file) {
     $file = realpath($file);
     $alloweddir = realpath(dirname(__FILE__));
