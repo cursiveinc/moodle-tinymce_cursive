@@ -1625,6 +1625,9 @@ class cursive_json_func_data extends external_api {
 
         $params = ['fileid' => $vparams['fileid']];
         $rec = $DB->get_record_sql($sql, $params);
+        if (isset($rec->effort_ratio)) {
+            $rec->effort_ratio = intval(floatval($rec->effort_ratio) * 100);
+        }
 
         $sql = 'SELECT id AS fileid
                   FROM {tiny_cursive_files}
