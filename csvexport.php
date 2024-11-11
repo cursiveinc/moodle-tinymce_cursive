@@ -40,11 +40,7 @@ if ($moduleid != 0) {
     $context = context_module::instance($cmid);
 }
 
-$haseditcapability = has_capability('tiny/cursive:view', $context);
-
-if (!$haseditcapability) {
-    return redirect(new moodle_url('/course/index.php'), get_string('warning', 'tiny_cursive'));
-}
+require_capability('tiny/cursive:view', $context);
 
 global $CFG, $DB, $OUTPUT;
 $report = [];

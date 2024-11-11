@@ -78,7 +78,7 @@ class tiny_cursive_renderer extends plugin_renderer_base {
             $filepath = $filep;
             $row = [];
             $row[] = $user->fileid;
-            $row[] = $user->firstname . ' ' . $user->lastname ?? '';
+            $row[] = fullname($user);
             $row[] = $user->email;
             $row[] = $getmodulename->name;
             $row[] = date("l jS \of F Y h:i:s A", $user->timemodified);
@@ -125,7 +125,7 @@ class tiny_cursive_renderer extends plugin_renderer_base {
         require_once($CFG->dirroot . "/lib/editor/tiny/plugins/cursive/lib.php");
         $courseid = optional_param('courseid', 0, PARAM_INT);
 
-        echo get_string('total_word', 'tiny_cursive') . " $userprofile->word_count</br>";
+        echo get_string('total_words', 'tiny_cursive') . " $userprofile->word_count</br>";
         if (isset($userprofile->total_time) && $userprofile->total_time > 0) {
 
             $seconds = $userprofile->total_time;
