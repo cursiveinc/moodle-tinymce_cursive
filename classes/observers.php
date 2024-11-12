@@ -24,10 +24,6 @@
  */
 
 namespace tiny_cursive;
-defined('MOODLE_INTERNAL') || die();
-require_once($CFG->dirroot . '/config.php');
-
-
 
 /**
  * Tiny cursive plugin observer class.
@@ -41,7 +37,7 @@ class observers {
     /**
      * Tiny cursive plugin update comment observer.
      *
-     * @param $event
+     * @param \core\event\base $event The event object
      * @return void
      * @throws \dml_exception
      */
@@ -67,7 +63,7 @@ class observers {
     /**
      * Tiny cursive plugin update cursive files observer.
      *
-     * @param $event
+     * @param \core\event\base $event The event object
      * @return void
      * @throws \dml_exception
      */
@@ -99,7 +95,8 @@ class observers {
                 $fname = $userid . '_' . $resourceid . '_' . $cmid . '_attempt' . '.json';
                 $sourcefile = $dirname . $rec->filename;
                 $desfilename = $dirname . $fname;
-                $inp = file_exists($desfilename) ? file_get_contents($desfilename) : null;
+                $inp = null;
+                // $inp = file_exists($desfilename) ? file_get_contents($desfilename) : null;
                 $temparray = null;
                 if ($inp) {
                     $temparray = json_decode($inp, true);
@@ -109,7 +106,7 @@ class observers {
                     unlink($sourcefile);
                     $DB->delete_records($table, ['id' => $rec->id]);
                 } else {
-                    rename($sourcefile, $desfilename);
+                    // rename($sourcefile, $desfilename);
                     $dataobj = new \stdClass();
                     $dataobj->userid = $userid;
                     $dataobj->id = $rec->id;
@@ -210,10 +207,10 @@ class observers {
             $DB->delete_records('tiny_cursive_user_writing', ['file_id' => $file->id]);
             $DB->delete_records('tiny_cursive_writing_diff', ['file_id' => $file->id]);
 
-            $filepath = $CFG->tempdir . "/userdata/" . $file->filename;
-            if (file_exists($filepath)) {
-                unlink($filepath);
-            }
+            // $filepath = $CFG->tempdir . "/userdata/" . $file->filename;
+            // if (file_exists($filepath)) {
+            //     unlink($filepath);
+            // }
         }
     }
 }

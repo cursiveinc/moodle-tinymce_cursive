@@ -23,27 +23,18 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
-
-require_login();
-
 /**
- * Tiny cursive plugin.
- *
- * @package tiny_cursive
- * @copyright  CTI <info@cursivetechnology.com>
- * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * tiny_cursive_renderer
  */
 class tiny_cursive_renderer extends plugin_renderer_base {
     /**
-     * timer_report
+     * Generates a timer report table with user attempt data
      *
-     * @param $users
-     * @param $courseid
-     * @param $page
-     * @param $limit
-     * @param $baseurl
+     * @param array $users Array containing user attempt data and count
+     * @param int $courseid ID of the course
+     * @param int $page Current page number for pagination
+     * @param int $limit Number of records per page
+     * @param string $baseurl Base URL for pagination links
      * @return void
      * @throws coding_exception
      * @throws dml_exception
@@ -83,11 +74,11 @@ class tiny_cursive_renderer extends plugin_renderer_base {
             $cm = $modinfo->get_cm($user->cmid);
             $getmodulename = get_coursemodule_from_id($cm?->modname, $user->cmid, 0, false, MUST_EXIST);
 
-            $filep = $CFG->tempdir . '/userdata/' . $user->filename;
-            $filepath = $filep;
+            // $filep = $CFG->tempdir . '/userdata/' . $user->filename;
+            $filepath = $user->filename;
             $row = [];
             $row[] = $user->fileid;
-            $row[] = $user->firstname . ' ' . $user->lastname ?? '';
+            $row[] = fullname($user);
             $row[] = $user->email;
             $row[] = $getmodulename->name;
             $row[] = date("l jS \of F Y h:i:s A", $user->timemodified);
@@ -116,25 +107,25 @@ class tiny_cursive_renderer extends plugin_renderer_base {
     }
 
     /**
-     * user_writing_report
+     * Generates a user writing report with analytics and download options
      *
-     * @param $users
-     * @param $userprofile
-     * @param $username
-     * @param $page
-     * @param $limit
-     * @param $baseurl
+     * @param array $users Array containing user attempt data and count
+     * @param object $userprofile User profile data including word count and time stats
+     * @param int $userid ID of the user
+     * @param int $page Current page number for pagination
+     * @param int $limit Number of records per page
+     * @param string $baseurl Base URL for pagination links
      * @return void
      * @throws coding_exception
      * @throws dml_exception
      * @throws moodle_exception
      */
-    public function user_writing_report($users, $userprofile, $userid, $page = 0, $limit = 5, $baseurl = '') {
+    public function tiny_cursive_user_writing_report($users, $userprofile, $userid, $page = 0, $limit = 5, $baseurl = '') {
         global $CFG, $DB, $USER;
         require_once($CFG->dirroot . "/lib/editor/tiny/plugins/cursive/lib.php");
         $courseid = optional_param('courseid', 0, PARAM_INT);
 
-        echo get_string('total_word', 'tiny_cursive') . " $userprofile->word_count</br>";
+        echo get_string('total_words', 'tiny_cursive') . " $userprofile->word_count</br>";
         if (isset($userprofile->total_time) && $userprofile->total_time > 0) {
 
             $seconds = $userprofile->total_time;
@@ -178,7 +169,7 @@ class tiny_cursive_renderer extends plugin_renderer_base {
         $allcoursesattributes =
             empty($courseid) ? ['value' => $allcoursesurl, 'selected' => 'selected'] : ['value' => $allcoursesurl];
         if (is_siteadmin($USER->id) || $courseid == '' || !isset($courseid) || $courseid == null) {
-            $options[] = html_writer::tag('option', 'All Courses', $allcoursesattributes);
+                $options[] = html_writer::tag('option', 'All Courses', $allcoursesattributes);
         }
         foreach ($courses as $course) {
             $courseurl = new moodle_url($baseurl, ['userid' => $userid, 'courseid' => $course->id]);
@@ -232,8 +223,8 @@ class tiny_cursive_renderer extends plugin_renderer_base {
 
             $getmodulename = $cm ? get_coursemodule_from_id($cm->modname, $user->cmid, 0, false, MUST_EXIST) : null;
 
-            $filep = "$CFG->tempdir/userdata/$user->filename";
-            $filepath = $filep;
+            // $filep = "$CFG->tempdir/userdata/$user->filename";
+            $filepath = $user->filename;
             $row   = [];
             $row[] = $getmodulename ? $getmodulename->name : '';
             $row[] = date("l jS \of F Y h:i:s A", $user->timemodified);

@@ -23,7 +23,6 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use core_external\util;
 /**
  * Enable web services in Moodle
  *
@@ -42,7 +41,6 @@ function xmldb_tiny_cursive_install() {
  */
 function enable_webservice() {
     set_config('enablewebservices', 1);
-    set_config('enablewsdocumentation', 1);
 }
 
 /**

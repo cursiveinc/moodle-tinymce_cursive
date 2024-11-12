@@ -26,8 +26,8 @@
 require(__DIR__ . '/../../../../../config.php');
 require_login();
 require_once($CFG->libdir . "/csvlib.class.php");
-
-require_once('lib.php');
+require_once(__DIR__.'/locallib.php');
+require_once(__DIR__.'/lib.php');
 
 $courseid = optional_param('courseid', 0, PARAM_INT);
 $userid = optional_param('userid', 0, PARAM_INT);
@@ -36,15 +36,11 @@ $moduleid = optional_param('moduleid', 0, PARAM_INT);
 if ($moduleid != 0) {
     $context = context_module::instance($moduleid);
 } else {
-    $cm = $DB->get_record('course_modules', ['course' => $courseid]);
-    $context = context_module::instance($cm->id);
+    $cmid = tiny_cursive_get_cmid($courseid);
+    $context = context_module::instance($cmid);
 }
 
-$haseditcapability = has_capability('tiny/cursive:view', $context);
-
-if (!$haseditcapability) {
-    return redirect(new moodle_url('/course/index.php'), get_string('warning', 'tiny_cursive'));
-}
+require_capability('tiny/cursive:view', $context);
 
 global $CFG, $DB, $OUTPUT;
 $report = [];
@@ -70,24 +66,27 @@ $params = [];
 if ($courseid != 0) {
 
     $attempts = "SELECT uf.id as fileid, u.id as usrid,
-                        u.firstname, u.lastname, u.email,uf.courseid,
-                        sum(uw.total_time_seconds) as total_time,
-                        sum(uw.key_count) as key_count,
-                        avg(uw.keys_per_minute) as keys_per_minute,
-                        sum(uw.character_count)as character_count,
-                        avg(uw.characters_per_minute) as characters_per_minute,
-                        sum(uw.word_count) as word_count,
-                        avg(uw.words_per_minute) as words_per_minute,
-                        avg(uw.backspace_percent) as backspace_percent,
-                        avg(uw.score) as score,
-                        sum(uw.copy_behavior) as copybehavior
+                        " . $DB->sql_concat('u.firstname', "' '", 'u.lastname') . " as fullname,
+                        u.email, uf.courseid,
+                        " . $DB->sql_cast_char2int('SUM(COALESCE(uw.total_time_seconds,0))') . " as total_time,
+                        " . $DB->sql_cast_char2int('SUM(COALESCE(uw.key_count,0))') . " as key_count,
+                        CAST(AVG(COALESCE(uw.keys_per_minute,0)) AS DECIMAL(10,2)) as keys_per_minute,
+                        " . $DB->sql_cast_char2int('SUM(COALESCE(uw.character_count,0))') . " as character_count,
+                        CAST(AVG(COALESCE(uw.characters_per_minute,0)) AS DECIMAL(10,2)) as characters_per_minute,
+                        " . $DB->sql_cast_char2int('SUM(COALESCE(uw.word_count,0))') . " as word_count,
+                        CAST(AVG(COALESCE(uw.words_per_minute,0)) AS DECIMAL(10,2)) as words_per_minute,
+                        CAST(AVG(COALESCE(uw.backspace_percent,0)) AS DECIMAL(10,2)) as backspace_percent,
+                        CAST(AVG(COALESCE(uw.score,0)) AS DECIMAL(10,2)) as score,
+                        " . $DB->sql_cast_char2int('SUM(COALESCE(uw.copy_behavior,0))') . " as copybehavior
                   FROM {tiny_cursive_files} uf
-            INNER JOIN {user} u ON uf.userid =u.id
+                  JOIN {user} u ON u.id = uf.userid
              LEFT JOIN {tiny_cursive_user_writing} uw ON uw.file_id = uf.id
-                 WHERE uf.userid!=1 ";
+                 WHERE uf.userid != :adminid";
+
+    $params['adminid'] = 1;
 
     if ($userid != 0) {
-        $attempts .= " AND  uf.userid = :userid";
+        $attempts .= " AND uf.userid = :userid";
         $params['userid'] = $userid;
     }
     if ($courseid != 0) {
@@ -96,15 +95,16 @@ if ($courseid != 0) {
     }
 
     if ($moduleid != 0) {
-        $attempts .= "  AND uf.cmid = :moduleid";
+        $attempts .= " AND uf.cmid = :moduleid";
         $params['moduleid'] = $moduleid;
     }
-    $attempts .= " GROUP BY uf.userid;";
+    $attempts .= " GROUP BY uf.id, u.id, u.email, uf.courseid";
     $ress = $DB->get_records_sql($attempts, $params);
+
     foreach ($ress as $key => $res) {
         if ($res != null) {
             $userrow = [
-                $res->firstname . ' ' . $res->lastname,
+                $res->fullname,
                 $res->email,
                 $res->courseid,
                 $res->total_time,

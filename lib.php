@@ -22,7 +22,6 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 /**
  * Given an array with a file path, it returns the itemid and the filepath for the defined filearea.
  *
@@ -119,11 +118,11 @@ function tiny_cursive_extend_navigation(global_navigation $navigation) {
 }
 
 /**
- * tiny_cursive_myprofile_navigation
+ * Add a node to the myprofile navigation tree for writing reports.
  *
- * @param \core_user\output\myprofile\tree $tree
- * @param $user
- * @param $course
+ * @param \core_user\output\myprofile\tree $tree Navigation tree to add node to
+ * @param stdClass $user The user object
+ * @param stdClass $course The course object
  * @return void
  * @throws coding_exception
  * @throws moodle_exception
@@ -151,14 +150,18 @@ function tiny_cursive_myprofile_navigation(core_user\output\myprofile\tree $tree
 }
 
 /**
- * upload_multipart_record
+ * Uploads a file record using multipart form data
  *
- * @param $filerecord
- * @param $filenamewithfullpath
- * @return bool|string
+ * @param object $filerecord The file record object containing metadata
+ * @param string $filenamewithfullpath Full path to the file to upload
+ * @param string $wstoken Web service token for authentication
+ * @param string $answertext Original submission text
+ * @return bool|string Returns response from server or false on failure
  * @throws dml_exception
  */
 function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath, $wstoken, $answertext) {
+    global $CFG;
+    require_once($CFG->dirroot . '/lib/filelib.php');
     $moodleurl = get_config('tiny_cursive', 'host_url');
     $result = '';
     try {
@@ -167,61 +170,64 @@ function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath
         $filetosend = '';
 
         // Check if file exists or create one from base64 content.
-        if (file_exists($filenamewithfullpath)) {
-            // Check if file size is within the limit.
-            if (filesize($filenamewithfullpath) > 16 * 1024 * 1024) {
-                throw new Exception("File exceeds the 16MB size limit.");
-            }
-            // Use the file directly.
-            $filetosend = new CURLFILE($filenamewithfullpath);
-        } else {
+        // if (file_exists($filenamewithfullpath)) {
+        // Check if file size is within the limit.
+        // if (filesize($filenamewithfullpath) > 16 * 1024 * 1024) {
+        // throw new Exception("File exceeds the 16MB size limit.");
+        // }
+        // Use the file directly.
+        // $filetosend = new CURLFILE($filenamewithfullpath);
+        // } else {
             // Save base64 decoded content to a temporary JSON file.
             $tempfilepath = tempnam(sys_get_temp_dir(), 'upload');
-            $filecontent = base64_decode($filerecord->content);
-            $jsoncontent = json_decode($filecontent, true);
+            // $filecontent = base64_decode($filerecord->content);
+        $jsoncontent = json_decode($filerecord->content, true);
 
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new Exception("Invalid JSON content in file.");
-            }
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new Exception("Invalid JSON content in file.");
+        }
             file_put_contents($tempfilepath, json_encode($jsoncontent));
             $filetosend = new CURLFILE($tempfilepath, 'application/json', 'uploaded.json');
 
             // Ensure the temporary file does not exceed the size limit.
-            if (filesize($tempfilepath) > 16 * 1024 * 1024) {
-                unlink($tempfilepath);
-                throw new Exception("File exceeds the 16MB size limit.");
-            }
+        if (filesize($tempfilepath) > 16 * 1024 * 1024) {
+            unlink($tempfilepath);
+            throw new Exception("File exceeds the 16MB size limit.");
         }
+        // }
 
         echo $remoteurl;
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $remoteurl);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, [
+
+        $curl = new curl();
+        $postdata = [
             'file' => $filetosend,
             'resource_id' => $filerecord->id,
             'person_id' => $filerecord->userid,
             'ws_token' => $wstoken,
             'originalsubmission' => $answertext,
-        ]);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        ];
+
+        $headers = [
             'Authorization: Bearer ' . $token,
-            'X-Moodle-Url:' . $moodleurl,
+            'X-Moodle-Url: ' . $moodleurl,
             'Content-Type: multipart/form-data',
+        ];
+
+        $result = $curl->post($remoteurl, $postdata, [
+            'CURLOPT_HTTPHEADER' => $headers,
+            'CURLOPT_RETURNTRANSFER' => true,
         ]);
 
-        $result = curl_exec($ch);
-        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $httpcode = $curl->get_info()['http_code'];
 
         if ($result === false) {
             echo "File not found: " . $filenamewithfullpath . "\n";
-            echo "cURL Error: " . curl_error($ch) . "\n";
+            echo "cURL Error: " . $curl->error . "\n";
         } else {
-            echo "HTTP Status Code: " . $httpcode . "\n";
+            echo "\nHTTP Status Code: " . $httpcode . "\n";
             echo "File Id: " . $filerecord->id . "\n";
         }
 
-        curl_close($ch);
         // Remove the temporary file if it was created.
         if (isset($tempfilepath) && file_exists($tempfilepath)) {
             unlink($tempfilepath);
@@ -234,11 +240,11 @@ function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath
 }
 
 /**
- * file_urlcreate
+ * Creates a URL for a file in the tiny_cursive file area
  *
- * @param $context
- * @param $user
- * @return false|string
+ * @param \context $context The context object
+ * @param stdClass $user The user object containing fileid
+ * @return string|false Returns the download URL for the file, or false if no file found
  * @throws coding_exception
  */
 function tiny_cursive_file_urlcreate($context, $user) {
@@ -267,16 +273,15 @@ function tiny_cursive_file_urlcreate($context, $user) {
 }
 
 /**
- * Method tiny_cursive_get_user_essay_quiz_responses
+ * Gets the essay quiz responses for a specific user
  *
- * @param $userid [explicite description]
- * @param $courseid [explicite description]
- * @param $resourceid [explicite description]
- * @param $modulename [explicite description]
- * @param $cmid [explicite description]
- * @param $questionid [explicite description]
- *
- * @return string
+ * @param int $userid The ID of the user
+ * @param int $courseid The ID of the course
+ * @param int $resourceid The ID of the quiz attempt
+ * @param string $modulename The name of the module ('quiz')
+ * @param int $cmid The course module ID
+ * @param int $questionid The ID of the essay question
+ * @return string The response summary text for the essay question
  */
 function tiny_cursive_get_user_essay_quiz_responses($userid, $courseid, $resourceid, $modulename, $cmid, $questionid) {
     global $DB;
@@ -312,14 +317,13 @@ function tiny_cursive_get_user_essay_quiz_responses($userid, $courseid, $resourc
 }
 
 /**
- * Method tiny_cursive_get_user_onlinetext_assignments
+ * Gets the online text submissions for a specific assignment
  *
- * @param $userid [explicite description]
- * @param $courseid [explicite description]
- * @param $modulename [explicite description]
- * @param $cmid [explicite description]
- *
- * @return string
+ * @param int $userid The ID of the user
+ * @param int $courseid The ID of the course
+ * @param string $modulename The name of the module ('assign')
+ * @param int $cmid The course module ID
+ * @return string The online text submission content
  */
 function tiny_cursive_get_user_onlinetext_assignments($userid, $courseid, $modulename, $cmid) {
     global $DB;
@@ -341,12 +345,12 @@ function tiny_cursive_get_user_onlinetext_assignments($userid, $courseid, $modul
 }
 
 /**
- * get_user_forum_posts
+ * Gets forum posts for a specific user
  *
- * @param $userid
- * @param $courseid
- * @param $resourceid
- * @return string
+ * @param int $userid The ID of the user
+ * @param int $courseid The ID of the course
+ * @param int $resourceid The ID of the forum post
+ * @return string The message content of the forum post
  */
 function tiny_cursive_get_user_forum_posts($userid, $courseid, $resourceid) {
     global $DB;

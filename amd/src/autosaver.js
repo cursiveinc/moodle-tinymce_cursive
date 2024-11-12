@@ -56,7 +56,7 @@ export const register = (editor) => {
             }])[0];
             return response;
         } catch (error) {
-            console.error('Error in postOne:', error);
+            window.console.error('Error in postOne:', error);
             throw error;
         }
     };
@@ -65,11 +65,10 @@ export const register = (editor) => {
         e.preventDefault();
         if (filename) {
             SyncData().then((res) => {
-                console.log(res);
+                window.console.log(res);
                 assignSubmit.off('click').click();
-            })
+            });
         } else {
-            // No filename, proceed with any other default actions
             assignSubmit.off('click').click();
         }
     });
@@ -78,11 +77,10 @@ export const register = (editor) => {
         e.preventDefault();
         if (filename) {
             SyncData().then((res) => {
-                console.log(res);
+                window.console.log(res);
                 quizSubmit.off('click').click();
-            })
+            });
         } else {
-            // No filename, proceed with any other default actions
             quizSubmit.off('click').click();
         }
     });
@@ -114,8 +112,12 @@ export const register = (editor) => {
                     let editorid = editor?.id;
                     let bodyid = jQuery('body').attr('class');
                     let classes = bodyid.split(' ');
-                    let courseid = parseInt(classes.find((classname) => { return classname.startsWith('course-') }).split('-')[1]); // Getting cmid from body classlist.
-                    let cmid = parseInt(classes.find((classname) => { return classname.startsWith('cmid-') }).split('-')[1]); // Getting cmid from body classlist.
+                    let courseid = parseInt(classes.find((classname) => {
+                        return classname.startsWith('course-');
+                    }).split('-')[1]); // Getting cmid from body classlist.
+                    let cmid = parseInt(classes.find((classname) => {
+                        return classname.startsWith('cmid-');
+                    }).split('-')[1]); // Getting cmid from body classlist.
 
 
                     if (ur.includes("attempt.php") || ur.includes("forum") || ur.includes("assign")) { } else {
@@ -163,15 +165,19 @@ export const register = (editor) => {
                 return modal;
             });
     };
-    const sendKeyEvent = (event, ed) => {
-        let ur = ed.srcElement.baseURI;
+    const sendKeyEvent = (events, eds) => {
+        let ur = eds.srcElement.baseURI;
         let parm = new URL(ur);
-        ed = ed;
-        event = event;
+        ed = eds;
+        event = events;
         let bodyid = jQuery('body').attr('id');
 
-        if (bodyid == 'page-mod-quiz-attempt' || bodyid == 'page-mod-quiz-summary' || bodyid == 'page-mod-assign-editsubmission' || bodyid == 'page-mod-forum-view' || bodyid == 'page-mod-forum-post') {
-            cmid = parseInt(classes.find((classname) => { return classname.startsWith('cmid-') }).split('-')[1]); // Getting cmid from body classlist.
+        if (bodyid == 'page-mod-quiz-attempt' || bodyid == 'page-mod-quiz-summary' ||
+            bodyid == 'page-mod-assign-editsubmission' || bodyid == 'page-mod-forum-view' ||
+            bodyid == 'page-mod-forum-post') {
+            cmid = parseInt(classes.find((classname) => {
+                return classname.startsWith('cmid-');
+            }).split('-')[1]); // Getting cmid from body classlist.
         }
 
         if (ur.includes("attempt.php") || ur.includes("forum") || ur.includes("assign")) { } else {
@@ -197,15 +203,15 @@ export const register = (editor) => {
         if (ur.includes("attempt")) {
             modulename = "quiz";
         }
-        // console.log(courseid,userid,host);
+
         filename = `${userid}_${recourceId}_${cmid}_${modulename}_attempt`;
-        // console.log(filename);
+
         if (modulename === 'quiz') {
             questionid = editorid.split(':')[1].split('_')[0];
             filename = `${userid}_${recourceId}_${cmid}_${questionid}_${modulename}_attempt`;
-            // console.log(editorid);
+
         }
-        // console.log(filename,cmid,classes);
+
         if (localStorage.getItem(filename)) {
 
             let data = JSON.parse(localStorage.getItem(filename));
@@ -235,15 +241,6 @@ export const register = (editor) => {
             localStorage.setItem(filename, JSON.stringify(data));
         }
 
-        // postOne('cursive_json', {
-        //     key: ed.key,
-        //     event: event,
-        //     keyCode: ed.keyCode,
-        //     resourceId: recourceId,
-        //     cmid: cmid,
-        //     modulename: modulename,
-        //     editorid: editorid ? editorid : ""
-        // });
     };
     editor.on('keyUp', (editor) => {
         sendKeyEvent("keyUp", editor);
@@ -268,6 +265,14 @@ export const register = (editor) => {
         courseid = userdata.courseid;
     });
 
+    /**
+ * Synchronizes data from localStorage to server
+ * @async
+ * @function SyncData
+ * @description Retrieves stored keypress data from localStorage and sends it to server
+ * @returns {Promise} Returns response from server if data exists and is successfully sent
+ * @throws {Error} Logs error to console if data submission fails
+ */
     async function SyncData() {
 
         let data = localStorage.getItem(filename);
@@ -288,12 +293,12 @@ export const register = (editor) => {
                     json_data: data,
                 });
             } catch (error) {
-                console.error('Error submitting data:', error);
+                window.console.error('Error submitting data:', error);
             }
         }
     }
 
-    window.addEventListener('unload', (e) => {
+    window.addEventListener('unload', () => {
         SyncData();
     });
 

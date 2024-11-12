@@ -52,7 +52,7 @@ define([], function() {
     return {
         setUserId: function(id,hostadd,cid) {
             userId = id;
-            host = hostadd,
+            host = hostadd;
             courseid = cid;
         },
         getUserId: function() {
