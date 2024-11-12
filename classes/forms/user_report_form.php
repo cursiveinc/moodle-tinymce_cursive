@@ -23,8 +23,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
-require_once($CFG->libdir . '/formslib.php');
+namespace tiny_cursive\forms;
+use moodleform;
 
 /**
  * Tiny cursive plugin.
@@ -34,7 +34,7 @@ require_once($CFG->libdir . '/formslib.php');
  * @author eLearningstack
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class userreportform extends moodleform {
+class user_report_form extends moodleform {
     /**
      * Tiny cursive plugin user report form.
      */
@@ -137,16 +137,16 @@ class userreportform extends moodleform {
         $udetail[0] = get_string('alluser', 'tiny_cursive');
 
         if (!empty($courseid)) {
-            $sql = "SELECT ue.id, u.id AS userid, u.firstname, u.lastname
+            $sql = "SELECT ue.id, u.id AS userid, u.*
                       FROM {enrol} e
-                INNER JOIN {user_enrolments} ue ON e.id = ue.enrolid
-                INNER JOIN {user} u ON u.id = ue.userid
+                      JOIN {user_enrolments} ue ON e.id = ue.enrolid
+                      JOIN {user} u ON u.id = ue.userid
                      WHERE e.courseid = :courseid
                            AND u.id != 1";
             $users = $DB->get_records_sql($sql, ['courseid' => $courseid]);
 
             foreach ($users as $user) {
-                $udetail[$user->userid] = $user->firstname . ' ' . $user->lastname;
+                $udetail[$user->userid] = fullname($user);
             }
         }
 

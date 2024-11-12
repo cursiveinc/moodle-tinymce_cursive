@@ -21,7 +21,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 import MyModal from "./analytic_modal";
-import { call as getContent } from "core/ajax";
+import {call as getContent} from "core/ajax";
 import $ from 'jquery';
 import * as Str from 'core/str';
 
@@ -36,7 +36,7 @@ export default class AnalyticEvents {
                 $('#content' + userid + ' .table tbody tr:first-child td:nth-child(2)').html(authIcon);
                 modal.show();
             }).catch(error => {
-                console.error("Failed to create modal:", error);
+                window.window.console.error("Failed to create modal:", error);
             });
         });
     }
@@ -58,7 +58,7 @@ export default class AnalyticEvents {
                 $('#content' + userid + ' .table tbody tr:first-child td:nth-child(2)').html(authIcon);
 
             }).fail(function (error) {
-                console.error("Failed to render template:", error);
+                window.console.error("Failed to render template:", error);
             });
         });
     }
@@ -95,8 +95,8 @@ export default class AnalyticEvents {
 
                     // Fetch the dynamic strings
                     Str.get_strings([
-                        {key: 'original_text', component: 'tiny_cursive'},
-                        {key: 'editspastesai', component: 'tiny_cursive'}
+                        { key: 'original_text', component: 'tiny_cursive' },
+                        { key: 'editspastesai', component: 'tiny_cursive' }
                     ]).done(strings => {
                         const originalTextString = strings[0];
                         const editsPastesAIString = strings[1];
@@ -126,7 +126,7 @@ export default class AnalyticEvents {
                         contents.append($legend, textBlock2);
                         $('#content' + userid).html(contents); // Update content
                     }).fail(error => {
-                        console.error("Failed to load language strings:", error);
+                        window.console.error("Failed to load language strings:", error);
                         $('#content' + userid).html(nodata);
                     });
                 } else {
@@ -151,8 +151,10 @@ export default class AnalyticEvents {
                 replayInstances[userid].stopReplay();
             }
             if (questionid) {
+                // eslint-disable-next-line
                 video_playback(userid, filepath, questionid);
             } else {
+                // eslint-disable-next-line
                 video_playback(userid, filepath);
             }
         });

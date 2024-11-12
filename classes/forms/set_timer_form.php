@@ -22,9 +22,8 @@
  * @author eLearningstack
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-defined('MOODLE_INTERNAL') || die;
-require_once("$CFG->libdir/formslib.php");
+namespace tiny_cursive\forms;
+use moodleform;
 
 /**
  * Tiny cursive plugin.
@@ -34,7 +33,7 @@ require_once("$CFG->libdir/formslib.php");
  * @author eLearningstack
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class settimerform extends moodleform {
+class set_timer_form extends moodleform {
     /**
      * Tiny cursive plugin settings form.
      */
@@ -46,7 +45,7 @@ class settimerform extends moodleform {
         $mform =& $this->_form;
         $options = ['multiple' => false, 'includefrontpage' => false];
         $mform->addElement('course', 'courseid', get_string('coursename', 'tiny_cursive'), $options);
-        $mform->addRule('courseid', get_string('field_required', 'tiny_cursive'), 'required', null, 'client');
+        $mform->addRule('courseid', get_string('field_require', 'tiny_cursive'), 'required', null, 'client');
 
         $select = $mform->addElement('select', 'quizname', get_string('quizname', 'tiny_cursive'),
             [get_string('selectquiz', 'tiny_cursive')], $attributes);
@@ -58,7 +57,7 @@ class settimerform extends moodleform {
         $radioarray = [];
         $radioarray[] = $mform->createElement('radio', 'time', '', get_string('stndtime', 'tiny_cursive'), 1);
         $radioarray[] = $mform->createElement('radio', 'time', '', get_string('queswise', 'tiny_cursive'), 2);
-        $mform->addGroup($radioarray, 'radio', get_string('selecttime', 'tiny_cursive'), [], false);
+        $mform->addGroup($radioarray, 'radio', get_string('select_time', 'tiny_cursive'), [], false);
 
         $mform->addElement('text', 'stdtime', get_string('enter_time', 'tiny_cursive'), 'maxlength="4" size="25" ');
         $mform->setType('stdtime', PARAM_NOTAGS);

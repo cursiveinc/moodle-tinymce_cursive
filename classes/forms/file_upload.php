@@ -22,12 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace editor_tiny\cursive\forms;
+namespace tiny_cursive\forms;
 use moodleform;
-
-defined('MOODLE_INTERNAL') || die;
-
-require_once($CFG->libdir . '/formslib.php');
 
 /**
  * Form for file upload in Tiny cursive plugin.
@@ -36,7 +32,7 @@ require_once($CFG->libdir . '/formslib.php');
  * @copyright CTI <info@cursivetechnology.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class FileUpload extends moodleform {
+class file_upload extends moodleform {
 
     /**
      * Form definition.

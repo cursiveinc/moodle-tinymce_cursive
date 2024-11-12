@@ -69,7 +69,7 @@ define(['core/str'], function (Str) {
         path.setAttribute("fill", "#306BB2");
         path.setAttribute("stroke", "#306BB2");
 
-        // Append the path to the SVG
+        // Append the path to the SVG.
         svg.appendChild(path);
 
         const icon = document.createElement('i');
@@ -79,8 +79,11 @@ define(['core/str'], function (Str) {
         const textNode = document.createElement('span');
         Str.get_string('analytics', 'tiny_cursive').then(analyticsString => {
             textNode.textContent = analyticsString;
+            return true;
+        }).catch(error => {
+            window.console.error('Error fetching string:', error);
         });
-        // textNode.textContent = 'Analytics';
+
         anchor.appendChild(icon);
         anchor.appendChild(textNode);
 
