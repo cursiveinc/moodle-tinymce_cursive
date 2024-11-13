@@ -69,7 +69,6 @@ $string['filenotfound'] = 'File not found!';
 $string['fulname'] = 'Full Name';
 $string['generate'] = 'Generate';
 $string['host_domain'] = 'You Host domain.';
-$string['illegalfilename'] = "Illegal Filename";
 $string['invaliddirectory'] = 'The directory does not exist or is invalid.';
 $string['invalidparameters'] = 'Invalid parameters have been given.';
 $string['last_modified'] = 'Last modified';

@@ -50,27 +50,26 @@ header('X-Frame-Options: DENY');
 header("Content-Description: File Transfer");
 header("Content-Type: application/octet-stream");
 header("Content-Disposition: attachment; filename=\"" . basename($fname) . "\"");
-flush();
 
 if ($fname) {
     $filename = $dirname . basename($fname);
     $realpath = realpath($filename);
-    if ($realpath === false || strpos($realpath, realpath($dirname)) !== 0) {
-        throw new moodle_exception('illegalfilename', 'tiny_cursive');
-    }
 
     if (!file_exists($filename)) {
         $filerow = $DB->get_record('tiny_cursive_files', ['filename' => $fname]);
         if ($filerow && $filerow->content) {
-            echo tiny_cursive_file_stream($filerow->content);
+            echo base64_decode($filerow->content);
             die();
         } else {
-            redirect(new moodle_url('/lib/editor/tiny/plugins/cursive/writing_report.php',
-            ['userid' => $userid]), get_string('filenotfound', 'tiny_cursive'));
+            redirect(get_local_referer(false), get_string('filenotfound', 'tiny_cursive'));
         }
     } else {
-        readfile($filename);
-        die();
+        if ($realpath === false || strpos($realpath, realpath($dirname)) !== 0) {
+            redirect(get_local_referer(false), get_string('filenotfound', 'tiny_cursive'));
+        } else {
+            readfile($filename);
+            die();
+        }
     }
 } else {
     $filename = $dirname . clean_filename($userid . '_' . $resourceid . '_' . $cmid . '_attempt.json');
