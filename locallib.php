@@ -351,24 +351,24 @@ function tiny_cursive_create_token_for_user() {
  * @throws moodle_exception If file access denied, invalid type, or not found
  */
 function tiny_cursive_file_stream($file) {
+    global $CFG;
     $file = realpath($file);
-    $alloweddir = realpath(dirname(__FILE__));
+    $alloweddir = realpath($CFG->tempdir . '/userdata/');
+
     if ($file === false || strpos($file, $alloweddir) !== 0) {
-        throw new moodle_exception('accessdenied', 'admin');
+        redirect(get_local_referer(false), get_string('filenotfound', 'tiny_cursive'));
     }
 
     if (file_exists($file)) {
         $mimetype = mime_content_type($file);
         $allowedtypes = ['application/json'];
         if (!in_array($mimetype, $allowedtypes) || pathinfo($file, PATHINFO_EXTENSION) !== 'json') {
-            throw new moodle_exception('invalidfiletype', 'error');
+            redirect(get_local_referer(false), get_string('invalidfiletype', 'error'));
         }
         $inp = file_get_contents($file);
         if ($inp === false) {
-            throw new moodle_exception('errorreadingfile', 'error');
+            redirect(get_local_referer(false), get_string('errorreadingfile', 'error'));
         }
-    } else {
-        throw new moodle_exception('filenotfound', 'error');
     }
 
     return $inp;
