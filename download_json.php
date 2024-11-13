@@ -51,8 +51,7 @@ flush();
 
 $filerow = $DB->get_record('tiny_cursive_files', ['filename' => $fname]);
 if (!$fname || !$filerow || !$filerow->content) {
-    redirect(new moodle_url('/lib/editor/tiny/plugins/cursive/writing_report.php',
-        ['userid' => $userid]), get_string('filenotfound', 'tiny_cursive'));
+    redirect(get_local_referer(false), get_string('filenotfound', 'tiny_cursive'));
 }
 
 echo $filerow->content;

@@ -659,7 +659,7 @@ class cursive_json_func_data extends external_api {
             ];
             $table = 'tiny_cursive_comments';
             $recs = $DB->get_records($table, $conditions);
-            $sql = 'SELECT filename, userid, id AS file_id
+            $sql = 'SELECT filename, content, userid, id AS file_id
                       FROM {tiny_cursive_files}
                      WHERE resourceid = :resourceid AND cmid = :cmid
                            AND modulename = :modulename AND questionid=:questionid AND userid = :userid ';
@@ -675,6 +675,7 @@ class cursive_json_func_data extends external_api {
             );
             // $filep = $CFG->tempdir . "/userdata/" . $filename->filename;
             $data['filename'] = $filename->filename;
+            $data['content'] = $filename->content;
             $data['questionid'] = $params['questionid'];
 
             if ($data['filename']) {
@@ -726,7 +727,7 @@ class cursive_json_func_data extends external_api {
 
             $attempts = "SELECT  uw.total_time_seconds ,uw.word_count ,uw.words_per_minute,
                                  uw.backspace_percent,uw.score,uw.copy_behavior,uf.resourceid,
-                                 uf.modulename,uf.userid, uf.filename
+                                 uf.modulename,uf.userid, uf.filename, uf.content,
                            FROM {tiny_cursive_user_writing} uw
                            JOIN {tiny_cursive_files} uf ON uw.file_id = uf.id
                           WHERE uf.resourceid = :id
@@ -751,6 +752,7 @@ class cursive_json_func_data extends external_api {
 
                 // $filep = $CFG->tempdir . "/userdata/" . $filename->filename;
                 $data['filename'] = $filename->filename;
+                $data['content'] = $filename->content;
 
             }
 
@@ -828,10 +830,10 @@ class cursive_json_func_data extends external_api {
 
         $attempts = "SELECT uw.total_time_seconds, uw.word_count, uw.words_per_minute,
                             uw.backspace_percent, uw.score, uw.copy_behavior, uf.resourceid,
-                            uf.modulename, uf.userid, uf.filename, uw.file_id,
+                            uf.modulename, uf.userid, uf.filename, uw.file_id, uf.content,
                             diff.meta AS effort_ratio
                       FROM {tiny_cursive_user_writing} uw
-                INNER JOIN {tiny_cursive_files} uf ON uw.file_id = uf.id
+                      JOIN {tiny_cursive_files} uf ON uw.file_id = uf.id
                  LEFT JOIN {tiny_cursive_writing_diff} diff ON uw.file_id = diff.file_id
                      WHERE uf.resourceid = :id
                            AND uf.cmid = :cmid
@@ -845,7 +847,7 @@ class cursive_json_func_data extends external_api {
         $data['first_file'] = 0;
 
         if (!isset($data['filename'])) {
-            $sql = 'SELECT filename,userid
+            $sql = 'SELECT filename,userid, content
                       FROM {tiny_cursive_files}
                      WHERE resourceid = :resourceid
                             AND cmid = :cmid
@@ -858,6 +860,7 @@ class cursive_json_func_data extends external_api {
             // $filep = $CFG->tempdir . "/userdata/" . $filename->filename;
 
             $data['filename'] = $filename->filename;
+            $data['content'] = $filename->content;
 
             $sql = 'SELECT *
                       FROM {tiny_cursive_files}
@@ -1160,7 +1163,7 @@ class cursive_json_func_data extends external_api {
 
         $attempts = "SELECT uw.total_time_seconds, uw.word_count, uw.words_per_minute,
                             uw.backspace_percent, uw.score, uw.copy_behavior, uf.resourceid,
-                            uf.modulename, uf.userid, uw.file_id, uf.filename,
+                            uf.modulename, uf.userid, uw.file_id, uf.filename, uf.content,
                             diff.meta AS effort_ratio
                        FROM {tiny_cursive_user_writing} uw
                        JOIN {tiny_cursive_files} uf ON uw.file_id = uf.id
@@ -1179,7 +1182,7 @@ class cursive_json_func_data extends external_api {
             );
         $data = (array) $data;
         if (!isset($data['filename'])) {
-            $sql = 'SELECT filename, id, userid
+            $sql = 'SELECT filename, content, id, userid
                       FROM {tiny_cursive_files}
                      WHERE userid = :userid
                             AND cmid = :cmid
@@ -1190,6 +1193,7 @@ class cursive_json_func_data extends external_api {
             );
 
             $data['filename'] = $filename->filename;
+            $data['content'] = $filename->content;
             $data['file_id'] = $filename->id;
             $data['userid'] = $filename->userid;
         }

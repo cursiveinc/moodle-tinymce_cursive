@@ -64,7 +64,7 @@
                    u.firstname, u.lastname, u.email, uf.courseid,
                    u.firstnamephonetic, u.lastnamephonetic, u.middlename, u.alternatename,
                    uf.id AS attemptid, uf.timemodified, uf.cmid AS cmid,
-                   uf.filename, uw.total_time_seconds AS total_time_seconds,
+                   uf.filename, uf.content, uw.total_time_seconds AS total_time_seconds,
                    uw.key_count AS key_count, uw.keys_per_minute AS keys_per_minute,
                    uw.character_count AS character_count,
                    uw.characters_per_minute AS characters_per_minute,
@@ -238,7 +238,7 @@ function tiny_cursive_get_user_submissions_data($resourceid, $modulename, $cmid,
     $userid = $resourceid;
     $sql = "SELECT uw.total_time_seconds, uw.word_count, uw.words_per_minute,
                    uw.backspace_percent, uw.score, uw.copy_behavior, uf.resourceid,
-                   uf.modulename, uf.userid, uw.file_id, uf.filename,
+                   uf.modulename, uf.userid, uw.file_id, uf.filename, uf.content,
                    diff.meta AS effort_ratio
               FROM {tiny_cursive_user_writing} uw
               JOIN {tiny_cursive_files} uf ON uw.file_id = uf.id
@@ -265,7 +265,7 @@ function tiny_cursive_get_user_submissions_data($resourceid, $modulename, $cmid,
     $data = (array)$data;
 
     if (!isset($data['filename'])) {
-        $sql = 'SELECT id as fileid, userid, filename
+        $sql = 'SELECT id as fileid, userid, filename, content
                   FROM {tiny_cursive_files}
                  WHERE userid = :userid
                    AND cmid = :cmid
@@ -274,12 +274,13 @@ function tiny_cursive_get_user_submissions_data($resourceid, $modulename, $cmid,
 
         if ($filename) {
             // $filep = $CFG->tempdir . "/userdata/" . $filename->filename;
-            $data['filename'] =$filename->filename;
+            $data['filename'] = $filename->filename;
             $data['file_id'] = $filename->fileid ?? '';
+            $data['content'] = $filename->content ?? '';
         }
-    } 
+    }
     // else {
-    //     $data['filename'] = $CFG->tempdir . "/userdata/" . $data['filename'];
+    // $data['filename'] = $CFG->tempdir . "/userdata/" . $data['filename'];
     // }
 
     if ($data['filename']) {
@@ -295,6 +296,7 @@ function tiny_cursive_get_user_submissions_data($resourceid, $modulename, $cmid,
             $data['first_file'] = 0;
         }
     }
+
     $res = $data;
 
     $response = [
@@ -342,4 +344,40 @@ function tiny_cursive_create_token_for_user() {
         $token = util::generate_token(EXTERNAL_TOKEN_PERMANENT, $service, $admin->id, context_system::instance());
     }
     return $token;
+}
+
+/**
+ * Renders a table displaying user data with export functionality
+ *
+ * @param array $users Array of user data to display in the table
+ * @param object $renderer The renderer object used to display the table
+ * @param int $courseid The course ID to filter results
+ * @param int $page Current page number for pagination
+ * @param int $limit Number of records per page
+ * @param string $linkurl Base URL for pagination links
+ * @param int $moduleid The module ID to filter results
+ * @param int $userid The user ID to filter results
+ * @return void
+ */
+function tiny_cursive_render_user_table($users, $renderer, $courseid, $page, $limit, $linkurl, $moduleid, $userid) {
+
+    // Prepare the URL for the link.
+    $url = new moodle_url('/lib/editor/tiny/plugins/cursive/csvexport.php', [
+        'courseid' => $courseid,
+        'moduleid' => $moduleid,
+        'userid' => $userid,
+    ]);
+    // Prepare the link text.
+    $linktext = get_string('download_csv', 'tiny_cursive');
+    // Prepare the attributes for the link.
+    $attributes = [
+        'target' => '_blank',
+        'id' => 'export',
+        'role' => 'button',
+        'class' => 'btn btn-primary mb-4',
+        'style' => 'margin-right:50px;',
+    ];
+    // Generate the link using html_writer::link.
+    echo html_writer::link($url, $linktext, $attributes);
+    echo $renderer->timer_report($users, $courseid, $page, $limit, $linkurl);
 }

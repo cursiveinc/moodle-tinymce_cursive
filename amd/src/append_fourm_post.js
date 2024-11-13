@@ -88,8 +88,8 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                     var data = JSON.parse(json);
 
                     var filepath = '';
-                    if (data.data.filename) {
-                        var filepath = data.data.filename;
+                    if (data.data.content) {
+                        var filepath = data.data.content;
                     }
                     if (filepath) {
 

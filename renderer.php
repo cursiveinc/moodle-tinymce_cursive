@@ -75,7 +75,7 @@ class tiny_cursive_renderer extends plugin_renderer_base {
             $getmodulename = get_coursemodule_from_id($cm?->modname, $user->cmid, 0, false, MUST_EXIST);
 
             // $filep = $CFG->tempdir . '/userdata/' . $user->filename;
-            $filepath = $user->filename;
+            $filepath = base64_encode($user->content);
             $row = [];
             $row[] = $user->fileid;
             $row[] = fullname($user);
@@ -224,7 +224,7 @@ class tiny_cursive_renderer extends plugin_renderer_base {
             $getmodulename = $cm ? get_coursemodule_from_id($cm->modname, $user->cmid, 0, false, MUST_EXIST) : null;
 
             // $filep = "$CFG->tempdir/userdata/$user->filename";
-            $filepath = $user->filename;
+            $filepath = base64_encode($user->content);
             $row   = [];
             $row[] = $getmodulename ? $getmodulename->name : '';
             $row[] = date("l jS \of F Y h:i:s A", $user->timemodified);
