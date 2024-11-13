@@ -112,8 +112,8 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                             content.parent().parent().parent().find('.qtext').append(tt + '</div></div>');
                         }
                         var filepath = '';
-                        if (data.data.filename) {
-                            filepath = data.data.filename;
+                        if (data.data.content) {
+                            filepath = data.data.content;
                         }
                         let analytic_button_div = document.createElement('div');
                         analytic_button_div.classList.add('text-center', 'mt-2');

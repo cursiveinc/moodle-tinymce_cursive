@@ -92,9 +92,10 @@ define([
                         try {
                             com[0].done(function (json) {
                                 var data = JSON.parse(json);
+                                console.log(data);
                                 var filepath = '';
-                                if (data.res.filename) {
-                                    filepath = data.res.filename;
+                                if (data.res.content) {
+                                    filepath = data.res.content;
                                 }
                                 // Get Module Name from element.
                                 let element = document.querySelector('.page-header-headings h1');

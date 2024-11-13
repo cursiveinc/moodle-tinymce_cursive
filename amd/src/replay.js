@@ -40,29 +40,32 @@ export default class Replay {
 
             this.constructController(controllerId);
         }
-        this.loadJSON(filePath)
-            .then((data) => {
-                if (data.status) {
-                    var val = JSON.parse(data.data);
-                    this.logData = val;
-
-                    if ("data" in this.logData) {
-                        this.logData = this.logData['data'];
-                    }
-                    if ("payload" in this.logData) {
-                        this.logData = this.logData['payload'];
-                    }
-                    this.startReplay();
-                } else {
-                    templates.render('tiny_cursive/no_submission').then(html => {
-                        let updatedHtml = html.replace('No Submission', "Something Went Wrong! or File Not Found!");
-                        $('.tiny_cursive').html(updatedHtml);
-                    });
-                }
-            })
-            .catch(error => {
-                throw new Error('Error loading JSON file: ' + error.message);
-            });
+        this.loadJSON(filePath);
+        // .then((data) => {
+        //     if (data.status) {
+        //         var val = JSON.parse(data.data);
+        //         this.logData = val;
+        //         if ("data" in this.logData) {
+        //             this.logData = this.logData['data'];
+        //         }
+        //         if ("payload" in this.logData) {
+        //             this.logData = this.logData['payload'];
+        //         }
+        //         this.startReplay();
+        //     } else {
+        //         templates.render('tiny_cursive/no_submission').then(html => {
+        //             let updatedHtml = html.replace('No Submission', "Something Went Wrong! or File Not Found!");
+        //             $('.tiny_cursive').html(updatedHtml);
+        //         });
+        //     }
+        // })
+        // .catch(error => {
+        //     templates.render('tiny_cursive/no_submission').then(html => {
+        //         let updatedHtml = html.replace('No Submission', "Something Went Wrong! or File Not Found!");
+        //         $('.tiny_cursive').html(updatedHtml);
+        //     });
+        //     window.console.error('Error loading JSON file: ' + error.message);
+        // });
     }
 
     stopReplay() {
@@ -95,16 +98,48 @@ export default class Replay {
     }
 
     loadJSON(filePath) {
-        return fetchJson([{
-            methodname: 'cursive_get_reply_json',
-            args: {
-                filepath: filePath,
-            },
-        }])[0].done(response => {
-            return response;
-        }).fail(error => { throw new Error('Error loading JSON file: ' + error.message); });
+        let filedata = this.processData(filePath);
+        if (filedata) {
+            var val = filedata;
+            this.logData = val;
+            if ("data" in this.logData) {
+                this.logData = this.logData['data'];
+            }
+            if ("payload" in this.logData) {
+                this.logData = this.logData['payload'];
+            }
+            this.startReplay();
+        } else {
+            templates.render('tiny_cursive/no_submission').then(html => {
+                let updatedHtml = html.replace('No Submission', "Something Went Wrong! or File Not Found!");
+                $('.tiny_cursive').html(updatedHtml);
+            });
+        }
+        // return fetchJson([{
+        //     methodname: 'cursive_get_reply_json',
+        //     args: {
+        //         filepath: filePath,
+        //     },
+        // }])[0].done(response => {
+        //     return response;
+        // }).fail(error => { throw new Error('Error loading JSON file: ' + error.message); });
     }
-
+    processData(filePath) {
+        try {
+            // Attempt to parse as JSON
+            return JSON.parse(filePath);
+        } catch (error) {
+            // If JSON parsing fails, try Base64 decoding
+            try {
+                const decodedData = atob(filePath);
+                return JSON.parse(decodedData); // Attempt to parse the decoded data as JSON
+            } catch (error) {
+                // Handle the error, e.g., log the error or return a default value
+                window.console.error('Error parsing data:', error);
+                return null;
+            }
+        }
+    }
     // call this to make a "start" or "start over" function
     startReplay() {
         // clear previous instances of timeout to prevent multiple running at once
