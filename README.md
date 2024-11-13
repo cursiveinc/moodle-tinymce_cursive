@@ -5,7 +5,6 @@ At Cursive Technology, Inc., we're focused on the writing process. By capturing 
 Currently, the extension captures key event data in a structured JSON file, which a teacher or administrator can download and review. This is for each use of the TinyMCE text editor by a student, sortable by course, assignment, student, and attempt. This data can be utilized with the shared Excel or Google document which provide analysis that may help determine the level of effort by a student.
 
 Premium/Subscription: Cursive's plugin is designed to interact with our ML server as a paid service. This integration is optional and adds the following capabilities: 1 identify student authorship across their submissions, 2 provide writing analytics automatically, 3 provide students a running total of their words, pages, typing speed, and assignments across their courses.
-Premium/Subscription: Cursive's plugin is designed to interact with our ML server as a paid service. This integration is optional and adds the following capabilities: 1 identify student authorship across their submissions, 2 provide writing analytics automatically, 3 provide students a running total of their words, pages, typing speed, and assignments across their courses.
 
 Ultimately, we believe in human contribution as captured through the writing process, the beautiful production of written work expressing your individual thoughts that cannot be completed by a third party nor replicated by generative AI. We're excited to work with you.
 

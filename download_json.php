@@ -24,45 +24,56 @@
  */
 
 require(__DIR__ . '/../../../../../config.php');
-require_once(__DIR__.'/locallib.php');
+require_once(__DIR__ . '/locallib.php');
 global $DB, $CFG;
 require_login();
 
 $resourceid = optional_param('resourceid', 0, PARAM_INT);
 $userid = optional_param('user_id', 0, PARAM_INT);
 $cmid = optional_param('cmid', 0, PARAM_INT);
-$fname = optional_param('fname', '', PARAM_TEXT);
+$fname = clean_param(optional_param('fname', '', PARAM_FILE), PARAM_FILE);
+
+if ($cmid <= 0 || $userid <= 0) {
+    throw new moodle_exception('invalidparameters', 'tiny_cursive');
+}
 
 $context = context_module::instance($cmid);
 require_capability('tiny/cursive:writingreport', $context);
 
-$filename = '';
 $dirname = $CFG->tempdir . '/userdata/';
+if (!is_dir($dirname) || strpos(realpath($dirname), $CFG->dataroot) !== 0) {
+    throw new moodle_exception('invaliddirectory', 'tiny_cursive');
+}
 
+header('X-Content-Type-Options: nosniff');
+header('X-Frame-Options: DENY');
 header("Content-Description: File Transfer");
 header("Content-Type: application/octet-stream");
 header("Content-Disposition: attachment; filename=\"" . basename($fname) . "\"");
 flush();
 
 if ($fname) {
-    $filename = $dirname . $fname;
+    $filename = $dirname . basename($fname);
+    $realpath = realpath($filename);
+    if ($realpath === false || strpos($realpath, realpath($dirname)) !== 0) {
+        throw new moodle_exception('illegalfilename', 'tiny_cursive');
+    }
+
     if (!file_exists($filename)) {
         $filerow = $DB->get_record('tiny_cursive_files', ['filename' => $fname]);
-        if ($filerow->content) {
-            $content = tiny_cursive_file_stream($filerow->content, $fname);
-            echo $content;
+        if ($filerow && $filerow->content) {
+            echo tiny_cursive_file_stream($filerow->content);
             die();
         } else {
-            $url = new moodle_url('/lib/editor/tiny/plugins/cursive/writing_report.php?userid=' . $userid);
-            return redirect($url, get_string('filenotfound', 'tiny_cursive'));
+            redirect(new moodle_url('/lib/editor/tiny/plugins/cursive/writing_report.php',
+            ['userid' => $userid]), get_string('filenotfound', 'tiny_cursive'));
         }
     } else {
         readfile($filename);
         die();
     }
 } else {
-    $filename = $dirname . $userid . '_' . $resourceid . '_' . $cmid . '_attempt' . '.json';
-    $content = tiny_cursive_file_stream($filename, $filename);
-    echo $content;
+    $filename = $dirname . clean_filename($userid . '_' . $resourceid . '_' . $cmid . '_attempt.json');
+    echo tiny_cursive_file_stream($filename);
     die();
 }
