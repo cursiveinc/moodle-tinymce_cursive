@@ -103,6 +103,15 @@ if ($formdata = $mform->get_data()) {
         $limit
     );
 
+    tiny_cursive_render_user_table(
+        $users,
+        $renderer,
+        $courseid,
+        $page,
+        $limit,
+        $linkurl,
+        $moduleid,
+        $userid);
 } else {
     $users = tiny_cursive_get_user_attempts_data(
         $userid,
