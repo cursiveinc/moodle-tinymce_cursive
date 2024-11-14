@@ -95,8 +95,8 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                 com[0].done(function (json) {
                     var data = JSON.parse(json);
                     var filepath = '';
-                    if (data.data.content) {
-                        filepath = data.data.content;
+                    if (data.data.filename) {
+                        filepath = data.data.filename;
                     }
 
                     if (data.usercomment != 'comments' && parseInt(showcomment)) {

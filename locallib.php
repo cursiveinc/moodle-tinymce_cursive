@@ -64,7 +64,7 @@
                    u.firstname, u.lastname, u.email, uf.courseid,
                    u.firstnamephonetic, u.lastnamephonetic, u.middlename, u.alternatename,
                    uf.id AS attemptid, uf.timemodified, uf.cmid AS cmid,
-                   uf.filename, uf.content, uw.total_time_seconds AS total_time_seconds,
+                   uf.filename, uw.total_time_seconds AS total_time_seconds,
                    uw.key_count AS key_count, uw.keys_per_minute AS keys_per_minute,
                    uw.character_count AS character_count,
                    uw.characters_per_minute AS characters_per_minute,
@@ -238,7 +238,7 @@ function tiny_cursive_get_user_submissions_data($resourceid, $modulename, $cmid,
     $userid = $resourceid;
     $sql = "SELECT uw.total_time_seconds, uw.word_count, uw.words_per_minute,
                    uw.backspace_percent, uw.score, uw.copy_behavior, uf.resourceid,
-                   uf.modulename, uf.userid, uw.file_id, uf.filename, uf.content,
+                   uf.modulename, uf.userid, uw.file_id, uf.filename,
                    diff.meta AS effort_ratio
               FROM {tiny_cursive_user_writing} uw
               JOIN {tiny_cursive_files} uf ON uw.file_id = uf.id
@@ -279,7 +279,6 @@ function tiny_cursive_get_user_submissions_data($resourceid, $modulename, $cmid,
             // $filep = $CFG->tempdir . "/userdata/" . $filename->filename;
             $data['filename'] = $filename->filename;
             $data['file_id'] = $filename->fileid ?? '';
-            $data['content'] = $filename->content ?? '';
         }
     }
     // else {

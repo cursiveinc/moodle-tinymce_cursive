@@ -179,7 +179,7 @@ function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath
         // $filetosend = new CURLFILE($filenamewithfullpath);
         // } else {
             // Save base64 decoded content to a temporary JSON file.
-            $tempfilepath = tempnam(sys_get_temp_dir(), 'upload');
+        $tempfilepath = tempnam(sys_get_temp_dir(), 'upload');
             // $filecontent = base64_decode($filerecord->content);
         $jsoncontent = json_decode($filerecord->content, true);
 

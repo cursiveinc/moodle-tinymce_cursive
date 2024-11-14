@@ -64,8 +64,7 @@ export const register = (editor) => {
     assignSubmit.on('click', async function (e) {
         e.preventDefault();
         if (filename) {
-            SyncData().then((res) => {
-                window.console.log(res);
+            SyncData().then(() => {
                 assignSubmit.off('click').click();
             });
         } else {
@@ -76,8 +75,7 @@ export const register = (editor) => {
     quizSubmit.on('click', async function (e) {
         e.preventDefault();
         if (filename) {
-            SyncData().then((res) => {
-                window.console.log(res);
+            SyncData().then(() => {
                 quizSubmit.off('click').click();
             });
         } else {
