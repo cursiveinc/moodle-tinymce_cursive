@@ -1993,4 +1993,35 @@ class cursive_json_func_data extends external_api {
     public static function write_local_to_json_returns() {
         return new external_value(PARAM_TEXT, 'filename');
     }
+
+    public static function cursive_get_config_parameters() {
+        return new external_function_parameters([
+            'courseid' => new external_value(PARAM_INT, 'course id', VALUE_DEFAULT, 0),
+            'cmid' => new external_value(PARAM_INT, 'cmid', VALUE_DEFAULT, 0),
+        ]);
+    }
+
+    public static function cursive_get_config($courseid, $cmid) {
+        global $PAGE;
+        $params = self::validate_parameters(
+            self::cursive_get_config_parameters(),
+            [
+                'courseid' => $courseid,
+                'cmid' => $cmid,
+            ]
+        );
+
+        $context = context_module::instance($params['cmid']);
+        self::validate_context($context);
+        require_capability("tiny/cursive:writingreport", $context);
+
+        $config = get_config('tiny_cursive', "cursive-".$params['courseid']);
+        return ['status' => $config];
+    }
+
+    public static function cursive_get_config_returns() {
+        return new external_single_structure([
+        'status' => new external_value(PARAM_BOOL, 'config'),
+        ]);
+    }
 }

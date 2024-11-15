@@ -27,6 +27,9 @@ namespace tiny_cursive;
 
 use context_course;
 use core\hook\output\before_footer_html_generation;
+use core_course\hook\after_form_definition;
+use core_course\hook\after_form_submission;
+
 
 /**
  * Tiny cursive plugin hook callback class.
@@ -40,12 +43,12 @@ class hook_callbacks {
     /**
      * Hook to modify the output before footer HTML is generated.
      *
-     * @param core\hook\output\before_footer_html_generation $hook
+     * @param before_footer_html_generation $hook
      */
     public static function before_footer_html_generation(before_footer_html_generation $hook) {
         global $PAGE, $COURSE, $USER, $CFG;
 
-        if (!empty($COURSE) && !during_initial_install()) {
+        if (!empty($COURSE) && !during_initial_install() && get_config('tiny_cursive', "cursive-$COURSE->id")) {
 
             $confidencethreshold = get_config('tiny_cursive', 'confidence_threshold');
             $confidencethreshold = !empty($confidencethreshold) ? floatval($confidencethreshold) : 0.65;
@@ -94,4 +97,34 @@ class hook_callbacks {
             }
         }
     }
+
+    /**
+     * Hook to modify the form after its definition.
+     *
+     * @param after_form_definition $hook The hook instance
+     */
+    public static function after_form_definition(after_form_definition $hook) {
+        global $COURSE;
+
+        $mform = $hook->mform;
+        $mform->addElement('header', 'Cursive', 'Cursive', [], [
+            'collapsed' => false
+        ]);
+
+        $mform->addElement('select', 'cursive_status', 'Cursive Status', [
+            '0' => 'Disabled',
+            '1' => 'Enabled'
+        ]);
+        $default = get_config('tiny_cursive', "cursive-$COURSE->id");
+        $mform->setDefault('cursive_status', $default);
+    }
+
+    public static function after_form_submission(after_form_submission $hook) {
+        $courseid = $hook->get_data()->id;
+        $status = $hook->get_data()->cursive_status;
+        $name = "cursive-$courseid";
+        set_config($name, $status, 'tiny_cursive');
+    }
+
+
 }

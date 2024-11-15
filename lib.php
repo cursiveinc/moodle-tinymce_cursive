@@ -88,7 +88,7 @@ function tiny_cursive_extend_navigation_course(\navigation_node $navigation, \st
 
     $url = new moodle_url($CFG->wwwroot . '/lib/editor/tiny/plugins/cursive/tiny_cursive_report.php', ['courseid' => $course->id]);
     $cmid = tiny_cursive_get_cmid($course->id);
-    if ($cmid) {
+    if ($cmid && get_config('tiny_cursive', "cursive-$course->id")) {
         $context = context_module::instance($cmid);
         $iseditingteacher = has_capability("tiny/cursive:view", $context);
 
@@ -116,6 +116,21 @@ function tiny_cursive_extend_navigation(global_navigation $navigation) {
         $home->remove();
     }
 }
+
+// function tiny_cursive_coursemodule_standard_elements($formwrapper, $mform) {
+// Call code to get examplefield from database
+// For example $existing = get_existing($coursemodule);
+// You have to write get_existing.
+// $modulename = $formwrapper->get_current()->modulename;
+
+// if ($modulename == 'assign') {
+// $mform->addElement('header', 'exampleheader', 'Cursive');
+// $mform->addElement('text', 'examplefield', 'Cursive');
+// $mform->setType('examplefield', PARAM_RAW);
+// Populate with $mform->setdefault('examplefield', $existing['examplefield']);.
+// }
+// }
+
 
 /**
  * Add a node to the myprofile navigation tree for writing reports.
