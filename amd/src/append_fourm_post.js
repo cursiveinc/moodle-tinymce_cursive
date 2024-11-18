@@ -88,8 +88,8 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                     var data = JSON.parse(json);
 
                     var filepath = '';
-                    if (data.data.content) {
-                        var filepath = data.data.content;
+                    if (data.data.filename) {
+                         filepath = data.data.filename;
                     }
                     if (filepath) {
 
@@ -126,6 +126,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                         myEvents.analytics(ids, templates, context, '', replayInstances, authIcon);
                         myEvents.checkDiff(ids, data.data.file_id, '', replayInstances);
                         myEvents.replyWriting(ids, filepath, '', replayInstances);
+                        myEvents.quality(ids, templates, context, '', replayInstances, cmid);
                     }
 
                 });

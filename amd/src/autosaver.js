@@ -27,7 +27,7 @@ import { save, cancel, hidden } from 'core/modal_events';
 import jQuery from 'jquery';
 import user from 'tiny_cursive/user';
 
-export const register = (editor) => {
+export const register = (editor, interval) => {
 
     var is_student = !(jQuery('#body').hasClass('teacher_admin'));
     var intervention = jQuery('#body').hasClass('intervention');
@@ -46,7 +46,7 @@ export const register = (editor) => {
     var cmid = 0;
     var questionid = 0;
     let assignSubmit = jQuery('#id_submitbutton');
-    var syncInterval = 10000; // Sync Every 10s.
+    var syncInterval = interval ? interval  * 1000 : 10000; // Default: Sync Every 10s.
 
     const postOne = async (methodname, args) => {
         try {
@@ -64,8 +64,7 @@ export const register = (editor) => {
     assignSubmit.on('click', async function (e) {
         e.preventDefault();
         if (filename) {
-            SyncData().then((res) => {
-                window.console.log(res);
+            SyncData().then(() => {
                 assignSubmit.off('click').click();
             });
         } else {
@@ -76,8 +75,7 @@ export const register = (editor) => {
     quizSubmit.on('click', async function (e) {
         e.preventDefault();
         if (filename) {
-            SyncData().then((res) => {
-                window.console.log(res);
+            SyncData().then(() => {
                 quizSubmit.off('click').click();
             });
         } else {

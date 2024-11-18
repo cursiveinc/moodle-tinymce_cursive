@@ -87,7 +87,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                 let sub_url = window.location.href;
                 let parm = new URL(sub_url);
                 let userid = parm.searchParams.get('userid');
-                let cmid = parm.searchParams.get('id');
+                var cmid = parm.searchParams.get('id');
 
                 let args = { id: userid, modulename: "assign", 'cmid': cmid };
                 let methodname = 'cursive_get_assign_grade_comment';
@@ -95,8 +95,8 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                 com[0].done(function (json) {
                     var data = JSON.parse(json);
                     var filepath = '';
-                    if (data.data.content) {
-                        filepath = data.data.content;
+                    if (data.data.filename) {
+                        filepath = data.data.filename;
                     }
 
                     if (data.usercomment != 'comments' && parseInt(showcomment)) {
@@ -169,6 +169,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                     myEvents.analytics(userid, templates, context, '', replayInstances, '', authIcon);
                     myEvents.checkDiff(userid, data.data.file_id, '', replayInstances);
                     myEvents.replyWriting(userid, filepath, '', replayInstances);
+                    myEvents.quality(userid, templates, context, '', replayInstances, M.cfg.contextInstanceId);
 
                 });
                 return com.usercomment;

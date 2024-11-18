@@ -38,7 +38,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                 filepath,
                 10,
                 false,
-                'player_' + mid+questionid
+                'player_' + mid + questionid
             );
             replayInstances[mid] = replay;
         } else {
@@ -112,8 +112,8 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                             content.parent().parent().parent().find('.qtext').append(tt + '</div></div>');
                         }
                         var filepath = '';
-                        if (data.data.content) {
-                            filepath = data.data.content;
+                        if (data.data.filename) {
+                            filepath = data.data.filename;
                         }
                         let analytic_button_div = document.createElement('div');
                         analytic_button_div.classList.add('text-center', 'mt-2');
@@ -128,11 +128,13 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                             userid: userid,
                             quizid: questionid,
                         };
+
                         let authIcon = myEvents.authorshipStatus(data.data.first_file, data.data.score, score_setting);
                         myEvents.createModal(userid, context, questionid, authIcon);
                         myEvents.analytics(userid, templates, context, questionid, replayInstances, authIcon);
                         myEvents.checkDiff(userid, data.data.file_id, questionid, replayInstances);
                         myEvents.replyWriting(userid, filepath, questionid, replayInstances);
+                        myEvents.quality(userid, templates, context, questionid, replayInstances, cmid);
 
                     }
                 });
