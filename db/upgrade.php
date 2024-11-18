@@ -81,35 +81,31 @@ function xmldb_tiny_cursive_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2024060228, 'tiny', 'cursive');
     }
 
-    if ($oldversion < 2024060281) {
-        // Define table tiny_cursive_quality_metrics.
+    if ($oldversion < 2024060282) {
+
         $table = new xmldb_table('tiny_cursive_quality_metrics');
 
-        // Add fields.
-        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null, 'Primary key');
-        $table->add_field('file_id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null, 'Foreign key reference to tiny_cursive_files.id');
-        $table->add_field('total_active_time', XMLDB_TYPE_NUMBER, '10, 5', null, XMLDB_NOTNULL, null, null, 'Total active time spent writing in seconds');
-        $table->add_field('edits', XMLDB_TYPE_NUMBER, '10, 5', null, XMLDB_NOTNULL, null, '0', 'Number of edits made to the text');
-        $table->add_field('verbosity', XMLDB_TYPE_NUMBER, '10, 5', null, XMLDB_NOTNULL, null, null, 'Measure of text verbosity');
-        $table->add_field('word_count', XMLDB_TYPE_NUMBER, '10, 5', null, XMLDB_NOTNULL, null, '0', 'Total number of words in the text');
-        $table->add_field('sentence_count', XMLDB_TYPE_NUMBER, '10, 5', null, XMLDB_NOTNULL, null, '0', 'Total number of sentences in the text');
-        $table->add_field('q_count', XMLDB_TYPE_NUMBER, '10, 5', null, XMLDB_NOTNULL, null, '0', 'Number of questions in the text');
-        $table->add_field('word_len_mean', XMLDB_TYPE_NUMBER, '10, 5', null, XMLDB_NOTNULL, null, '0', 'Average word length');
-        $table->add_field('sent_word_count_mean', XMLDB_TYPE_NUMBER, '10, 5', null, XMLDB_NOTNULL, null, '0', 'Average number of words per sentence');
-        $table->add_field('p_burst_mean', XMLDB_TYPE_NUMBER, '10, 5', null, XMLDB_NOTNULL, null, '0', 'Mean production burst length');
-        $table->add_field('p_burst_cnt', XMLDB_TYPE_NUMBER, '10, 5', null, XMLDB_NOTNULL, null, '0', 'Count of production bursts');
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('file_id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('total_active_time', XMLDB_TYPE_NUMBER, '10, 5', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('edits', XMLDB_TYPE_NUMBER, '10, 5', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('verbosity', XMLDB_TYPE_NUMBER, '10, 5', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('word_count', XMLDB_TYPE_NUMBER, '10, 5', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('sentence_count', XMLDB_TYPE_NUMBER, '10, 5', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('q_count', XMLDB_TYPE_NUMBER, '10, 5', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('word_len_mean', XMLDB_TYPE_NUMBER, '10, 5', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('sent_word_count_mean', XMLDB_TYPE_NUMBER, '10, 5', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('p_burst_mean', XMLDB_TYPE_NUMBER, '10, 5', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('p_burst_cnt', XMLDB_TYPE_NUMBER, '10, 5', null, XMLDB_NOTNULL, null, '0');
 
-        // Add keys.
         $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
         $table->add_key('file_id_fk', XMLDB_KEY_FOREIGN, ['file_id'], 'tiny_cursive_files', ['id']);
 
-        // Create table if it doesn't exist.
         if (!$dbman->table_exists($table)) {
             $dbman->create_table($table);
         }
 
-        // Upgrade savepoint reached.
-        upgrade_plugin_savepoint(true, 2024060281, 'tiny', 'cursive');
+        upgrade_plugin_savepoint(true, 2024060282, 'tiny', 'cursive');
     }
 
     return true;
