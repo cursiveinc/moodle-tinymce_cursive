@@ -107,13 +107,13 @@ class hook_callbacks {
         global $COURSE;
 
         $mform = $hook->mform;
-        $mform->addElement('header', 'Cursive', 'Cursive', [], [
+        $mform->addElement('header', 'Cursive', get_string('pluginname', 'tiny_cursive'), [], [
             'collapsed' => false
         ]);
 
-        $mform->addElement('select', 'cursive_status', 'Cursive Status', [
-            '0' => 'Disabled',
-            '1' => 'Enabled'
+        $mform->addElement('select', 'cursive_status', get_string('cursive_status', 'tiny_cursive'), [
+            '0' => get_string('disabled', 'tiny_cursive'),
+            '1' => get_string('enabled', 'tiny_cursive')
         ]);
         $default = get_config('tiny_cursive', "cursive-$COURSE->id");
         $mform->setDefault('cursive_status', $default);
