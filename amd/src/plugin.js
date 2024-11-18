@@ -38,7 +38,7 @@ export default new Promise((resolve, reject) => {
                     args: { courseid: M.cfg.courseId, cmid: M.cfg.contextInstanceId }
                 }])[0].done((data) => {
                     if (data.status) {
-                        Autosaver.register(editor);
+                        Autosaver.register(editor, data.sync_interval);
                     }
                 }).fail((error) => {
                     window.console.error('Error getting cursive config:', error);

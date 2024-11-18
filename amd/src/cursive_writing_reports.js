@@ -106,6 +106,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
                         myEvents.analytics(mid, templates, context, '', replayInstances, authIcon);
                         myEvents.checkDiff(mid, mid, '', replayInstances);
                         myEvents.replyWriting(mid, filepath, '', replayInstances);
+                        myEvents.quality(mid, templates, context, '', replayInstances, cmid);
                     }).fail(error => {
                         throw new Error('Error: ' + error.message);
                     });

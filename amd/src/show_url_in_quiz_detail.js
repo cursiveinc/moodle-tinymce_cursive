@@ -38,7 +38,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                 filepath,
                 10,
                 false,
-                'player_' + mid+questionid
+                'player_' + mid + questionid
             );
             replayInstances[mid] = replay;
         } else {
@@ -128,11 +128,13 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                             userid: userid,
                             quizid: questionid,
                         };
+
                         let authIcon = myEvents.authorshipStatus(data.data.first_file, data.data.score, score_setting);
                         myEvents.createModal(userid, context, questionid, authIcon);
                         myEvents.analytics(userid, templates, context, questionid, replayInstances, authIcon);
                         myEvents.checkDiff(userid, data.data.file_id, questionid, replayInstances);
                         myEvents.replyWriting(userid, filepath, questionid, replayInstances);
+                        myEvents.quality(userid, templates, context, questionid, replayInstances, cmid);
 
                     }
                 });

@@ -207,6 +207,24 @@ $functions = [
         'ajax' => true,
         'capabilities' => 'tiny/cursive:writingreport',
     ],
+    'cursive_store_quality_metrics' => [
+        'classname' => 'cursive_json_func_data',
+        'methodname' => 'store_quality_metrics',
+        'classpath' => '/lib/editor/tiny/plugins/cursive/externallib.php',
+        'description' => 'get user configuration',
+        'type' => 'write',
+        'ajax' => true,
+        'capabilities' => 'tiny/cursive:editsettings',
+    ],
+    'cursive_get_quality_metrics' => [
+        'classname' => 'cursive_json_func_data',
+        'methodname' => 'get_quality_metrics',
+        'classpath' => '/lib/editor/tiny/plugins/cursive/externallib.php',
+        'description' => 'get user configuration',
+        'type' => 'write',
+        'ajax' => true,
+        'capabilities' => 'tiny/cursive:writingreport',
+    ],
 ];
 
 // We define the services to install as pre-build services.
@@ -235,6 +253,8 @@ $services = [
             'cursive_generate_webtoken',
             'cursive_write_local_to_json',
             'cursive_get_config',
+            'cursive_store_quality_metrics',
+            'cursive_get_quality_metrics',
         ],
         'shortname' => 'cursive_json_service',
         'downloadfiles' => 1, // Allow file downloads.

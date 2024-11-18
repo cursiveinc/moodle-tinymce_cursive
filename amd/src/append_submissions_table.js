@@ -115,6 +115,7 @@ define([
                                 myEvents.analytics(userid, templates, context, '', replayInstances, authIcon);
                                 myEvents.checkDiff(userid, data.res.file_id, '', replayInstances);
                                 myEvents.replyWriting(userid, filepath, '', replayInstances);
+                                myEvents.quality(userid, templates, context, '', replayInstances, cmid);
                             });
                         } catch (error) {
                             window.console.error(error);
