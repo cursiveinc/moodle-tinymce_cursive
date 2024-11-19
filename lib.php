@@ -241,6 +241,7 @@ function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath
         } else {
             echo "\nHTTP Status Code: " . $httpcode . "\n";
             echo "File Id: " . $filerecord->id . "\n";
+            echo "response: " . $result . "\n";
         }
 
         // Remove the temporary file if it was created.
@@ -378,5 +379,6 @@ function tiny_cursive_get_user_forum_posts($userid, $courseid, $resourceid) {
                    AND fd.course = :courseid
                    AND fp.id = :resourceid";
     $result = $DB->get_record_sql($sql, ['userid' => $userid, 'courseid' => $courseid, 'resourceid' => $resourceid]);
-    return $result->message;
+
+    return $result->message ?? "";
 }
