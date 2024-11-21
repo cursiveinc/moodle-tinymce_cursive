@@ -280,7 +280,7 @@ export default class AnalyticEvents {
 
                                         ctx.font = "bold 14px sans-serif";
 
-                                        if (value > 25 && value <= 100) {
+                                        if (value > 50 && value <= 100) {
                                             ctx.fillStyle = 'white';
                                             ctx.textAlign = 'right';
                                             ctx.fillText(value + '%', dataPoint.x - 5, dataPoint.y + 5);
@@ -293,7 +293,7 @@ export default class AnalyticEvents {
                                             ctx.fillStyle = 'white';
                                             ctx.textAlign = 'right';
                                             ctx.fillText(value + '%', dataPoint.x - 5, dataPoint.y + 5);
-                                        } else if (value < -25 && value >= -100) {
+                                        } else if (value < -50 && value >= -100) {
                                             ctx.fillStyle = 'white';
                                             ctx.textAlign = 'left';
                                             ctx.fillText(value + '%', dataPoint.x + 5, dataPoint.y + 5);
@@ -301,7 +301,7 @@ export default class AnalyticEvents {
                                             ctx.fillStyle = 'white';
                                             ctx.textAlign = 'left';
                                             ctx.fillText(value + '%', dataPoint.x + 5, dataPoint.y + 5);
-                                        } else if (value > -25 && value < 0) {
+                                        } else if (value > -50 && value < 0) {
                                             ctx.fillStyle = 'grey';
                                             ctx.textAlign = 'right';
                                             ctx.fillText(value + '%', dataPoint.x - 5, dataPoint.y + 5);
@@ -310,9 +310,6 @@ export default class AnalyticEvents {
                                             ctx.textAlign = 'left';
                                             ctx.fillText(value + '%', dataPoint.x + 5, dataPoint.y + 5);
                                         }
-
-
-
 
                                     });
                                 }

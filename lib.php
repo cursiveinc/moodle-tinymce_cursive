@@ -329,7 +329,7 @@ function tiny_cursive_get_user_essay_quiz_responses($userid, $courseid, $resourc
             'questionid' => $questionid,
         ]
     );
-    return $result->responsesummary;
+    return $result->responsesummary ?? "";
 }
 
 /**
@@ -357,7 +357,7 @@ function tiny_cursive_get_user_onlinetext_assignments($userid, $courseid, $modul
 
     $result =
         $DB->get_record_sql($sql, ['userid' => $userid, 'courseid' => $courseid, 'modulename' => $modulename, 'cmid' => $cmid]);
-    return $result->onlinetext;
+    return $result->onlinetext ?? "";
 }
 
 /**
