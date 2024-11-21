@@ -321,8 +321,8 @@ function tiny_cursive_get_cmid($courseid) {
               FROM {course_modules} cm
          LEFT JOIN {modules} m ON m.id = cm.module
          LEFT JOIN {course} c ON c.id = cm.course
-             WHERE cm.course = :courseid LIMIT 1";
-
+             WHERE cm.course = :courseid
+                   AND cm.deletioninprogress = 0 LIMIT 1";
     $params = ['courseid' => $courseid];
     $cm = $DB->get_record_sql($sql, $params);
     $cmid = isset($cm->id) ? $cm->id : 0;

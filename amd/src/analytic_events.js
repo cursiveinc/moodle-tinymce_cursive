@@ -44,6 +44,7 @@ export default class AnalyticEvents {
     analytics(userid, templates, context, questionid = '', replayInstances = null, authIcon) {
         $('body').on('click', '#analytic' + userid + questionid, function (e) {
             $('#rep' + userid + questionid).prop('disabled', false);
+            $('#quality' + userid + questionid).prop('disabled', false);
             e.preventDefault();
             $('#content' + userid).html($('<div>').addClass('d-flex justify-content-center my-5')
                 .append($('<div>').addClass('tiny_cursive-loader')));
@@ -73,6 +74,7 @@ export default class AnalyticEvents {
 
         $('body').on('click', '#diff' + userid + questionid, function (e) {
             $('#rep' + userid + questionid).prop('disabled', false);
+            $('#quality' + userid + questionid).prop('disabled', false);
             e.preventDefault();
             $('#content' + userid).html($('<div>').addClass('d-flex justify-content-center my-5')
                 .append($('<div>').addClass('tiny_cursive-loader')));
@@ -142,6 +144,7 @@ export default class AnalyticEvents {
     replyWriting(userid, filepath, questionid = '', replayInstances = null) {
         $('body').on('click', '#rep' + userid + questionid, function (e) {
             $(this).prop('disabled', true);
+            $('#quality' + userid + questionid).prop('disabled', false);
             e.preventDefault();
             $('#content' + userid).html($('<div>').addClass('d-flex justify-content-center my-5')
                 .append($('<div>').addClass('tiny_cursive-loader')));
@@ -170,23 +173,18 @@ export default class AnalyticEvents {
         nodata.textContent = "no data received yet";
 
         $('body').on('click', '#quality' + userid + questionid, function (e) {
+
+            $(this).prop('disabled', true);
             $('#rep' + userid + questionid).prop('disabled', false);
             e.preventDefault();
             $('.tiny_cursive-nav-tab').find('.active').removeClass('active');
             $(this).addClass('active'); // Add 'active' class to the clicked element
-          
-            getContent([{
+
+            let res = getContent([{
                 methodname: 'cursive_get_quality_metrics',
                 args: { file_id: context.tabledata.file_id ?? userid, cmid: cmid },
-            }])[0].done(response => {
-                if (response.status) {
-                    metricsData = response.data;
-                  
-                }
-            }).fail(error => {
+            }]);
 
-                throw new Error('Error: no data received yet');
-            });
             const content = document.getElementById('content' + userid);
             if (content) {
                 content.innerHTML = '';
@@ -205,223 +203,274 @@ export default class AnalyticEvents {
             templates.render('tiny_cursive/quality_chart', context).then(function (html) {
                 const content = document.getElementById('content' + userid);
 
-                if (content) content.innerHTML = html;
-                if (!metricsData) $('#content' + userid).html(nodata);
+                res[0].done(response => {
+                    if (response.status) {
+                        metricsData = response.data;
+                        let proUser = metricsData.quality_access;
+                        // if (!proUser) {
+                        //     templates.render('tiny_cursive/upgrade_to_pro', []).then(function (html) {
+                        //         $('#content' + userid).html(html);
+                        //     }).fail(function (error) {
+                        //         window.console.error("Failed to render template:", error);
+                        //     });
+                        // } else {
 
-                let chartvas = document.querySelector('#chart' + userid);
-                const data = {
-                    labels: [
-                        'Average Word Length',
-                        'Edits',
-                        'P-burst Count',
-                        'P-burst Mean',
-                        'Q Count',
-                        'Sentence Count',
-                        'Total Active Time',
-                        'Verbosity',
-                        'Word Count',
-                        'Word Count per Sentence Mean'
-                    ],
-                    datasets: [{
-                        data: [
-                            metricsData.word_len_mean, metricsData.edits, metricsData.p_burst_cnt, metricsData.p_burst_mean,
-                            metricsData.q_count, metricsData.sentence_count, metricsData.total_active_time, metricsData.verbosity,
-                            metricsData.word_count, metricsData.word_count_per_sentence_mean
-                        ],
-                        backgroundColor: function (context) {
-                            // Apply green or gray depending on value
-                            const value = context.raw;
-                            if (value > 0 && value < 100) {
-                                return '#43BB97';
-                            } else if (value < 0) {
-                                return '#AAAAAA';
-                            } else {
-                                return '#00432F'; // Green for positive, gray for negative
-                            }
+                            if (content) content.innerHTML = html;
+                            if (!metricsData) $('#content' + userid).html(nodata);
 
-                        },
-                    }]
-                };
+                            var originalData = [
+                                metricsData.word_len_mean, metricsData.edits, metricsData.p_burst_cnt, metricsData.p_burst_mean,
+                                metricsData.q_count, metricsData.sentence_count, metricsData.total_active_time, metricsData.verbosity,
+                                metricsData.word_count, metricsData.sent_word_count_mean
+                            ];
 
-                const drawPercentage = {
-                    id: 'drawPercentage',
-                    afterDraw: (chart, args, options) => {
-                        const { ctx, data } = chart;
-                        ctx.save();
-                        let value;
-                        chart.getDatasetMeta(0).data.forEach((dataPoint, index) => {
-                            value = parseInt(data.datasets[0].data[index]);
-                            if (!value) {
-                                value = 0;
-                            }
-
-                            ctx.font = "bold 14px sans-serif";
-
-                            if (value > 25 && value <= 100) {
-                                ctx.fillStyle = 'white';
-                                ctx.textAlign = 'right';
-                                ctx.fillText(value + '%', dataPoint.x - 5, dataPoint.y + 5);
-                            } else if (value == 0) {
-                            } else if (value > 100) {
-                                ctx.textAlign = 'left'; 
-                                ctx.fillText(value + '%', - dataPoint.x, dataPoint.y + 5);
-                            } else if (value < -25 && value >= -100) {
-                                ctx.fillStyle = 'white';
-                                ctx.textAlign = 'left';
-                                ctx.fillText(value + '%', dataPoint.x + 5, dataPoint.y + 5);
-                            } else if (value < -100) {
-                                ctx.textAlign = 'right';
-                                ctx.fillText(value + '%', dataPoint.x - 5, dataPoint.y + 5);
-                            } else if(value > -25 && value < 0){
-                                ctx.fillStyle = 'grey';
-                                ctx.textAlign = 'right';
-                                ctx.fillText(value + '%', dataPoint.x-5, dataPoint.y + 5);
-                            } else {
-                                ctx.fillStyle = '#43bb97';
-                                ctx.textAlign = 'left';
-                                ctx.fillText(value + '%', dataPoint.x + 5, dataPoint.y + 5);
-                            }
-
-
-
-
-                        });
-                    }
-                }
-
-                const chartAreaBg = {
-                    id: 'chartAreaBg',
-                    beforeDraw: (chart) => {
-                        const { ctx, scales: { x, y } } = chart;
-                        ctx.save();
-
-                        const segmentPixel = y.getPixelForValue(y.ticks[0].value) - y.getPixelForValue(y.ticks[1].value);
-                        const doubleSegment = y.ticks[2].value - y.ticks[0].value;
-                        let tickArray = [];
-
-                        // Generate tick values
-                        for (let i = 0; i <= y.max; i += doubleSegment) {
-                            if (i !== y.max) {
-                                tickArray.push(i);
-                            }
-                        }
-
-                        // Draw the background rectangles for each tick
-                        tickArray.forEach(tick => {
-                            ctx.fillStyle = 'rgba(0, 0, 0, 0.02)';
-                            ctx.fillRect(0, y.getPixelForValue(tick) + 52, x.width + x.width + 21, segmentPixel);
-                        });
-
-                        // Draw labels and values
-                        const dataset = chart.data.datasets[0];
-                        const labelOffset = 5; // Offset for positioning
-
-                        // Loop through each tick to draw the text
-                        // y.ticks.forEach((tick, index) => {
-                        //     // console.log(Object.getPrototypeOf(tick.$context.tick.$context).scale);
-                        //     const value = dataset.data[index]; // Get the value for the current label
-                        //     const xPosition = x.left; // X position for the text
-                        //     const yPosition = y.getPixelForTick(index); // Y position for the tick
-
-                        //     ctx.fillStyle = 'red'; // Set color to match the bar
-                        //     ctx.fillText(`${value}%`, xPosition, yPosition+7); // Draw the colored value
-                        // });
-
-                        // ctx.restore();
-                    }
-                };
-
-                new Chart(chartvas, {
-                    type: 'bar',
-                    data: data,
-                    options: {
-                        indexAxis: 'y',
-                        elements: {
-                            bar: {
-                                borderRadius: 16,
-                                borderWidth: 0,
-                            }
-                        },
-                        responsive: true,
-                        scales: {
-                            x: {
-                                beginAtZero: true,
-                                min: -100,
-                                max: 100,
-                                ticks: {
-                                    callback: function (value) {
-                                        if (value === -100 || value === 100) {
-                                            return value + '%';
-                                        } else if (value === 0) {
-                                            return 'Average';
+                            let chartvas = document.querySelector('#chart' + userid);
+                            const data = {
+                                labels: [
+                                    'Average Word Length',
+                                    'Edits',
+                                    'P-burst Count',
+                                    'P-Burst Mean',
+                                    'Q Count',
+                                    'Sentence Count',
+                                    'Total Active Time',
+                                    'Verbosity',
+                                    'Word Count',
+                                    'Word Count per Sentence Mean'
+                                ],
+                                datasets: [{
+                                    data: originalData.map(d => {
+                                        if (d > 100) {
+                                            return 100;
+                                        } else if (d < -100) {
+                                            return -100;
+                                        } else {
+                                            return d;
                                         }
-                                        return '';
-                                    },
-                                    display: true,
-                                    font: function (context) {
-                                        if (context && context.tick && context.tick.value === 0) {
-                                            return {
-                                                weight: 'bold',
-                                                size: 14,
-                                                color: 'black'
-                                            };
+                                    }),
+                                    backgroundColor: function (context) {
+                                        // Apply green or gray depending on value
+                                        const value = context.raw;
+
+                                        if (value > 0 && value < 100) {
+                                            return '#43BB97';
+                                        } else if (value < 0) {
+                                            return '#AAAAAA';
+                                        } else {
+                                            return '#00432F'; // Green for positive, gray for negative
                                         }
-                                        return {
-                                            style: 'semi-bold',
-                                            size: 13,
-                                            color: 'black'
-                                        };
-                                    },
 
-                                },
-                                grid: {
-                                    display: true,
-                                    color: function (context) {
-                                        return context.tick.value === 0 ? 'black' : '#eaeaea';
                                     },
-                                    lineWidth: function (context) {
-                                        return context.tick.value === 0 ? 2 : 1; // Thicker line for 0 range
-                                    },
-                                    tickLength: 0,
-                                },
-                                position: 'top'
+                                    barPercentage: 0.75,
+                                }]
+                            };
 
-                            },
-                            y: {
-                                beginAtZero: true,
-                                ticks: {
-                                    // callback: function (value, index, ticks) {
-                                    //     return `${data.labels[index]} ${data.datasets[0].data[index]}%`; // Format the label
-                                    // },
-                                    display: true,
-                                    align: 'center',
+                            const drawPercentage = {
+                                id: 'drawPercentage',
+                                afterDraw: (chart, args, options) => {
+                                    const { ctx, data } = chart;
+                                    ctx.save();
+                                    let value;
+                                    chart.getDatasetMeta(0).data.forEach((dataPoint, index) => {
+                                        value = parseInt(data.datasets[0].data[index]);
+                                        if (!value) {
+                                            value = 0;
+                                        }
+                                        value = originalData[index];
 
-                                    crossAlign: 'far',
-                                    font: {
-                                        size: 18,
-                                    },
-                                    tickLength: 100,
-                                    color: 'black',
-                                },
-                                grid: {
-                                    display: true,
-                                    tickLength: 1000,
-                                },
+                                        ctx.font = "bold 14px sans-serif";
 
+                                        if (value > 25 && value <= 100) {
+                                            ctx.fillStyle = 'white';
+                                            ctx.textAlign = 'right';
+                                            ctx.fillText(value + '%', dataPoint.x - 5, dataPoint.y + 5);
+                                        } else if (value <= 10 && value > 0) {
+                                            ctx.fillStyle = '#43bb97';
+                                            ctx.textAlign = 'left';
+                                            ctx.fillText('0' + value + '%', dataPoint.x + 5, dataPoint.y + 5);
+                                        } else if (value == 0 || value == undefined) {
+                                        } else if (value > 100) {
+                                            ctx.fillStyle = 'white';
+                                            ctx.textAlign = 'right';
+                                            ctx.fillText(value + '%', dataPoint.x - 5, dataPoint.y + 5);
+                                        } else if (value < -25 && value >= -100) {
+                                            ctx.fillStyle = 'white';
+                                            ctx.textAlign = 'left';
+                                            ctx.fillText(value + '%', dataPoint.x + 5, dataPoint.y + 5);
+                                        } else if (value < -100) {
+                                            ctx.fillStyle = 'white';
+                                            ctx.textAlign = 'left';
+                                            ctx.fillText(value + '%', dataPoint.x + 5, dataPoint.y + 5);
+                                        } else if (value > -25 && value < 0) {
+                                            ctx.fillStyle = 'grey';
+                                            ctx.textAlign = 'right';
+                                            ctx.fillText(value + '%', dataPoint.x - 5, dataPoint.y + 5);
+                                        } else {
+                                            ctx.fillStyle = '#43bb97';
+                                            ctx.textAlign = 'left';
+                                            ctx.fillText(value + '%', dataPoint.x + 5, dataPoint.y + 5);
+                                        }
+
+
+
+
+                                    });
+                                }
                             }
-                        },
-                        plugins: {
-                            legend: {
-                                display: false,
-                            },
-                            title: {
-                                display: false,
-                            },
-                        }
-                    },
-                    plugins: [chartAreaBg, drawPercentage]
+
+                            const chartAreaBg = {
+                                id: 'chartAreaBg',
+                                beforeDraw: (chart, args, plugins) => {
+                                    const { ctx, data, chartArea: { left, right, top, bottom, height }, scales: { x, y } } = chart;
+                                    ctx.save();
+
+                                    const segmentPixel = y.getPixelForValue(y.ticks[0].value) - y.getPixelForValue(y.ticks[1].value);
+                                    const doubleSegment = y.ticks[2].value - y.ticks[0].value;
+                                    let tickArray = [];
+
+                                    // Generate tick values
+                                    for (let i = 0; i <= y.max; i += doubleSegment) {
+                                        if (i !== y.max) {
+                                            tickArray.push(i);
+                                        }
+                                    }
+
+                                    // Draw the background rectangles for each tick
+                                    tickArray.forEach(tick => {
+                                        ctx.fillStyle = 'rgba(0, 0, 0, 0.02)';
+                                        ctx.fillRect(0, y.getPixelForValue(tick) + 63, x.width + x.width + 21, segmentPixel);
+                                    });
+
+                                    // Draw labels and values
+                                    // const dataset = chart.data.datasets[0];
+                                    // const labelOffset = 5; // Offset for positioning
+
+                                    // Loop through each tick to draw the text
+                                    // y.ticks.forEach((tick, index) => {
+                                    //     // console.log(Object.getPrototypeOf(tick.$context.tick.$context).scale);
+                                    //     const value = dataset.data[index]; // Get the value for the current label
+                                    //     const xPosition = x.left; // X position for the text
+                                    //     const yPosition = y.getPixelForTick(index); // Y position for the tick
+
+                                    //     ctx.fillStyle = 'red'; // Set color to match the bar
+                                    //     ctx.fillText(`${value}%`, xPosition, yPosition+7); // Draw the colored value
+                                    // });
+
+                                    // ctx.restore();
+                                }
+                            };
+
+
+                            new Chart(chartvas, {
+                                type: 'bar',
+                                data: data,
+                                options: {
+                                    responsive: false,
+                                    maintainAspectRatio: false,
+                                    indexAxis: 'y',
+                                    elements: {
+                                        bar: {
+                                            borderRadius: 16,
+                                            borderWidth: 0,
+                                            zIndex: 1,
+                                        }
+                                    },
+                                    scales: {
+                                        x: {
+                                            beginAtZero: true,
+                                            min: -100,
+                                            max: 100,
+                                            ticks: {
+                                                callback: function (value) {
+                                                    if (value === -100 || value === 100) {
+                                                        return value + '%';
+                                                    } else if (value === 0) {
+                                                        return 'Average';
+                                                    }
+                                                    return '';
+                                                },
+                                                display: true,
+                                                font: function (context) {
+                                                    if (context && context.tick && context.tick.value === 0) {
+                                                        return {
+                                                            weight: 'bold',
+                                                            size: 14,
+                                                            color: 'black'
+                                                        };
+                                                    }
+                                                    return {
+                                                        weight: 'bold',
+                                                        size: 13,
+                                                        color: 'black'
+                                                    };
+                                                },
+                                                color: 'black',
+
+                                            },
+                                            grid: {
+                                                display: true,
+                                                color: function (context) {
+                                                    return context.tick.value === 0 ? 'black' : '#eaeaea';
+                                                },
+                                                // lineWidth: function (context) {
+                                                //     return context.tick.value === 0 ? 2 : 1; // Thicker line for 0 range
+                                                // },
+                                                tickLength: 0,
+                                            },
+                                            position: 'top'
+
+                                        },
+                                        y: {
+                                            beginAtZero: true,
+                                            ticks: {
+                                                // callback: function (value, index, ticks) {
+                                                //     return `${data.labels[index]} ${data.datasets[0].data[index]}%`; // Format the label
+                                                // },
+                                                display: true,
+                                                align: 'center',
+
+                                                crossAlign: 'far',
+                                                font: {
+                                                    size: 18,
+                                                },
+                                                tickLength: 100,
+                                                color: 'black',
+                                            },
+                                            grid: {
+                                                display: true,
+                                                tickLength: 1000,
+                                            },
+
+                                        }
+                                    },
+                                    plugins: {
+                                        legend: {
+                                            display: false,
+                                        },
+                                        title: {
+                                            display: false,
+                                        },
+                                        tooltip: {
+                                            yAlign: 'bottom',
+                                            xAlign: 'center',
+                                            callbacks: {
+                                                label: function (context) {
+                                                    // console.log(context);
+                                                    const originalValue = originalData[context.dataIndex];
+                                                    return originalValue; // Show the original value
+                                                },
+                                            },
+                                        },
+                                    }
+                                },
+                                plugins: [chartAreaBg, drawPercentage]
+                            });
+                        // }
+                    }
+                }).fail(error => {
+                    $('#content' + userid).html(nodata);
+                    throw new Error('Error: no data received yet');
                 });
-
             }).catch(function (error) {
                 console.error("Failed to render template:", error);
             });
