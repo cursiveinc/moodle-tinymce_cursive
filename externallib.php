@@ -2192,9 +2192,29 @@ class cursive_json_func_data extends external_api {
             self::validate_context($context);
             require_capability('tiny/cursive:writingreport', $context);
 
-            // Retrieve existing data or initialize a new stdClass object.
-            $data = $DB->get_record('tiny_cursive_quality_metrics', ['file_id' => $params['file_id']]);
+            $defaults = [
+                'word_len_mean' => 4.66,
+                'edits' => 178.13,
+                'p_burst_cnt' => 22.7,
+                'p_burst_mean' => 82.14,
+                'q_count' => 1043.92,
+                'sentence_count' => 13.66,
+                'total_active_time' => 21.58,
+                'verbosity' => 1617.83,
+                'word_count' => 190.67,
+                'sent_word_count_mean' => 14.27170659
+            ];
 
+            $sql = "SELECT qm.*, uw.quality_access
+                      FROM {tiny_cursive_quality_metrics} qm
+                      JOIN {tiny_cursive_user_writing} uw ON qm.file_id = uw.file_id
+                     WHERE qm.file_id = :fileid";
+            $data = $DB->get_record_sql($sql, ['fileid' => $params['file_id']]);
+
+            foreach ($defaults as $key => &$default) {
+                $default = floatval(get_config('tiny_cursive', $key) ?: $default);
+                $data->{$key} = round(floatval($data->{$key} / $default) * 100, 2);
+            }
             // Return success status.
             return [
                 'status' => true,
@@ -2225,6 +2245,7 @@ class cursive_json_func_data extends external_api {
                 'sent_word_count_mean' => new external_value(PARAM_FLOAT, 'Average words per sentence'),
                 'p_burst_mean' => new external_value(PARAM_FLOAT, 'Average pause burst duration'),
                 'p_burst_cnt' => new external_value(PARAM_FLOAT, 'Number of pause bursts'),
+                'quality_access' => new external_value(PARAM_INT, 'Quality access'),
             ]),
         ]);
     }

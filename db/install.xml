@@ -50,6 +50,7 @@
         <FIELD NAME="backspace_percent" TYPE="float" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Last modified time."/>
         <FIELD NAME="score" TYPE="float" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="User score to show icons."/>
         <FIELD NAME="copy_behavior" TYPE="float" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="User score to show icons."/>
+        <FIELD NAME="quality_access" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Access to Quality Metrics option"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
