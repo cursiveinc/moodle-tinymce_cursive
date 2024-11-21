@@ -1427,6 +1427,7 @@ class cursive_json_func_data extends external_api {
         $backspacepercent,
         $copybehavior,
         $score,
+        $qualityaccess
     ) {
         global $DB;
 
@@ -1445,6 +1446,7 @@ class cursive_json_func_data extends external_api {
                 'backspace_percent' => $backspacepercent,
                 'copy_behavior' => $copybehavior,
                 'score' => $score,
+                'quality_access' => $qualityaccess,
             ],
         );
 
@@ -1475,6 +1477,7 @@ class cursive_json_func_data extends external_api {
             $data->backspace_percent = $params['backspace_percent'];
             $data->score = $params['score'];
             $data->copy_behavior = $params['copy_behavior'];
+            $data->quality_access = $params['quality_access'];
 
             // Update or insert the record.
             if ($recordexists) {
@@ -1596,6 +1599,7 @@ class cursive_json_func_data extends external_api {
             'backspace_percent' => new external_value(PARAM_FLOAT, 'backspace_percent', VALUE_REQUIRED),
             'copy_behavior' => new external_value(PARAM_FLOAT, 'copy_behavior', VALUE_REQUIRED),
             'score' => new external_value(PARAM_FLOAT, 'score', VALUE_DEFAULT, 0),
+            'quality_access' => new external_value(PARAM_INT, 'quality_access', VALUE_DEFAULT, 0),
         ];
 
     }
