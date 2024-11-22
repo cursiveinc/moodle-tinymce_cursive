@@ -95,4 +95,14 @@ if (is_siteadmin()) {
             PARAM_TEXT
         )
     );
+
+    $settings->add(
+        new admin_setting_configtext(
+            'tiny_cursive/syncinterval',
+            get_string('syncinterval', 'tiny_cursive'),
+            get_string('syncinterval_des', 'tiny_cursive'),
+            '10 sec',
+            PARAM_TEXT
+        )
+    );
 }

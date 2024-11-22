@@ -90,7 +90,7 @@ function tiny_cursive_extend_navigation_course(\navigation_node $navigation, \st
 
     $url = new moodle_url($CFG->wwwroot . '/lib/editor/tiny/plugins/cursive/tiny_cursive_report.php', ['courseid' => $course->id]);
     $cmid = tiny_cursive_get_cmid($course->id);
-    if ($cmid) {
+    if ($cmid && get_config('tiny_cursive', "cursive-$course->id")) {
         $context = context_module::instance($cmid);
         $iseditingteacher = has_capability("tiny/cursive:view", $context);
 

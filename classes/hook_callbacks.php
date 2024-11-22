@@ -26,7 +26,10 @@
 namespace tiny_cursive;
 
 use context_course;
+use context_module;
 use core\hook\output\before_footer_html_generation;
+use core_course\hook\after_form_definition;
+use core_course\hook\after_form_submission;
 
 /**
  * Tiny cursive plugin hook callback class.
@@ -37,6 +40,7 @@ use core\hook\output\before_footer_html_generation;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class hook_callbacks {
+
     /**
      * Hook to modify the output before footer HTML is generated.
      *
@@ -44,8 +48,10 @@ class hook_callbacks {
      */
     public static function before_footer_html_generation(before_footer_html_generation $hook) {
         global $PAGE, $COURSE, $USER, $CFG;
+        require_once($CFG->dirroot . '/lib/editor/tiny/plugins/cursive/locallib.php');
+        $cmid = isset($COURSE->id) ? tiny_cursive_get_cmid($COURSE->id) : 0;
 
-        if (!empty($COURSE) && !during_initial_install()) {
+        if (!empty($COURSE) && !during_initial_install() && get_config('tiny_cursive', "cursive-$COURSE->id")) {
 
             $confidencethreshold = get_config('tiny_cursive', 'confidence_threshold');
             $confidencethreshold = !empty($confidencethreshold) ? floatval($confidencethreshold) : 0.65;
@@ -59,39 +65,89 @@ class hook_callbacks {
 
             $PAGE->requires->js_call_amd('tiny_cursive/settings', 'init', [$showcomments, $userrole]);
 
+            $context = context_module::instance($cmid);
+            $capcheck = has_capability('tiny/cursive:view', $context, $USER->id);
+
             switch ($PAGE->bodyid) {
                 case 'page-mod-forum-discuss':
                 case 'page-mod-forum-view':
-                    $PAGE->requires->js_call_amd('tiny_cursive/append_fourm_post', 'init',
-                    [$confidencethreshold, $showcomments]);
+                    $PAGE->requires->js_call_amd(
+                        'tiny_cursive/append_fourm_post',
+                        'init',
+                        [$confidencethreshold, $showcomments],
+                    );
                     break;
 
                 case 'page-mod-assign-grader':
-                    $PAGE->requires->js_call_amd('tiny_cursive/show_url_in_submission_grade', 'init',
-                    [$confidencethreshold, $showcomments]);
+                    $PAGE->requires->js_call_amd(
+                        'tiny_cursive/show_url_in_submission_grade',
+                        'init',
+                        [$confidencethreshold, $showcomments],
+                    );
                     break;
 
                 case 'page-mod-assign-grading':
-                    $PAGE->requires->js_call_amd('tiny_cursive/append_submissions_table', 'init',
-                    [$confidencethreshold, $showcomments]);
+                    $PAGE->requires->js_call_amd(
+                        'tiny_cursive/append_submissions_table',
+                        'init',
+                        [$confidencethreshold, $showcomments],
+                    );
                     break;
 
                 case 'page-mod-quiz-review':
-                    $PAGE->requires->js_call_amd('tiny_cursive/show_url_in_quiz_detail', 'init',
-                    [$confidencethreshold, $showcomments]);
+                    $PAGE->requires->js_call_amd(
+                        'tiny_cursive/show_url_in_quiz_detail',
+                        'init',
+                        [$confidencethreshold, $showcomments],
+                    );
                     break;
 
                 case 'page-course-view-participants':
-                    $PAGE->requires->js_call_amd('tiny_cursive/append_participants_table', 'init',
-                    [$confidencethreshold, $showcomments]);
+                    $PAGE->requires->js_call_amd(
+                        'tiny_cursive/append_participants_table',
+                        'init',
+                        [$confidencethreshold, $showcomments],
+                    );
                     break;
             }
 
-            if ($PAGE->bodyid == 'page-mod-quiz-attempt' || $PAGE->bodyid == 'page-mod-quiz-summary'
-                            || $PAGE->bodyid == 'page-mod-assign-editsubmission' || $PAGE->bodyid == 'page-mod-forum-view'
-                            || $PAGE->bodyid == 'page-mod-forum-post') {
+            if (
+                $PAGE->bodyid == 'page-mod-quiz-attempt' || $PAGE->bodyid == 'page-mod-quiz-summary'
+                || $PAGE->bodyid == 'page-mod-assign-editsubmission' || $PAGE->bodyid == 'page-mod-forum-view'
+                || $PAGE->bodyid == 'page-mod-forum-post'
+            ) {
                 $PAGE->requires->js_call_amd('tiny_cursive/user', 'setUserId', [$USER->id, $CFG->wwwroot, $COURSE->id]);
             }
         }
     }
+
+    /**
+     * Hook to modify the form after its definition.
+     *
+     * @param after_form_definition $hook The hook instance
+     */
+    public static function after_form_definition(after_form_definition $hook) {
+        global $COURSE;
+
+        $mform = $hook->mform;
+        $mform->addElement('header', 'Cursive', get_string('pluginname', 'tiny_cursive'), [], [
+            'collapsed' => false,
+        ]);
+
+        $mform->addElement('select', 'cursive_status', get_string('cursive_status', 'tiny_cursive'), [
+            '0' => get_string('disabled', 'tiny_cursive'),
+            '1' => get_string('enabled', 'tiny_cursive'),
+        ]);
+        $default = get_config('tiny_cursive', "cursive-$COURSE->id");
+        $mform->setDefault('cursive_status', $default);
+    }
+
+    public static function after_form_submission(after_form_submission $hook) {
+        $courseid = $hook->get_data()->id;
+        $status = $hook->get_data()->cursive_status;
+        $name = "cursive-$courseid";
+        set_config($name, $status, 'tiny_cursive');
+    }
+
+
 }

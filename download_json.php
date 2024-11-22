@@ -34,7 +34,7 @@ $cmid = optional_param('cmid', 0, PARAM_INT);
 $fname = optional_param('fname', '', PARAM_TEXT);
 
 $context = context_module::instance($cmid);
-require_capability('tiny/cursive:view', $context);
+require_capability('tiny/cursive:writingreport', $context);
 
 $filename = '';
 $dirname = $CFG->tempdir . '/userdata/';
