@@ -118,5 +118,104 @@ function xmldb_tiny_cursive_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2024060283, 'tiny', 'cursive');
     }
 
+    if ($oldversion < 2024060285) {
+
+        $table = new xmldb_table('tiny_cursive_quality_metrics');
+
+        // Add each new field if it doesn't already exist.
+        $fields = [
+            'total_active_time_static' => [
+                'type' => XMLDB_TYPE_NUMBER,
+                'precision' => '10, 5',
+                'notnull' => XMLDB_NOTNULL,
+                'default' => '0',
+                'previous' => 'total_active_time'
+            ],
+            'edits_static' => [
+                'type' => XMLDB_TYPE_NUMBER,
+                'precision' => '10, 5',
+                'notnull' => XMLDB_NOTNULL,
+                'default' => '0',
+                'previous' => 'edits'
+            ],
+            'verbosity_static' => [
+                'type' => XMLDB_TYPE_NUMBER,
+                'precision' => '10, 5',
+                'notnull' => XMLDB_NOTNULL,
+                'default' => '0',
+                'previous' => 'verbosity'
+            ],
+            'word_count_static' => [
+                'type' => XMLDB_TYPE_NUMBER,
+                'precision' => '10, 5',
+                'notnull' => XMLDB_NOTNULL,
+                'default' => '0',
+                'previous' => 'word_count'
+            ],
+            'sentence_count_static' => [
+                'type' => XMLDB_TYPE_NUMBER,
+                'precision' => '10, 5',
+                'notnull' => XMLDB_NOTNULL,
+                'default' => '0',
+                'previous' => 'sentence_count'
+            ],
+            'q_count_static' => [
+                'type' => XMLDB_TYPE_NUMBER,
+                'precision' => '10, 5',
+                'notnull' => XMLDB_NOTNULL,
+                'default' => '0',
+                'previous' => 'q_count'
+            ],
+            'word_len_mean_static' => [
+                'type' => XMLDB_TYPE_NUMBER,
+                'precision' => '10, 5',
+                'notnull' => XMLDB_NOTNULL,
+                'default' => '0',
+                'previous' => 'word_len_mean'
+            ],
+            'sent_word_count_mean_static' => [
+                'type' => XMLDB_TYPE_NUMBER,
+                'precision' => '10, 5',
+                'notnull' => XMLDB_NOTNULL,
+                'default' => '0',
+                'previous' => 'sent_word_count_mean'
+            ],
+            'p_burst_mean_static' => [
+                'type' => XMLDB_TYPE_NUMBER,
+                'precision' => '10, 5',
+                'notnull' => XMLDB_NOTNULL,
+                'default' => '0',
+                'previous' => 'p_burst_mean'
+            ],
+            'p_burst_cnt_static' => [
+                'type' => XMLDB_TYPE_NUMBER,
+                'precision' => '10, 5',
+                'notnull' => XMLDB_NOTNULL,
+                'default' => '0',
+                'previous' => 'p_burst_cnt'
+            ],        ];
+
+        foreach ($fields as $fieldname => $attributes) {
+            $field = new xmldb_field(
+                $fieldname,
+                $attributes['type'],
+                $attributes['precision'],
+                null,
+                $attributes['notnull'],
+                null,
+                $attributes['default'],
+                $attributes['previous'],
+            );
+
+            // Check if the field exists, and if not, add it.
+            if (!$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
+        }
+
+        // Save the upgrade step.
+        upgrade_plugin_savepoint(true, 2024060285, 'tiny', 'cursive');
+    }
+
     return true;
 }

@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-global $CFG, $PAGE;
+global $CFG, $PAGE, $OUTPUT;
 $PAGE->requires->js_call_amd('tiny_cursive/token_approve', 'init', [1]);
 
 if (is_siteadmin()) {
@@ -113,7 +113,22 @@ if (is_siteadmin()) {
             get_string('sectionadvance_desc', 'tiny_cursive')
         )
     );
-    $settings->add(
+    set_config('has_subscription', true, 'tiny_cursive');
+    if (get_config('tiny_cursive', 'has_subscription')) {
+        $settings->add(
+        new admin_setting_configselect(
+            'tiny_cursive/qualityaccess', // Setting name
+            get_string('quality_access', "tiny_cursive"), // Visible name
+            get_string('quality_access_des', 'tiny_cursive'), // Description
+            'Enabled', // Default value
+            [ // Options
+                true => get_string('enabled', 'tiny_cursive'),
+                false => get_string('disabled', 'tiny_cursive'),
+            ]
+        )
+        );
+
+        $settings->add(
         new admin_setting_configtext(
             'tiny_cursive/word_len_mean',
             get_string('word_len_mean', 'tiny_cursive'),
@@ -131,7 +146,7 @@ if (is_siteadmin()) {
                 PARAM_TEXT
             ));
 
-    $settings->add(
+        $settings->add(
         new admin_setting_configtext(
             'tiny_cursive/p_burst_cnt',
             get_string('p_burst_cnt', 'tiny_cursive'),
@@ -139,9 +154,9 @@ if (is_siteadmin()) {
             22.7,
             PARAM_TEXT
         )
-    );
+        );
 
-    $settings->add(
+        $settings->add(
         new admin_setting_configtext(
             'tiny_cursive/p_burst_mean',
             get_string('p_burst_mean', 'tiny_cursive'),
@@ -149,9 +164,9 @@ if (is_siteadmin()) {
             82.14,
             PARAM_TEXT
         )
-    );
+        );
 
-    $settings->add(
+        $settings->add(
         new admin_setting_configtext(
             'tiny_cursive/q_count',
             get_string('q_count', 'tiny_cursive'),
@@ -159,9 +174,9 @@ if (is_siteadmin()) {
             1043.92,
             PARAM_TEXT
         )
-    );
+        );
 
-    $settings->add(
+        $settings->add(
         new admin_setting_configtext(
             'tiny_cursive/sentence_count',
             get_string('sentence_count', 'tiny_cursive'),
@@ -169,9 +184,9 @@ if (is_siteadmin()) {
             13.36,
             PARAM_TEXT
         )
-    );
+        );
 
-    $settings->add(
+        $settings->add(
         new admin_setting_configtext(
             'tiny_cursive/total_active_time',
             get_string('total_active_time', 'tiny_cursive'),
@@ -179,9 +194,9 @@ if (is_siteadmin()) {
             21.58,
             PARAM_TEXT
         )
-    );
+        );
 
-    $settings->add(
+        $settings->add(
         new admin_setting_configtext(
             'tiny_cursive/verbosity',
             get_string('verbosity', 'tiny_cursive'),
@@ -189,9 +204,9 @@ if (is_siteadmin()) {
             1617.83,
             PARAM_TEXT
         )
-    );
+        );
 
-    $settings->add(
+        $settings->add(
         new admin_setting_configtext(
             'tiny_cursive/word_count',
             get_string('word_count', 'tiny_cursive'),
@@ -199,9 +214,9 @@ if (is_siteadmin()) {
             190.67,
             PARAM_TEXT
         )
-    );
+        );
 
-    $settings->add(
+        $settings->add(
         new admin_setting_configtext(
             'tiny_cursive/sent_word_count_mean',
             get_string('sent_word_count_mean', 'tiny_cursive'),
@@ -209,6 +224,17 @@ if (is_siteadmin()) {
             14.27170659,
             PARAM_TEXT
         )
-    );
+        );
+    } else {
+        $img = $OUTPUT->image_url('subscribe', 'tiny_cursive');
+        $template = $OUTPUT->render_from_template('tiny_cursive/upgrade_to_pro', ['img' => $img]);
 
+        $settings->add(
+            new admin_setting_heading(
+                'tiny_cursive/image_section',
+                '',
+                $template
+            )
+        );
+    }
 }

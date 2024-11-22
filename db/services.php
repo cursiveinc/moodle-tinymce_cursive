@@ -216,9 +216,9 @@ $functions = [
         'ajax' => true,
         'capabilities' => 'tiny/cursive:editsettings',
     ],
-    'cursive_get_quality_metrics' => [
+    'cursive_check_subscriptions' => [
         'classname' => 'cursive_json_func_data',
-        'methodname' => 'get_quality_metrics',
+        'methodname' => 'check_subscriptions',
         'classpath' => '/lib/editor/tiny/plugins/cursive/externallib.php',
         'description' => 'get user configuration',
         'type' => 'write',
@@ -265,6 +265,3 @@ $services = [
         'timemodified' => time(), // Time the service was last modified.
     ],
 ];
-
-
-

@@ -112,14 +112,13 @@ class hook_callbacks {
                         );
                         break;
                 }
-
-                if (
-                    $PAGE->bodyid == 'page-mod-quiz-attempt' || $PAGE->bodyid == 'page-mod-quiz-summary'
-                    || $PAGE->bodyid == 'page-mod-assign-editsubmission' || $PAGE->bodyid == 'page-mod-forum-view'
-                    || $PAGE->bodyid == 'page-mod-forum-post'
-                ) {
-                    $PAGE->requires->js_call_amd('tiny_cursive/user', 'setUserId', [$USER->id, $CFG->wwwroot, $COURSE->id]);
-                }
+            }
+            if (
+                $PAGE->bodyid == 'page-mod-quiz-attempt' || $PAGE->bodyid == 'page-mod-quiz-summary'
+                || $PAGE->bodyid == 'page-mod-assign-editsubmission' || $PAGE->bodyid == 'page-mod-forum-view'
+                || $PAGE->bodyid == 'page-mod-forum-post'
+            ) {
+                $PAGE->requires->js_call_amd('tiny_cursive/user', 'setUserId', [$USER->id, $CFG->wwwroot, $COURSE->id]);
             }
         }
     }
