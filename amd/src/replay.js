@@ -54,7 +54,7 @@ export default class Replay {
                 } else {
                     templates.render('tiny_cursive/no_submission').then(html => {
                         let updatedHtml = html.replace('No Submission', "Something Went Wrong! or File Not Found!");
-                        $('.tiny_cursive').html(updatedHtml);
+                        document.querySelector('.tiny_cursive').innerHTML = updatedHtml;
                     });
                 }
             })

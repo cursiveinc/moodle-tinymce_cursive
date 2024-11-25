@@ -26,7 +26,7 @@ import { get_string as getString } from 'core/str';
 import { save, cancel, hidden } from 'core/modal_events';
 import user from 'tiny_cursive/user';
 
-export const register = (editor) => {
+export const register = (editor, interval) => {
 
     var is_student, intervention, quizSubmit, assignSubmit;
 
@@ -54,7 +54,7 @@ export const register = (editor) => {
     let classes = document.body.className.split(' ');
     var cmid = 0;
     var questionid = 0;
-    var syncInterval = 10000; // Sync Every 10s.
+    var syncInterval = interval ? interval  * 1000 : 10000; // Default: Sync Every 10s.
 
     const postOne = async (methodname, args) => {
         try {
