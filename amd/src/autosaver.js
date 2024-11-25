@@ -69,32 +69,36 @@ export const register = (editor, interval) => {
         }
     };
 
-    if (assignSubmit) {
-        assignSubmit.addEventListener('click', async function (e) {
-            e.preventDefault();
-            if (filename) {
-                await SyncData().then((res) => {
+    if (document.getElementById('page-mod-assign-editsubmission')) {
+        if (assignSubmit) {
+            assignSubmit.addEventListener('click', async function (e) {
+                e.preventDefault();
+                if (filename) {
+                    await SyncData().then((res) => {
+                        assignSubmit.removeEventListener('click', arguments.callee);
+                        assignSubmit.click();
+                        assignSubmit.removeEventListener('click', arguments.callee);
+                    })
+                } else {
                     assignSubmit.removeEventListener('click', arguments.callee);
                     assignSubmit.click();
                     assignSubmit.removeEventListener('click', arguments.callee);
-                })
-            } else {
-                assignSubmit.removeEventListener('click', arguments.callee);
-                assignSubmit.click();
-                assignSubmit.removeEventListener('click', arguments.callee);
-            }
-        });
+                }
+            });
+        }
     }
 
-    if (quizSubmit) {
-        quizSubmit.addEventListener('click', async (e) => {
-            if (filename) {
-                await SyncData().then(res => {
-                    document.querySelector('#responseform').submit();
-                });
-            }
-            
-        });
+    if (document.getElementById('page-mod-quiz-attempt')) {
+        if (quizSubmit) {
+            quizSubmit.addEventListener('click', async (e) => {
+                if (filename) {
+                    await SyncData().then(res => {
+                        document.querySelector('#responseform').submit();
+                    });
+                }
+
+            });
+        }
     }
 
     const getModal = (e) => {
