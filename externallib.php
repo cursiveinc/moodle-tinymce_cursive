@@ -2324,16 +2324,19 @@ class cursive_json_func_data extends external_api {
         $context = context_system::instance();
         self::validate_context($context);
         require_capability('tiny/cursive:editsettings', $context);
-
+        $token = get_config('tiny_cursive', 'secretkey');
+        if (!$token) {
+            return ['status' => false];
+        }
         try {
-            $remoteurl = get_config('tiny_cursive', 'python_server') . '/verify-token';
+            $remoteurl = get_config('tiny_cursive', 'python_server') . '/verify-role';
             $moodleurl = $CFG->wwwroot;
 
             $curl = new curl();
             $options = [
                 'CURLOPT_RETURNTRANSFER' => true,
                 'CURLOPT_HTTPHEADER' => [
-                    'Authorization: Bearer ' . $params['token'],
+                    'Authorization: Bearer ' . $token,
                     'X-Moodle-Url: ' . $moodleurl,
                     'Content-Type: multipart/form-data',
                     'Accept: application/json',
@@ -2342,7 +2345,7 @@ class cursive_json_func_data extends external_api {
 
             // Prepare POST fields.
             $postfields = [
-                'token' => $params['token'],
+                'token' => $token,
                 'moodle_url' => $moodleurl,
             ];
 
@@ -2352,10 +2355,13 @@ class cursive_json_func_data extends external_api {
             if ($result === false) {
                 throw new moodle_exception('curlerror', 'tiny_cursive', '', null, $curl->error);
             }
-
-            return [
-                'status' => true,
-            ];
+            $result = json_decode($result);
+            if ($result->status) {
+                set_config('tiny_cursive', 'has_subscription', $result->status);
+                return ['status' => $result->status];
+            } else {
+                return ['status' => false];
+            }
         } catch (dml_exception $e) {
             // Return failure status with error message.
             return [

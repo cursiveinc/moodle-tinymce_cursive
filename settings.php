@@ -101,7 +101,7 @@ if (is_siteadmin()) {
             'tiny_cursive/syncinterval',
             get_string('syncinterval', 'tiny_cursive'),
             get_string('syncinterval_des', 'tiny_cursive'),
-            '10 sec',
+            10,
             PARAM_TEXT
         )
     );
@@ -113,7 +113,7 @@ if (is_siteadmin()) {
             get_string('sectionadvance_desc', 'tiny_cursive')
         )
     );
-    set_config('has_subscription', true, 'tiny_cursive');
+
     if (get_config('tiny_cursive', 'has_subscription')) {
         $settings->add(
         new admin_setting_configselect(
