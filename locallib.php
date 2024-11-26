@@ -388,9 +388,6 @@ function tiny_cursive_check_subscriptions() {
     global $DB, $CFG;
     require_once("$CFG->libdir/filelib.php");
 
-    $context = context_system::instance();
-    require_capability('tiny/cursive:editsettings', $context);
-
     $token = get_config('tiny_cursive', 'secretkey');
 
     if (!$token) {
@@ -420,16 +417,10 @@ function tiny_cursive_check_subscriptions() {
         // Execute the request.
         $result = $curl->post($remoteurl, $postfields, $options);
         $result = json_decode($result);
-        if ($result && isset($result->status)) {
-            set_config('tiny_cursive', 'has_subscription', $result->status);
-            return ['status' => $result->status];
-        } else {
-            return ['status' => false];
+        if ($result) {
+            set_config('has_subscription', $result->status, 'tiny_cursive');
         }
     } catch (dml_exception $e) {
-        // Return failure status with error message.
-        return [
-            'status' => false,
-        ];
+        throw new moodle_exception($e->getMessage());
     }
 }
