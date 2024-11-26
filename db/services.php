@@ -216,15 +216,6 @@ $functions = [
         'ajax' => true,
         'capabilities' => 'tiny/cursive:editsettings',
     ],
-    'cursive_check_subscriptions' => [
-        'classname' => 'cursive_json_func_data',
-        'methodname' => 'check_subscriptions',
-        'classpath' => '/lib/editor/tiny/plugins/cursive/externallib.php',
-        'description' => 'get user configuration',
-        'type' => 'write',
-        'ajax' => true,
-        'capabilities' => 'tiny/cursive:writingreport',
-    ],
 ];
 
 // We define the services to install as pre-build services.

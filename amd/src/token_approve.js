@@ -28,15 +28,6 @@ define(["jquery", "core/ajax", "core/str"], function (
   var usersTable = {
     init: function (page) {
 
-      AJAX.call([
-        {
-          methodname: "cursive_check_subscriptions",
-          args: [],
-        },
-      ])[0].done(function (res) {
-       console.log(res);
-      });
-
       str
         .get_strings([
           { key: "field_require", component: "tiny_cursive" },

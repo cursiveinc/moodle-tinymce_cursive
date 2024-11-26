@@ -25,8 +25,15 @@
 
 defined('MOODLE_INTERNAL') || die;
 
+require_once(__DIR__.'/locallib.php');
 global $CFG, $PAGE, $OUTPUT;
+
 $PAGE->requires->js_call_amd('tiny_cursive/token_approve', 'init', [1]);
+$param = optional_param('section', null, PARAM_TEXT);
+
+if ($param === "tiny_cursive_settings") {
+    tiny_cursive_check_subscriptions();
+}
 
 if (is_siteadmin()) {
     $settings->add(
@@ -36,8 +43,7 @@ if (is_siteadmin()) {
             get_string('pluginname_desc', 'tiny_cursive')
         )
     );
-    $restweblink = $CFG->wwwroot . '/admin/settings.php?section=webserviceprotocols';
-    $createtoken = $CFG->wwwroot . '/admin/webservice/tokens.php';
+
     $settings->add(
         new admin_setting_configtext(
             'tiny_cursive/secretkey',
