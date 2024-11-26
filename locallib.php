@@ -383,3 +383,44 @@ function tiny_cursive_render_user_table($users, $renderer, $courseid, $page, $li
     echo html_writer::link($url, $linktext, $attributes);
     echo $renderer->timer_report($users, $courseid, $page, $limit, $linkurl);
 }
+
+function tiny_cursive_check_subscriptions() {
+    global $DB, $CFG;
+    require_once("$CFG->libdir/filelib.php");
+
+    $token = get_config('tiny_cursive', 'secretkey');
+
+    if (!$token) {
+        return ['status' => false];
+    }
+    try {
+        $remoteurl = get_config('tiny_cursive', 'python_server') . '/verify-role';
+        $moodleurl = $CFG->wwwroot;
+
+        $curl = new curl();
+        $options = [
+            'CURLOPT_RETURNTRANSFER' => true,
+            'CURLOPT_HTTPHEADER' => [
+                'Authorization: Bearer ' . $token,
+                'X-Moodle-Url: ' . $moodleurl,
+                'Content-Type: multipart/form-data',
+                'Accept: application/json',
+            ],
+        ];
+
+        // Prepare POST fields.
+        $postfields = [
+            'token' => $token,
+            'moodle_url' => $moodleurl,
+        ];
+        $result = '';
+        // Execute the request.
+        $result = $curl->post($remoteurl, $postfields, $options);
+        $result = json_decode($result);
+        if ($result) {
+            set_config('has_subscription', $result->status, 'tiny_cursive');
+        }
+    } catch (dml_exception $e) {
+        throw new moodle_exception($e->getMessage());
+    }
+}
