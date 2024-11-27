@@ -101,7 +101,7 @@ if (is_siteadmin()) {
             'tiny_cursive/syncinterval',
             get_string('syncinterval', 'tiny_cursive'),
             get_string('syncinterval_des', 'tiny_cursive'),
-            '10 sec',
+            10,
             PARAM_TEXT
         )
     );
