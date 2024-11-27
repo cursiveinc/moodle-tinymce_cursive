@@ -54,7 +54,7 @@ export const register = (editor, interval) => {
     let classes = document.body.className.split(' ');
     var cmid = 0;
     var questionid = 0;
-    var syncInterval = interval ? interval  * 1000 : 10000; // Default: Sync Every 10s.
+    var syncInterval = interval ? interval * 1000 : 10000; // Default: Sync Every 10s.
 
     const postOne = async (methodname, args) => {
         try {
@@ -72,7 +72,9 @@ export const register = (editor, interval) => {
     if (document.getElementById('page-mod-assign-editsubmission')) {
         if (assignSubmit) {
             assignSubmit.addEventListener('click', async function (e) {
+                if(assignSubmit.getAttribute('disabled') == 'true') return;
                 e.preventDefault();
+                assignSubmit.disabled = true;
                 if (filename) {
                     await SyncData().then((res) => {
                         assignSubmit.removeEventListener('click', arguments.callee);
