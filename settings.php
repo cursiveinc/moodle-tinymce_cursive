@@ -126,7 +126,7 @@ if (is_siteadmin()) {
             'tiny_cursive/qualityaccess', // Setting name
             get_string('quality_access', "tiny_cursive"), // Visible name
             get_string('quality_access_des', 'tiny_cursive'), // Description
-            'Enabled', // Default value
+            false, // Default value
             [ // Options
                 true => get_string('enabled', 'tiny_cursive'),
                 false => get_string('disabled', 'tiny_cursive'),
