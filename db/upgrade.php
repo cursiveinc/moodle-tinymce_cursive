@@ -81,6 +81,16 @@ function xmldb_tiny_cursive_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2024060228, 'tiny', 'cursive');
     }
 
+    if ($oldversion < 2024060272) {
+        $table = new xmldb_table('tiny_cursive_user_writing');
+        $field = new xmldb_field('quality_access', XMLDB_TYPE_INTEGER, 2, null, XMLDB_NOTNULL, null, '0', 'copy_behavior');
+
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        upgrade_plugin_savepoint(true, 2024060272, 'tiny', 'cursive');
+    }
+
     return true;
 }
 
