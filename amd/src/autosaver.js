@@ -72,9 +72,7 @@ export const register = (editor, interval) => {
     if (document.getElementById('page-mod-assign-editsubmission')) {
         if (assignSubmit) {
             assignSubmit.addEventListener('click', async function (e) {
-                if(assignSubmit.getAttribute('disabled') == 'true') return;
                 e.preventDefault();
-                assignSubmit.disabled = true;
                 if (filename) {
                     await SyncData().then((res) => {
                         assignSubmit.removeEventListener('click', arguments.callee);
