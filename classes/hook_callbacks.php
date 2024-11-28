@@ -67,7 +67,7 @@ class hook_callbacks {
             $PAGE->requires->js_call_amd('tiny_cursive/settings', 'init', [$showcomments, $userrole]);
 
             $context = context_module::instance($cmid);
-            $capcheck = has_capability('tiny/cursive:view', $context, $USER->id);
+            $capcheck = has_capability('tiny/cursive:writingreport', $context, $USER->id);
 
             if ($capcheck) {
                 switch ($PAGE->bodyid) {
@@ -144,9 +144,14 @@ class hook_callbacks {
         $mform->setDefault('cursive_status', $default);
     }
 
+    /**
+     * Hook to handle form submission after it is processed.
+     *
+     * @param after_form_submission $hook The hook instance containing the form submission data
+     */
     public static function after_form_submission(after_form_submission $hook) {
         $courseid = $hook->get_data()->id;
-        $status = $hook->get_data()->cursive_status;
+        $status = $hook->get_data()->cursive_status ?? false;
         $name = "cursive-$courseid";
         set_config($name, $status, 'tiny_cursive');
     }

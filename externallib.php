@@ -46,6 +46,7 @@ class cursive_json_func_data extends external_api {
 
 
 
+
     /**
      * get_user_list_parameters.
      *
@@ -680,7 +681,7 @@ class cursive_json_func_data extends external_api {
                     "userid" => $params['userid'],
                 ],
             );
-            // $filep = $CFG->tempdir . "/userdata/" . $filename->filename;
+
             $data['filename'] = $filename->filename;
             $data['questionid'] = $params['questionid'];
 
@@ -759,7 +760,6 @@ class cursive_json_func_data extends external_api {
                     'modulename' => $params['modulename'],
                 ]);
 
-                // $filep = $CFG->tempdir . "/userdata/" . $filename->filename;
                 $data['filename'] = $filename->filename;
 
             }
@@ -869,8 +869,6 @@ class cursive_json_func_data extends external_api {
                 ['resourceid' => $params['id'], 'cmid' => $params['cmid'], 'modulename' => $params['modulename']],
             );
 
-            // $filep = $CFG->tempdir . "/userdata/" . $filename->filename;
-
             $data['filename'] = $filename->filename;
             $data['file_id'] = $filename->file_id;
 
@@ -882,10 +880,7 @@ class cursive_json_func_data extends external_api {
                 $data['first_file'] = 1;
             }
         }
-        // else {
-        // $filep = $CFG->tempdir . "/userdata/" . $data['filename'];
-        // $data['filename'] = $data['filename'];
-        // }
+
         $sql = 'SELECT *
                   FROM {tiny_cursive_files}
                  WHERE userid = :userid ORDER BY id ASC LIMIT 1';
@@ -997,7 +992,6 @@ class cursive_json_func_data extends external_api {
                     ['resourceid' => $params['id'], 'cmid' => $params['cmid'], 'modulename' => $params['modulename']],
                 );
 
-                // $filep = $CFG->tempdir . "/userdata/" . $filename->filename;
                 $data['filename'] = $filename->filename;
             }
 
@@ -1030,7 +1024,6 @@ class cursive_json_func_data extends external_api {
                     ['resourceid' => $params['id'], 'cmid' => $params['cmid'], 'modulename' => $params['modulename']],
                 );
 
-                // $filep = $CFG->tempdir . "/userdata/" . $filename->filename;
                 $data['filename'] = $filename->filename;
             }
         }
@@ -1213,9 +1206,6 @@ class cursive_json_func_data extends external_api {
             $data['userid'] = $filename->userid;
         }
         if ($data['filename']) {
-
-            // $filep = $CFG->tempdir . "/userdata/" . $data['filename'];
-            // $data['filename'] = $filep;
 
             $sql = 'SELECT id AS fileid
                       FROM {tiny_cursive_files}
@@ -1412,6 +1402,7 @@ class cursive_json_func_data extends external_api {
      * @param float $backspacepercent Percentage of backspace usage
      * @param string $copybehavior Copy/paste behavior flag
      * @param float $score Writing score
+     * @param  int $qualityaccess Quality access flag
      * @return array Array containing status and message
      */
     public static function store_user_writing(
@@ -1427,7 +1418,7 @@ class cursive_json_func_data extends external_api {
         $backspacepercent,
         $copybehavior,
         $score,
-        $qualityaccess
+        $qualityaccess,
     ) {
         global $DB;
 
@@ -1549,12 +1540,10 @@ class cursive_json_func_data extends external_api {
 
         $data = new stdClass;
         try {
-            // $filename = explode('/', $params['filepath']);
-            // $filename = end($filename);
+
             $filedata = $DB->get_record('tiny_cursive_files', ['filename' => $params['filepath']]);
             $content = $filedata->content ? $filedata->content : $content = false;
             $data->status = true;
-            // }
 
             if ($content === false) {
                 $data->status = false;
@@ -1958,7 +1947,12 @@ class cursive_json_func_data extends external_api {
                 'questionid' => $questionid,
             ]);
         } else {
-            $inp = $DB->get_record($table, ['cmid' => $params['cmid'], 'modulename' => $params['modulename'], 'resourceid' => $params['resourceId'], 'userid' => $USER->id]);
+            $inp = $DB->get_record($table, [
+                'cmid' => $params['cmid'],
+                'modulename' => $params['modulename'],
+                'resourceid' => $params['resourceId'],
+                'userid' => $USER->id,
+            ]);
         }
         $temparray = [];
         if ($inp) {
@@ -1974,12 +1968,6 @@ class cursive_json_func_data extends external_api {
             $DB->update_record($table, $inp);
             return 'true';
         } else {
-
-            // $jsondata = json_decode($params['json_data'], true);
-            // foreach ($jsondata as $value) {
-            // $userdata = $value;
-            // array_push($temparray, $userdata);
-            // }
             $dataobj = new stdClass();
             $dataobj->userid = $USER->id;
             $dataobj->resourceid = $params['resourceId'];
@@ -1995,12 +1983,6 @@ class cursive_json_func_data extends external_api {
             return $fname;
         }
 
-        // $jsondata = json_encode($temparray);
-
-        // if (is_array($temparray)) {
-        // file_put_contents($filename, $jsondata);
-        // }
-
     }
 
     /**
@@ -2012,6 +1994,11 @@ class cursive_json_func_data extends external_api {
         return new external_value(PARAM_TEXT, 'filename');
     }
 
+    /**
+     * Returns the parameters for the cursive_get_config function
+     *
+     * @return external_function_parameters Parameters definition for the external function
+     */
     public static function cursive_get_config_parameters() {
         return new external_function_parameters([
             'courseid' => new external_value(PARAM_INT, 'course id', VALUE_DEFAULT, 0),
@@ -2019,6 +2006,13 @@ class cursive_json_func_data extends external_api {
         ]);
     }
 
+    /**
+     * Get cursive configuration settings for a course and course module
+     *
+     * @param int $courseid The course ID to get config for
+     * @param int $cmid The course module ID to get config for
+     * @return array Array containing config status and sync interval
+     */
     public static function cursive_get_config($courseid, $cmid) {
         global $PAGE;
         $params = self::validate_parameters(
@@ -2038,10 +2032,15 @@ class cursive_json_func_data extends external_api {
         return ['status' => $config, 'sync_interval' => $syncinterval];
     }
 
+    /**
+     * Returns description of method result value for cursive_get_config
+     *
+     * @return external_single_structure Returns a structure containing config status and sync interval
+     */
     public static function cursive_get_config_returns() {
         return new external_single_structure([
             'status' => new external_value(PARAM_BOOL, 'config'),
-            'sync_interval' => new external_value(PARAM_TEXT, 'Data Sync interval')
+            'sync_interval' => new external_value(PARAM_TEXT, 'Data Sync interval'),
         ]);
     }
 
@@ -2077,20 +2076,29 @@ class cursive_json_func_data extends external_api {
     }
 
     /**
-     * Stores user writing data in the database
+     * Store quality metrics data for a file
      *
-     * @param int $personid User ID
-     * @param int $fileid File ID to store data for
-     * @param int $charactercount Total number of characters typed
-     * @param int $totaltimeseconds Total time spent writing in seconds
-     * @param float $charactersperminute Characters typed per minute
-     * @param int $keycount Total number of keystrokes
-     * @param float $keysperminute Keystrokes per minute
-     * @param int $wordcount Total number of words written
-     * @param float $wordsperminute Words written per minute
-     * @param float $backspacepercent Percentage of backspace usage
-     * @param string $copybehavior Copy/paste behavior flag
-     * @param float $score Writing score
+     * @param int $fileid File identifier
+     * @param float $totalactivetime Total active writing time in seconds
+     * @param float $totalactivetimestatic Total active writing time in seconds (static)
+     * @param float $edits Number of edits made
+     * @param float $editsstatic Number of edits made (static)
+     * @param float $verbosity Verbosity score
+     * @param float $verbositystatic Verbosity score (static)
+     * @param float $wordcount Total number of words
+     * @param float $wordcountstatic Total number of words (static)
+     * @param float $sentencecount Total number of sentences
+     * @param float $sentencecountstatic Total number of sentences (static)
+     * @param float $qcount Number of questions
+     * @param float $qcountstatic Number of questions (static)
+     * @param float $wordlenmean Average word length
+     * @param float $wordlenmeanstatic Average word length (static)
+     * @param float $sentwordcountmean Average words per sentence
+     * @param float $sentwordcountmeanstatic Average words per sentence (static)
+     * @param float $pburstmean Average pause burst duration
+     * @param float $pburstmeanstatic Average pause burst duration (static)
+     * @param float $pburstcnt Number of pause bursts
+     * @param float $pburstcntstatic Number of pause bursts (static)
      * @return array Array containing status and message
      */
     public static function store_quality_metrics(
@@ -2212,6 +2220,13 @@ class cursive_json_func_data extends external_api {
         ]);
     }
 
+    /**
+     * Returns the parameter structure for the get_quality_metrics function
+     *
+     * @return external_function_parameters The parameters structure containing:
+     *         - file_id (int): Required file identifier parameter
+     *         - cmid (int): Required course module ID parameter
+     */
     public static function get_quality_metrics_parameters() {
         return new external_function_parameters([
             'file_id' => new external_value(PARAM_INT, 'File identifier', VALUE_REQUIRED),
@@ -2219,6 +2234,15 @@ class cursive_json_func_data extends external_api {
         ]);
     }
 
+    /**
+     * Retrieves quality metrics data for a specific file
+     *
+     * @param int $fileid The ID of the file to get metrics for
+     * @param int $cmid The course module ID
+     * @return array Returns an array containing:
+     *               - status (bool): Whether the operation was successful
+     *               - data (object): The quality metrics data object
+     */
     public static function get_quality_metrics($fileid, $cmid) {
         global $DB;
 
@@ -2250,7 +2274,7 @@ class cursive_json_func_data extends external_api {
                 'total_active_time' => 21.58,
                 'verbosity' => 1617.83,
                 'word_count' => 190.67,
-                'sent_word_count_mean' => 14.27170659
+                'sent_word_count_mean' => 14.27170659,
             ];
 
             if ($subscription) {
@@ -2263,9 +2287,9 @@ class cursive_json_func_data extends external_api {
                 foreach ($defaults as $key => &$default) {
                     $default = floatval(get_config('tiny_cursive', $key) ?: $default);
                     if ($customsettings) {
-                        $data->{$key} = round(floatval($data->{$key} / $default) * 100, 2);
+                        $data->{$key} = round(floatval(floatval($data->{$key}) / $default) * 100, 2);
                     } else {
-                        $data->{$key} = round(floatval($data->{$key} / $data->{$key."_static"}) * 100, 2);
+                        $data->{$key} = round(floatval(floatval($data->{$key}) / floatval($data->{$key . "_static"})) * 100, 2);
                     }
 
                 }
@@ -2277,7 +2301,8 @@ class cursive_json_func_data extends external_api {
                     $data->{$key} = 0.0;
                 }
             }
-
+            // var_dump($data);
+            // die;
             // Return success status.
             return [
                 'status' => true,
@@ -2286,12 +2311,32 @@ class cursive_json_func_data extends external_api {
         } catch (dml_exception $e) {
             // Return failure status with error message.
             return [
-                'status' => false,
-                'data' => $e->getMessage(),
+            'status' => false,
+            'data' => $e->getMessage(),
             ];
         }
     }
 
+    /**
+     * Returns the structure of the get_quality_metrics function's return value
+     *
+     * @return external_single_structure The return value structure containing:
+     *         - status (bool): Whether the operation was successful
+     *         - data (object): Object containing quality metrics data with fields:
+     *           - id (int): Record ID
+     *           - file_id (int): File identifier
+     *           - total_active_time (float): Total active writing time in seconds
+     *           - edits (float): Number of edits made
+     *           - verbosity (float): Verbosity score
+     *           - word_count (float): Total word count
+     *           - sentence_count (float): Total sentence count
+     *           - q_count (float): Question count
+     *           - word_len_mean (float): Mean word length
+     *           - sent_word_count_mean (float): Mean words per sentence
+     *           - p_burst_mean (float): Mean pause burst duration
+     *           - p_burst_cnt (float): Pause burst count
+     *           - quality_access (int): Quality access level
+     */
     public static function get_quality_metrics_returns() {
         return new external_single_structure([
             'status' => new external_value(PARAM_BOOL, 'status message'),

@@ -90,9 +90,8 @@ function tiny_cursive_extend_navigation_course(\navigation_node $navigation, \st
     $cmid = tiny_cursive_get_cmid($course->id);
     if ($cmid && get_config('tiny_cursive', "cursive-$course->id")) {
         $context = context_module::instance($cmid);
-        $iseditingteacher = has_capability("tiny/cursive:view", $context);
-
-        if (get_admin()->id == $USER->id || $iseditingteacher) {
+        $hascap = has_capability("tiny/cursive:editsettings", $context);
+        if ($hascap) {
             $navigation->add(
                 get_string('wractivityreport', 'tiny_cursive'),
                 $url,
@@ -116,20 +115,6 @@ function tiny_cursive_extend_navigation(global_navigation $navigation) {
         $home->remove();
     }
 }
-
-// function tiny_cursive_coursemodule_standard_elements($formwrapper, $mform) {
-// Call code to get examplefield from database
-// For example $existing = get_existing($coursemodule);
-// You have to write get_existing.
-// $modulename = $formwrapper->get_current()->modulename;
-
-// if ($modulename == 'assign') {
-// $mform->addElement('header', 'exampleheader', 'Cursive');
-// $mform->addElement('text', 'examplefield', 'Cursive');
-// $mform->setType('examplefield', PARAM_RAW);
-// Populate with $mform->setdefault('examplefield', $existing['examplefield']);.
-// }
-// }
 
 
 /**
@@ -184,18 +169,8 @@ function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath
         $remoteurl = get_config('tiny_cursive', 'python_server') . "/upload_file";
         $filetosend = '';
 
-        // Check if file exists or create one from base64 content.
-        // if (file_exists($filenamewithfullpath)) {
-        // Check if file size is within the limit.
-        // if (filesize($filenamewithfullpath) > 16 * 1024 * 1024) {
-        // throw new Exception("File exceeds the 16MB size limit.");
-        // }
-        // Use the file directly.
-        // $filetosend = new CURLFILE($filenamewithfullpath);
-        // } else {
-            // Save base64 decoded content to a temporary JSON file.
         $tempfilepath = tempnam(sys_get_temp_dir(), 'upload');
-            // $filecontent = base64_decode($filerecord->content);
+
         $jsoncontent = json_decode($filerecord->content, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
@@ -209,7 +184,6 @@ function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath
             unlink($tempfilepath);
             throw new Exception("File exceeds the 16MB size limit.");
         }
-        // }
 
         echo $remoteurl;
 
