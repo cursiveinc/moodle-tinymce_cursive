@@ -46,7 +46,7 @@ export const register = (editor, interval) => {
     var cmid = 0;
     var questionid = 0;
     let assignSubmit = jQuery('#id_submitbutton');
-    var syncInterval = interval ? interval  * 1000 : 10000; // Default: Sync Every 10s.
+    var syncInterval = interval ? interval * 1000 : 10000; // Default: Sync Every 10s.
 
     const postOne = async (methodname, args) => {
         try {
@@ -146,7 +146,7 @@ export const register = (editor, interval) => {
                         resourceid: recourceId,
                         courseid: courseid,
                         usercomment: number,
-                        timemodified: "1121232",
+                        timemodified: Date.now(),
                         editorid: editorid ? editorid : ""
                     });
                     lastEvent = 'save';

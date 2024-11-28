@@ -62,16 +62,14 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
         },
         getToken: function (score_setting, showcomment) {
             $('#page-mod-forum-discuss').find("article").get().forEach(function (entry) {
-                $(document).ready(function () {
-                    var replyButton = $('a[data-region="post-action"][title="Reply"]');
-                    if (replyButton.length > 0) {
-                        replyButton.on('click', function (event) {
-                            event.preventDefault();
-                            var url = $(this).attr('href');
-                            window.location.href = url;
-                        });
-                    }
-                });
+                var replyButton = $('a[data-region="post-action"][title="Reply"]');
+                if (replyButton.length > 0) {
+                    replyButton.on('click', function (event) {
+                        event.preventDefault();
+                        var url = $(this).attr('href');
+                        window.location.href = url;
+                    });
+                }
 
                 var ids = $("#" + entry.id).data("post-id");
                 var anchorTag = $('a.nav-link.active.active_tree_node[href*="mod/forum/view.php?id="]');
@@ -89,7 +87,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
 
                     var filepath = '';
                     if (data.data.filename) {
-                         filepath = data.data.filename;
+                        filepath = data.data.filename;
                     }
                     if (filepath) {
 

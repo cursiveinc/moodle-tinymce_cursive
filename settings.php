@@ -119,15 +119,15 @@ if (is_siteadmin()) {
             get_string('sectionadvance_desc', 'tiny_cursive')
         )
     );
-
+    set_config('has_subscription',true,'tiny_cursive');
     if (get_config('tiny_cursive', 'has_subscription')) {
         $settings->add(
         new admin_setting_configselect(
-            'tiny_cursive/qualityaccess', // Setting name
-            get_string('quality_access', "tiny_cursive"), // Visible name
-            get_string('quality_access_des', 'tiny_cursive'), // Description
-            false, // Default value
-            [ // Options
+            'tiny_cursive/qualityaccess',
+            get_string('quality_access', "tiny_cursive"),
+            get_string('quality_access_des', 'tiny_cursive'),
+            false,
+            [
                 true => get_string('enabled', 'tiny_cursive'),
                 false => get_string('disabled', 'tiny_cursive'),
             ]

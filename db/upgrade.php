@@ -129,71 +129,71 @@ function xmldb_tiny_cursive_upgrade($oldversion) {
                 'precision' => '10, 5',
                 'notnull' => XMLDB_NOTNULL,
                 'default' => '0',
-                'previous' => 'total_active_time'
+                'previous' => 'total_active_time',
             ],
             'edits_static' => [
                 'type' => XMLDB_TYPE_NUMBER,
                 'precision' => '10, 5',
                 'notnull' => XMLDB_NOTNULL,
                 'default' => '0',
-                'previous' => 'edits'
+                'previous' => 'edits',
             ],
             'verbosity_static' => [
                 'type' => XMLDB_TYPE_NUMBER,
                 'precision' => '10, 5',
                 'notnull' => XMLDB_NOTNULL,
                 'default' => '0',
-                'previous' => 'verbosity'
+                'previous' => 'verbosity',
             ],
             'word_count_static' => [
                 'type' => XMLDB_TYPE_NUMBER,
                 'precision' => '10, 5',
                 'notnull' => XMLDB_NOTNULL,
                 'default' => '0',
-                'previous' => 'word_count'
+                'previous' => 'word_count',
             ],
             'sentence_count_static' => [
                 'type' => XMLDB_TYPE_NUMBER,
                 'precision' => '10, 5',
                 'notnull' => XMLDB_NOTNULL,
                 'default' => '0',
-                'previous' => 'sentence_count'
+                'previous' => 'sentence_count',
             ],
             'q_count_static' => [
                 'type' => XMLDB_TYPE_NUMBER,
                 'precision' => '10, 5',
                 'notnull' => XMLDB_NOTNULL,
                 'default' => '0',
-                'previous' => 'q_count'
+                'previous' => 'q_count',
             ],
             'word_len_mean_static' => [
                 'type' => XMLDB_TYPE_NUMBER,
                 'precision' => '10, 5',
                 'notnull' => XMLDB_NOTNULL,
                 'default' => '0',
-                'previous' => 'word_len_mean'
+                'previous' => 'word_len_mean',
             ],
             'sent_word_count_mean_static' => [
                 'type' => XMLDB_TYPE_NUMBER,
                 'precision' => '10, 5',
                 'notnull' => XMLDB_NOTNULL,
                 'default' => '0',
-                'previous' => 'sent_word_count_mean'
+                'previous' => 'sent_word_count_mean',
             ],
             'p_burst_mean_static' => [
                 'type' => XMLDB_TYPE_NUMBER,
                 'precision' => '10, 5',
                 'notnull' => XMLDB_NOTNULL,
                 'default' => '0',
-                'previous' => 'p_burst_mean'
+                'previous' => 'p_burst_mean',
             ],
             'p_burst_cnt_static' => [
                 'type' => XMLDB_TYPE_NUMBER,
                 'precision' => '10, 5',
                 'notnull' => XMLDB_NOTNULL,
                 'default' => '0',
-                'previous' => 'p_burst_cnt'
-            ],        ];
+                'previous' => 'p_burst_cnt',
+            ], ];
 
         foreach ($fields as $fieldname => $attributes) {
             $field = new xmldb_field(
