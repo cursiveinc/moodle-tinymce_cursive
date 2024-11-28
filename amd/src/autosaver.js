@@ -63,8 +63,6 @@ export const register = (editor, interval) => {
 
     assignSubmit.on('click', async function (e) {
         e.preventDefault();
-        assignSubmit.prop('disabled', true); // Disable the button
-        
         if (filename) {
             SyncData().then(() => {
                 assignSubmit.off('click').click();
