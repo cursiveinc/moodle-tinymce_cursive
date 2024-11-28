@@ -41,7 +41,7 @@ define([], function() {
     let courseid = null;
 
     return {
-        setUserId: function(id,hostadd,cid) {
+        setUserId: function(id, hostadd, cid) {
             userId = id;
             host = hostadd;
             courseid = cid;
@@ -50,7 +50,7 @@ define([], function() {
             return {
                 userid: userId,
                 host: host,
-                courseid:courseid
+                courseid: courseid
             };
         }
     };

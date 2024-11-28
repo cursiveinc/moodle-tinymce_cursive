@@ -119,7 +119,7 @@ if (is_siteadmin()) {
             get_string('sectionadvance_desc', 'tiny_cursive')
         )
     );
-    set_config('has_subscription',true,'tiny_cursive');
+
     if (get_config('tiny_cursive', 'has_subscription')) {
         $settings->add(
         new admin_setting_configselect(

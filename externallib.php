@@ -2301,9 +2301,7 @@ class cursive_json_func_data extends external_api {
                     $data->{$key} = 0.0;
                 }
             }
-            // var_dump($data);
-            // die;
-            // Return success status.
+
             return [
                 'status' => true,
                 'data' => $data,

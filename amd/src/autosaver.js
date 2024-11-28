@@ -20,16 +20,16 @@
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  */
 
-import { call } from 'core/ajax';
-import { create } from 'core/modal_factory';
-import { get_string as getString } from 'core/str';
-import { save, cancel, hidden } from 'core/modal_events';
+import {call} from 'core/ajax';
+import {create} from 'core/modal_factory';
+import {get_string as getString} from 'core/str';
+import {save, cancel, hidden} from 'core/modal_events';
 import jQuery from 'jquery';
 import user from 'tiny_cursive/user';
 
 export const register = (editor, interval) => {
 
-    var is_student = !(jQuery('#body').hasClass('teacher_admin'));
+    var isStudent = !(jQuery('#body').hasClass('teacher_admin'));
     var intervention = jQuery('#body').hasClass('intervention');
     var userid = null;
     var host = null;
@@ -48,7 +48,7 @@ export const register = (editor, interval) => {
     let assignSubmit = jQuery('#id_submitbutton');
     var syncInterval = interval ? interval * 1000 : 10000; // Default: Sync Every 10s.
 
-    const postOne = async (methodname, args) => {
+    const postOne = async(methodname, args) => {
         try {
             const response = await call([{
                 methodname,
@@ -61,10 +61,11 @@ export const register = (editor, interval) => {
         }
     };
 
-    assignSubmit.on('click', async function (e) {
+    assignSubmit.on('click', async function(e) {
         e.preventDefault();
         if (filename) {
-            SyncData().then(() => {
+            // eslint-disable-next-line
+            syncData().then(() => {
                 assignSubmit.off('click').click();
             });
         } else {
@@ -72,10 +73,11 @@ export const register = (editor, interval) => {
         }
     });
 
-    quizSubmit.on('click', async function (e) {
+    quizSubmit.on('click', async function(e) {
         e.preventDefault();
         if (filename) {
-            SyncData().then(() => {
+            // eslint-disable-next-line
+            syncData().then(() => {
                 quizSubmit.off('click').click();
             });
         } else {
@@ -95,10 +97,12 @@ export const register = (editor, interval) => {
                 modal.getRoot().append('<style>.close{ display: none ! important; }</style>');
                 modal.show();
                 var lastEvent = '';
-                modal.getRoot().on(save, function () {
+                // eslint-disable-next-line
+                modal.getRoot().on(save, function() {
                     var number = document.getElementById("inputUrl").value;
                     if (number === "" || number === null || number === undefined) {
                         editor.execCommand('Undo');
+                        // eslint-disable-next-line
                         alert("You cannot paste text without providing source");
                     } else {
                         editor.execCommand('Paste');
@@ -117,7 +121,7 @@ export const register = (editor, interval) => {
                         return classname.startsWith('cmid-');
                     }).split('-')[1]); // Getting cmid from body classlist.
 
-
+                    // eslint-disable-next-line
                     if (ur.includes("attempt.php") || ur.includes("forum") || ur.includes("assign")) { } else {
                         return false;
                     }
@@ -138,7 +142,9 @@ export const register = (editor, interval) => {
                     if (ur.includes("attempt")) {
                         modulename = "quiz";
                     }
-                    if (cmid === null) { cmid = 0; }
+                    if (cmid === null) {
+                        cmid = 0;
+                    }
 
                     postOne('cursive_user_comments', {
                         modulename: modulename,
@@ -152,17 +158,20 @@ export const register = (editor, interval) => {
                     lastEvent = 'save';
                     modal.destroy();
                 });
-                modal.getRoot().on(cancel, function () {
+                modal.getRoot().on(cancel, function() {
 
                     editor.execCommand('Undo');
                     lastEvent = 'cancel';
                 });
-                modal.getRoot().on(hidden, function () {
-                    if (lastEvent != 'cancel' && lastEvent != 'save') { editor.execCommand('Undo'); }
+                modal.getRoot().on(hidden, function() {
+                    if (lastEvent != 'cancel' && lastEvent != 'save') {
+                        editor.execCommand('Undo');
+                    }
                 });
                 return modal;
             });
     };
+    // eslint-disable-next-line
     const sendKeyEvent = (events, eds) => {
         let ur = eds.srcElement.baseURI;
         let parm = new URL(ur);
@@ -177,12 +186,12 @@ export const register = (editor, interval) => {
                 return classname.startsWith('cmid-');
             }).split('-')[1]); // Getting cmid from body classlist.
         }
-
+        // eslint-disable-next-line
         if (ur.includes("attempt.php") || ur.includes("forum") || ur.includes("assign")) { } else {
             return false;
         }
+        // eslint-disable-next-line
         if (ur.includes("forum") || ur.includes("assign")) {
-
         } else {
 
             recourceId = parm.searchParams.get('attempt');
@@ -243,13 +252,13 @@ export const register = (editor, interval) => {
     editor.on('keyUp', (editor) => {
         sendKeyEvent("keyUp", editor);
     });
-    editor.on('Paste', async (e) => {
-        if (is_student && intervention) {
+    editor.on('Paste', async(e) => {
+        if (isStudent && intervention) {
             getModal(e);
         }
     });
-    editor.on('Redo', async (e) => {
-        if (is_student && intervention) {
+    editor.on('Redo', async(e) => {
+        if (isStudent && intervention) {
             getModal(e);
         }
     });
@@ -264,14 +273,14 @@ export const register = (editor, interval) => {
     });
 
     /**
- * Synchronizes data from localStorage to server
- * @async
- * @function SyncData
- * @description Retrieves stored keypress data from localStorage and sends it to server
- * @returns {Promise} Returns response from server if data exists and is successfully sent
- * @throws {Error} Logs error to console if data submission fails
- */
-    async function SyncData() {
+     * Synchronizes data from localStorage to server
+     * @async
+     * @function SyncData
+     * @description Retrieves stored keypress data from localStorage and sends it to server
+     * @returns {Promise} Returns response from server if data exists and is successfully sent
+     * @throws {Error} Logs error to console if data submission fails
+     */
+    async function syncData() {
 
         let data = localStorage.getItem(filename);
 
@@ -280,6 +289,7 @@ export const register = (editor, interval) => {
         } else {
             localStorage.removeItem(filename);
             try {
+                // eslint-disable-next-line
                 return await postOne('cursive_write_local_to_json', {
                     key: ed.key,
                     event: event,
@@ -288,7 +298,7 @@ export const register = (editor, interval) => {
                     cmid: cmid,
                     modulename: modulename,
                     editorid: editorid,
-                    json_data: data,
+                    "json_data": data,
                 });
             } catch (error) {
                 window.console.error('Error submitting data:', error);
@@ -297,8 +307,8 @@ export const register = (editor, interval) => {
     }
 
     window.addEventListener('unload', () => {
-        SyncData();
+        syncData();
     });
 
-    setInterval(SyncData, syncInterval);
+    setInterval(syncData, syncInterval);
 };
