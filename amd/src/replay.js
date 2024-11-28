@@ -53,13 +53,16 @@ export default class Replay {
                 }
                 this.startReplay();
             } else {
+                // eslint-disable-next-line
                 templates.render('tiny_cursive/no_submission').then(html => {
                     let updatedHtml = html.replace('No Submission', "Something Went Wrong! or File Not Found!");
                     $('.tiny_cursive').html(updatedHtml);
                 });
             }
+            return true;
         })
         .catch(error => {
+            // eslint-disable-next-line
             templates.render('tiny_cursive/no_submission').then(html => {
                 let updatedHtml = html.replace('No Submission', "Something Went Wrong! or File Not Found!");
                 $('.tiny_cursive').html(updatedHtml);
@@ -105,12 +108,13 @@ export default class Replay {
             },
         }])[0].done(response => {
             return response;
-        }).fail(error => { throw new Error('Error loading JSON file: ' + error.message); });
+        }).fail(error => { throw new Error('Error loading JSON file: ' + error.message);
+        });
     }
 
-    // call this to make a "start" or "start over" function
+    // Call this to make a "start" or "start over" function
     startReplay() {
-        // clear previous instances of timeout to prevent multiple running at once
+        // Clear previous instances of timeout to prevent multiple running at once
         if (this.replayInProgress) {
             clearTimeout(this.replayTimeout);
         }
@@ -126,7 +130,7 @@ export default class Replay {
         this.replayLog();
     }
 
-    // called by startReplay() to recursively call through keydown events
+    // Called by startReplay() to recursively call through keydown events
     replayLog() {
         let textOutput = "";
         let index = 0;
@@ -135,7 +139,7 @@ export default class Replay {
             if (this.replayInProgress) {
                 if (index < this.logData.length) {
                     let event = this.logData[index++];
-                    if (event.event.toLowerCase() === 'keydown') { // can sometimes be keydown or keyDown
+                    if (event.event.toLowerCase() === 'keydown') {
                         textOutput = this.applyKey(event.key, textOutput);
                     }
                     this.outputElement.innerHTML = textOutput;
@@ -166,12 +170,12 @@ export default class Replay {
         this.setScrubberVal(100);
     }
 
-    // used by the scrubber to skip to a certain percentage of data
+    // Used by the scrubber to skip to a certain percentage of data
     skipToTime(percentage) {
         if (this.replayInProgress) {
             this.replayInProgress = false;
         }
-        // only go through certain % of log data
+        // Only go through certain % of log data
         let textOutput = "";
         const numElementsToProcess = Math.ceil(this.logData.length * percentage / 100);
         for (let i = 0; i < numElementsToProcess; i++) {
@@ -184,7 +188,7 @@ export default class Replay {
         this.setScrubberVal(percentage);
     }
 
-    // used in various places to add a keydown, backspace, etc. to the output
+    // Used in various places to add a keydown, backspace, etc. to the output
     applyKey(key, textOutput) {
         switch (key) {
             case "Enter":

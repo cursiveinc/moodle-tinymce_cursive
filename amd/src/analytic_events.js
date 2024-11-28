@@ -60,7 +60,7 @@ export default class AnalyticEvents {
                 $('#content' + userid).html(html);
                 $('#content' + userid + ' .table tbody tr:first-child td:nth-child(2)').html(authIcon);
                 return true;
-            }).fail(function (error) {
+            }).fail(function(error) {
                 window.console.error("Failed to render template:", error);
             });
         });

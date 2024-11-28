@@ -20,7 +20,7 @@
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  */
 
-define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './analytic_button', "./analytic_events"], function (
+define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './analytic_button', "./analytic_events"], function(
     $,
     AJAX,
     str,
@@ -30,6 +30,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
     AnalyticEvents
 ) {
     const replayInstances = {};
+    // eslint-disable-next-line
     window.video_playback = function (mid, filepath) {
         if (filepath !== '') {
             const replay = new Replay(
@@ -42,6 +43,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
             replayInstances[mid] = replay;
         }
         else {
+            // eslint-disable-next-line
             templates.render('tiny_cursive/no_submission').then(html => {
                 $('#content' + mid).html(html);
             }).catch(e => window.console.error(e));
@@ -50,20 +52,20 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
 
     };
     var usersTable = {
-        init: function (page) {
+        init: function(page) {
             str
                 .get_strings([
-                    { key: "field_require", component: "tiny_cursive" },
+                    {key: "field_require", component: "tiny_cursive"},
                 ])
-                .done(function () {
+                .done(function() {
                     usersTable.getusers(page);
                 });
 
             let myEvents = new AnalyticEvents();
-            (async function () {
+            (async function() {
                 try {
-                    let score_setting = await str.get_string('confidence_threshold', 'tiny_cursive');
-                    analyticsEvents(score_setting);
+                    let scoreSetting = await str.get_string('confidence_threshold', 'tiny_cursive');
+                    analyticsEvents(scoreSetting);
                 } catch (error) {
                     window.console.error('Error fetching string:', error);
                 }
@@ -77,11 +79,11 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
              * statistics. Once the data is retrieved, it processes and displays it within
              * the modal.
              *
-             * @param {Object} score_setting - Configuration settings related to scoring.
+             * @param {Object} scoreSetting - Configuration settings related to scoring.
              */
-            function analyticsEvents(score_setting) {
+            function analyticsEvents(scoreSetting) {
 
-                $(".analytic-modal").each(function () {
+                $(".analytic-modal").each(function() {
                     var mid = $(this).data("id");
                     var filepath = $(this).data("filepath");
                     let context = {};
@@ -101,7 +103,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
                         context.formattime = myEvents.formatedTime(data);
                         context.tabledata = data;
                         // Perform actions that require context.tabledata
-                        let authIcon = myEvents.authorshipStatus(data.first_file, data.score, score_setting);
+                        let authIcon = myEvents.authorshipStatus(data.first_file, data.score, scoreSetting);
                         myEvents.createModal(mid, context, '', authIcon);
                         myEvents.analytics(mid, templates, context, '', replayInstances, authIcon);
                         myEvents.checkDiff(mid, mid, '', replayInstances);
@@ -114,8 +116,8 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
                 });
             }
         },
-        getusers: function (page) {
-            $("#id_coursename").change(function () {
+        getusers: function(page) {
+            $("#id_coursename").change(function() {
                 var courseid = $(this).val();
                 var promise1 = AJAX.call([
                     {
@@ -125,18 +127,20 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
                         },
                     },
                 ]);
-                promise1[0].done(function (json) {
+                promise1[0].done(function(json) {
                     var data = JSON.parse(json);
                     var context = {
                         tabledata: data,
                         page: page,
                     };
+                    // eslint-disable-next-line
                     templates
                         .render("tiny_cursive/user_list", context)
-                        .then(function (html) {
+                        .then(function(html) {
 
-                            var filtered_user = $("#id_username");
-                            filtered_user.html(html);
+                            var filteredUser = $("#id_username");
+                            filteredUser.html(html);
+                            return true;
                         });
                 });
 
@@ -148,18 +152,20 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
                         },
                     },
                 ]);
-                promise2[0].done(function (json) {
+                promise2[0].done(function(json) {
                     var data = JSON.parse(json);
                     var context = {
                         tabledata: data,
                         page: page,
                     };
+                    // eslint-disable-next-line
                     templates
                         .render("tiny_cursive/module_list", context)
-                        .then(function (html) {
+                        .then(function(html) {
 
-                            var filtered_user = $("#id_modulename");
-                            filtered_user.html(html);
+                            var filteredUser = $("#id_modulename");
+                            filteredUser.html(html);
+                            return true;
                         });
                 });
             });

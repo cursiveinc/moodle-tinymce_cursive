@@ -20,7 +20,7 @@
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  */
 
-define(["jquery", "core/ajax", "core/str"], function (
+define(["jquery", "core/ajax", "core/str"], function(
   $,
   AJAX,
   str,
@@ -30,15 +30,15 @@ define(["jquery", "core/ajax", "core/str"], function (
 
       str
         .get_strings([
-          { key: "field_require", component: "tiny_cursive" },
+          {key: "field_require", component: "tiny_cursive"},
         ])
-        .done(function () {
+        .done(function() {
           usersTable.getToken(page);
           usersTable.generateToken();
         });
     },
-    getToken: function () {
-      $("#approve_token").click(function () {
+    getToken: function() {
+      $("#approve_token").click(function() {
         var token = $('#id_s_tiny_cursive_secretkey').val();
         var promise1 = AJAX.call([
           {
@@ -50,13 +50,13 @@ define(["jquery", "core/ajax", "core/str"], function (
         ]);
         promise1[0].done(function (json) {
           var data = JSON.parse(json);
-          var message_alert = '';
+          var messageAlert = '';
           if (data.status == true) {
-            message_alert = "<span class='alert alert-success' role='alert'>" + data.message + "</span>";
+            messageAlert = "<span class='alert alert-success' role='alert'>" + data.message + "</span>";
           } else {
-            message_alert = "<span class='alert alert-danger' role='alert'>" + data.message + "</span>";
+            messageAlert = "<span class='alert alert-danger' role='alert'>" + data.message + "</span>";
           }
-          $("#token_message").html(message_alert);
+          $("#token_message").html(messageAlert);
         });
 
       });
@@ -64,7 +64,7 @@ define(["jquery", "core/ajax", "core/str"], function (
 
     generateToken() {
       var generateToken = $('#generate_cursivetoken');
-      generateToken.on('click', function (e) {
+      generateToken.on('click', function(e) {
         e.preventDefault();
         var promise1 = AJAX.call([
           {
@@ -72,15 +72,15 @@ define(["jquery", "core/ajax", "core/str"], function (
             args: []
           },
         ]);
-        promise1[0].done(function (data) {
-          var message_alert = '';
+        promise1[0].done(function(data) {
+          var messageAlert = '';
           if (data.token) {
             $('#id_s_tiny_cursive_cursivetoken').val(data.token);
-            message_alert = "<span class='text-success' role='alert'>Webservice Token Generation Success</span>";
+            messageAlert = "<span class='text-success' role='alert'>Webservice Token Generation Success</span>";
           } else {
-            message_alert = "<span class='text-danger' role='alert'>Webservice Token Generation Failed</span>";
+            messageAlert = "<span class='text-danger' role='alert'>Webservice Token Generation Failed</span>";
           }
-          $("#cursivetoken_").html(message_alert);
+          $("#cursivetoken_").html(messageAlert);
           setTimeout(() => {
             $("#cursivetoken_").empty();
           }, 3000);
