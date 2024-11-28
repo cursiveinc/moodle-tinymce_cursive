@@ -28,7 +28,7 @@ define([
     "./replay",
     './analytic_button',
     './analytic_events',
-    'core/str'], function (
+    'core/str'], function(
     $,
     AJAX,
     str,
@@ -40,7 +40,7 @@ define([
 ) {
     const replayInstances = {};
     // eslint-disable-next-line camelcase
-    window.video_playback = function (mid, filepath) {
+    window.video_playback = function(mid, filepath) {
 
         if (filepath !== '') {
             const replay = new Replay(

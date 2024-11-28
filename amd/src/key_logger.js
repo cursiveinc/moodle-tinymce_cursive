@@ -20,7 +20,7 @@
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  */
 
-define(["jquery", "core/ajax", "core/str", "core/templates"], function (
+define(["jquery", "core/ajax", "core/str", "core/templates"], function(
   $,
   AJAX,
   str,
@@ -42,7 +42,9 @@ define(["jquery", "core/ajax", "core/str", "core/templates"], function (
               var smid = $(this).data("id");
               $("#" + smid).show();
             });
-            $(".modal-close ").on('click', function() {$(".modal").hide();});
+            $(".modal-close ").on('click', function() {
+              $(".modal").hide();
+            });
           });
           usersTable.getusers(page);
         });
@@ -81,9 +83,9 @@ define(["jquery", "core/ajax", "core/str", "core/templates"], function (
             args: {
               courseid: courseid,
             },
-          },
+          }
         ]);
-        promise2[0].done(function (json) {
+        promise2[0].done(function(json) {
           var data = JSON.parse(json);
           var context = {
             tabledata: data,

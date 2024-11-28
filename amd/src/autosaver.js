@@ -61,7 +61,7 @@ export const register = (editor, interval) => {
         }
     };
 
-    assignSubmit.on('click', async function (e) {
+    assignSubmit.on('click', async function(e) {
         e.preventDefault();
         if (filename) {
             // eslint-disable-next-line
@@ -73,7 +73,7 @@ export const register = (editor, interval) => {
         }
     });
 
-    quizSubmit.on('click', async function (e) {
+    quizSubmit.on('click', async function(e) {
         e.preventDefault();
         if (filename) {
             // eslint-disable-next-line
@@ -121,7 +121,7 @@ export const register = (editor, interval) => {
                         return classname.startsWith('cmid-');
                     }).split('-')[1]); // Getting cmid from body classlist.
 
-
+                    // eslint-disable-next-line
                     if (ur.includes("attempt.php") || ur.includes("forum") || ur.includes("assign")) { } else {
                         return false;
                     }
@@ -186,7 +186,7 @@ export const register = (editor, interval) => {
                 return classname.startsWith('cmid-');
             }).split('-')[1]); // Getting cmid from body classlist.
         }
-
+        // eslint-disable-next-line
         if (ur.includes("attempt.php") || ur.includes("forum") || ur.includes("assign")) { } else {
             return false;
         }

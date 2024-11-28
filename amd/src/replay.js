@@ -20,7 +20,7 @@
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  */
 
-import { call as fetchJson } from 'core/ajax';
+import {call as fetchJson} from 'core/ajax';
 import templates from 'core/templates';
 import $ from 'jquery';
 export default class Replay {
@@ -46,10 +46,10 @@ export default class Replay {
                 var val = JSON.parse(data.data);
                 this.logData = val;
                 if ("data" in this.logData) {
-                    this.logData = this.logData['data'];
+                    this.logData = this.logData.data;
                 }
                 if ("payload" in this.logData) {
-                    this.logData = this.logData['payload'];
+                    this.logData = this.logData.payload;
                 }
                 this.startReplay();
             } else {
@@ -108,7 +108,8 @@ export default class Replay {
             },
         }])[0].done(response => {
             return response;
-        }).fail(error => { throw new Error('Error loading JSON file: ' + error.message);
+        }).fail(error => {
+            throw new Error('Error loading JSON file: ' + error.message);
         });
     }
 

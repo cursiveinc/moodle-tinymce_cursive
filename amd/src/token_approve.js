@@ -26,7 +26,7 @@ define(["jquery", "core/ajax", "core/str"], function(
   str,
 ) {
   var usersTable = {
-    init: function (page) {
+    init: function(page) {
 
       str
         .get_strings([
@@ -48,7 +48,7 @@ define(["jquery", "core/ajax", "core/str"], function(
             },
           },
         ]);
-        promise1[0].done(function (json) {
+        promise1[0].done(function(json) {
           var data = JSON.parse(json);
           var messageAlert = '';
           if (data.status == true) {
@@ -86,13 +86,13 @@ define(["jquery", "core/ajax", "core/str"], function(
           }, 3000);
 
         });
-        promise1[0].fail(function (jqXHR, textStatus) {
+        promise1[0].fail(function(textStatus) {
           var errorMessage = "<span class='text-danger' role='alert'>" +
             "An error occurred while generating the token: " +
             textStatus +
             "</span>"; $("#cursivetoken_").html(errorMessage);
           // Clear the error message after 3 seconds
-          setTimeout(function () {
+          setTimeout(function() {
             $("#cursivetoken_").empty();
           }, 3000);
         });

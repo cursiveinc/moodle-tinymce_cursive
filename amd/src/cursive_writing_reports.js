@@ -41,8 +41,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", './anal
                 'player_' + mid
             );
             replayInstances[mid] = replay;
-        }
-        else {
+        } else {
             // eslint-disable-next-line
             templates.render('tiny_cursive/no_submission').then(html => {
                 $('#content' + mid).html(html);
