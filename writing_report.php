@@ -77,7 +77,7 @@ $PAGE->requires->js_call_amd('tiny_cursive/cursive_writing_reports', 'init', [])
 $PAGE->set_context($systemcontext);
 $PAGE->set_url($linkurl);
 $PAGE->set_title($linktext);
-$PAGE->set_heading(fullname($user));
+// $PAGE->set_heading(fullname($user));
 $PAGE->set_pagelayout('mypublic');
 $PAGE->set_pagetype('user-profile');
 $PAGE->set_url('/user/profile.php', ['id' => $userid]);
@@ -85,7 +85,7 @@ $PAGE->navbar->add($struser);
 
 echo $OUTPUT->header();
 
-echo $OUTPUT->heading(get_string('student_writing_statics', 'tiny_cursive'));
+// echo $OUTPUT->heading(get_string('student_writing_statics', 'tiny_cursive'));
 $renderer = $PAGE->get_renderer('tiny_cursive');
 $users = tiny_cursive_get_user_attempts_data($userid, $courseid, null, $orderby, $order, $page, $limit);
 $userprofile = tiny_cursive_get_user_profile_data($userid, $courseid);

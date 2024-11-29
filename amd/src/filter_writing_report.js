@@ -20,11 +20,7 @@
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  */
 
-define(["jquery", "core/ajax", "core/templates"], function(
-  $,
-  AJAX,
-  templates
-) {
+define(["jquery", "core/ajax", "core/templates"], function($, AJAX, templates) {
   return {
     init: function(page) {
       $("#id_coursename").change(function() {

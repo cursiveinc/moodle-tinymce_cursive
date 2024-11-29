@@ -2280,13 +2280,15 @@ class cursive_json_func_data extends external_api {
             if ($subscription) {
                 $sql = "SELECT qm.*, uw.quality_access
                       FROM {tiny_cursive_quality_metrics} qm
-                      JOIN {tiny_cursive_user_writing} uw ON qm.file_id = uw.file_id
+                 LEFT JOIN {tiny_cursive_user_writing} uw ON qm.file_id = uw.file_id
                      WHERE qm.file_id = :fileid";
                 $data = $DB->get_record_sql($sql, ['fileid' => $params['file_id']]);
 
                 foreach ($defaults as $key => &$default) {
                     $default = floatval(get_config('tiny_cursive', $key) ?: $default);
+
                     if ($customsettings) {
+
                         $data->{$key} = round(floatval(floatval($data->{$key}) / $default) * 100, 2);
                     } else {
                         $data->{$key} = round(floatval(floatval($data->{$key}) / floatval($data->{$key . "_static"})) * 100, 2);

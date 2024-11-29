@@ -515,3 +515,76 @@
     color: white;
     text-decoration: none;
 }
+
+.tiny_cursive-writing-report-header {
+    background: #306ab3;
+    padding: 20px;
+    text-align: center;
+    color: white;
+}
+.tiny_cursive-writing-report select {
+    font-size: 16px;
+}
+
+/* Table Styling */
+.tiny_cursive-writing-report table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tiny_cursive-writing-report table th {
+    background: #306ab3;
+    color: white;
+    padding: 12px;
+    text-align: left;
+}
+
+.tiny_cursive-writing-report table td {
+    padding: 12px;
+    border-bottom: 1px solid #ccc;
+}
+
+.tiny_cursive-writing-report table tr:nth-child(even) {
+    background: #f9f9f9;
+}
+
+.tiny_cursive-writing-report table tr:hover {
+    background: #f1f1f1;
+}
+
+/* Analytics and Download Buttons */
+.tiny_cursive-writing-report .analytics-btn, .tiny_cursive-writing-report .download-btn {
+    border: none;
+    padding: 8px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.tiny_cursive-writing-report .analytics-btn {
+    background: #306ab3;
+    color: white;
+}
+
+.tiny_cursive-writing-report .analytics-btn:hover {
+    background: #306ab3;
+    transform: scale(1.05);
+}
+
+.tiny_cursive-writing-report .download-btn {
+    background: #28a745;
+    color: white;
+    text-decoration: none;
+}
+
+.tiny_cursive-writing-report .download-btn:hover {
+    background: #1e7a34;
+    transform: scale(1.05);
+}
