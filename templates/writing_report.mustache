@@ -32,51 +32,51 @@ Example context (json):
     </div>
 
     <div class="tiny_cursive-writing-report-body">
-        <!-- Statistics Summary -->
-        <div class="tiny_cursive-writing-report-summary d-flex flex-wrap gap-5 justify-content-between align-items-center mb-4">
+
+        <div
+            class="tiny_cursive-writing-report-summary d-flex flex-wrap gap-5 justify-content-between align-items-center mb-4">
             <div>
                 <p><strong>{{#str}}total_words, tiny_cursive{{/str}}:</strong> {{total_word}}</p>
                 <p><strong>{{#str}}total_time, tiny_cursive{{/str}}:</strong> {{total_time}}</p>
-                <p><strong>{{#str}}average_min, tiny_cursive{{/str}}:</strong> {{avg_min}}</p>
+                <p><strong>{{#str}}average_min, tiny_cursive{{/str}}</strong> {{avg_min}}</p>
 
             </div>
             <div>
-                <strong><labe for="course-select">Select Course:</labe></strong>
+                <strong>Select Course:</strong>
                 {{{options}}}
             </div>
         </div>
 
-        <!-- Table Section -->
         <div class="table-responsive">
-        <table class="tiny_cursive-writing-report-table table">
-            <thead>
-                <tr>
-                    <th>{{#str}}module_name, tiny_cursive{{/str}}</th>
-                    <th>{{#str}}last_modified, tiny_cursive{{/str}}</th>
-                    <th>{{#str}}analytics, tiny_cursive{{/str}}</th>
-                    <th>{{#str}}download, tiny_cursive{{/str}}</th>
-                </tr>
-            </thead>
-            <tbody>
-                {{#userdata}}
-                <tr class="tiny_cursive-writing-report-table-row">
-                    <td>{{modulename}}</td>
-                    <td>{{lastmodified}}</td>
-                    <td>
-                        {{{analytics}}}
-                    </td>
-                    <td>
-                        {{{download}}}
-                    </td>
-                </tr>
-                {{/userdata}}
-                {{^userdata}}
-                <tr>
-                    <td colspan="4" class="text-center"> {{#str}}no_submission,tiny_cursive{{/str}}</td>
-                </tr>
-                {{/userdata}}
-            </tbody>
-        </table>
-    </div>
+            <table class="tiny_cursive-writing-report-table table">
+                <thead>
+                    <tr>
+                        <th>{{#str}}module_name, tiny_cursive{{/str}}</th>
+                        <th>{{#str}}last_modified, tiny_cursive{{/str}}</th>
+                        <th>{{#str}}analytics, tiny_cursive{{/str}}</th>
+                        <th>{{#str}}download, tiny_cursive{{/str}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#userdata}}
+                    <tr class="tiny_cursive-writing-report-table-row">
+                        <td>{{modulename}}</td>
+                        <td>{{lastmodified}}</td>
+                        <td>
+                            {{{analytics}}}
+                        </td>
+                        <td>
+                            {{{download}}}
+                        </td>
+                    </tr>
+                    {{/userdata}}
+                    {{^userdata}}
+                    <tr>
+                        <td colspan="4" class="text-center"> {{#str}}no_submission,tiny_cursive{{/str}}</td>
+                    </tr>
+                    {{/userdata}}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>

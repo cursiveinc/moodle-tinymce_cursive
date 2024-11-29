@@ -517,7 +517,6 @@
 }
 
 .tiny_cursive-writing-report-header {
-    /* background: #306ab3; */
     padding: 20px;
     text-align: center;
     color: #306ab3;
@@ -554,7 +553,6 @@
     padding: 12px;
     border-bottom: 1px solid #ccc;
 }
-
 .tiny_cursive-writing-report table tr:nth-child(even) {
     background: #f9f9f9;
 }
