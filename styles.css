@@ -517,10 +517,16 @@
 }
 
 .tiny_cursive-writing-report-header {
-    background: #306ab3;
+    /* background: #306ab3; */
     padding: 20px;
     text-align: center;
-    color: white;
+    color: #306ab3;
+}
+.tiny_cursive-writing-report-body {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 20px auto;
+    color: #333;
 }
 .tiny_cursive-writing-report select {
     font-size: 16px;
@@ -558,7 +564,8 @@
 }
 
 /* Analytics and Download Buttons */
-.tiny_cursive-writing-report .analytics-btn, .tiny_cursive-writing-report .download-btn {
+.tiny_cursive-writing-report .analytics-btn,
+.tiny_cursive-writing-report .download-btn {
     border: none;
     padding: 8px 15px;
     font-size: 14px;

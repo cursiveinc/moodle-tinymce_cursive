@@ -28,14 +28,12 @@ Example context (json):
 <div class="tiny_cursive-writing-report">
     <div class="tiny_cursive-writing-report-header rounded">
         <h1>{{username}}</h1>
-        <h2>{{#str}}student_writing_statics, tiny_cursive{{/str}}</h2>
+        <h5 class="text-dark">{{#str}}student_writing_statics, tiny_cursive{{/str}}</h5>
     </div>
 
-    <div class="tiny_cursive-writing-report-body"
-        style="padding: 20px; max-width: 1200px; margin: 20px auto; color: #333;">
+    <div class="tiny_cursive-writing-report-body">
         <!-- Statistics Summary -->
-        <div class="tiny_cursive-writing-report-summary"
-            style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <div class="tiny_cursive-writing-report-summary d-flex flex-wrap gap-5 justify-content-between align-items-center mb-4">
             <div>
                 <p><strong>{{#str}}total_words, tiny_cursive{{/str}}:</strong> {{total_word}}</p>
                 <p><strong>{{#str}}total_time, tiny_cursive{{/str}}:</strong> {{total_time}}</p>
@@ -43,13 +41,14 @@ Example context (json):
 
             </div>
             <div>
-                <label for="tiny_cursive-writing-report-course-select" style="font-weight: bold;">Select Course:</label>
+                <strong><label for="tiny_cursive-writing-report-course-select">Select Course:</label></strong>
                 {{{options}}}
             </div>
         </div>
 
         <!-- Table Section -->
-        <table class="tiny_cursive-writing-report-table">
+        <div class="table-responsive">
+        <table class="tiny_cursive-writing-report-table table">
             <thead>
                 <tr>
                     <th>{{#str}}module_name, tiny_cursive{{/str}}</th>
@@ -72,9 +71,12 @@ Example context (json):
                 </tr>
                 {{/userdata}}
                 {{^userdata}}
-                <tr><td colspan="4" class="text-center"> {{#str}}no_submission,tiny_cursive{{/str}}</td></tr>
+                <tr>
+                    <td colspan="4" class="text-center"> {{#str}}no_submission,tiny_cursive{{/str}}</td>
+                </tr>
                 {{/userdata}}
             </tbody>
         </table>
+    </div>
     </div>
 </div>
