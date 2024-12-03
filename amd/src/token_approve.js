@@ -22,10 +22,10 @@
 
 define(["jquery", "core/ajax", "core/str"], function($, AJAX, str) {
   var usersTable = {
-    init: function (page) {
+    init: function(page) {
       str
         .get_strings([{key: "field_require", component: "tiny_cursive"}])
-        .done(function () {
+        .done(function() {
           usersTable.getToken(page);
           usersTable.generateToken();
         });
