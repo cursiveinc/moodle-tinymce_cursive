@@ -262,10 +262,13 @@ function tiny_cursive_get_user_submissions_data($resourceid, $modulename, $cmid,
 
     // Execute the SQL query using Moodle's database abstraction layer.
     $data = $DB->get_record_sql($sql, $params);
+    if (isset($data->effort_ratio)) {
+        $data->effort_ratio = intval(floatval($data->effort_ratio) * 100);
+    }
     $data = (array)$data;
 
     if (!isset($data['filename'])) {
-        $sql = 'SELECT id as fileid, userid, filename
+        $sql = 'SELECT id as fileid, userid, filename, content
                   FROM {tiny_cursive_files}
                  WHERE userid = :userid
                    AND cmid = :cmid
@@ -273,12 +276,9 @@ function tiny_cursive_get_user_submissions_data($resourceid, $modulename, $cmid,
         $filename = $DB->get_record_sql($sql, ['userid' => $resourceid, 'cmid' => $cmid, 'modulename' => $modulename]);
 
         if ($filename) {
-            $filep = $CFG->tempdir . "/userdata/" . $filename->filename;
-            $data['filename'] = $filep;
+            $data['filename'] = $filename->filename;
             $data['file_id'] = $filename->fileid ?? '';
         }
-    } else {
-        $data['filename'] = $CFG->tempdir . "/userdata/" . $data['filename'];
     }
 
     if ($data['filename']) {
@@ -294,6 +294,7 @@ function tiny_cursive_get_user_submissions_data($resourceid, $modulename, $cmid,
             $data['first_file'] = 0;
         }
     }
+
     $res = $data;
 
     $response = [
@@ -316,8 +317,8 @@ function tiny_cursive_get_cmid($courseid) {
               FROM {course_modules} cm
          LEFT JOIN {modules} m ON m.id = cm.module
          LEFT JOIN {course} c ON c.id = cm.course
-             WHERE cm.course = :courseid LIMIT 1";
-
+             WHERE cm.course = :courseid
+                   AND cm.deletioninprogress = 0 LIMIT 1";
     $params = ['courseid' => $courseid];
     $cm = $DB->get_record_sql($sql, $params);
     $cmid = isset($cm->id) ? $cm->id : 0;
@@ -344,32 +345,108 @@ function tiny_cursive_create_token_for_user() {
 }
 
 /**
- * Stream contents of a JSON file
+ * Renders a table displaying user data with export functionality
  *
- * @param string $file Path to the JSON file to stream
- * @return string Contents of the file as a string
- * @throws moodle_exception If file access denied, invalid type, or not found
+ * @param array $users Array of user data to display in the table
+ * @param object $renderer The renderer object used to display the table
+ * @param int $courseid The course ID to filter results
+ * @param int $page Current page number for pagination
+ * @param int $limit Number of records per page
+ * @param string $linkurl Base URL for pagination links
+ * @param int $moduleid The module ID to filter results
+ * @param int $userid The user ID to filter results
+ * @return void
  */
-function tiny_cursive_file_stream($file) {
-    $file = realpath($file);
-    $alloweddir = realpath(dirname(__FILE__));
-    if ($file === false || strpos($file, $alloweddir) !== 0) {
-        throw new moodle_exception('accessdenied', 'admin');
-    }
+function tiny_cursive_render_user_table($users, $renderer, $courseid, $page, $limit, $linkurl, $moduleid, $userid) {
 
-    if (file_exists($file)) {
-        $mimetype = mime_content_type($file);
-        $allowedtypes = ['application/json'];
-        if (!in_array($mimetype, $allowedtypes) || pathinfo($file, PATHINFO_EXTENSION) !== 'json') {
-            throw new moodle_exception('invalidfiletype', 'error');
-        }
-        $inp = file_get_contents($file);
-        if ($inp === false) {
-            throw new moodle_exception('errorreadingfile', 'error');
-        }
-    } else {
-        throw new moodle_exception('filenotfound', 'error');
-    }
+    // Prepare the URL for the link.
+    $url = new moodle_url('/lib/editor/tiny/plugins/cursive/csvexport.php', [
+        'courseid' => $courseid,
+        'moduleid' => $moduleid,
+        'userid' => $userid,
+    ]);
+    // Prepare the link text.
+    $linktext = get_string('download_csv', 'tiny_cursive');
+    // Prepare the attributes for the link.
+    $attributes = [
+        'target' => '_blank',
+        'id' => 'export',
+        'role' => 'button',
+        'class' => 'btn btn-primary mb-4',
+        'style' => 'margin-right:50px;',
+    ];
+    // Generate the link using html_writer::link.
+    echo html_writer::link($url, $linktext, $attributes);
+    echo $renderer->timer_report($users, $courseid, $page, $limit, $linkurl);
+}
 
-    return $inp;
+/**
+ * Check subscription status for Tiny Cursive plugin
+ *
+ * Verifies the subscription status by making a request to the remote Python server
+ * using the configured secret key. Updates the subscription status in plugin config.
+ *
+ * @return array Returns array with status boolean indicating subscription check result
+ * @throws moodle_exception If there is an error checking the subscription
+ */
+function tiny_cursive_check_subscriptions() {
+    global $DB, $CFG;
+    require_once("$CFG->libdir/filelib.php");
+
+    $token = get_config('tiny_cursive', 'secretkey');
+
+    if (!$token) {
+        return ['status' => false];
+    }
+    try {
+        $remoteurl = get_config('tiny_cursive', 'python_server') . '/verify-role';
+        $moodleurl = $CFG->wwwroot;
+
+        $curl = new curl();
+        $options = [
+            'CURLOPT_RETURNTRANSFER' => true,
+            'CURLOPT_HTTPHEADER' => [
+                'Authorization: Bearer ' . $token,
+                'X-Moodle-Url: ' . $moodleurl,
+                'Content-Type: multipart/form-data',
+                'Accept: application/json',
+            ],
+        ];
+
+        // Prepare POST fields.
+        $postfields = [
+            'token' => $token,
+            'moodle_url' => $moodleurl,
+        ];
+        $result = '';
+        // Execute the request.
+        $result = $curl->post($remoteurl, $postfields, $options);
+        $result = json_decode($result);
+        if ($result) {
+            set_config('has_subscription', $result->status, 'tiny_cursive');
+            return ['status' => true];
+        }
+    } catch (dml_exception $e) {
+        throw new moodle_exception($e->getMessage());
+    }
+}
+
+/**
+ * Check the status of Tiny Cursive for a given course
+ *
+ * @param int $courseid The ID of the course to check status for
+ * @return bool Returns true if Tiny Cursive is enabled for the course, false otherwise
+ * @throws dml_exception
+ */
+function tiny_cursive_status($courseid) {
+    global $DB;
+    $value = $DB->get_record('customfield_data', ['instanceid' => $courseid], 'value');
+    if ($value) {
+        if ( $value->value == null || $value->value === '2') {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    return false;
 }

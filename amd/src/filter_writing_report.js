@@ -20,14 +20,10 @@
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  */
 
-define(["jquery", "core/ajax", "core/templates"], function (
-  $,
-  AJAX,
-  templates
-) {
+define(["jquery", "core/ajax", "core/templates"], function($, AJAX, templates) {
   return {
-    init: function (page) {
-      $("#id_coursename").change(function () {
+    init: function(page) {
+      $("#id_coursename").change(function() {
         var promise1 = AJAX.call([
           {
             methodname: "cursive_filtered_writing",
@@ -36,17 +32,19 @@ define(["jquery", "core/ajax", "core/templates"], function (
             },
           },
         ]);
-        promise1[0].done(function (json) {
+        promise1[0].done(function(json) {
           var data = JSON.parse(json);
           var context = {
             data: data.data,
             page: page,
           };
+          // eslint-disable-next-line
           templates
             .render("tiny_cursive/user_table", context)
-            .then(function (html) {
-              var filtered_user = $("#id_username");
-              filtered_user.html(html);
+            .then(function(html) {
+              var filteredUser = $("#id_username");
+              filteredUser.html(html);
+              return true;
             });
         });
       });
