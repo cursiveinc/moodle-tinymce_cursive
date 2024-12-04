@@ -45,9 +45,6 @@ export default class MyModal extends Modal {
         super.show();
 
         const root = this.getRoot();
-
-
-
         // Hide the default modal header.
         root.find('.modal-header').remove();
 
@@ -55,7 +52,7 @@ export default class MyModal extends Modal {
             'border-radius': '30px'
         }).addClass('shadow-none border-none');
         root.find('.modal-content').css({
-            'border-radius':'30px'
+            'border-radius': '30px'
         }).addClass('shadow-none border-none');
         // Remove padding from the modal content.
         root.find('.modal-body').css({
@@ -63,7 +60,7 @@ export default class MyModal extends Modal {
             'border-radius': '30px'
         });
         root.find('.modal-body').css({
-            'padding':'0',
+            'padding': '0',
             'border-radius':'30px'
         });
         root.find('.modal-dialog').css({

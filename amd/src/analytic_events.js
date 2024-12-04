@@ -33,8 +33,8 @@ export default class AnalyticEvents {
     createModal(userid, context, questionid = '', authIcon) {
         $('#analytics' + userid + questionid).on('click', function(e) {
             e.preventDefault();
-            ModalFactory.create({ type: myModal.TYPE, templateContext: context }).then(modal => {
-
+            // eslint-disable-next-line
+            ModalFactory.create({type: myModal.TYPE, templateContext: context}).then(modal => {
                 modal.show();
                 const targetElement = $('#content' + userid + ' .table tbody tr:first-child td:nth-child(2)');
                 if (targetElement.length > 0) {
