@@ -33,7 +33,6 @@ export default class AnalyticEvents {
     createModal(userid, context, questionid = '', authIcon) {
         $('#analytics' + userid + questionid).on('click', function(e) {
             e.preventDefault();
-            // eslint-disable-next-line
             ModalFactory.create({type: myModal.TYPE, templateContext: context}).then(modal => {
                 modal.show();
                 const targetElement = $('#content' + userid + ' .table tbody tr:first-child td:nth-child(2)');
@@ -42,6 +41,7 @@ export default class AnalyticEvents {
                 } else {
                     window.console.error('Target element not found');
                 }
+                return true;
             }).catch(error => {
                 window.window.console.error("Failed to create modal:", error);
             });
