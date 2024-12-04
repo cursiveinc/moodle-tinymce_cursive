@@ -28,7 +28,7 @@ define([
     "./replay",
     './analytic_button',
     './analytic_events',
-    'core/str'], function (
+    'core/str'], function(
     $,
     AJAX,
     str,
@@ -39,8 +39,8 @@ define([
     Str
 ) {
     const replayInstances = {};
-
-    window.video_playback = function (mid, filepath) {
+    // eslint-disable-next-line camelcase
+    window.video_playback = function(mid, filepath) {
 
         if (filepath !== '') {
             const replay = new Replay(
@@ -54,6 +54,7 @@ define([
         } else {
             templates.render('tiny_cursive/no_submission').then(html => {
                 $('#content' + mid).html(html);
+                return true;
             }).catch(e => window.console.error(e));
         }
         return false;
@@ -61,26 +62,27 @@ define([
     };
 
     var usersTable = {
-        init: function (score_setting, showcomment) {
+        init: function(scoreSetting, showcomment) {
             str
                 .get_strings([
                     {key: "confidence_threshold", component: "tiny_cursive"},
-                ]).done(function () {
-                usersTable.appendTable(score_setting, showcomment);
+                ]).done(function() {
+                usersTable.appendTable(scoreSetting, showcomment);
             });
         },
-        appendTable: function (score_setting) {
-            let sub_url = window.location.href;
-            let parm = new URL(sub_url);
-            let h_tr = $('thead').find('tr').get()[0];
+        appendTable: function(scoreSetting) {
+            let subUrl = window.location.href;
+            let parm = new URL(subUrl);
+            let hTr = $('thead').find('tr').get()[0];
+
             Str.get_string('analytics', 'tiny_cursive')
                 .then(analyticString => {
-                    $(h_tr).find('th').eq(3).after('<th class="header c4" scope="col">'
+                    $(hTr).find('th').eq(3).after('<th class="header c4" scope="col">'
                         + analyticString + '<div class="commands">' +
                         '<i class="icon fa fa-minus fa-fw " aria-hidden="true"></i></div></th>');
-                    $('tbody').find("tr").get().forEach(function (tr) {
-                        let td_user = $(tr).find("td").get()[0];
-                        let userid = $(td_user).find("input[type='checkbox']").get()[0].value;
+                    $('tbody').find("tr").get().forEach(function(tr) {
+                        let tdUser = $(tr).find("td").get()[0];
+                        let userid = $(tdUser).find("input[type='checkbox']").get()[0].value;
                         let cmid = parm.searchParams.get('id');
                         // Create the table cell element and append the anchor
                         const tableCell = document.createElement('td');
@@ -90,7 +92,7 @@ define([
                         let methodname = 'cursive_user_list_submission_stats';
                         let com = AJAX.call([{methodname, args}]);
                         try {
-                            com[0].done(function (json) {
+                            com[0].done(function(json) {
                                 var data = JSON.parse(json);
                                 var filepath = '';
                                 if (data.res.filename) {
@@ -106,23 +108,30 @@ define([
                                     tabledata: data.res,
                                     formattime: myEvents.formatedTime(data.res),
                                     moduletitle: textContent,
-                                    page: score_setting,
+                                    page: scoreSetting,
                                     userid: userid,
                                 };
 
-                                let authIcon = myEvents.authorshipStatus(data.res.first_file, data.res.score, score_setting);
+                                let authIcon = myEvents.authorshipStatus(data.res.first_file, data.res.score, scoreSetting);
                                 myEvents.createModal(userid, context, '', authIcon);
                                 myEvents.analytics(userid, templates, context, '', replayInstances, authIcon);
                                 myEvents.checkDiff(userid, data.res.file_id, '', replayInstances);
                                 myEvents.replyWriting(userid, filepath, '', replayInstances);
+                                myEvents.quality(userid, templates, context, '', replayInstances, cmid);
+                            }).fail(function(error) {
+                                window.console.error('AJAX request failed:', error);
                             });
                         } catch (error) {
-                            window.console.error(error);
+                            window.console.error('Error processing data:', error);
                         }
                         return com.usercomment;
                     });
+                    return true;
+                })
+                .catch(error => {
+                    window.console.error('Failed to get analytics string:', error);
                 });
-        }
+                }
     };
 
     return usersTable;

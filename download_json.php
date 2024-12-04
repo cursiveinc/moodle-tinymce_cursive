@@ -40,40 +40,19 @@ if ($cmid <= 0 || $userid <= 0) {
 $context = context_module::instance($cmid);
 require_capability('tiny/cursive:writingreport', $context);
 
-$dirname = $CFG->tempdir . '/userdata/';
-if (!is_dir($dirname) || strpos(realpath($dirname), $CFG->dataroot) !== 0) {
-    throw new moodle_exception('invaliddirectory', 'tiny_cursive');
-}
-
 header('X-Content-Type-Options: nosniff');
 header('X-Frame-Options: DENY');
 header("Content-Description: File Transfer");
-header("Content-Type: application/octet-stream");
+header("Content-Type: application/json");
 header("Content-Disposition: attachment; filename=\"" . basename($fname) . "\"");
+header('Content-Security-Policy: default-src \'none\';');
+header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
 flush();
 
-if ($fname) {
-    $filename = $dirname . basename($fname);
-    $realpath = realpath($filename);
-    if ($realpath === false || strpos($realpath, realpath($dirname)) !== 0) {
-        throw new moodle_exception('illegalfilename', 'tiny_cursive');
-    }
-
-    if (!file_exists($filename)) {
-        $filerow = $DB->get_record('tiny_cursive_files', ['filename' => $fname]);
-        if ($filerow && $filerow->content) {
-            echo tiny_cursive_file_stream($filerow->content);
-            die();
-        } else {
-            redirect(new moodle_url('/lib/editor/tiny/plugins/cursive/writing_report.php',
-            ['userid' => $userid]), get_string('filenotfound', 'tiny_cursive'));
-        }
-    } else {
-        readfile($filename);
-        die();
-    }
-} else {
-    $filename = $dirname . clean_filename($userid . '_' . $resourceid . '_' . $cmid . '_attempt.json');
-    echo tiny_cursive_file_stream($filename);
-    die();
+$filerow = $DB->get_record('tiny_cursive_files', ['filename' => $fname]);
+if (!$fname || !$filerow || !$filerow->content) {
+    redirect(get_local_referer(false), get_string('filenotfound', 'tiny_cursive'));
 }
+
+echo $filerow->content;
+die();

@@ -54,7 +54,7 @@ if (optional_param('course', 0, PARAM_INT) && !is_siteadmin($USER->id) && option
     $courseid = optional_param('course', 0, PARAM_INT);
 }
 
-$limit = 10;
+$limit = 5;
 $isvalid = false;
 
 $context = context_system::instance();
@@ -84,7 +84,6 @@ $linktext = get_string('tiny_cursive', 'tiny_cursive');
 $PAGE->set_context($systemcontext);
 $PAGE->set_url($linkurl);
 $PAGE->set_title($linktext);
-$PAGE->set_heading(fullname($user));
 $PAGE->set_pagelayout('mypublic');
 $PAGE->set_pagetype('user-profile');
 
@@ -93,7 +92,6 @@ $PAGE->set_url('/user/profile.php', ['id' => $userid]);
 $PAGE->navbar->add($struser);
 echo $OUTPUT->header();
 
-echo $OUTPUT->heading(get_string('student_writing_statics', 'tiny_cursive'));
 $renderer = $PAGE->get_renderer('tiny_cursive');
 $attempts = tiny_cursive_get_user_attempts_data($userid, $courseid, null, $orderby, $order, $page, $limit);
 $userprofile = tiny_cursive_get_user_profile_data($userid, $courseid);
