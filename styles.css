@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
 
 .tiny_cursive-analytics-btn {
     background-color: #306ab3;
@@ -466,4 +466,130 @@
     height: 100px !important;
     background: #ddd;
     z-index: 2;
+}
+
+
+.tiny_cursive-content {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    width: 400px;
+}
+
+.tiny_cursive-logo img {
+    width: 60px;
+    margin-bottom: 20px;
+}
+
+.tiny_cursive-card-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.tiny_cursive-card-description {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+.tiny_cursive-card-upgrade-button a {
+    background: linear-gradient(90deg, #007bff, #6a1b9a);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+
+}
+
+.tiny_cursive-card-upgrade-button a:hover {
+    background: linear-gradient(90deg, #6610f2, #007bff);
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    color: white;
+    text-decoration: none;
+}
+
+.tiny_cursive-writing-report-header {
+    padding: 20px;
+    text-align: center;
+    color: #306ab3;
+}
+.tiny_cursive-writing-report-body {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 20px auto;
+    color: #333;
+}
+.tiny_cursive-writing-report select {
+    font-size: 16px;
+}
+
+/* Table Styling */
+.tiny_cursive-writing-report table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tiny_cursive-writing-report table th {
+    background: #306ab3;
+    color: white;
+    padding: 12px;
+    text-align: left;
+}
+
+.tiny_cursive-writing-report table td {
+    padding: 12px;
+    border-bottom: 1px solid #ccc;
+}
+.tiny_cursive-writing-report table tr:nth-child(even) {
+    background: #f9f9f9;
+}
+
+.tiny_cursive-writing-report table tr:hover {
+    background: #f1f1f1;
+}
+
+/* Analytics and Download Buttons */
+.tiny_cursive-writing-report .analytics-btn,
+.tiny_cursive-writing-report .download-btn {
+    border: none;
+    padding: 8px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.tiny_cursive-writing-report .analytics-btn {
+    background: #306ab3;
+    color: white;
+}
+
+.tiny_cursive-writing-report .analytics-btn:hover {
+    background: #306ab3;
+    transform: scale(1.05);
+}
+
+.tiny_cursive-writing-report .download-btn {
+    background: #28a745;
+    color: white;
+    text-decoration: none;
+}
+
+.tiny_cursive-writing-report .download-btn:hover {
+    background: #1e7a34;
+    transform: scale(1.05);
 }

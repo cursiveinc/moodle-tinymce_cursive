@@ -88,11 +88,12 @@ function tiny_cursive_extend_navigation_course(\navigation_node $navigation, \st
 
     $url = new moodle_url($CFG->wwwroot . '/lib/editor/tiny/plugins/cursive/tiny_cursive_report.php', ['courseid' => $course->id]);
     $cmid = tiny_cursive_get_cmid($course->id);
-    if ($cmid) {
-        $context = context_module::instance($cmid);
-        $iseditingteacher = has_capability("tiny/cursive:view", $context);
+    $cursive = tiny_cursive_status($course->id);
 
-        if (get_admin()->id == $USER->id || $iseditingteacher) {
+    if ($cmid && $cursive) {
+        $context = context_module::instance($cmid);
+        $hascap = has_capability("tiny/cursive:editsettings", $context);
+        if ($hascap) {
             $navigation->add(
                 get_string('wractivityreport', 'tiny_cursive'),
                 $url,
@@ -116,6 +117,7 @@ function tiny_cursive_extend_navigation(global_navigation $navigation) {
         $home->remove();
     }
 }
+
 
 /**
  * Add a node to the myprofile navigation tree for writing reports.
@@ -169,31 +171,20 @@ function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath
         $remoteurl = get_config('tiny_cursive', 'python_server') . "/upload_file";
         $filetosend = '';
 
-        // Check if file exists or create one from base64 content.
-        if (file_exists($filenamewithfullpath)) {
-            // Check if file size is within the limit.
-            if (filesize($filenamewithfullpath) > 16 * 1024 * 1024) {
-                throw new Exception("File exceeds the 16MB size limit.");
-            }
-            // Use the file directly.
-            $filetosend = new CURLFILE($filenamewithfullpath);
-        } else {
-            // Save base64 decoded content to a temporary JSON file.
-            $tempfilepath = tempnam(sys_get_temp_dir(), 'upload');
-            $filecontent = base64_decode($filerecord->content);
-            $jsoncontent = json_decode($filecontent, true);
+        $tempfilepath = tempnam(sys_get_temp_dir(), 'upload');
 
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new Exception("Invalid JSON content in file.");
-            }
+        $jsoncontent = json_decode($filerecord->content, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new Exception("Invalid JSON content in file.");
+        }
             file_put_contents($tempfilepath, json_encode($jsoncontent));
             $filetosend = new CURLFILE($tempfilepath, 'application/json', 'uploaded.json');
 
             // Ensure the temporary file does not exceed the size limit.
-            if (filesize($tempfilepath) > 16 * 1024 * 1024) {
-                unlink($tempfilepath);
-                throw new Exception("File exceeds the 16MB size limit.");
-            }
+        if (filesize($tempfilepath) > 16 * 1024 * 1024) {
+            unlink($tempfilepath);
+            throw new Exception("File exceeds the 16MB size limit.");
         }
 
         echo $remoteurl;
@@ -224,8 +215,9 @@ function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath
             echo "File not found: " . $filenamewithfullpath . "\n";
             echo "cURL Error: " . $curl->error . "\n";
         } else {
-            echo "HTTP Status Code: " . $httpcode . "\n";
+            echo "\nHTTP Status Code: " . $httpcode . "\n";
             echo "File Id: " . $filerecord->id . "\n";
+            echo "response: " . $result . "\n";
         }
 
         // Remove the temporary file if it was created.
@@ -313,7 +305,7 @@ function tiny_cursive_get_user_essay_quiz_responses($userid, $courseid, $resourc
             'questionid' => $questionid,
         ]
     );
-    return $result->responsesummary;
+    return $result->responsesummary ?? "";
 }
 
 /**
@@ -324,44 +316,79 @@ function tiny_cursive_get_user_essay_quiz_responses($userid, $courseid, $resourc
  * @throws dml_exception
  */
 function tiny_cursive_before_footer() {
-    global $PAGE, $COURSE, $USER;
-    $confidencethreshold = get_config('tiny_cursive', 'confidence_threshold');
-    $confidencethreshold = !empty($confidencethreshold) ? $confidencethreshold : .65;
-    $confidencethreshold = floatval($confidencethreshold);
-    $showcomments = get_config('tiny_cursive', 'showcomments');
-    $context = context_course::instance($COURSE->id);
-    $userrole = '';
-    if (has_capability('report/courseoverview:view', $context, $USER->id, false) || is_siteadmin()) {
-        $userrole = 'teacher_admin';
-    }
-    $PAGE->requires->js_call_amd('tiny_cursive/settings', 'init', [$showcomments, $userrole]);
+    global $PAGE, $COURSE, $USER, $CFG;
+        require_once($CFG->dirroot . '/lib/editor/tiny/plugins/cursive/locallib.php');
+        $cmid = isset($COURSE->id) ? tiny_cursive_get_cmid($COURSE->id) : 0;
+        $cursive = tiny_cursive_status($COURSE->id);
 
-    if ($PAGE->bodyid == 'page-mod-forum-discuss' || $PAGE->bodyid == 'page-mod-forum-view') {
-        $PAGE->requires->js_call_amd(
-            'tiny_cursive/append_fourm_post',
-            'init',
-            [$confidencethreshold, $showcomments]
-        );
-    }
+    if (!empty($COURSE) && $cmid && $cursive) {
 
-    if ($PAGE->bodyid == 'page-mod-assign-grader') {
-        $PAGE->requires->js_call_amd(
-            'tiny_cursive/show_url_in_submission_grade',
-            'init',
-            [$confidencethreshold, $showcomments]
-        );
-    }
+        $confidencethreshold = get_config('tiny_cursive', 'confidence_threshold');
+        $confidencethreshold = !empty($confidencethreshold) ? floatval($confidencethreshold) : 0.65;
+        $showcomments = get_config('tiny_cursive', 'showcomments');
 
-    if ($PAGE->bodyid == 'page-mod-assign-grading') {
-        $PAGE->requires->js_call_amd('tiny_cursive/append_submissions_table', 'init', [$confidencethreshold, $showcomments]);
-    }
+        $context = context_course::instance($COURSE->id);
+        $userrole = '';
+        if (has_capability('report/courseoverview:view', $context, $USER->id, false) || is_siteadmin()) {
+            $userrole = 'teacher_admin';
+        }
 
-    if ($PAGE->bodyid == 'page-mod-quiz-review') {
-        $PAGE->requires->js_call_amd('tiny_cursive/show_url_in_quiz_detail', 'init', [$confidencethreshold, $showcomments]);
-    }
+        $PAGE->requires->js_call_amd('tiny_cursive/settings', 'init', [$showcomments, $userrole]);
 
-    if ($PAGE->bodyid == 'page-course-view-participants') {
-        $PAGE->requires->js_call_amd('tiny_cursive/append_participants_table', 'init', [$confidencethreshold, $showcomments]);
+        $context = context_module::instance($cmid);
+        $capcheck = has_capability('tiny/cursive:writingreport', $context, $USER->id);
+
+        if ($capcheck) {
+            switch ($PAGE->bodyid) {
+                case 'page-mod-forum-discuss':
+                case 'page-mod-forum-view':
+                    $PAGE->requires->js_call_amd(
+                        'tiny_cursive/append_fourm_post',
+                        'init',
+                        [$confidencethreshold, $showcomments],
+                    );
+                    break;
+
+                case 'page-mod-assign-grader':
+                    $PAGE->requires->js_call_amd(
+                        'tiny_cursive/show_url_in_submission_grade',
+                        'init',
+                        [$confidencethreshold, $showcomments],
+                    );
+                    break;
+
+                case 'page-mod-assign-grading':
+                    $PAGE->requires->js_call_amd(
+                        'tiny_cursive/append_submissions_table',
+                        'init',
+                        [$confidencethreshold, $showcomments],
+                    );
+                    break;
+
+                case 'page-mod-quiz-review':
+                    $PAGE->requires->js_call_amd(
+                        'tiny_cursive/show_url_in_quiz_detail',
+                        'init',
+                        [$confidencethreshold, $showcomments],
+                    );
+                    break;
+
+                case 'page-course-view-participants':
+                    $PAGE->requires->js_call_amd(
+                        'tiny_cursive/append_participants_table',
+                        'init',
+                        [$confidencethreshold, $showcomments],
+                    );
+                    break;
+            }
+        }
+        if (
+            $PAGE->bodyid == 'page-mod-quiz-attempt' || $PAGE->bodyid == 'page-mod-quiz-summary'
+            || $PAGE->bodyid == 'page-mod-assign-editsubmission' || $PAGE->bodyid == 'page-mod-forum-view'
+            || $PAGE->bodyid == 'page-mod-forum-post'
+        ) {
+            $PAGE->requires->js_call_amd('tiny_cursive/user', 'setUserId', [$USER->id, $CFG->wwwroot, $COURSE->id]);
+        }
     }
 }
 
@@ -390,7 +417,7 @@ function tiny_cursive_get_user_onlinetext_assignments($userid, $courseid, $modul
 
     $result =
         $DB->get_record_sql($sql, ['userid' => $userid, 'courseid' => $courseid, 'modulename' => $modulename, 'cmid' => $cmid]);
-    return $result->onlinetext;
+    return $result->onlinetext ?? "";
 }
 
 /**
@@ -411,7 +438,7 @@ function tiny_cursive_get_user_forum_posts($userid, $courseid, $resourceid) {
              WHERE fp.userid = :userid
                    AND fd.course = :courseid
                    AND fp.id = :resourceid";
-
     $result = $DB->get_record_sql($sql, ['userid' => $userid, 'courseid' => $courseid, 'resourceid' => $resourceid]);
-    return $result->message;
+
+    return $result->message ?? "";
 }

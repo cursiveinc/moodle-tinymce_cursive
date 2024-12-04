@@ -19,7 +19,7 @@
  *
  * @package tiny_cursive
  * @copyright  CTI <info@cursivetechnology.com>
- * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
+ * @author Brain Station 23 <elearning@brainstation-23.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -33,6 +33,7 @@ function xmldb_tiny_cursive_install() {
 
     enable_webservice();
     enable_webservice_protocol('rest');
+    create_cursive_field();
 }
 /**
  * Enable web services in Moodle
@@ -52,4 +53,62 @@ function enable_webservice() {
 function enable_webservice_protocol($protocol) {
     global $DB;
     set_config('webserviceprotocols', 'rest');
+}
+
+/**
+ * Creates a custom field for Cursive status in course settings
+ *
+ * This function creates a new custom field category and field for managing
+ * Cursive status at the course level. If the category or field already exists,
+ * it will not create duplicates.
+ *
+ * @package tiny_cursive
+ * @return void
+ */
+function create_cursive_field() {
+    global $DB;
+
+    $categoryname = get_string('pluginname', 'tiny_cursive');
+    $categoryid = $DB->get_field('customfield_category', 'id', ['name' => $categoryname, 'component' => 'core_course']);
+
+    if (!$categoryid) {
+        $categoryid = $DB->insert_record('customfield_category', [
+            'name' => $categoryname,
+            'component' => 'core_course',
+            'area' => 'course',
+            'sortorder' => 0,
+            'contextid' => 1,
+            'itemid' => 0,
+            'timecreated' => time(),
+            'timemodified' => time(),
+        ]);
+    }
+
+    $fieldname = 'Cursive status';
+
+    $fieldexists = $DB->record_exists('customfield_field', [
+        'shortname' => 'cursive_status',
+        'categoryid' => $categoryid,
+    ]);
+
+    if (!$fieldexists) {
+
+        $DB->insert_record('customfield_field', [
+            'shortname' => 'cursive_status',
+            'name' => $fieldname,
+            'categoryid' => $categoryid,
+            'type' => 'select',
+            'configdata' => json_encode([
+                'required' => 0,
+                'uniquevalues' => 0,
+                'options' => "Enabled\nDisabled\n",
+                'defaultvalue' => 'Disabled',
+                'locked' => 0,
+                'visibility' => 2,
+            ]),
+            'timecreated' => time(),
+            'timemodified' => time(),
+        ]);
+
+    }
 }

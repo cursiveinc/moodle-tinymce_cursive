@@ -19,7 +19,7 @@
  *
  * @package tiny_cursive
  * @copyright  CTI <info@cursivetechnology.com>
- * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
+ * @author Brain Station 23 <elearning@brainstation-23.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -36,7 +36,7 @@ require_once($CFG->libdir.'/externallib.php');
  *
  * @package tiny_cursive
  * @copyright  CTI <info@cursivetechnology.com>
- * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
+ * @author Brain Station 23 <elearning@brainstation-23.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class cursive_json_func_data extends external_api {
@@ -53,7 +53,7 @@ class cursive_json_func_data extends external_api {
             [
                 'page' => new external_value(PARAM_INT, '', VALUE_DEFAULT, null),
                 'courseid' => new external_value(PARAM_INT, 'Course id', VALUE_DEFAULT, null),
-            ]
+            ],
         );
     }
 
@@ -77,7 +77,7 @@ class cursive_json_func_data extends external_api {
             [
                 'page' => $page,
                 'courseid' => $courseid,
-            ]
+            ],
         );
 
         // Get course context.
@@ -112,7 +112,7 @@ class cursive_json_func_data extends external_api {
             [
                 'page' => new external_value(PARAM_INT, 'pagenumber', VALUE_DEFAULT, null),
                 'courseid' => new external_value(PARAM_INT, 'Course id', VALUE_DEFAULT, null),
-            ]
+            ],
         );
     }
 
@@ -137,7 +137,7 @@ class cursive_json_func_data extends external_api {
             [
                 'page' => $page,
                 'courseid' => $courseid,
-            ]
+            ],
         );
 
         // Get course context.
@@ -178,7 +178,7 @@ class cursive_json_func_data extends external_api {
                 'cmid' => new external_value(PARAM_INT, 'cmid', VALUE_DEFAULT, 0),
                 'modulename' => new external_value(PARAM_TEXT, 'modulename', VALUE_DEFAULT, ''),
                 'editorid' => new external_value(PARAM_TEXT, 'editorid', VALUE_DEFAULT, ''),
-            ]
+            ],
         );
     }
 
@@ -208,7 +208,7 @@ class cursive_json_func_data extends external_api {
         $event = 'keyUp',
         $cmid = 0,
         $modulename = 'quiz',
-        $editorid = null
+        $editorid = null,
     ) {
         global $USER, $DB, $CFG;
 
@@ -222,7 +222,7 @@ class cursive_json_func_data extends external_api {
                 'cmid' => $cmid,
                 'modulename' => $modulename,
                 'editorid' => $editorid,
-            ]
+            ],
         );
 
         if ($params['resourceId'] == 0 && $params['modulename'] !== 'forum') {
@@ -351,7 +351,7 @@ class cursive_json_func_data extends external_api {
                 'coursename' => new external_value(PARAM_INT, 'Course Name', VALUE_DEFAULT, null),
                 'quizname' => new external_value(PARAM_TEXT, 'quizname detail', VALUE_DEFAULT, null),
                 'username' => new external_value(PARAM_TEXT, 'username detail ', VALUE_DEFAULT, null),
-            ]
+            ],
         );
     }
 
@@ -369,7 +369,7 @@ class cursive_json_func_data extends external_api {
     public static function cursive_reports_func(
         $courseid = 0,
         $quizname = null,
-        $username = 'keyUp'
+        $username = 'keyUp',
     ) {
         global $DB, $CFG;
         require_once($CFG->libdir . '/accesslib.php');
@@ -380,7 +380,7 @@ class cursive_json_func_data extends external_api {
                 'courseid' => $courseid,
                 'quizname' => $quizname,
                 'username' => $username,
-            ]
+            ],
         );
 
         // Ensure the user has the capability to view the cursive reports.
@@ -428,7 +428,7 @@ class cursive_json_func_data extends external_api {
                 'usercomment' => new external_value(PARAM_TEXT, 'usercomment', VALUE_DEFAULT, null),
                 'timemodified' => new external_value(PARAM_INT, 'timemodified', VALUE_DEFAULT, 0),
                 'editorid' => new external_value(PARAM_TEXT, 'editorid', VALUE_DEFAULT, ''),
-            ]
+            ],
         );
     }
 
@@ -453,7 +453,7 @@ class cursive_json_func_data extends external_api {
         $courseid,
         $usercomment,
         $timemodified,
-        $editorid
+        $editorid,
     ) {
         global $DB, $USER, $CFG;
 
@@ -467,7 +467,7 @@ class cursive_json_func_data extends external_api {
                 'usercomment' => $usercomment,
                 'timemodified' => $timemodified,
                 'editorid' => $editorid,
-            ]
+            ],
         );
         require_once($CFG->libdir . '/accesslib.php');
         // Capability check.
@@ -522,7 +522,7 @@ class cursive_json_func_data extends external_api {
         return new external_function_parameters(
             [
                 'token' => new external_value(PARAM_TEXT, 'usertoken', VALUE_DEFAULT, ''),
-            ]
+            ],
         );
     }
 
@@ -542,7 +542,7 @@ class cursive_json_func_data extends external_api {
             self::cursive_approve_token_func_parameters(),
             [
                 'token' => $token,
-            ]
+            ],
         );
         // Check if the user has the required capability.
         $context = context_system::instance(); // Assuming a system-wide capability check.
@@ -617,7 +617,7 @@ class cursive_json_func_data extends external_api {
                 'cmid' => new external_value(PARAM_INT, 'cmid', VALUE_DEFAULT, null),
                 'questionid' => new external_value(PARAM_INT, 'questionid', VALUE_DEFAULT, null),
                 'userid' => new external_value(PARAM_INT, 'userid', VALUE_DEFAULT, null),
-            ]
+            ],
         );
     }
 
@@ -647,7 +647,7 @@ class cursive_json_func_data extends external_api {
                 'cmid' => $cmid,
                 'questionid' => $questionid,
                 'userid' => $userid,
-            ]
+            ],
         );
 
         $context = context_module::instance($params['cmid']);
@@ -664,7 +664,7 @@ class cursive_json_func_data extends external_api {
             ];
             $table = 'tiny_cursive_comments';
             $recs = $DB->get_records($table, $conditions);
-            $sql = 'SELECT filename, userid, id AS file_id
+            $sql = 'SELECT filename, content, userid, id AS file_id
                       FROM {tiny_cursive_files}
                      WHERE resourceid = :resourceid AND cmid = :cmid
                            AND modulename = :modulename AND questionid=:questionid AND userid = :userid ';
@@ -676,10 +676,10 @@ class cursive_json_func_data extends external_api {
                     'modulename' => $params['modulename'],
                     'questionid' => $params['questionid'],
                     "userid" => $params['userid'],
-                ]
+                ],
             );
-            $filep = $CFG->tempdir . "/userdata/" . $filename->filename;
-            $data['filename'] = $filep;
+
+            $data['filename'] = $filename->filename;
             $data['questionid'] = $params['questionid'];
 
             if ($data['filename']) {
@@ -701,6 +701,9 @@ class cursive_json_func_data extends external_api {
                      LEFT JOIN {tiny_cursive_writing_diff} diff ON uwr.file_id = diff.file_id
                          WHERE uwr.file_id = :fileid';
                 $report = $DB->get_record_sql($sql, ['fileid' => $filename->file_id]);
+                if (isset($report->effort_ratio)) {
+                    $report->effort_ratio = intval(floatval($report->effort_ratio) * 100);
+                }
                 $data['score'] = $report->score;
                 $data['total_time_seconds'] = $report->total_time_seconds;
                 $data['word_count'] = $report->word_count;
@@ -708,7 +711,7 @@ class cursive_json_func_data extends external_api {
                 $data['backspace_percent'] = $report->backspace_percent;
                 $data['copy_behavior'] = $report->copy_behavior;
                 $data['key_count'] = $report->key_count;
-                $data['file_id'] = $report->file_id;
+                $data['file_id'] = $filename->file_id;
                 $data['character_count'] = $report->character_count;
                 $data['characters_per_minute'] = $report->characters_per_minute;
                 $data['keys_per_minute'] = $report->keys_per_minute;
@@ -731,7 +734,7 @@ class cursive_json_func_data extends external_api {
 
             $attempts = "SELECT  uw.total_time_seconds ,uw.word_count ,uw.words_per_minute,
                                  uw.backspace_percent,uw.score,uw.copy_behavior,uf.resourceid,
-                                 uf.modulename,uf.userid, uf.filename
+                                 uf.modulename,uf.userid, uf.filename,
                            FROM {tiny_cursive_user_writing} uw
                            JOIN {tiny_cursive_files} uf ON uw.file_id = uf.id
                           WHERE uf.resourceid = :id
@@ -754,8 +757,7 @@ class cursive_json_func_data extends external_api {
                     'modulename' => $params['modulename'],
                 ]);
 
-                $filep = $CFG->tempdir . "/userdata/" . $filename->filename;
-                $data['filename'] = $filep;
+                $data['filename'] = $filename->filename;
 
             }
 
@@ -793,7 +795,7 @@ class cursive_json_func_data extends external_api {
                 'id' => new external_value(PARAM_INT, 'id', VALUE_DEFAULT, null),
                 'modulename' => new external_value(PARAM_TEXT, 'modulename', VALUE_DEFAULT, ''),
                 'cmid' => new external_value(PARAM_INT, 'cmid', VALUE_DEFAULT, 0),
-            ]
+            ],
         );
     }
 
@@ -820,7 +822,7 @@ class cursive_json_func_data extends external_api {
                 'id' => (int) $id,
                 'modulename' => $modulename,
                 'cmid' => (int) $cmid,
-            ]
+            ],
         );
 
         $context = context_module::instance($params['cmid']);
@@ -836,7 +838,7 @@ class cursive_json_func_data extends external_api {
                             uf.modulename, uf.userid, uf.filename, uw.file_id,
                             diff.meta AS effort_ratio
                       FROM {tiny_cursive_user_writing} uw
-                INNER JOIN {tiny_cursive_files} uf ON uw.file_id = uf.id
+                      JOIN {tiny_cursive_files} uf ON uw.file_id = uf.id
                  LEFT JOIN {tiny_cursive_writing_diff} diff ON uw.file_id = diff.file_id
                      WHERE uf.resourceid = :id
                            AND uf.cmid = :cmid
@@ -845,26 +847,27 @@ class cursive_json_func_data extends external_api {
         $data =
             $DB->get_record_sql(
                 $attempts,
-                ['id' => $params['id'], 'cmid' => $params['cmid'], 'modulename' => $params['modulename']]
+                ['id' => $params['id'], 'cmid' => $params['cmid'], 'modulename' => $params['modulename']],
             );
-
+        if (isset($data->effort_ratio)) {
+            $data->effort_ratio = intval(floatval($data->effort_ratio) * 100);
+        }
         $data = (array) $data;
         $data['first_file'] = 0;
 
         if (!isset($data['filename'])) {
-            $sql = 'SELECT filename,userid
+            $sql = 'SELECT id as file_id, filename,userid, content
                       FROM {tiny_cursive_files}
                      WHERE resourceid = :resourceid
                             AND cmid = :cmid
                             AND modulename = :modulename';
             $filename = $DB->get_record_sql(
                 $sql,
-                ['resourceid' => $params['id'], 'cmid' => $params['cmid'], 'modulename' => $params['modulename']]
+                ['resourceid' => $params['id'], 'cmid' => $params['cmid'], 'modulename' => $params['modulename']],
             );
 
-            $filep = $CFG->tempdir . "/userdata/" . $filename->filename;
-
-            $data['filename'] = $filep;
+            $data['filename'] = $filename->filename;
+            $data['file_id'] = $filename->file_id;
 
             $sql = 'SELECT *
                       FROM {tiny_cursive_files}
@@ -873,10 +876,8 @@ class cursive_json_func_data extends external_api {
             if ($firstfile->id == $filename->file_id) {
                 $data['first_file'] = 1;
             }
-        } else {
-            $filep = $CFG->tempdir . "/userdata/" . $data['filename'];
-            $data['filename'] = $filep;
         }
+
         $sql = 'SELECT *
                   FROM {tiny_cursive_files}
                  WHERE userid = :userid ORDER BY id ASC LIMIT 1';
@@ -919,7 +920,7 @@ class cursive_json_func_data extends external_api {
                 'modulename' => new external_value(PARAM_TEXT, 'modulename', VALUE_DEFAULT, ''),
                 'cmid' => new external_value(PARAM_INT, 'cmid', VALUE_DEFAULT, null),
                 'questionid' => new external_value(PARAM_INT, 'questionid', VALUE_DEFAULT, null),
-            ]
+            ],
         );
     }
 
@@ -940,7 +941,7 @@ class cursive_json_func_data extends external_api {
         $id,
         $modulename,
         $cmid = null,
-        $questionid = null
+        $questionid = null,
     ) {
         global $DB, $CFG;
         require_once($CFG->dirroot . '/lib/accesslib.php');
@@ -952,7 +953,7 @@ class cursive_json_func_data extends external_api {
                 'modulename' => $modulename,
                 'cmid' => $cmid,
                 'questionid' => $questionid,
-            ]
+            ],
         );
 
         $context = context_module::instance($params['cmid']);
@@ -974,7 +975,7 @@ class cursive_json_func_data extends external_api {
                                 AND uf.modulenam e= :modulename";
             $data = $DB->get_record_sql(
                 $attempts,
-                ['id' => $params['id'], 'cmid' => $params['cmid'], 'modulename' => $params['modulename']]
+                ['id' => $params['id'], 'cmid' => $params['cmid'], 'modulename' => $params['modulename']],
             );
 
             if (!isset($data->filename)) {
@@ -985,11 +986,10 @@ class cursive_json_func_data extends external_api {
                                AND modulename = :modulename';
                 $filename = $DB->get_record_sql(
                     $sql,
-                    ['resourceid' => $params['id'], 'cmid' => $params['cmid'], 'modulename' => $params['modulename']]
+                    ['resourceid' => $params['id'], 'cmid' => $params['cmid'], 'modulename' => $params['modulename']],
                 );
 
-                $filep = $CFG->tempdir . "/userdata/" . $filename->filename;
-                $data['filename'] = $filep;
+                $data['filename'] = $filename->filename;
             }
 
         } else {
@@ -1007,7 +1007,7 @@ class cursive_json_func_data extends external_api {
                                 AND uf.modulename = :modulename ";
             $data = $DB->get_record_sql(
                 $attempts,
-                ['id' => $params['id'], 'cmid' => $params['cmid'], 'modulename' => $params['modulename']]
+                ['id' => $params['id'], 'cmid' => $params['cmid'], 'modulename' => $params['modulename']],
             );
 
             if (!isset($data->filename)) {
@@ -1018,11 +1018,10 @@ class cursive_json_func_data extends external_api {
                                AND modulename = :modulename';
                 $filename = $DB->get_record_sql(
                     $sql,
-                    ['resourceid' => $params['id'], 'cmid' => $params['cmid'], 'modulename' => $params['modulename']]
+                    ['resourceid' => $params['id'], 'cmid' => $params['cmid'], 'modulename' => $params['modulename']],
                 );
 
-                $filep = $CFG->tempdir . "/userdata/" . $filename->filename;
-                $data['filename'] = $filep;
+                $data['filename'] = $filename->filename;
             }
         }
         $usercomment = [];
@@ -1057,7 +1056,7 @@ class cursive_json_func_data extends external_api {
                 'id' => new external_value(PARAM_INT, 'id', VALUE_REQUIRED),
                 'modulename' => new external_value(PARAM_TEXT, 'modulename', VALUE_REQUIRED),
                 'cmid' => new external_value(PARAM_INT, 'cmid', VALUE_REQUIRED),
-            ]
+            ],
         );
     }
 
@@ -1082,7 +1081,7 @@ class cursive_json_func_data extends external_api {
                 'id' => $id,
                 'modulename' => $modulename,
                 'cmid' => $cmid,
-            ]
+            ],
         );
 
         // Check if user has capability to view assignment comments.
@@ -1127,7 +1126,7 @@ class cursive_json_func_data extends external_api {
                 'id' => new external_value(PARAM_INT, 'id', VALUE_REQUIRED),
                 'modulename' => new external_value(PARAM_TEXT, 'modulename', VALUE_REQUIRED),
                 'cmid' => new external_value(PARAM_INT, 'cmid', VALUE_REQUIRED),
-            ]
+            ],
         );
     }
 
@@ -1152,7 +1151,7 @@ class cursive_json_func_data extends external_api {
                 'id' => $id,
                 'modulename' => $modulename,
                 'cmid' => $cmid,
-            ]
+            ],
         );
 
         // Check if user has capability to view assignment comments.
@@ -1182,18 +1181,21 @@ class cursive_json_func_data extends external_api {
                     'id' => $params['id'],
                     'cmid' => $params['cmid'],
                     'modulename' => $params['modulename'],
-                ]
+                ],
             );
+        if (isset($data->effort_ratio)) {
+            $data->effort_ratio = intval(floatval($data->effort_ratio) * 100);
+        }
         $data = (array) $data;
         if (!isset($data['filename'])) {
-            $sql = 'SELECT filename, id, userid
+            $sql = 'SELECT filename, content, id, userid
                       FROM {tiny_cursive_files}
                      WHERE userid = :userid
                             AND cmid = :cmid
                             AND modulename = :modulename';
             $filename = $DB->get_record_sql(
                 $sql,
-                ['userid' => $params['id'], 'cmid' => $params['cmid'], 'modulename' => $params['modulename']]
+                ['userid' => $params['id'], 'cmid' => $params['cmid'], 'modulename' => $params['modulename']],
             );
 
             $data['filename'] = $filename->filename;
@@ -1201,9 +1203,6 @@ class cursive_json_func_data extends external_api {
             $data['userid'] = $filename->userid;
         }
         if ($data['filename']) {
-
-            $filep = $CFG->tempdir . "/userdata/" . $data['filename'];
-            $data['filename'] = $filep;
 
             $sql = 'SELECT id AS fileid
                       FROM {tiny_cursive_files}
@@ -1250,7 +1249,7 @@ class cursive_json_func_data extends external_api {
                 'modulename' => new external_value(PARAM_TEXT, 'modulename', VALUE_DEFAULT, ''),
                 'cmid' => new external_value(PARAM_INT, 'cmid', VALUE_DEFAULT, null),
                 'filename' => new external_value(PARAM_TEXT, 'filename', VALUE_DEFAULT, ''),
-            ]
+            ],
         );
     }
 
@@ -1273,7 +1272,7 @@ class cursive_json_func_data extends external_api {
                 'id' => $id,
                 'modulename' => $modulename,
                 'cmid' => $cmid,
-            ]
+            ],
         );
         $context = context_module::instance($params['cmid']);
         self::validate_context($context);
@@ -1302,7 +1301,7 @@ class cursive_json_func_data extends external_api {
         return new external_function_parameters(
             [
                 'id' => new external_value(PARAM_TEXT, 'id', VALUE_REQUIRED, 0),
-            ]
+            ],
         );
     }
 
@@ -1323,7 +1322,7 @@ class cursive_json_func_data extends external_api {
             self::cursive_filtered_writing_func_parameters(),
             [
                 'id' => $id,
-            ]
+            ],
         );
 
         $userid = $USER->id;
@@ -1400,6 +1399,7 @@ class cursive_json_func_data extends external_api {
      * @param float $backspacepercent Percentage of backspace usage
      * @param string $copybehavior Copy/paste behavior flag
      * @param float $score Writing score
+     * @param  int $qualityaccess Quality access flag
      * @return array Array containing status and message
      */
     public static function store_user_writing(
@@ -1414,7 +1414,8 @@ class cursive_json_func_data extends external_api {
         $wordsperminute,
         $backspacepercent,
         $copybehavior,
-        $score
+        $score,
+        $qualityaccess,
     ) {
         global $DB;
 
@@ -1433,7 +1434,8 @@ class cursive_json_func_data extends external_api {
                 'backspace_percent' => $backspacepercent,
                 'copy_behavior' => $copybehavior,
                 'score' => $score,
-            ]
+                'quality_access' => $qualityaccess,
+            ],
         );
 
         try {
@@ -1463,6 +1465,7 @@ class cursive_json_func_data extends external_api {
             $data->backspace_percent = $params['backspace_percent'];
             $data->score = $params['score'];
             $data->copy_behavior = $params['copy_behavior'];
+            $data->quality_access = $params['quality_access'];
 
             // Update or insert the record.
             if ($recordexists) {
@@ -1523,7 +1526,7 @@ class cursive_json_func_data extends external_api {
             self::cursive_get_reply_json_parameters(),
             [
                 'filepath' => $filepath,
-            ]
+            ],
         );
         $parts = explode('_', $params['filepath']);
         $cmid = $parts[2];
@@ -1534,16 +1537,10 @@ class cursive_json_func_data extends external_api {
 
         $data = new stdClass;
         try {
-            if (file_exists($params['filepath'])) {
-                $data->status = true;
-                $content = file_get_contents($params['filepath']);
-            } else {
-                $filename = explode('/', $params['filepath']);
-                $filename = end($filename);
-                $filedata = $DB->get_record('tiny_cursive_files', ['filename' => $filename]);
-                $content = $filedata->content ? base64_decode($filedata->content) : $content = false;
-                $data->status = true;
-            }
+
+            $filedata = $DB->get_record('tiny_cursive_files', ['filename' => $params['filepath']]);
+            $content = $filedata->content ? $filedata->content : $content = false;
+            $data->status = true;
 
             if ($content === false) {
                 $data->status = false;
@@ -1588,6 +1585,7 @@ class cursive_json_func_data extends external_api {
             'backspace_percent' => new external_value(PARAM_FLOAT, 'backspace_percent', VALUE_REQUIRED),
             'copy_behavior' => new external_value(PARAM_FLOAT, 'copy_behavior', VALUE_REQUIRED),
             'score' => new external_value(PARAM_FLOAT, 'score', VALUE_DEFAULT, 0),
+            'quality_access' => new external_value(PARAM_INT, 'quality_access', VALUE_DEFAULT, 0),
         ];
 
     }
@@ -1617,7 +1615,7 @@ class cursive_json_func_data extends external_api {
             [
                 'cmid' => $cmid,
                 'fileid' => $fileid,
-            ]
+            ],
         );
 
         $context = context_module::instance($vparams['cmid']);
@@ -1691,7 +1689,7 @@ class cursive_json_func_data extends external_api {
                 'reconstructed_text' => $reconstructedtext,
                 'submitted_text' => $submittedtext,
                 'meta' => $meta,
-            ]
+            ],
         );
 
         $context = context_system::instance(); // Assuming a system-wide capability check.
@@ -1762,13 +1760,13 @@ class cursive_json_func_data extends external_api {
             self::cursive_get_writing_differencs_parameters(),
             [
                 'fileid' => $fileid,
-            ]
+            ],
         );
 
         $filename = $DB->get_record(
             'tiny_cursive_files',
             ['id' => $vparams['fileid']],
-            'filename'
+            'filename',
         );
         $parts = explode('_', $filename->filename);
         $cmid = $parts[2];
@@ -1827,6 +1825,532 @@ class cursive_json_func_data extends external_api {
     public static function generate_webtoken_returns() {
         return new external_single_structure([
             'token' => new external_value(PARAM_TEXT, 'token'),
+        ]);
+    }
+
+    /**
+     * Method write_local_to_json_parameters
+     *
+     * @return external_function_parameters
+     */
+    public static function write_local_to_json_parameters() {
+        return new external_function_parameters(
+            [
+                'resourceId' => new external_value(PARAM_INT, 'resourceId', VALUE_DEFAULT, 0),
+                'key' => new external_value(PARAM_TEXT, 'key detail', VALUE_DEFAULT, ""),
+                'keyCode' => new external_value(PARAM_INT, 'key code ', VALUE_DEFAULT, 0),
+                'event' => new external_value(PARAM_TEXT, 'event', VALUE_DEFAULT, 0),
+                'cmid' => new external_value(PARAM_INT, 'cmid', VALUE_DEFAULT, 0),
+                'modulename' => new external_value(PARAM_TEXT, 'Modulename', VALUE_DEFAULT, ""),
+                'editorid' => new external_value(PARAM_TEXT, 'editorid', VALUE_DEFAULT, ""),
+                'json_data' => new external_value(PARAM_TEXT, 'JSON Data', VALUE_DEFAULT, ""),
+            ],
+        );
+    }
+
+    /**
+     * Write local data to JSON file
+     *
+     * @param int $resourceid Resource identifier
+     * @param string|null $key Key detail
+     * @param int|null $keycode Key code
+     * @param string $event Event type
+     * @param int $cmid Course module ID
+     * @param string $modulename Module name
+     * @param string|null $editorid Editor identifier
+     * @param array $jsondata JSON data to write
+     * @return string File path of written JSON
+     */
+    public static function write_local_to_json(
+        $resourceid = 0,
+        $key = null,
+        $keycode = null,
+        $event = 'keyUp',
+        $cmid = 0,
+        $modulename = 'quiz',
+        $editorid = null,
+        $jsondata = [],
+    ) {
+        global $USER, $DB, $CFG;
+
+        $params = self::validate_parameters(
+            self::write_local_to_json_parameters(),
+            [
+                'resourceId' => $resourceid,
+                'key' => $key,
+                'keyCode' => $keycode,
+                'event' => $event,
+                'cmid' => $cmid,
+                'modulename' => $modulename,
+                'editorid' => $editorid,
+                'json_data' => $jsondata,
+            ],
+        );
+
+        if ($params['resourceId'] == 0 && $params['modulename'] !== 'forum') {
+            // For Quiz and Assignment there is no resourceid that's why cmid is resourceid.
+            $params['resourceId'] = $params['cmid'];
+        }
+
+        $courseid = 0;
+
+        $userdata = [];
+        if ($params['cmid']) {
+            $cm = $DB->get_record('course_modules', ['id' => $params['cmid']]);
+            $courseid = $cm->course;
+            $userdata["courseId"] = $courseid;
+
+            // Get course context.
+            $context = context_module::instance($params['cmid']);
+            self::validate_context($context);
+            require_capability('tiny/cursive:write', $context);
+
+        } else {
+            $userdata["courseId"] = 0;
+        }
+
+        $userdata["clientId"] = $CFG->wwwroot;
+        $userdata["personId"] = $USER->id;
+        $editoridarr = explode(':', $params['editorid']);
+
+        if (count($editoridarr) > 1) {
+            $uniqueid = substr($editoridarr[0] . "\n", 1);
+            $slot = substr($editoridarr[1] . "\n", 0, -11);
+            $quba = question_engine::load_questions_usage_by_activity($uniqueid);
+            $question = $quba->get_question($slot, false);
+            $questionid = $question->id;
+        }
+        $dirname = make_temp_directory('userdata');
+
+        $fname = $USER->id . '_' . $params['resourceId'] . '_' . $params['cmid'] . '_attempt' . '.json';
+        if ($questionid) {
+            $fname = $USER->id . '_' . $params['resourceId'] . '_' . $params['cmid'] . '_' . $questionid . '_attempt' . '.json';
+        }
+        // File path.
+        $filename = $dirname . '/' . $fname;
+
+        $table = 'tiny_cursive_files';
+        $inp = '';
+
+        if ($questionid) {
+            $inp = $DB->get_record($table, [
+                'cmid' => $params['cmid'],
+                'modulename' => $params['modulename'],
+                'resourceid' => $params['resourceId'],
+                'userid' => $USER->id,
+                'questionid' => $questionid,
+            ]);
+        } else {
+            $inp = $DB->get_record($table, [
+                'cmid' => $params['cmid'],
+                'modulename' => $params['modulename'],
+                'resourceid' => $params['resourceId'],
+                'userid' => $USER->id,
+            ]);
+        }
+        $temparray = [];
+        if ($inp) {
+
+            $temparray = json_decode($inp->content, true);
+            $jsondata = json_decode($params['json_data'], true);
+            foreach ($jsondata as $value) {
+                $userdata = $value;
+                array_push($temparray, $userdata);
+            }
+            $inp->content = json_encode($temparray);
+            $inp->uploaded = 0;
+            $DB->update_record($table, $inp);
+            return 'true';
+        } else {
+            $dataobj = new stdClass();
+            $dataobj->userid = $USER->id;
+            $dataobj->resourceid = $params['resourceId'];
+            $dataobj->cmid = $params['cmid'];
+            $dataobj->modulename = $params['modulename'];
+            $dataobj->courseid = $courseid;
+            $dataobj->timemodified = time();
+            $dataobj->filename = $fname;
+            $dataobj->content = $params['json_data'];
+            $dataobj->questionid = $questionid ?? 0;
+            $dataobj->uploaded = 0;
+            $DB->insert_record($table, $dataobj);
+            return $fname;
+        }
+
+    }
+
+    /**
+     * Method write_local_to_json_returns
+     *
+     * @return external_value
+     */
+    public static function write_local_to_json_returns() {
+        return new external_value(PARAM_TEXT, 'filename');
+    }
+
+    /**
+     * Returns the parameters for the cursive_get_config function
+     *
+     * @return external_function_parameters Parameters definition for the external function
+     */
+    public static function cursive_get_config_parameters() {
+        return new external_function_parameters([
+            'courseid' => new external_value(PARAM_INT, 'course id', VALUE_DEFAULT, 0),
+            'cmid' => new external_value(PARAM_INT, 'cmid', VALUE_DEFAULT, 0),
+        ]);
+    }
+
+    /**
+     * Get cursive configuration settings for a course and course module
+     *
+     * @param int $courseid The course ID to get config for
+     * @param int $cmid The course module ID to get config for
+     * @return array Array containing config status and sync interval
+     */
+    public static function cursive_get_config($courseid, $cmid) {
+        global $PAGE;
+        require_once(__DIR__.'/locallib.php');
+
+        $params = self::validate_parameters(
+            self::cursive_get_config_parameters(),
+            [
+                'courseid' => $courseid,
+                'cmid' => $cmid,
+            ],
+        );
+
+        $context = context_module::instance($params['cmid']);
+        self::validate_context($context);
+        require_capability("tiny/cursive:writingreport", $context);
+
+        $config = tiny_cursive_status($params['courseid']);
+        $syncinterval = get_config('tiny_cursive', "syncinterval");
+        return ['status' => $config, 'sync_interval' => $syncinterval];
+    }
+
+    /**
+     * Returns description of method result value for cursive_get_config
+     *
+     * @return external_single_structure Returns a structure containing config status and sync interval
+     */
+    public static function cursive_get_config_returns() {
+        return new external_single_structure([
+            'status' => new external_value(PARAM_BOOL, 'config'),
+            'sync_interval' => new external_value(PARAM_TEXT, 'Data Sync interval'),
+        ]);
+    }
+
+    /**
+     * Method store_user_writing_parameters
+     *
+     * @return object [explicite description]
+     */
+    public static function store_quality_metrics_parameters() {
+        return new external_function_parameters([
+            'file_id' => new external_value(PARAM_INT, 'File identifier', VALUE_REQUIRED),
+            'total_active_time' => new external_value(PARAM_FLOAT, 'Total active writing time in seconds', VALUE_REQUIRED),
+            'total_active_time_static' => new external_value(PARAM_FLOAT, 'Total active writing time in seconds', VALUE_REQUIRED),
+            'edits' => new external_value(PARAM_FLOAT, 'Number of edits made', VALUE_REQUIRED),
+            'edits_static' => new external_value(PARAM_FLOAT, 'Number of edits made', VALUE_REQUIRED),
+            'verbosity' => new external_value(PARAM_FLOAT, 'Verbosity score', VALUE_REQUIRED),
+            'verbosity_static' => new external_value(PARAM_FLOAT, 'Verbosity score', VALUE_REQUIRED),
+            'word_count' => new external_value(PARAM_FLOAT, 'Total number of words', VALUE_REQUIRED),
+            'word_count_static' => new external_value(PARAM_FLOAT, 'Total number of words', VALUE_REQUIRED),
+            'sentence_count' => new external_value(PARAM_FLOAT, 'Total number of sentences', VALUE_REQUIRED),
+            'sentence_count_static' => new external_value(PARAM_FLOAT, 'Total number of sentences', VALUE_REQUIRED),
+            'q_count' => new external_value(PARAM_FLOAT, 'Number of questions', VALUE_REQUIRED),
+            'q_count_static' => new external_value(PARAM_FLOAT, 'Number of questions', VALUE_REQUIRED),
+            'word_len_mean' => new external_value(PARAM_FLOAT, 'Average word length', VALUE_REQUIRED),
+            'word_len_mean_static' => new external_value(PARAM_FLOAT, 'Average word length', VALUE_REQUIRED),
+            'sent_word_count_mean' => new external_value(PARAM_FLOAT, 'Average words per sentence', VALUE_REQUIRED),
+            'sent_word_count_mean_static' => new external_value(PARAM_FLOAT, 'Average words per sentence', VALUE_REQUIRED),
+            'p_burst_mean' => new external_value(PARAM_FLOAT, 'Average pause burst duration', VALUE_REQUIRED),
+            'p_burst_mean_static' => new external_value(PARAM_FLOAT, 'Average pause burst duration', VALUE_REQUIRED),
+            'p_burst_cnt' => new external_value(PARAM_FLOAT, 'Number of pause bursts', VALUE_DEFAULT, 0),
+            'p_burst_cnt_static' => new external_value(PARAM_FLOAT, 'Number of pause bursts', VALUE_DEFAULT, 0),
+        ]);
+    }
+
+    /**
+     * Store quality metrics data for a file
+     *
+     * @param int $fileid File identifier
+     * @param float $totalactivetime Total active writing time in seconds
+     * @param float $totalactivetimestatic Total active writing time in seconds (static)
+     * @param float $edits Number of edits made
+     * @param float $editsstatic Number of edits made (static)
+     * @param float $verbosity Verbosity score
+     * @param float $verbositystatic Verbosity score (static)
+     * @param float $wordcount Total number of words
+     * @param float $wordcountstatic Total number of words (static)
+     * @param float $sentencecount Total number of sentences
+     * @param float $sentencecountstatic Total number of sentences (static)
+     * @param float $qcount Number of questions
+     * @param float $qcountstatic Number of questions (static)
+     * @param float $wordlenmean Average word length
+     * @param float $wordlenmeanstatic Average word length (static)
+     * @param float $sentwordcountmean Average words per sentence
+     * @param float $sentwordcountmeanstatic Average words per sentence (static)
+     * @param float $pburstmean Average pause burst duration
+     * @param float $pburstmeanstatic Average pause burst duration (static)
+     * @param float $pburstcnt Number of pause bursts
+     * @param float $pburstcntstatic Number of pause bursts (static)
+     * @return array Array containing status and message
+     */
+    public static function store_quality_metrics(
+        $fileid,
+        $totalactivetime,
+        $totalactivetimestatic,
+        $edits,
+        $editsstatic,
+        $verbosity,
+        $verbositystatic,
+        $wordcount,
+        $wordcountstatic,
+        $sentencecount,
+        $sentencecountstatic,
+        $qcount,
+        $qcountstatic,
+        $wordlenmean,
+        $wordlenmeanstatic,
+        $sentwordcountmean,
+        $sentwordcountmeanstatic,
+        $pburstmean,
+        $pburstmeanstatic,
+        $pburstcnt,
+        $pburstcntstatic,
+    ) {
+        global $DB;
+
+        $params = self::validate_parameters(
+            self::store_quality_metrics_parameters(),
+            [
+                'file_id' => $fileid,
+                'total_active_time' => $totalactivetime,
+                'total_active_time_static' => $totalactivetimestatic,
+                'edits' => $edits,
+                'edits_static' => $editsstatic,
+                'verbosity' => $verbosity,
+                'verbosity_static' => $verbositystatic,
+                'word_count' => $wordcount,
+                'word_count_static' => $wordcountstatic,
+                'sentence_count' => $sentencecount,
+                'sentence_count_static' => $sentencecountstatic,
+                'q_count' => $qcount,
+                'q_count_static' => $qcountstatic,
+                'word_len_mean' => $wordlenmean,
+                'word_len_mean_static' => $wordlenmeanstatic,
+                'sent_word_count_mean' => $sentwordcountmean,
+                'sent_word_count_mean_static' => $sentwordcountmeanstatic,
+                'p_burst_mean' => $pburstmean,
+                'p_burst_mean_static' => $pburstmeanstatic,
+                'p_burst_cnt' => $pburstcnt,
+                'p_burst_cnt_static' => $pburstcntstatic,
+            ],
+        );
+
+        try {
+
+            $context = context_system::instance();
+            self::validate_context($context);
+            require_capability('tiny/cursive:editsettings', $context);
+
+            // Check if the record exists.
+            $recordexists = $DB->record_exists('tiny_cursive_quality_metrics', ['file_id' => $params['file_id']]);
+            // Retrieve existing data or initialize a new stdClass object.
+            $data =
+                $recordexists ? $DB->get_record('tiny_cursive_quality_metrics', ['file_id' => $params['file_id']]) : new stdClass();
+
+            // Populate data attributes.
+            $data->file_id = $params['file_id'];
+            $data->total_active_time = $params['total_active_time'];
+            $data->total_active_time_static = $params['total_active_time_static'];
+            $data->edits = $params['edits'];
+            $data->edits_static = $params['edits_static'];
+            $data->verbosity = $params['verbosity'];
+            $data->verbosity_static = $params['verbosity_static'];
+            $data->word_count = $params['word_count'];
+            $data->word_count_static = $params['word_count_static'];
+            $data->sentence_count = $params['sentence_count'];
+            $data->sentence_count_static = $params['sentence_count_static'];
+            $data->q_count = $params['q_count'];
+            $data->q_count_static = $params['q_count_static'];
+            $data->word_len_mean = $params['word_len_mean'];
+            $data->word_len_mean_static = $params['word_len_mean_static'];
+            $data->sent_word_count_mean = $params['sent_word_count_mean'];
+            $data->sent_word_count_mean_static = $params['sent_word_count_mean_static'];
+            $data->p_burst_mean = $params['p_burst_mean'];
+            $data->p_burst_mean_static = $params['p_burst_mean_static'];
+            $data->p_burst_cnt = $params['p_burst_cnt'];
+            $data->p_burst_cnt_static = $params['p_burst_cnt_static'];
+            // Update or insert the record.
+            if ($recordexists) {
+                $DB->update_record('tiny_cursive_quality_metrics', $data);
+            } else {
+                $DB->insert_record('tiny_cursive_quality_metrics', $data);
+            }
+
+            // Return success status.
+            return [
+                'status' => get_string('success', 'tiny_cursive'),
+                'message' => get_string('data_save', 'tiny_cursive'),
+            ];
+        } catch (dml_exception $e) {
+            // Return failure status with error message.
+            return [
+                'status' => get_string('failed', 'tiny_cursive'),
+                'message' => $e->getMessage(),
+            ];
+        }
+    }
+
+    /**
+     * Method store_user_writing_returns
+     *
+     * @return external_single_structure [explicite description]
+     */
+    public static function store_quality_metrics_returns() {
+        return new external_single_structure([
+            'status' => new external_value(PARAM_TEXT, 'status message'),
+            'message' => new external_value(PARAM_TEXT, 'message'),
+        ]);
+    }
+
+    /**
+     * Returns the parameter structure for the get_quality_metrics function
+     *
+     * @return external_function_parameters The parameters structure containing:
+     *         - file_id (int): Required file identifier parameter
+     *         - cmid (int): Required course module ID parameter
+     */
+    public static function get_quality_metrics_parameters() {
+        return new external_function_parameters([
+            'file_id' => new external_value(PARAM_INT, 'File identifier', VALUE_REQUIRED),
+            'cmid' => new external_value(PARAM_INT, 'Course Module ID', VALUE_REQUIRED),
+        ]);
+    }
+
+    /**
+     * Retrieves quality metrics data for a specific file
+     *
+     * @param int $fileid The ID of the file to get metrics for
+     * @param int $cmid The course module ID
+     * @return array Returns an array containing:
+     *               - status (bool): Whether the operation was successful
+     *               - data (object): The quality metrics data object
+     */
+    public static function get_quality_metrics($fileid, $cmid) {
+        global $DB;
+
+        $params = self::validate_parameters(
+            self::get_quality_metrics_parameters(),
+            [
+                'file_id' => $fileid,
+                'cmid' => $cmid,
+            ],
+        );
+
+        try {
+
+            $context = context_module::instance($params['cmid']);
+            self::validate_context($context);
+            require_capability('tiny/cursive:writingreport', $context);
+
+            $subscription = get_config('tiny_cursive', 'has_subscription');
+            $customsettings = get_config('tiny_cursive', 'qualityaccess');
+            $data = new stdClass;
+
+            $defaults = [
+                'word_len_mean' => 4.66,
+                'edits' => 178.13,
+                'p_burst_cnt' => 22.7,
+                'p_burst_mean' => 82.14,
+                'q_count' => 1043.92,
+                'sentence_count' => 13.66,
+                'total_active_time' => 21.58,
+                'verbosity' => 1617.83,
+                'word_count' => 190.67,
+                'sent_word_count_mean' => 14.27170659,
+            ];
+
+            if ($subscription) {
+                $sql = "SELECT qm.*, uw.quality_access
+                      FROM {tiny_cursive_quality_metrics} qm
+                 LEFT JOIN {tiny_cursive_user_writing} uw ON qm.file_id = uw.file_id
+                     WHERE qm.file_id = :fileid";
+                $data = $DB->get_record_sql($sql, ['fileid' => $params['file_id']]);
+
+                foreach ($defaults as $key => &$default) {
+                    $default = floatval(get_config('tiny_cursive', $key) ?: $default);
+
+                    if ($customsettings) {
+
+                        $data->{$key} = round(floatval(floatval($data->{$key}) / $default) * 100, 2);
+                    } else {
+                        $data->{$key} = round(floatval(floatval($data->{$key}) / floatval($data->{$key . "_static"})) * 100, 2);
+                    }
+
+                }
+            } else {
+                $data->id = 0;
+                $data->file_id = $params['file_id'];
+                $data->quality_access = 0;
+                foreach ($defaults as $key => &$default) {
+                    $data->{$key} = 0.0;
+                }
+            }
+
+            return [
+                'status' => true,
+                'data' => $data,
+            ];
+        } catch (dml_exception $e) {
+            // Return failure status with error message.
+            return [
+            'status' => false,
+            'data' => $e->getMessage(),
+            ];
+        }
+    }
+
+    /**
+     * Returns the structure of the get_quality_metrics function's return value
+     *
+     * @return external_single_structure The return value structure containing:
+     *         - status (bool): Whether the operation was successful
+     *         - data (object): Object containing quality metrics data with fields:
+     *           - id (int): Record ID
+     *           - file_id (int): File identifier
+     *           - total_active_time (float): Total active writing time in seconds
+     *           - edits (float): Number of edits made
+     *           - verbosity (float): Verbosity score
+     *           - word_count (float): Total word count
+     *           - sentence_count (float): Total sentence count
+     *           - q_count (float): Question count
+     *           - word_len_mean (float): Mean word length
+     *           - sent_word_count_mean (float): Mean words per sentence
+     *           - p_burst_mean (float): Mean pause burst duration
+     *           - p_burst_cnt (float): Pause burst count
+     *           - quality_access (int): Quality access level
+     */
+    public static function get_quality_metrics_returns() {
+        return new external_single_structure([
+            'status' => new external_value(PARAM_BOOL, 'status message'),
+            'data' => new external_single_structure([
+                'id' => new external_value(PARAM_INT, 'ID'),
+                'file_id' => new external_value(PARAM_INT, 'File ID'),
+                'total_active_time' => new external_value(PARAM_FLOAT, 'Total active writing time in seconds'),
+                'edits' => new external_value(PARAM_FLOAT, 'Number of edits made'),
+                'verbosity' => new external_value(PARAM_FLOAT, 'Verbosity score'),
+                'word_count' => new external_value(PARAM_FLOAT, 'Total number of words'),
+                'sentence_count' => new external_value(PARAM_FLOAT, 'Total number of sentences'),
+                'q_count' => new external_value(PARAM_FLOAT, 'Number of questions'),
+                'word_len_mean' => new external_value(PARAM_FLOAT, 'Average word length'),
+                'sent_word_count_mean' => new external_value(PARAM_FLOAT, 'Average words per sentence'),
+                'p_burst_mean' => new external_value(PARAM_FLOAT, 'Average pause burst duration'),
+                'p_burst_cnt' => new external_value(PARAM_FLOAT, 'Number of pause bursts'),
+                'quality_access' => new external_value(PARAM_INT, 'Quality access'),
+            ]),
         ]);
     }
 

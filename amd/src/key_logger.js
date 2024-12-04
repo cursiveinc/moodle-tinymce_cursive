@@ -17,39 +17,41 @@
  * @module     tiny_cursive/key_logger
  * @category TinyMCE Editor
  * @copyright  CTI <info@cursivetechnology.com>
- * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
+ * @author Brain Station 23 <elearning@brainstation-23.com>
  */
 
-define(["jquery", "core/ajax", "core/str", "core/templates"], function (
+define(["jquery", "core/ajax", "core/str", "core/templates"], function(
   $,
   AJAX,
   str,
-  templates,
-) {
+  templates) {
+
   var usersTable = {
-    init: function (page) {
+    init: function(page) {
       str
         .get_strings([
-          { key: "field_require", component: "tiny_cursive" }
+          {key: "field_require", component: "tiny_cursive"}
         ])
-        .done(function () {
+        .done(function() {
           $(document).ready(function($) {
-            $(".popup_item").on('click',function () {
-              var mid=$(this).data("id");
-            $("#"+mid).show();
+            $(".popup_item").on('click', function() {
+              var mid = $(this).data("id");
+              $("#" + mid).show();
             });
-            $(".link_icon").on('click',function () {
-              var smid=$(this).data("id");
-            $("#"+smid).show();
+            $(".link_icon").on('click', function() {
+              var smid = $(this).data("id");
+              $("#" + smid).show();
             });
-            $(".modal-close ").on('click',function () {$(".modal").hide();});
-        } );
+            $(".modal-close ").on('click', function() {
+              $(".modal").hide();
+            });
+          });
           usersTable.getusers(page);
         });
     },
-    getusers: function (page) {
+    getusers: function(page) {
       $("#fgroup_id_buttonar").hide();
-      $("#id_coursename").change(function () {
+      $("#id_coursename").change(function() {
         var courseid = $(this).val();
         var promise1 = AJAX.call([
           {
@@ -59,17 +61,19 @@ define(["jquery", "core/ajax", "core/str", "core/templates"], function (
             },
           },
         ]);
-        promise1[0].done(function (json) {
+        promise1[0].done(function(json) {
           var data = JSON.parse(json);
           var context = {
             tabledata: data,
             page: page,
           };
+          // eslint-disable-next-line
           templates
             .render("tiny_cursive/user_list", context)
-            .then(function (html) {
-              var filtered_user = $("#id_username");
-              filtered_user.html(html);
+            .then(function(html) {
+              var filteredUser = $("#id_username");
+              filteredUser.html(html);
+              return true;
             });
         });
 
@@ -79,20 +83,22 @@ define(["jquery", "core/ajax", "core/str", "core/templates"], function (
             args: {
               courseid: courseid,
             },
-          },
+          }
         ]);
-        promise2[0].done(function (json) {
+        promise2[0].done(function(json) {
           var data = JSON.parse(json);
           var context = {
             tabledata: data,
             page: page,
           };
+          // eslint-disable-next-line
           templates
             .render("tiny_cursive/module_list", context)
-            .then(function (html) {
+            .then(function(html) {
 
-              var filtered_user = $("#id_modulename");
-              filtered_user.html(html);
+              var filteredUser = $("#id_modulename");
+              filteredUser.html(html);
+              return true;
             });
         });
       });

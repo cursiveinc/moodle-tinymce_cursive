@@ -1,4 +1,3 @@
-<?php
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,18 +14,30 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Tiny cursive plugin.
+ * TODO describe module user
  *
- * @package tiny_cursive
- * @copyright  CTI <info@cursivetechnology.com>
- * @author Brain Station 23 <elearning@brainstation-23.com>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @module     tiny_cursive/user
+ * @copyright  2024 YOUR NAME <your@email.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+define([], function() {
+    let userId = null;
+    let host = null;
+    let courseid = null;
 
-/**
- * Tiny cursive uninstall.
- */
-function xmldb_tiny_cursive_uninstall() {
-    return true;
-}
+    return {
+        setUserId: function(id, hostadd, cid) {
+            userId = id;
+            host = hostadd;
+            courseid = cid;
+        },
+        getUserId: function() {
+            return {
+                userid: userId,
+                host: host,
+                courseid: courseid
+            };
+        }
+    };
+});

@@ -17,10 +17,10 @@
  * @module     tiny_cursive/append_fourm_post
  * @category TinyMCE Editor
  * @copyright  CTI <info@cursivetechnology.com>
- * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
+ * @author Brain Station 23 <elearning@brainstation-23.com>
  */
 
-define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./analytic_button", "./analytic_events"], function (
+define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./analytic_button", "./analytic_events"], function(
     $,
     AJAX,
     str,
@@ -30,7 +30,8 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
     AnalyticEvents
 ) {
     const replayInstances = {};
-    window.video_playback = function (mid, filepath) {
+    // eslint-disable-next-line camelcase
+    window.video_playback = function(mid, filepath) {
         if (filepath !== '') {
             const replay = new Replay(
                 'content' + mid,
@@ -40,10 +41,10 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                 'player_' + mid
             );
             replayInstances[mid] = replay;
-        }
-        else {
+        } else {
             templates.render('tiny_cursive/no_submission').then(html => {
                 $('#content' + mid).html(html);
+                return true;
             }).catch(e => window.console.error(e));
         }
         return false;
@@ -51,27 +52,25 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
     };
 
     var usersTable = {
-        init: function (score_setting, showcomment) {
+        init: function(scoreSetting, showcomment) {
             str
                 .get_strings([
-                    { key: "field_require", component: "tiny_cursive" },
+                    {key: "field_require", component: "tiny_cursive"},
                 ])
-                .done(function () {
-                    usersTable.getToken(score_setting, showcomment);
+                .done(function() {
+                    usersTable.getToken(scoreSetting, showcomment);
                 });
         },
-        getToken: function (score_setting, showcomment) {
-            $('#page-mod-forum-discuss').find("article").get().forEach(function (entry) {
-                $(document).ready(function () {
-                    var replyButton = $('a[data-region="post-action"][title="Reply"]');
-                    if (replyButton.length > 0) {
-                        replyButton.on('click', function (event) {
-                            event.preventDefault();
-                            var url = $(this).attr('href');
-                            window.location.href = url;
-                        });
-                    }
-                });
+        getToken: function(scoreSetting, showcomment) {
+            $('#page-mod-forum-discuss').find("article").get().forEach(function(entry) {
+                var replyButton = $('a[data-region="post-action"][title="Reply"]');
+                if (replyButton.length > 0) {
+                    replyButton.on('click', function(event) {
+                        event.preventDefault();
+                        var url = $(this).attr('href');
+                        window.location.href = url;
+                    });
+                }
 
                 var ids = $("#" + entry.id).data("post-id");
                 var anchorTag = $('a.nav-link.active.active_tree_node[href*="mod/forum/view.php?id="]');
@@ -81,24 +80,24 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                     cmid = hrefValue.match(/id=(\d+)/)[1];
                 }
 
-                let args = { id: ids, modulename: "forum", cmid: cmid };
+                let args = {id: ids, modulename: "forum", cmid: cmid};
                 let methodname = 'cursive_get_forum_comment_link';
-                let com = AJAX.call([{ methodname, args }]);
-                com[0].done(function (json) {
+                let com = AJAX.call([{methodname, args}]);
+                com[0].done(function(json) {
                     var data = JSON.parse(json);
 
                     var filepath = '';
                     if (data.data.filename) {
-                        var filepath = data.data.filename;
+                        filepath = data.data.filename;
                     }
                     if (filepath) {
 
-                        let analytic_button_div = document.createElement('div');
-                        analytic_button_div.append(analyticButton(ids));
-                        analytic_button_div.classList.add('text-center', 'mt-2');
-                        analytic_button_div.dataset.region = "analytic-div" + ids;
+                        let analyticButtonDiv = document.createElement('div');
+                        analyticButtonDiv.append(analyticButton(ids));
+                        analyticButtonDiv.classList.add('text-center', 'mt-2');
+                        analyticButtonDiv.dataset.region = "analytic-div" + ids;
 
-                        $("#" + entry.id).find('#post-content-' + ids).append(analytic_button_div);
+                        $("#" + entry.id).find('#post-content-' + ids).append(analyticButtonDiv);
                         if (data.usercomment != 'comments' && parseInt(showcomment)) {
 
                             let comments = "";
@@ -117,15 +116,16 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                         var context = {
                             tabledata: data.data,
                             formattime: myEvents.formatedTime(data.data),
-                            page: score_setting,
+                            page: scoreSetting,
                             userid: ids,
                         };
 
-                        let authIcon = myEvents.authorshipStatus(data.data.first_file, data.data.score, score_setting);
+                        let authIcon = myEvents.authorshipStatus(data.data.first_file, data.data.score, scoreSetting);
                         myEvents.createModal(ids, context, '', authIcon);
                         myEvents.analytics(ids, templates, context, '', replayInstances, authIcon);
                         myEvents.checkDiff(ids, data.data.file_id, '', replayInstances);
                         myEvents.replyWriting(ids, filepath, '', replayInstances);
+                        myEvents.quality(ids, templates, context, '', replayInstances, cmid);
                     }
 
                 });
