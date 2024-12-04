@@ -77,6 +77,8 @@ function create_cursive_field() {
             'component' => 'core_course',
             'area' => 'course',
             'sortorder' => 0,
+            'contextid' => 1,
+            'itemid' => 0,
             'timecreated' => time(),
             'timemodified' => time(),
         ]);
@@ -97,10 +99,12 @@ function create_cursive_field() {
             'categoryid' => $categoryid,
             'type' => 'select',
             'configdata' => json_encode([
+                'required' => 0,
+                'uniquevalues' => 0,
                 'options' => "Enabled\nDisabled\n",
                 'defaultvalue' => 'Disabled',
-                'required' => 1,
-                'visibility' => 1,
+                'locked' => 0,
+                'visibility' => 2,
             ]),
             'timecreated' => time(),
             'timemodified' => time(),
