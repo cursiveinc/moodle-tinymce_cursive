@@ -112,13 +112,13 @@ if (is_siteadmin()) {
         )
     );
 
-    $settings->add(
-        new admin_setting_heading(
-            'cursive_settings_footer',
-            get_string('sectionadvance', 'tiny_cursive'),
-            get_string('sectionadvance_desc', 'tiny_cursive')
-        )
-    );
+    // $settings->add(
+    //     new admin_setting_heading(
+    //         'cursive_settings_footer',
+    //         get_string('sectionadvance', 'tiny_cursive'),
+    //         get_string('sectionadvance_desc', 'tiny_cursive')
+    //     )
+    // );
 
     // if (get_config('tiny_cursive', 'has_subscription')) {
     //     $settings->add(
