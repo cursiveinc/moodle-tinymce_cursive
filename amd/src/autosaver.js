@@ -247,6 +247,7 @@ export const register = (editor, interval, userId) => {
     editor.on('keyDown', (editor) => {
         sendKeyEvent("keyDown", editor);
     });
+    // eslint-disable-next-line
     editor.on('init', () => {
     });
 
