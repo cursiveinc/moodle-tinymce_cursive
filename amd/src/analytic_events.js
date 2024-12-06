@@ -20,19 +20,20 @@
  * @copyright  2024 CTI <your@email.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-import MyModal from "./analytic_modal";
-import { call as getContent } from "core/ajax";
+
+import myModal from "./analytic_modal";
+import {call as getContent} from "core/ajax";
 import $ from 'jquery';
 import * as Str from 'core/str';
+import Chart from 'core/chartjs';
 import ModalFactory from 'core/modal_factory';
 
 export default class AnalyticEvents {
 
     createModal(userid, context, questionid = '', authIcon) {
-        $('#analytics' + userid + questionid).on('click', function (e) {
+        $('#analytics' + userid + questionid).on('click', function(e) {
             e.preventDefault();
-            ModalFactory.create({ type: MyModal.TYPE, templateContext: context }).then(modal => {
-
+            ModalFactory.create({type: myModal.TYPE, templateContext: context}).then(modal => {
                 modal.show();
                 const targetElement = $('#content' + userid + ' .table tbody tr:first-child td:nth-child(2)');
                 if (targetElement.length > 0) {
@@ -40,6 +41,7 @@ export default class AnalyticEvents {
                 } else {
                     window.console.error('Target element not found');
                 }
+                return true;
             }).catch(error => {
                 window.window.console.error("Failed to create modal:", error);
             });
@@ -47,8 +49,9 @@ export default class AnalyticEvents {
     }
 
     analytics(userid, templates, context, questionid = '', replayInstances = null, authIcon) {
-        $('body').on('click', '#analytic' + userid + questionid, function (e) {
+        $('body').on('click', '#analytic' + userid + questionid, function(e) {
             $('#rep' + userid + questionid).prop('disabled', false);
+            $('#quality' + userid + questionid).prop('disabled', false);
             e.preventDefault();
             $('#content' + userid).html($('<div>').addClass('d-flex justify-content-center my-5')
                 .append($('<div>').addClass('tiny_cursive-loader')));
@@ -58,11 +61,11 @@ export default class AnalyticEvents {
             $('.tiny_cursive-nav-tab').find('.active').removeClass('active');
             $(this).addClass('active'); // Add 'active' class to the clicked element
 
-            templates.render('tiny_cursive/analytics_table', context).then(function (html) {
+            templates.render('tiny_cursive/analytics_table', context).then(function(html) {
                 $('#content' + userid).html(html);
                 $('#content' + userid + ' .table tbody tr:first-child td:nth-child(2)').html(authIcon);
-
-            }).fail(function (error) {
+                return true;
+            }).fail(function(error) {
                 window.console.error("Failed to render template:", error);
             });
         });
@@ -76,13 +79,14 @@ export default class AnalyticEvents {
         nodata.style.fontWeight = '500';
         nodata.textContent = "no data received yet";
 
-        $('body').on('click', '#diff' + userid + questionid, function (e) {
+        $('body').on('click', '#diff' + userid + questionid, function(e) {
             $('#rep' + userid + questionid).prop('disabled', false);
+            $('#quality' + userid + questionid).prop('disabled', false);
             e.preventDefault();
             $('#content' + userid).html($('<div>').addClass('d-flex justify-content-center my-5')
                 .append($('<div>').addClass('tiny_cursive-loader')));
             $('.tiny_cursive-nav-tab').find('.active').removeClass('active');
-            $(this).addClass('active'); // Add 'active' class to the clicked element
+            $(this).addClass('active');
             if (replayInstances && replayInstances[userid]) {
                 replayInstances[userid].stopReplay();
             }
@@ -92,16 +96,16 @@ export default class AnalyticEvents {
             }
             getContent([{
                 methodname: 'cursive_get_writing_differences',
-                args: { fileid: fileid },
+                args: {fileid: fileid},
             }])[0].done(response => {
                 let responsedata = JSON.parse(response.data);
                 if (responsedata[0]) {
-                    let submitted_text = atob(responsedata[0].submitted_text);
+                    let submittedText = atob(responsedata[0].submitted_text);
 
                     // Fetch the dynamic strings
                     Str.get_strings([
-                        { key: 'original_text', component: 'tiny_cursive' },
-                        { key: 'editspastesai', component: 'tiny_cursive' }
+                        {key: 'original_text', component: 'tiny_cursive'},
+                        {key: 'editspastesai', component: 'tiny_cursive'}
                     ]).done(strings => {
                         const originalTextString = strings[0];
                         const editsPastesAIString = strings[1];
@@ -109,23 +113,23 @@ export default class AnalyticEvents {
                         const $legend = $('<div class="d-flex p-2 border rounded mb-2">');
 
                         // Create the first legend item
-                        const $attributedItem = $('<div>', { class: 'tiny_cursive-legend-item' });
-                        const $attributedBox = $('<div>', { class: 'tiny_cursive-box attributed' });
+                        const $attributedItem = $('<div>', {"class": "tiny_cursive-legend-item"});
+                        const $attributedBox = $('<div>', {"class": "tiny_cursive-box attributed"});
                         const $attributedText = $('<span>').text(originalTextString);
                         $attributedItem.append($attributedBox).append($attributedText);
 
                         // Create the second legend item
-                        const $unattributedItem = $('<div>', { class: 'tiny_cursive-legend-item' });
-                        const $unattributedBox = $('<div>', { class: 'tiny_cursive-box tiny_cursive_added' });
+                        const $unattributedItem = $('<div>', {"class": 'tiny_cursive-legend-item'});
+                        const $unattributedBox = $('<div>', {"class": 'tiny_cursive-box tiny_cursive_added'});
                         const $unattributedText = $('<span>').text(editsPastesAIString);
                         $unattributedItem.append($unattributedBox).append($unattributedText);
 
-                        // Append the legend items to the legend container
+                        // Append the legend items to the legend container.
                         $legend.append($attributedItem).append($unattributedItem);
 
                         let contents = $('<div>').addClass('tiny_cursive-comparison-content');
                         let textBlock2 = $('<div>').addClass('tiny_cursive-text-block').append(
-                            $('<div>').attr('id', 'tiny_cursive-reconstructed_text').html(JSON.parse(submitted_text))
+                            $('<div>').attr('id', 'tiny_cursive-reconstructed_text').html(JSON.parse(submittedText))
                         );
 
                         contents.append($legend, textBlock2);
@@ -145,8 +149,9 @@ export default class AnalyticEvents {
     }
 
     replyWriting(userid, filepath, questionid = '', replayInstances = null) {
-        $('body').on('click', '#rep' + userid + questionid, function (e) {
+        $('body').on('click', '#rep' + userid + questionid, function(e) {
             $(this).prop('disabled', true);
+            $('#quality' + userid + questionid).prop('disabled', false);
             e.preventDefault();
             $('#content' + userid).html($('<div>').addClass('d-flex justify-content-center my-5')
                 .append($('<div>').addClass('tiny_cursive-loader')));
@@ -165,30 +170,334 @@ export default class AnalyticEvents {
         });
     }
 
+    quality(userid, templates, context, questionid = '', replayInstances = null, cmid) {
+        let metricsData = '';
+        const nodata = document.createElement('p');
+        nodata.classList.add('text-center', 'p-5', 'bg-light', 'rounded', 'm-5', 'text-primary');
+        nodata.style.verticalAlign = 'middle';
+        nodata.style.textTransform = 'uppercase';
+        nodata.style.fontWeight = '500';
+        nodata.textContent = "no data received yet";
+
+        $('body').on('click', '#quality' + userid + questionid, function(e) {
+
+            $(this).prop('disabled', true);
+            $('#rep' + userid + questionid).prop('disabled', false);
+            e.preventDefault();
+            $('.tiny_cursive-nav-tab').find('.active').removeClass('active');
+            $(this).addClass('active'); // Add 'active' class to the clicked element
+
+            let res = getContent([{
+                methodname: 'cursive_get_quality_metrics',
+                args: {"file_id": context.tabledata.file_id ?? userid, cmid: cmid},
+            }]);
+
+            const content = document.getElementById('content' + userid);
+            if (content) {
+                content.innerHTML = '';
+                const loaderDiv = document.createElement('div');
+                loaderDiv.className = 'd-flex justify-content-center my-5';
+                const loader = document.createElement('div');
+                loader.className = 'tiny_cursive-loader';
+                loaderDiv.appendChild(loader);
+                content.appendChild(loaderDiv);
+            }
+
+            if (replayInstances && replayInstances[userid]) {
+                replayInstances[userid].stopReplay();
+            }
+
+            templates.render('tiny_cursive/quality_chart', context).then(function(html) {
+                const content = document.getElementById('content' + userid);
+
+                res[0].done(response => {
+                    if (response.status) {
+                        metricsData = response.data;
+                        let proUser = metricsData.quality_access;
+
+                        if (!proUser) {
+                            // eslint-disable-next-line promise/no-nesting
+                            templates.render('tiny_cursive/upgrade_to_pro', []).then(function(html) {
+                                $('#content' + userid).html(html);
+                                return true;
+                                }).fail(function(error) {
+                                window.console.error(error);
+                            });
+                        } else {
+
+                            if (content) {
+                                content.innerHTML = html;
+                            }
+                            if (!metricsData) {
+                                $('#content' + userid).html(nodata);
+                            }
+
+                            var originalData = [
+                                metricsData.word_len_mean, metricsData.edits, metricsData.p_burst_cnt, metricsData.p_burst_mean,
+                                metricsData.q_count, metricsData.sentence_count, metricsData.total_active_time,
+                                metricsData.verbosity, metricsData.word_count, metricsData.sent_word_count_mean
+                            ];
+
+                            let chartvas = document.querySelector('#chart' + userid);
+                            const data = {
+                                labels: [
+                                    'Average Word Length',
+                                    'Edits',
+                                    'P-burst Count',
+                                    'P-Burst Mean',
+                                    'Q Count',
+                                    'Sentence Count',
+                                    'Total Active Time',
+                                    'Verbosity',
+                                    'Word Count',
+                                    'Word Count per Sentence Mean'
+                                ],
+                                datasets: [{
+                                    data: originalData.map(d => {
+                                        if (d > 100) {
+                                            return 100;
+                                        } else if (d < -100) {
+                                            return -100;
+                                        } else {
+                                            return d;
+                                        }
+                                    }),
+                                    backgroundColor: function(context) {
+                                        // Apply green or gray depending on value.
+                                        const value = context.raw;
+
+                                        if (value > 0 && value < 100) {
+                                            return '#43BB97';
+                                        } else if (value < 0) {
+                                            return '#AAAAAA';
+                                        } else {
+                                            return '#00432F'; // Green for positive, gray for negative.
+                                        }
+
+                                    },
+                                    barPercentage: 0.75,
+                                }]
+                            };
+
+                            const drawPercentage = {
+                                id: 'drawPercentage',
+                                afterDraw: (chart) => {
+                                    const {ctx, data} = chart;
+                                    ctx.save();
+                                    let value;
+                                    chart.getDatasetMeta(0).data.forEach((dataPoint, index) => {
+                                        value = parseInt(data.datasets[0].data[index]);
+                                        if (!value) {
+                                            value = 0;
+                                        }
+                                        value = originalData[index];
+
+                                        ctx.font = "bold 14px sans-serif";
+
+                                        if (value > 50 && value <= 100) {
+                                            ctx.fillStyle = 'white';
+                                            ctx.textAlign = 'right';
+                                            ctx.fillText(value + '%', dataPoint.x - 5, dataPoint.y + 5);
+                                        } else if (value <= 10 && value > 0) {
+                                            ctx.fillStyle = '#43bb97';
+                                            ctx.textAlign = 'left';
+                                            if (value >= 1) {
+                                                ctx.fillText('0' + value + '%', dataPoint.x + 5, dataPoint.y + 5);
+                                            } else {
+                                                ctx.fillText(value + '%', dataPoint.x + 5, dataPoint.y + 5);
+                                            }
+                                        // eslint-disable-next-line no-empty
+                                        } else if (value == 0 || value == undefined) {
+                                        } else if (value > 100) {
+                                            ctx.fillStyle = 'white';
+                                            ctx.textAlign = 'right';
+                                            ctx.fillText(value + '%', dataPoint.x - 5, dataPoint.y + 5);
+                                        } else if (value < -50 && value >= -100) {
+                                            ctx.fillStyle = 'white';
+                                            ctx.textAlign = 'left';
+                                            ctx.fillText(value + '%', dataPoint.x + 5, dataPoint.y + 5);
+                                        } else if (value < -100) {
+                                            ctx.fillStyle = 'white';
+                                            ctx.textAlign = 'left';
+                                            ctx.fillText(value + '%', dataPoint.x + 5, dataPoint.y + 5);
+                                        } else if (value > -50 && value < 0) {
+                                            ctx.fillStyle = 'grey';
+                                            ctx.textAlign = 'right';
+                                            ctx.fillText(value + '%', dataPoint.x - 5, dataPoint.y + 5);
+                                        } else {
+                                            ctx.fillStyle = '#43bb97';
+                                            ctx.textAlign = 'left';
+                                            ctx.fillText(value + '%', dataPoint.x + 5, dataPoint.y + 5);
+                                        }
+
+                                    });
+                                }
+                            };
+
+                            const chartAreaBg = {
+                                id: 'chartAreaBg',
+                                beforeDraw: (chart) => {
+                                    const {ctx, scales: {x, y}} = chart;
+                                    ctx.save();
+
+                                    const segmentPixel = y.getPixelForValue(y.ticks[0].value) -
+                                        y.getPixelForValue(y.ticks[1].value);
+                                    const doubleSegment = y.ticks[2].value - y.ticks[0].value;
+                                    let tickArray = [];
+
+                                    // Generate tick values.
+                                    for (let i = 0; i <= y.max; i += doubleSegment) {
+                                        if (i !== y.max) {
+                                            tickArray.push(i);
+                                        }
+                                    }
+
+                                    // Draw the background rectangles for each tick.
+                                    tickArray.forEach(tick => {
+                                        ctx.fillStyle = 'rgba(0, 0, 0, 0.02)';
+                                        ctx.fillRect(0, y.getPixelForValue(tick) + 63, x.width + x.width + 21, segmentPixel);
+                                    });
+                                }
+                            };
+
+
+                            new Chart(chartvas, {
+                                type: 'bar',
+                                data: data,
+                                options: {
+                                    responsive: false,
+                                    maintainAspectRatio: false,
+                                    indexAxis: 'y',
+                                    elements: {
+                                        bar: {
+                                            borderRadius: 16,
+                                            borderWidth: 0,
+                                            zIndex: 1,
+                                        }
+                                    },
+                                    scales: {
+                                        x: {
+                                            beginAtZero: true,
+                                            min: -100,
+                                            max: 100,
+                                            ticks: {
+                                                callback: function(value) {
+                                                    if (value === -100 || value === 100) {
+                                                        return value + '%';
+                                                    } else if (value === 0) {
+                                                        return 'Average';
+                                                    }
+                                                    return '';
+                                                },
+                                                display: true,
+                                                font: function(context) {
+                                                    if (context && context.tick && context.tick.value === 0) {
+                                                        return {
+                                                            weight: 'bold',
+                                                            size: 14,
+                                                            color: 'black'
+                                                        };
+                                                    }
+                                                    return {
+                                                        weight: 'bold',
+                                                        size: 13,
+                                                        color: 'black'
+                                                    };
+                                                },
+                                                color: 'black',
+
+                                            },
+                                            grid: {
+                                                display: true,
+                                                color: function(context) {
+                                                    return context.tick.value === 0 ? 'black' : '#eaeaea';
+                                                },
+                                                tickLength: 0,
+                                            },
+                                            position: 'top'
+
+                                        },
+                                        y: {
+                                            beginAtZero: true,
+                                            ticks: {
+                                                display: true,
+                                                align: 'center',
+
+                                                crossAlign: 'far',
+                                                font: {
+                                                    size: 18,
+                                                },
+                                                tickLength: 100,
+                                                color: 'black',
+                                            },
+                                            grid: {
+                                                display: true,
+                                                tickLength: 1000,
+                                            },
+
+                                        }
+                                    },
+                                    plugins: {
+                                        legend: {
+                                            display: false,
+                                        },
+                                        title: {
+                                            display: false,
+                                        },
+                                        tooltip: {
+                                            yAlign: 'bottom',
+                                            xAlign: 'center',
+                                            callbacks: {
+                                                label: function(context) {
+                                                    const originalValue = originalData[context.dataIndex];
+                                                    return originalValue; // Show the original value.
+                                                },
+                                            },
+                                        },
+                                    }
+                                },
+                                plugins: [chartAreaBg, drawPercentage]
+                            });
+                        }
+                    }
+                }).fail(error => {
+                    $('#content' + userid).html(nodata);
+                    throw new Error('Error: no data received yet', error);
+                });
+                return true;
+            }).catch(function(error) {
+                window.console.error("Failed to render template:", error);
+            });
+
+            document.querySelectorAll('.tiny_cursive-nav-tab .active').forEach(el => el.classList.remove('active'));
+            e.target.classList.add('active');
+        });
+    }
+
     formatedTime(data) {
         if (data.total_time_seconds) {
-            let total_time_seconds = data.total_time_seconds;
-            let hours = Math.floor(total_time_seconds / 3600).toString().padStart(2, 0);
-            let minutes = Math.floor((total_time_seconds % 3600) / 60).toString().padStart(2, 0);
-            let seconds = (total_time_seconds % 60).toString().padStart(2, 0);
+            let totalTimeSeconds = data.total_time_seconds;
+            let hours = Math.floor(totalTimeSeconds / 3600).toString().padStart(2, 0);
+            let minutes = Math.floor((totalTimeSeconds % 3600) / 60).toString().padStart(2, 0);
+            let seconds = (totalTimeSeconds % 60).toString().padStart(2, 0);
             return `${hours}h ${minutes}m ${seconds}s`;
         } else {
             return "0h 0m 0s";
         }
     }
 
-    authorshipStatus(firstFile, score, score_setting) {
+    authorshipStatus(firstFile, score, scoreSetting) {
         var icon = 'fa fa-circle-o';
         var color = 'font-size:32px;color:black';
-        var score = parseFloat(score);
+            score = parseFloat(score);
 
         if (firstFile) {
             icon = 'fa fa-solid fa-info-circle';
             color = 'font-size:32px;color:#000000';
-        } else if (score >= score_setting) {
+        } else if (score >= scoreSetting) {
             icon = 'fa fa-check-circle';
             color = 'font-size:32px;color:green';
-        } else if (score < score_setting) {
+        } else if (score < scoreSetting) {
             icon = 'fa fa-question-circle';
             color = 'font-size:32px;color:#A9A9A9';
         }
