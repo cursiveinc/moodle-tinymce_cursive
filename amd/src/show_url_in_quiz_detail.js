@@ -64,14 +64,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
             let subUrl = window.location.href;
             let parm = new URL(subUrl);
             let attemptId = parm.searchParams.get('attempt');
-
-            let cmid = parm.searchParams.get('cmid');
-            if (!cmid) {
-                var firstHref = $('a[href*="question/bank/editquestion/question.php"]').first().attr('href');
-                if (firstHref && firstHref.length > 0) {
-                    cmid = firstHref.match(/cmid=(\d+)/)[1];
-                }
-            }
+            let cmid = M.cfg.contextInstanceId;
             var userid = '';
             var tableRow = $('table.generaltable.generalbox.quizreviewsummary tbody tr');
             tableRow.each(function() {

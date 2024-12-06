@@ -48,6 +48,8 @@ class tiny_cursive_renderer extends plugin_renderer_base {
         $data = $users['data'];
 
         $table = new html_table();
+        $table->attributes['class'] = 'table table-hover shadow mx-2 my-3 rounded overflow-hidden';
+        $table->attributes['style'] = 'width: 98%;';
         $table->head = [
             get_string('attemptid', 'tiny_cursive'),
             get_string('fulname', 'tiny_cursive'),
@@ -55,9 +57,8 @@ class tiny_cursive_renderer extends plugin_renderer_base {
             get_string('module_name', 'tiny_cursive'),
             get_string('last_modified', 'tiny_cursive'),
             get_string('analytics', 'tiny_cursive'),
-            '',
+            get_string("download", 'tiny_cursive'),
         ];
-
         foreach ($data as $user) {
             $sql = 'SELECT id AS fileid
                       FROM {tiny_cursive_files}
