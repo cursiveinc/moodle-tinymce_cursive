@@ -25,7 +25,6 @@ define([], function() {
     let userId = null;
     let host = null;
     let courseid = null;
-
     return {
         setUserId: function(id, hostadd, cid) {
             userId = id;

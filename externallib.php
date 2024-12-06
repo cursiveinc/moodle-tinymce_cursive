@@ -2008,7 +2008,7 @@ class cursive_json_func_data extends external_api {
      * @return array Array containing config status and sync interval
      */
     public static function cursive_get_config($courseid, $cmid) {
-        global $PAGE;
+        global $PAGE, $USER;
         require_once(__DIR__.'/locallib.php');
 
         $params = self::validate_parameters(
@@ -2025,7 +2025,7 @@ class cursive_json_func_data extends external_api {
 
         $config = tiny_cursive_status($params['courseid']);
         $syncinterval = get_config('tiny_cursive', "syncinterval");
-        return ['status' => $config, 'sync_interval' => $syncinterval];
+        return ['status' => $config, 'sync_interval' => $syncinterval, 'userid' => $USER->id];
     }
 
     /**
@@ -2037,6 +2037,7 @@ class cursive_json_func_data extends external_api {
         return new external_single_structure([
             'status' => new external_value(PARAM_BOOL, 'config'),
             'sync_interval' => new external_value(PARAM_TEXT, 'Data Sync interval'),
+            'userid' => new external_value(PARAM_INT, 'userid'),
         ]);
     }
 

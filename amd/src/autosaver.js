@@ -25,15 +25,14 @@ import {create} from 'core/modal_factory';
 import {get_string as getString} from 'core/str';
 import {save, cancel, hidden} from 'core/modal_events';
 import jQuery from 'jquery';
-import user from 'tiny_cursive/user';
 
-export const register = (editor, interval) => {
+export const register = (editor, interval, userId) => {
 
     var isStudent = !(jQuery('#body').hasClass('teacher_admin'));
     var intervention = jQuery('#body').hasClass('intervention');
-    var userid = null;
-    var host = null;
-    var courseid = null;
+    var userid = userId;
+    var host = M.cfg.wwwroot ?? null;
+    var courseid = M.cfg.courseId ?? null;
     var filename = "";
     var quizSubmit = jQuery('#mod_quiz-next-nav');
     var ed = "";
@@ -41,9 +40,7 @@ export const register = (editor, interval) => {
     var recourceId = 0;
     var modulename = "";
     var editorid = editor?.id;
-    let bodyid = jQuery('body').attr('class');
-    var classes = bodyid.split(' ');
-    var cmid = 0;
+    var cmid = M.cfg.contextInstanceId;
     var questionid = 0;
     let assignSubmit = jQuery('#id_submitbutton');
     var syncInterval = interval ? interval * 1000 : 10000; // Default: Sync Every 10s.
@@ -112,14 +109,8 @@ export const register = (editor, interval) => {
                     let parm = new URL(ur);
                     let modulename = "";
                     let editorid = editor?.id;
-                    let bodyid = jQuery('body').attr('class');
-                    let classes = bodyid.split(' ');
-                    let courseid = parseInt(classes.find((classname) => {
-                        return classname.startsWith('course-');
-                    }).split('-')[1]); // Getting cmid from body classlist.
-                    let cmid = parseInt(classes.find((classname) => {
-                        return classname.startsWith('cmid-');
-                    }).split('-')[1]); // Getting cmid from body classlist.
+                    let courseid = M.cfg.courseId;
+                    let cmid = M.cfg.contextInstanceId;
 
                     // eslint-disable-next-line
                     if (ur.includes("attempt.php") || ur.includes("forum") || ur.includes("assign")) { } else {
@@ -177,15 +168,6 @@ export const register = (editor, interval) => {
         let parm = new URL(ur);
         ed = eds;
         event = events;
-        let bodyid = jQuery('body').attr('id');
-
-        if (bodyid == 'page-mod-quiz-attempt' || bodyid == 'page-mod-quiz-summary' ||
-            bodyid == 'page-mod-assign-editsubmission' || bodyid == 'page-mod-forum-view' ||
-            bodyid == 'page-mod-forum-post') {
-            cmid = parseInt(classes.find((classname) => {
-                return classname.startsWith('cmid-');
-            }).split('-')[1]); // Getting cmid from body classlist.
-        }
         // eslint-disable-next-line
         if (ur.includes("attempt.php") || ur.includes("forum") || ur.includes("assign")) { } else {
             return false;
@@ -265,11 +247,8 @@ export const register = (editor, interval) => {
     editor.on('keyDown', (editor) => {
         sendKeyEvent("keyDown", editor);
     });
+    // eslint-disable-next-line
     editor.on('init', () => {
-        let userdata = user.getUserId();
-        userid = userdata.userid;
-        host = userdata.host;
-        courseid = userdata.courseid;
     });
 
     /**
