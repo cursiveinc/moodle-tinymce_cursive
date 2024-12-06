@@ -73,12 +73,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                 }
 
                 var ids = $("#" + entry.id).data("post-id");
-                var anchorTag = $('a.nav-link.active.active_tree_node[href*="mod/forum/view.php?id="]');
-                var cmid = 0;
-                if (anchorTag.length > 0) {
-                    var hrefValue = anchorTag.attr('href');
-                    cmid = hrefValue.match(/id=(\d+)/)[1];
-                }
+                var cmid = M.cfg.contextInstanceId;
 
                 let args = {id: ids, modulename: "forum", cmid: cmid};
                 let methodname = 'cursive_get_forum_comment_link';
