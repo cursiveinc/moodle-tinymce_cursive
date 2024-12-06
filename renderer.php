@@ -236,7 +236,7 @@ class tiny_cursive_renderer extends plugin_renderer_base {
         echo $this->output->render_from_template(
             'tiny_cursive/writing_report',
             [
-                'total_word' => $userprofile->word_count,
+                'total_word' => $userprofile->word_count ?? 0,
                 'total_time' => $totaltime,
                 'avg_min' => $avgwords,
                 'username' => fullname($user),
