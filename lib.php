@@ -88,11 +88,10 @@ function tiny_cursive_extend_navigation_course(\navigation_node $navigation, \st
 
     $url = new moodle_url($CFG->wwwroot . '/lib/editor/tiny/plugins/cursive/tiny_cursive_report.php', ['courseid' => $course->id]);
     $cmid = tiny_cursive_get_cmid($course->id);
-    if ($cmid) {
+    if ($cmid && get_config('tiny_cursive', "cursive-$course->id")) {
         $context = context_module::instance($cmid);
-        $iseditingteacher = has_capability("tiny/cursive:view", $context);
-
-        if (get_admin()->id == $USER->id || $iseditingteacher) {
+        $hascap = has_capability("tiny/cursive:editsettings", $context);
+        if ($hascap) {
             $navigation->add(
                 get_string('wractivityreport', 'tiny_cursive'),
                 $url,
@@ -116,6 +115,7 @@ function tiny_cursive_extend_navigation(global_navigation $navigation) {
         $home->remove();
     }
 }
+
 
 /**
  * Add a node to the myprofile navigation tree for writing reports.
@@ -169,31 +169,20 @@ function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath
         $remoteurl = get_config('tiny_cursive', 'python_server') . "/upload_file";
         $filetosend = '';
 
-        // Check if file exists or create one from base64 content.
-        if (file_exists($filenamewithfullpath)) {
-            // Check if file size is within the limit.
-            if (filesize($filenamewithfullpath) > 16 * 1024 * 1024) {
-                throw new Exception("File exceeds the 16MB size limit.");
-            }
-            // Use the file directly.
-            $filetosend = new CURLFILE($filenamewithfullpath);
-        } else {
-            // Save base64 decoded content to a temporary JSON file.
-            $tempfilepath = tempnam(sys_get_temp_dir(), 'upload');
-            $filecontent = base64_decode($filerecord->content);
-            $jsoncontent = json_decode($filecontent, true);
+        $tempfilepath = tempnam(sys_get_temp_dir(), 'upload');
 
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new Exception("Invalid JSON content in file.");
-            }
+        $jsoncontent = json_decode($filerecord->content, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new Exception("Invalid JSON content in file.");
+        }
             file_put_contents($tempfilepath, json_encode($jsoncontent));
             $filetosend = new CURLFILE($tempfilepath, 'application/json', 'uploaded.json');
 
             // Ensure the temporary file does not exceed the size limit.
-            if (filesize($tempfilepath) > 16 * 1024 * 1024) {
-                unlink($tempfilepath);
-                throw new Exception("File exceeds the 16MB size limit.");
-            }
+        if (filesize($tempfilepath) > 16 * 1024 * 1024) {
+            unlink($tempfilepath);
+            throw new Exception("File exceeds the 16MB size limit.");
         }
 
         echo $remoteurl;
@@ -224,8 +213,9 @@ function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath
             echo "File not found: " . $filenamewithfullpath . "\n";
             echo "cURL Error: " . $curl->error . "\n";
         } else {
-            echo "HTTP Status Code: " . $httpcode . "\n";
+            echo "\nHTTP Status Code: " . $httpcode . "\n";
             echo "File Id: " . $filerecord->id . "\n";
+            echo "response: " . $result . "\n";
         }
 
         // Remove the temporary file if it was created.
@@ -313,7 +303,7 @@ function tiny_cursive_get_user_essay_quiz_responses($userid, $courseid, $resourc
             'questionid' => $questionid,
         ]
     );
-    return $result->responsesummary;
+    return $result->responsesummary ?? "";
 }
 
 /**
@@ -341,7 +331,7 @@ function tiny_cursive_get_user_onlinetext_assignments($userid, $courseid, $modul
 
     $result =
         $DB->get_record_sql($sql, ['userid' => $userid, 'courseid' => $courseid, 'modulename' => $modulename, 'cmid' => $cmid]);
-    return $result->onlinetext;
+    return $result->onlinetext ?? "";
 }
 
 /**
@@ -362,7 +352,7 @@ function tiny_cursive_get_user_forum_posts($userid, $courseid, $resourceid) {
              WHERE fp.userid = :userid
                    AND fd.course = :courseid
                    AND fp.id = :resourceid";
-
     $result = $DB->get_record_sql($sql, ['userid' => $userid, 'courseid' => $courseid, 'resourceid' => $resourceid]);
-    return $result->message;
+
+    return $result->message ?? "";
 }

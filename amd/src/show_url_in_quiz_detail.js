@@ -20,7 +20,7 @@
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  */
 
-define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./analytic_button", "./analytic_events"], function (
+define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./analytic_button", "./analytic_events"], function(
     $,
     AJAX,
     str,
@@ -30,7 +30,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
     AnalyticEvents
 ) {
     const replayInstances = {};
-
+    // eslint-disable-next-line
     window.video_playback = function (mid, filepath, questionid) {
         if (filepath !== '') {
             const replay = new Replay(
@@ -38,10 +38,11 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                 filepath,
                 10,
                 false,
-                'player_' + mid+questionid
+                'player_' + mid + questionid
             );
             replayInstances[mid] = replay;
         } else {
+            // eslint-disable-next-line
             templates.render('tiny_cursive/no_submission').then(html => {
                 $('#content' + mid).html(html);
             }).catch(e => window.console.error(e));
@@ -50,30 +51,23 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
     };
 
     var usersTable = {
-        init: function (score_setting, showcomment) {
+        init: function(scoreSetting, showcomment) {
             str
                 .get_strings([
-                    { key: "field_require", component: "tiny_cursive" },
+                    {key: "field_require", component: "tiny_cursive"},
                 ])
-                .done(function () {
-                    usersTable.appendSubmissionDetail(score_setting, showcomment);
+                .done(function() {
+                    usersTable.appendSubmissionDetail(scoreSetting, showcomment);
                 });
         },
-        appendSubmissionDetail: function (score_setting, showcomment) {
-            let sub_url = window.location.href;
-            let parm = new URL(sub_url);
-            let attempt_id = parm.searchParams.get('attempt');
-
-            let cmid = parm.searchParams.get('cmid');
-            if (!cmid) {
-                var firstHref = $('a[href*="question/bank/editquestion/question.php"]').first().attr('href');
-                if (firstHref && firstHref.length > 0) {
-                    cmid = firstHref.match(/cmid=(\d+)/)[1];
-                }
-            }
+        appendSubmissionDetail: function(scoreSetting, showcomment) {
+            let subUrl = window.location.href;
+            let parm = new URL(subUrl);
+            let attemptId = parm.searchParams.get('attempt');
+            let cmid = M.cfg.contextInstanceId;
             var userid = '';
             var tableRow = $('table.generaltable.generalbox.quizreviewsummary tbody tr');
-            tableRow.each(function () {
+            tableRow.each(function() {
                 var href = $(this).find('a[href*="/user/view.php"]').attr('href');
                 if (href) {
                     var id = href.match(/id=(\d+)/);
@@ -83,18 +77,19 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                 }
             });
 
-            $('#page-mod-quiz-review .info').each(function () {
+            $('#page-mod-quiz-review .info').each(function() {
 
                 var editQuestionLink = $(this).find('.editquestion a[href*="question/bank/editquestion/question.php"]');
+                var questionid = 0;
                 if (editQuestionLink.length > 0) {
-                    var editQuestionLink = editQuestionLink.attr('href');
-                    var questionid = editQuestionLink.match(/&id=(\d+)/)[1];
+                    editQuestionLink = editQuestionLink.attr('href');
+                    questionid = editQuestionLink.match(/&id=(\d+)/)[1];
                 }
 
-                let args = { id: attempt_id, modulename: "quiz", "cmid": cmid, "questionid": questionid, "userid": userid };
+                let args = {id: attemptId, modulename: "quiz", "cmid": cmid, "questionid": questionid, "userid": userid};
                 let methodname = 'cursive_get_comment_link';
-                let com = AJAX.call([{ methodname, args }]);
-                com[0].done(function (json) {
+                let com = AJAX.call([{methodname, args}]);
+                com[0].done(function(json) {
                     var data = JSON.parse(json);
 
                     if (data.data.filename) {
@@ -115,24 +110,26 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                         if (data.data.filename) {
                             filepath = data.data.filename;
                         }
-                        let analytic_button_div = document.createElement('div');
-                        analytic_button_div.classList.add('text-center', 'mt-2');
-                        analytic_button_div.append(analyticButton(userid, questionid));
-                        content.parent().parent().parent().find('.qtext').append(analytic_button_div);
+                        let analyticButtonDiv = document.createElement('div');
+                        analyticButtonDiv.classList.add('text-center', 'mt-2');
+                        analyticButtonDiv.append(analyticButton(userid, questionid));
+                        content.parent().parent().parent().find('.qtext').append(analyticButtonDiv);
 
                         let myEvents = new AnalyticEvents();
                         var context = {
                             tabledata: data.data,
                             formattime: myEvents.formatedTime(data.data),
-                            page: score_setting,
+                            page: scoreSetting,
                             userid: userid,
                             quizid: questionid,
                         };
-                        let authIcon = myEvents.authorshipStatus(data.data.first_file, data.data.score, score_setting);
+
+                        let authIcon = myEvents.authorshipStatus(data.data.first_file, data.data.score, scoreSetting);
                         myEvents.createModal(userid, context, questionid, authIcon);
                         myEvents.analytics(userid, templates, context, questionid, replayInstances, authIcon);
                         myEvents.checkDiff(userid, data.data.file_id, questionid, replayInstances);
                         myEvents.replyWriting(userid, filepath, questionid, replayInstances);
+                        myEvents.quality(userid, templates, context, questionid, replayInstances, cmid);
 
                     }
                 });

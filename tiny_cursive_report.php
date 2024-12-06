@@ -37,6 +37,7 @@ $orderby = optional_param('orderby', 'id', PARAM_TEXT);
 $order = optional_param('order', 'ASC', PARAM_TEXT);
 $page = optional_param('page', 0, PARAM_INT);
 $limit = 5;
+
 $perpage = $page * $limit;
 
 if ($courseid) {
@@ -70,6 +71,11 @@ $PAGE->requires->jquery_plugin('jquery');
 $PAGE->requires->jquery_plugin('ui');
 $PAGE->requires->js_call_amd('tiny_cursive/cursive_writing_reports', 'init', []);
 
+if ($courseid) {
+    $context = context_course::instance($courseid);
+    require_capability('mod/quiz:viewreports', $context);
+}
+
 echo $OUTPUT->header();
 
 $mform = new user_report_form(null, [
@@ -80,6 +86,7 @@ $mform = new user_report_form(null, [
 ], '', '', []);
 
 $mform->display();
+$renderer = $PAGE->get_renderer('tiny_cursive');
 
 if ($formdata = $mform->get_data()) {
     if ($formdata->courseid) {
@@ -95,26 +102,35 @@ if ($formdata = $mform->get_data()) {
         $page,
         $limit
     );
-    $renderer = $PAGE->get_renderer('tiny_cursive');
-    // Prepare the URL for the link.
-    $url = new moodle_url('/lib/editor/tiny/plugins/cursive/csvexport.php', [
-        'courseid' => $courseid,
-        'moduleid' => $moduleid,
-        'userid' => $userid,
-    ]);
-    // Prepare the link text.
-    $linktext = get_string('download_csv', 'tiny_cursive');
-    // Prepare the attributes for the link.
-    $attributes = [
-        'target' => '_blank',
-        'id' => 'export',
-        'role' => 'button',
-        'class' => 'btn btn-primary mb-4',
-        'style' => 'margin-right:50px;',
-    ];
-    // Generate the link using html_writer::link.
-    echo html_writer::link($url, $linktext, $attributes);
-    echo $renderer->timer_report($users, $courseid, $page, $limit, $linkurl);
 
+    tiny_cursive_render_user_table(
+        $users,
+        $renderer,
+        $courseid,
+        $page,
+        $limit,
+        $linkurl,
+        $moduleid,
+        $userid);
+} else {
+    $users = tiny_cursive_get_user_attempts_data(
+        $userid,
+        $courseid,
+        $moduleid,
+        $orderby,
+        $order,
+        $page,
+        $limit
+    );
+    tiny_cursive_render_user_table(
+        $users,
+        $renderer,
+        $courseid,
+        $page,
+        $limit,
+        $linkurl,
+        $moduleid,
+        $userid);
 }
+
 echo $OUTPUT->footer();
