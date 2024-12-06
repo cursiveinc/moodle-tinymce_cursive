@@ -20,35 +20,29 @@
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  */
 
-define(["jquery", "core/config", "core/str"], function ($, mdlcfg, Str) {
+define(["jquery", "core/config", "core/str"], function($, mdlcfg, Str) {
     var usersTable = {
         init: async function(page) {
             await usersTable.appendTable(page);
         },
-        appendTable: async function () {
-            $(document).ready(async function ($) {
+        appendTable: async function() {
+            $(document).ready(async function($) {
                 // Get the first row in the table header
-                let h_tr = $('thead').find('tr').get()[0];
-                let bodyid = $('body').attr('class');
-                let classes = bodyid.split(' ');
-
-                // Extract course ID
-                let courseid = parseInt(classes.find((classname) => {
-                    return classname.startsWith('course-');
-                }).split('-')[1]);
+                let hTr = $('thead').find('tr').get()[0];
+                let courseid = M.cfg.courseId;
 
                 // Fetch string for stats header
                 let statsString = await Str.get_string('stats', 'tiny_cursive');
 
                 // Add the stats header if it doesn't already exist
-                if (!$(h_tr).find('#stats').length) {
-                    $(h_tr).find('th').eq(6).after('<th class="header c7" id="stats">' + statsString + '</th>');
+                if (!$(hTr).find('#stats').length) {
+                    $(hTr).find('th').eq(6).after('<th class="header c7" id="stats">' + statsString + '</th>');
                 }
 
                 // Iterate over each row in the table body
-                $('tbody').find("tr").get().forEach(function (tr) {
-                    let td_user = $(tr).find("td").get()[0];
-                    let userid = $(td_user).find("input").get()[0]?.id;
+                $('tbody').find("tr").get().forEach(function(tr) {
+                    let tdUser = $(tr).find("td").get()[0];
+                    let userid = $(tdUser).find("input").get()[0]?.id;
                     userid = userid?.slice(4); // Extract userid from input id
 
                     if (userid) {
@@ -60,15 +54,15 @@ define(["jquery", "core/config", "core/str"], function ($, mdlcfg, Str) {
                             let icon = 'fa fa-area-chart';
 
                             // Add the icon link to the 6th column
-                            let thunder_icon = '<td><a href="' + link + '" data-id=' + userid + '>' +
+                            let thunderIcon = '<td><a href="' + link + '" data-id=' + userid + '>' +
                                 '<i class="' + icon + '" aria-hidden="true" style="' + color + '"></i></a></td>';
-                            $(tr).find('td').eq(5).after(thunder_icon); // Insert after the 5th column
+                            $(tr).find('td').eq(5).after(thunderIcon); // Insert after the 5th column
                         }
                     }
                 });
 
                 // Add event listener for page change or other events triggering table update
-                $(".page-item, .header").on('click', function () {
+                $(".page-item, .header").on('click', function() {
                     setTimeout(() => {
                         // Prevent multiple initializations by checking if already initialized
                         if (!$('#stats').length) {
