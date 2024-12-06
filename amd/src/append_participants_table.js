@@ -29,13 +29,7 @@ define(["jquery", "core/config", "core/str"], function($, mdlcfg, Str) {
             $(document).ready(async function($) {
                 // Get the first row in the table header
                 let hTr = $('thead').find('tr').get()[0];
-                let bodyid = $('body').attr('class');
-                let classes = bodyid.split(' ');
-
-                // Extract course ID
-                let courseid = parseInt(classes.find((classname) => {
-                    return classname.startsWith('course-');
-                }).split('-')[1]);
+                let courseid = M.cfg.courseId;
 
                 // Fetch string for stats header
                 let statsString = await Str.get_string('stats', 'tiny_cursive');
