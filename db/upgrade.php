@@ -118,103 +118,152 @@ function xmldb_tiny_cursive_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2024060283, 'tiny', 'cursive');
     }
 
-    if ($oldversion < 2024060285) {
+    if ($oldversion < 2024060289) {
 
         $table = new xmldb_table('tiny_cursive_quality_metrics');
 
-        // Add each new field if it doesn't already exist.
-        $fields = [
-            'total_active_time_static' => [
-                'type' => XMLDB_TYPE_NUMBER,
-                'precision' => '10, 5',
-                'notnull' => XMLDB_NOTNULL,
-                'default' => '0',
-                'previous' => 'total_active_time',
-            ],
-            'edits_static' => [
-                'type' => XMLDB_TYPE_NUMBER,
-                'precision' => '10, 5',
-                'notnull' => XMLDB_NOTNULL,
-                'default' => '0',
-                'previous' => 'edits',
-            ],
-            'verbosity_static' => [
-                'type' => XMLDB_TYPE_NUMBER,
-                'precision' => '10, 5',
-                'notnull' => XMLDB_NOTNULL,
-                'default' => '0',
-                'previous' => 'verbosity',
-            ],
-            'word_count_static' => [
-                'type' => XMLDB_TYPE_NUMBER,
-                'precision' => '10, 5',
-                'notnull' => XMLDB_NOTNULL,
-                'default' => '0',
-                'previous' => 'word_count',
-            ],
-            'sentence_count_static' => [
-                'type' => XMLDB_TYPE_NUMBER,
-                'precision' => '10, 5',
-                'notnull' => XMLDB_NOTNULL,
-                'default' => '0',
-                'previous' => 'sentence_count',
-            ],
-            'q_count_static' => [
-                'type' => XMLDB_TYPE_NUMBER,
-                'precision' => '10, 5',
-                'notnull' => XMLDB_NOTNULL,
-                'default' => '0',
-                'previous' => 'q_count',
-            ],
-            'word_len_mean_static' => [
-                'type' => XMLDB_TYPE_NUMBER,
-                'precision' => '10, 5',
-                'notnull' => XMLDB_NOTNULL,
-                'default' => '0',
-                'previous' => 'word_len_mean',
-            ],
-            'sent_word_count_mean_static' => [
-                'type' => XMLDB_TYPE_NUMBER,
-                'precision' => '10, 5',
-                'notnull' => XMLDB_NOTNULL,
-                'default' => '0',
-                'previous' => 'sent_word_count_mean',
-            ],
-            'p_burst_mean_static' => [
-                'type' => XMLDB_TYPE_NUMBER,
-                'precision' => '10, 5',
-                'notnull' => XMLDB_NOTNULL,
-                'default' => '0',
-                'previous' => 'p_burst_mean',
-            ],
-            'p_burst_cnt_static' => [
-                'type' => XMLDB_TYPE_NUMBER,
-                'precision' => '10, 5',
-                'notnull' => XMLDB_NOTNULL,
-                'default' => '0',
-                'previous' => 'p_burst_cnt',
-            ], ];
+        // Remove fields with 'static' in their names.
+        $staticfields = [
+            'total_active_time_static', 'edits_static', 'verbosity_static',
+            'word_count_static', 'sentence_count_static', 'q_count_static',
+            'word_len_mean_static', 'sent_word_count_mean_static',
+            'p_burst_mean_static', 'p_burst_cnt_static',
+        ];
 
-        foreach ($fields as $fieldname => $attributes) {
+        foreach ($staticfields as $fieldname) {
+            $field = new xmldb_field($fieldname);
+            if ($dbman->field_exists($table, $field)) {
+                $dbman->drop_field($table, $field);
+            }
+        }
+
+        // Add new fields as defined in the provided schema.
+        $newfields = [
+            'edits_normalised' => [
+                'type' => XMLDB_TYPE_FLOAT,
+                'precision' => null,
+                'notnull' => XMLDB_NOTNULL,
+                'default' => 0,
+                'sequence' => false,
+            ],
+            'verbosity_normalised' => [
+                'type' => XMLDB_TYPE_FLOAT,
+                'precision' => null,
+                'notnull' => XMLDB_NOTNULL,
+                'default' => 0,
+                'sequence' => false,
+            ],
+            'word_count_normalised' => [
+                'type' => XMLDB_TYPE_FLOAT,
+                'precision' => null,
+                'notnull' => XMLDB_NOTNULL,
+                'default' => 0,
+                'sequence' => false,
+            ],
+            'sentence_count_normalised' => [
+                'type' => XMLDB_TYPE_FLOAT,
+                'precision' => null,
+                'notnull' => XMLDB_NOTNULL,
+                'default' => 0,
+                'sequence' => false,
+            ],
+            'q_count_normalised' => [
+                'type' => XMLDB_TYPE_FLOAT,
+                'precision' => null,
+                'notnull' => XMLDB_NOTNULL,
+                'default' => 0,
+                'sequence' => false,
+            ],
+            'all_session_total_active_time' => [
+                'type' => XMLDB_TYPE_FLOAT,
+                'precision' => null,
+                'notnull' => XMLDB_NOTNULL,
+                'default' => 0,
+                'sequence' => false,
+            ],
+            'all_session_edits' => [
+                'type' => XMLDB_TYPE_FLOAT,
+                'precision' => null,
+                'notnull' => XMLDB_NOTNULL,
+                'default' => 0,
+                'sequence' => false,
+            ],
+            'all_session_verbosity' => [
+                'type' => XMLDB_TYPE_FLOAT,
+                'precision' => null,
+                'notnull' => XMLDB_NOTNULL,
+                'default' => 0,
+                'sequence' => false,
+            ],
+            'all_session_word_count' => [
+                'type' => XMLDB_TYPE_FLOAT,
+                'precision' => null,
+                'notnull' => XMLDB_NOTNULL,
+                'default' => 0,
+                'sequence' => false,
+            ],
+            'all_session_sentence_count' => [
+                'type' => XMLDB_TYPE_FLOAT,
+                'precision' => null,
+                'notnull' => XMLDB_NOTNULL,
+                'default' => 0,
+                'sequence' => false,
+            ],
+            'all_session_q_count' => [
+                'type' => XMLDB_TYPE_FLOAT,
+                'precision' => null,
+                'notnull' => XMLDB_NOTNULL,
+                'default' => 0,
+                'sequence' => false,
+            ],
+            'all_session_word_len_mean' => [
+                'type' => XMLDB_TYPE_FLOAT,
+                'precision' => null,
+                'notnull' => XMLDB_NOTNULL,
+                'default' => 0,
+                'sequence' => false,
+            ],
+            'all_session_sent_word_count_mean' => [
+                'type' => XMLDB_TYPE_FLOAT,
+                'precision' => null,
+                'notnull' => XMLDB_NOTNULL,
+                'default' => 0,
+                'sequence' => false,
+            ],
+            'all_session_p_burst_mean' => [
+                'type' => XMLDB_TYPE_FLOAT,
+                'precision' => null,
+                'notnull' => XMLDB_NOTNULL,
+                'default' => 0,
+                'sequence' => false,
+            ],
+            'all_session_p_burst_cnt' => [
+                'type' => XMLDB_TYPE_FLOAT,
+                'precision' => null,
+                'notnull' => XMLDB_NOTNULL,
+                'default' => 0,
+                'sequence' => false,
+            ],
+        ];
+
+        foreach ($newfields as $fieldname => $attributes) {
             $field = new xmldb_field(
                 $fieldname,
                 $attributes['type'],
                 $attributes['precision'],
                 null,
                 $attributes['notnull'],
-                null,
-                $attributes['default'],
-                $attributes['previous'],
+                $attributes['sequence'] ?? null,
+                $attributes['default'] ?? null,
             );
 
-            // Check if the field exists, and if not, add it.
             if (!$dbman->field_exists($table, $field)) {
                 $dbman->add_field($table, $field);
             }
         }
 
         // Save the upgrade step.
-        upgrade_plugin_savepoint(true, 2024060285, 'tiny', 'cursive');
+        upgrade_plugin_savepoint(true, 2024060289, 'tiny', 'cursive');
     }
 
     return true;

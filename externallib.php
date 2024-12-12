@@ -2049,26 +2049,31 @@ class cursive_json_func_data extends external_api {
     public static function store_quality_metrics_parameters() {
         return new external_function_parameters([
             'file_id' => new external_value(PARAM_INT, 'File identifier', VALUE_REQUIRED),
-            'total_active_time' => new external_value(PARAM_FLOAT, 'Total active writing time in seconds', VALUE_REQUIRED),
-            'total_active_time_static' => new external_value(PARAM_FLOAT, 'Total active writing time in seconds', VALUE_REQUIRED),
+            'total_active_time' => new external_value(PARAM_FLOAT, 'Total writing time (seconds)', VALUE_REQUIRED),
             'edits' => new external_value(PARAM_FLOAT, 'Number of edits made', VALUE_REQUIRED),
-            'edits_static' => new external_value(PARAM_FLOAT, 'Number of edits made', VALUE_REQUIRED),
             'verbosity' => new external_value(PARAM_FLOAT, 'Verbosity score', VALUE_REQUIRED),
-            'verbosity_static' => new external_value(PARAM_FLOAT, 'Verbosity score', VALUE_REQUIRED),
-            'word_count' => new external_value(PARAM_FLOAT, 'Total number of words', VALUE_REQUIRED),
-            'word_count_static' => new external_value(PARAM_FLOAT, 'Total number of words', VALUE_REQUIRED),
-            'sentence_count' => new external_value(PARAM_FLOAT, 'Total number of sentences', VALUE_REQUIRED),
-            'sentence_count_static' => new external_value(PARAM_FLOAT, 'Total number of sentences', VALUE_REQUIRED),
+            'word_count' => new external_value(PARAM_FLOAT, 'Total words', VALUE_REQUIRED),
+            'sentence_count' => new external_value(PARAM_FLOAT, 'Total sentences', VALUE_REQUIRED),
             'q_count' => new external_value(PARAM_FLOAT, 'Number of questions', VALUE_REQUIRED),
-            'q_count_static' => new external_value(PARAM_FLOAT, 'Number of questions', VALUE_REQUIRED),
-            'word_len_mean' => new external_value(PARAM_FLOAT, 'Average word length', VALUE_REQUIRED),
-            'word_len_mean_static' => new external_value(PARAM_FLOAT, 'Average word length', VALUE_REQUIRED),
-            'sent_word_count_mean' => new external_value(PARAM_FLOAT, 'Average words per sentence', VALUE_REQUIRED),
-            'sent_word_count_mean_static' => new external_value(PARAM_FLOAT, 'Average words per sentence', VALUE_REQUIRED),
-            'p_burst_mean' => new external_value(PARAM_FLOAT, 'Average pause burst duration', VALUE_REQUIRED),
-            'p_burst_mean_static' => new external_value(PARAM_FLOAT, 'Average pause burst duration', VALUE_REQUIRED),
+            'word_len_mean' => new external_value(PARAM_FLOAT, 'Avg word length', VALUE_REQUIRED),
+            'sent_word_count_mean' => new external_value(PARAM_FLOAT, 'Avg words per sentence', VALUE_REQUIRED),
+            'p_burst_mean' => new external_value(PARAM_FLOAT, 'Avg pause burst duration', VALUE_REQUIRED),
             'p_burst_cnt' => new external_value(PARAM_FLOAT, 'Number of pause bursts', VALUE_DEFAULT, 0),
-            'p_burst_cnt_static' => new external_value(PARAM_FLOAT, 'Number of pause bursts', VALUE_DEFAULT, 0),
+            'edits_normalised' => new external_value(PARAM_FLOAT, 'Normalized edits', VALUE_REQUIRED),
+            'verbosity_normalised' => new external_value(PARAM_FLOAT, 'Normalized verbosity', VALUE_REQUIRED),
+            'word_count_normalised' => new external_value(PARAM_FLOAT, 'Normalized word count', VALUE_REQUIRED),
+            'sentence_count_normalised' => new external_value(PARAM_FLOAT, 'Normalized sentence count', VALUE_REQUIRED),
+            'q_count_normalised' => new external_value(PARAM_FLOAT, 'Normalized question count', VALUE_REQUIRED),
+            'all_session_total_active_time' => new external_value(PARAM_FLOAT, 'Total active time - all sessions', VALUE_REQUIRED),
+            'all_session_edits' => new external_value(PARAM_FLOAT, 'Total edits - all sessions', VALUE_REQUIRED),
+            'all_session_verbosity' => new external_value(PARAM_FLOAT, 'Total verbosity - all sessions', VALUE_REQUIRED),
+            'all_session_word_count' => new external_value(PARAM_FLOAT, 'Total word count - all sessions', VALUE_REQUIRED),
+            'all_session_sentence_count' => new external_value(PARAM_FLOAT, 'Total sentences - all sessions', VALUE_REQUIRED),
+            'all_session_q_count' => new external_value(PARAM_FLOAT, 'Total questions - all sessions', VALUE_REQUIRED),
+            'all_session_word_len_mean' => new external_value(PARAM_FLOAT, 'Mean word length - all sessions', VALUE_REQUIRED),
+            'all_session_sent_word_count_mean' => new external_value(PARAM_FLOAT, 'Mean words per sentence - all', VALUE_REQUIRED),
+            'all_session_p_burst_mean' => new external_value(PARAM_FLOAT, 'Mean burst length - all sessions', VALUE_REQUIRED),
+            'all_session_p_burst_cnt' => new external_value(PARAM_FLOAT, 'Total burst count - all sessions', VALUE_REQUIRED),
         ]);
     }
 
@@ -2077,49 +2082,59 @@ class cursive_json_func_data extends external_api {
      *
      * @param int $fileid File identifier
      * @param float $totalactivetime Total active writing time in seconds
-     * @param float $totalactivetimestatic Total active writing time in seconds (static)
      * @param float $edits Number of edits made
-     * @param float $editsstatic Number of edits made (static)
      * @param float $verbosity Verbosity score
-     * @param float $verbositystatic Verbosity score (static)
      * @param float $wordcount Total number of words
-     * @param float $wordcountstatic Total number of words (static)
      * @param float $sentencecount Total number of sentences
-     * @param float $sentencecountstatic Total number of sentences (static)
      * @param float $qcount Number of questions
-     * @param float $qcountstatic Number of questions (static)
      * @param float $wordlenmean Average word length
-     * @param float $wordlenmeanstatic Average word length (static)
      * @param float $sentwordcountmean Average words per sentence
-     * @param float $sentwordcountmeanstatic Average words per sentence (static)
      * @param float $pburstmean Average pause burst duration
-     * @param float $pburstmeanstatic Average pause burst duration (static)
      * @param float $pburstcnt Number of pause bursts
-     * @param float $pburstcntstatic Number of pause bursts (static)
+     * @param float $editsnormalised Normalised number of edits
+     * @param float $verbositynormalised Normalised verbosity score
+     * @param float $wordcountnormalised Normalised word count
+     * @param float $sentencecountnormalised Normalised sentence count
+     * @param float $qcountnormalised Normalised question count
+     * @param float $allsessiontotalactivetime Total active time across all sessions
+     * @param float $allsessionedits Total edits across all sessions
+     * @param float $allsessionverbosity Total verbosity across all sessions
+     * @param float $allsessionwordcount Total word count across all sessions
+     * @param float $allsessionsentencecount Total sentence count across all sessions
+     * @param float $allsessionqcount Total question count across all sessions
+     * @param float $allsessionwordlenmean Mean word length across all sessions
+     * @param float $allsessionsentwordcountmean Mean sentence word count across all sessions
+     * @param float $allsessionpburstmean Mean production burst length across all sessions
+     * @param float $allsessionpburstcnt Total production burst count across all sessions
      * @return array Array containing status and message
      */
     public static function store_quality_metrics(
         $fileid,
         $totalactivetime,
-        $totalactivetimestatic,
         $edits,
-        $editsstatic,
         $verbosity,
-        $verbositystatic,
         $wordcount,
-        $wordcountstatic,
         $sentencecount,
-        $sentencecountstatic,
         $qcount,
-        $qcountstatic,
         $wordlenmean,
-        $wordlenmeanstatic,
         $sentwordcountmean,
-        $sentwordcountmeanstatic,
         $pburstmean,
-        $pburstmeanstatic,
         $pburstcnt,
-        $pburstcntstatic,
+        $editsnormalised,
+        $verbositynormalised,
+        $wordcountnormalised,
+        $sentencecountnormalised,
+        $qcountnormalised,
+        $allsessiontotalactivetime,
+        $allsessionedits,
+        $allsessionverbosity,
+        $allsessionwordcount,
+        $allsessionsentencecount,
+        $allsessionqcount,
+        $allsessionwordlenmean,
+        $allsessionsentwordcountmean,
+        $allsessionpburstmean,
+        $allsessionpburstcnt,
     ) {
         global $DB;
 
@@ -2128,25 +2143,31 @@ class cursive_json_func_data extends external_api {
             [
                 'file_id' => $fileid,
                 'total_active_time' => $totalactivetime,
-                'total_active_time_static' => $totalactivetimestatic,
                 'edits' => $edits,
-                'edits_static' => $editsstatic,
                 'verbosity' => $verbosity,
-                'verbosity_static' => $verbositystatic,
                 'word_count' => $wordcount,
-                'word_count_static' => $wordcountstatic,
                 'sentence_count' => $sentencecount,
-                'sentence_count_static' => $sentencecountstatic,
                 'q_count' => $qcount,
-                'q_count_static' => $qcountstatic,
                 'word_len_mean' => $wordlenmean,
-                'word_len_mean_static' => $wordlenmeanstatic,
                 'sent_word_count_mean' => $sentwordcountmean,
-                'sent_word_count_mean_static' => $sentwordcountmeanstatic,
                 'p_burst_mean' => $pburstmean,
-                'p_burst_mean_static' => $pburstmeanstatic,
                 'p_burst_cnt' => $pburstcnt,
-                'p_burst_cnt_static' => $pburstcntstatic,
+                'edits_normalised' => $editsnormalised,
+                'verbosity_normalised' => $verbositynormalised,
+                'word_count_normalised' => $wordcountnormalised,
+                'sentence_count_normalised' => $sentencecountnormalised,
+                'q_count_normalised' => $qcountnormalised,
+                'all_session_total_active_time' => $allsessiontotalactivetime,
+                'all_session_edits' => $allsessionedits,
+                'all_session_verbosity' => $allsessionverbosity,
+                'all_session_word_count' => $allsessionwordcount,
+                'all_session_sentence_count' => $allsessionsentencecount,
+                'all_session_q_count' => $allsessionqcount,
+                'all_session_word_len_mean' => $allsessionwordlenmean,
+                'all_session_sent_word_count_mean' => $allsessionsentwordcountmean,
+                'all_session_p_burst_mean' => $allsessionpburstmean,
+                'all_session_p_burst_cnt' => $allsessionpburstcnt,
+
             ],
         );
 
@@ -2165,26 +2186,31 @@ class cursive_json_func_data extends external_api {
             // Populate data attributes.
             $data->file_id = $params['file_id'];
             $data->total_active_time = $params['total_active_time'];
-            $data->total_active_time_static = $params['total_active_time_static'];
             $data->edits = $params['edits'];
-            $data->edits_static = $params['edits_static'];
             $data->verbosity = $params['verbosity'];
-            $data->verbosity_static = $params['verbosity_static'];
             $data->word_count = $params['word_count'];
-            $data->word_count_static = $params['word_count_static'];
             $data->sentence_count = $params['sentence_count'];
-            $data->sentence_count_static = $params['sentence_count_static'];
             $data->q_count = $params['q_count'];
-            $data->q_count_static = $params['q_count_static'];
             $data->word_len_mean = $params['word_len_mean'];
-            $data->word_len_mean_static = $params['word_len_mean_static'];
             $data->sent_word_count_mean = $params['sent_word_count_mean'];
-            $data->sent_word_count_mean_static = $params['sent_word_count_mean_static'];
             $data->p_burst_mean = $params['p_burst_mean'];
-            $data->p_burst_mean_static = $params['p_burst_mean_static'];
             $data->p_burst_cnt = $params['p_burst_cnt'];
-            $data->p_burst_cnt_static = $params['p_burst_cnt_static'];
-            // Update or insert the record.
+            $data->edits_normalised = $params['edits_normalised'];
+            $data->verbosity_normalised = $params['verbosity_normalised'];
+            $data->word_count_normalised = $params['word_count_normalised'];
+            $data->sentence_count_normalised = $params['sentence_count_normalised'];
+            $data->q_count_normalised = $params['q_count_normalised'];
+            $data->all_session_total_active_time = $params['all_session_total_active_time'];
+            $data->all_session_edits = $params['all_session_edits'];
+            $data->all_session_verbosity = $params['all_session_verbosity'];
+            $data->all_session_word_count = $params['all_session_word_count'];
+            $data->all_session_sentence_count = $params['all_session_sentence_count'];
+            $data->all_session_q_count = $params['all_session_q_count'];
+            $data->all_session_word_len_mean = $params['all_session_word_len_mean'];
+            $data->all_session_sent_word_count_mean = $params['all_session_sent_word_count_mean'];
+            $data->all_session_p_burst_mean = $params['all_session_p_burst_mean'];
+            $data->all_session_p_burst_cnt = $params['all_session_p_burst_cnt'];
+
             if ($recordexists) {
                 $DB->update_record('tiny_cursive_quality_metrics', $data);
             } else {
@@ -2261,6 +2287,7 @@ class cursive_json_func_data extends external_api {
             $customsettings = get_config('tiny_cursive', 'qualityaccess');
             $data = new stdClass;
 
+            // Equation is = numerator / denominator - 1.
             $defaults = [
                 'word_len_mean' => 4.66,
                 'edits' => 178.13,
@@ -2280,18 +2307,69 @@ class cursive_json_func_data extends external_api {
                  LEFT JOIN {tiny_cursive_user_writing} uw ON qm.file_id = uw.file_id
                      WHERE qm.file_id = :fileid";
                 $data = $DB->get_record_sql($sql, ['fileid' => $params['file_id']]);
+                // Destruct data row into individual variables
+                [
+                'verbosity' => $verbosity,
+                'word_count' => $wordcount,
+                'sentence_count' => $sentencecount,
+                'q_count' => $qcount,
+                'total_active_time' => $totalactivetime,
+                'word_len_mean' => $wordlenmean,
+                'sent_word_count_mean' => $sentwordcountmean,
+                'p_burst_mean' => $pburstmean,
+                'p_burst_cnt' => $pburstcnt,
+                'edits_normalised' => $editsnormalised,
+                'verbosity_normalised' => $verbositynormalised,
+                'word_count_normalised' => $wordcountnormalised,
+                'sentence_count_normalised' => $sentencecountnormalised,
+                'q_count_normalised' => $qcountnormalised,
+                'all_session_total_active_time' => $allsessiontotalactivetime,
+                'all_session_edits' => $allsessionedits,
+                'all_session_verbosity' => $allsessionverbosity,
+                'all_session_word_count' => $allsessionwordcount,
+                'all_session_sentence_count' => $allsessionsentencecount,
+                'all_session_q_count' => $allsessionqcount,
+                'all_session_word_len_mean' => $allsessionwordlenmean,
+                'all_session_sent_word_count_mean' => $allsessionsentwordcountmean,
+                'all_session_p_burst_mean' => $allsessionpburstmean,
+                'all_session_p_burst_cnt' => $allsessionpburstcnt
+                ] = (array)$data;
+                $calculateddata = new stdClass;
+                $calculateddata->id = $data->id;
+                $calculateddata->file_id = $data->file_id;
+                $calculateddata->quality_access = $data->quality_access;
+                $calculateddata->edits = $allsessionedits != 0 ?
+                    round(($editsnormalised / $allsessionedits - 1) * 100, 2) : 0;
+                $calculateddata->verbosity = $allsessionverbosity != 0 ?
+                    round(($verbositynormalised / $allsessionverbosity - 1) * 100, 2) : 0;
+                $calculateddata->word_count = $allsessionwordcount != 0 ?
+                    round(($wordcountnormalised / $allsessionwordcount - 1) * 100, 2) : 0;
+                $calculateddata->sentence_count = $allsessionsentencecount != 0 ?
+                    round(($sentencecountnormalised / $allsessionsentencecount - 1) * 100, 2) : 0;
+                $calculateddata->q_count = $allsessionqcount != 0 ?
+                    round(($qcountnormalised / $allsessionqcount - 1) * 100, 2) : 0;
+                $calculateddata->word_len_mean = $allsessionwordlenmean != 0 ?
+                    round(($wordlenmean / $allsessionwordlenmean - 1) * 100, 2) : 0;
+                $calculateddata->sent_word_count_mean = $allsessionsentwordcountmean != 0 ?
+                    round(($sentwordcountmean / $allsessionsentwordcountmean - 1) * 100, 2) : 0;
+                $calculateddata->p_burst_mean = $allsessionpburstmean != 0 ?
+                    round(($pburstmean / $allsessionpburstmean - 1) * 100, 2) : 0;
+                $calculateddata->p_burst_cnt = $allsessionpburstcnt != 0 ?
+                    round(($pburstcnt / $allsessionpburstcnt - 1) * 100, 2) : 0;
+                $calculateddata->total_active_time = $allsessiontotalactivetime != 0 ?
+                    round(($totalactivetime / $allsessiontotalactivetime - 1) * 100, 2) : 0;
 
-                foreach ($defaults as $key => &$default) {
-                    $default = floatval(get_config('tiny_cursive', $key) ?: $default);
+                // foreach ($defaults as $key => &$default) {
+                // $default = floatval(get_config('tiny_cursive', $key) ?: $default);
 
-                    if ($customsettings) {
+                // if ($customsettings) {
 
-                        $data->{$key} = round(floatval(floatval($data->{$key}) / $default) * 100, 2);
-                    } else {
-                        $data->{$key} = round(floatval(floatval($data->{$key}) / floatval($data->{$key . "_static"})) * 100, 2);
-                    }
+                // $data->{$key} = round(floatval(floatval($data->{$key}) / $default) * 100, 2);
+                // } else {
+                // $data->{$key} = round(floatval(floatval($data->{$key}) / floatval($data->{$key . "_static"})) * 100, 2);
+                // }
 
-                }
+                // }
             } else {
                 $data->id = 0;
                 $data->file_id = $params['file_id'];
@@ -2303,7 +2381,7 @@ class cursive_json_func_data extends external_api {
 
             return [
                 'status' => true,
-                'data' => $data,
+                'data' => $calculateddata,
             ];
         } catch (dml_exception $e) {
             // Return failure status with error message.
