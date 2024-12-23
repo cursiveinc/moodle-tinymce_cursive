@@ -2059,11 +2059,11 @@ class cursive_json_func_data extends external_api {
             'sent_word_count_mean' => new external_value(PARAM_FLOAT, 'Avg words per sentence', VALUE_REQUIRED),
             'p_burst_mean' => new external_value(PARAM_FLOAT, 'Avg pause burst duration', VALUE_REQUIRED),
             'p_burst_cnt' => new external_value(PARAM_FLOAT, 'Number of pause bursts', VALUE_DEFAULT, 0),
-            'edits_normalised' => new external_value(PARAM_FLOAT, 'Normalized edits', VALUE_REQUIRED),
-            'verbosity_normalised' => new external_value(PARAM_FLOAT, 'Normalized verbosity', VALUE_REQUIRED),
-            'word_count_normalised' => new external_value(PARAM_FLOAT, 'Normalized word count', VALUE_REQUIRED),
-            'sentence_count_normalised' => new external_value(PARAM_FLOAT, 'Normalized sentence count', VALUE_REQUIRED),
-            'q_count_normalised' => new external_value(PARAM_FLOAT, 'Normalized question count', VALUE_REQUIRED),
+            'edits_normalized' => new external_value(PARAM_FLOAT, 'Normalized edits', VALUE_REQUIRED),
+            'verbosity_normalized' => new external_value(PARAM_FLOAT, 'Normalized verbosity', VALUE_REQUIRED),
+            'word_count_normalized' => new external_value(PARAM_FLOAT, 'Normalized word count', VALUE_REQUIRED),
+            'sentence_count_normalized' => new external_value(PARAM_FLOAT, 'Normalized sentence count', VALUE_REQUIRED),
+            'q_count_normalized' => new external_value(PARAM_FLOAT, 'Normalized question count', VALUE_REQUIRED),
             'all_session_total_active_time' => new external_value(PARAM_FLOAT, 'Total active time - all sessions', VALUE_REQUIRED),
             'all_session_edits' => new external_value(PARAM_FLOAT, 'Total edits - all sessions', VALUE_REQUIRED),
             'all_session_verbosity' => new external_value(PARAM_FLOAT, 'Total verbosity - all sessions', VALUE_REQUIRED),
@@ -2091,11 +2091,11 @@ class cursive_json_func_data extends external_api {
      * @param float $sentwordcountmean Average words per sentence
      * @param float $pburstmean Average pause burst duration
      * @param float $pburstcnt Number of pause bursts
-     * @param float $editsnormalised Normalised number of edits
-     * @param float $verbositynormalised Normalised verbosity score
-     * @param float $wordcountnormalised Normalised word count
-     * @param float $sentencecountnormalised Normalised sentence count
-     * @param float $qcountnormalised Normalised question count
+     * @param float $editsnormalized Normalized number of edits
+     * @param float $verbositynormalized Normalized verbosity score
+     * @param float $wordcountnormalized Normalized word count
+     * @param float $sentencecountnormalized Normalized sentence count
+     * @param float $qcountnormalized Normalized question count
      * @param float $allsessiontotalactivetime Total active time across all sessions
      * @param float $allsessionedits Total edits across all sessions
      * @param float $allsessionverbosity Total verbosity across all sessions
@@ -2120,11 +2120,11 @@ class cursive_json_func_data extends external_api {
         $sentwordcountmean,
         $pburstmean,
         $pburstcnt,
-        $editsnormalised,
-        $verbositynormalised,
-        $wordcountnormalised,
-        $sentencecountnormalised,
-        $qcountnormalised,
+        $editsnormalized,
+        $verbositynormalized,
+        $wordcountnormalized,
+        $sentencecountnormalized,
+        $qcountnormalized,
         $allsessiontotalactivetime,
         $allsessionedits,
         $allsessionverbosity,
@@ -2152,11 +2152,11 @@ class cursive_json_func_data extends external_api {
                 'sent_word_count_mean' => $sentwordcountmean,
                 'p_burst_mean' => $pburstmean,
                 'p_burst_cnt' => $pburstcnt,
-                'edits_normalised' => $editsnormalised,
-                'verbosity_normalised' => $verbositynormalised,
-                'word_count_normalised' => $wordcountnormalised,
-                'sentence_count_normalised' => $sentencecountnormalised,
-                'q_count_normalised' => $qcountnormalised,
+                'edits_normalized' => $editsnormalized,
+                'verbosity_normalized' => $verbositynormalized,
+                'word_count_normalized' => $wordcountnormalized,
+                'sentence_count_normalized' => $sentencecountnormalized,
+                'q_count_normalized' => $qcountnormalized,
                 'all_session_total_active_time' => $allsessiontotalactivetime,
                 'all_session_edits' => $allsessionedits,
                 'all_session_verbosity' => $allsessionverbosity,
@@ -2195,11 +2195,11 @@ class cursive_json_func_data extends external_api {
             $data->sent_word_count_mean = $params['sent_word_count_mean'];
             $data->p_burst_mean = $params['p_burst_mean'];
             $data->p_burst_cnt = $params['p_burst_cnt'];
-            $data->edits_normalised = $params['edits_normalised'];
-            $data->verbosity_normalised = $params['verbosity_normalised'];
-            $data->word_count_normalised = $params['word_count_normalised'];
-            $data->sentence_count_normalised = $params['sentence_count_normalised'];
-            $data->q_count_normalised = $params['q_count_normalised'];
+            $data->edits_normalized = $params['edits_normalized'];
+            $data->verbosity_normalized = $params['verbosity_normalized'];
+            $data->word_count_normalized = $params['word_count_normalized'];
+            $data->sentence_count_normalized = $params['sentence_count_normalized'];
+            $data->q_count_normalized = $params['q_count_normalized'];
             $data->all_session_total_active_time = $params['all_session_total_active_time'];
             $data->all_session_edits = $params['all_session_edits'];
             $data->all_session_verbosity = $params['all_session_verbosity'];
@@ -2318,11 +2318,11 @@ class cursive_json_func_data extends external_api {
                 'sent_word_count_mean' => $sentwordcountmean,
                 'p_burst_mean' => $pburstmean,
                 'p_burst_cnt' => $pburstcnt,
-                'edits_normalised' => $editsnormalised,
-                'verbosity_normalised' => $verbositynormalised,
-                'word_count_normalised' => $wordcountnormalised,
-                'sentence_count_normalised' => $sentencecountnormalised,
-                'q_count_normalised' => $qcountnormalised,
+                'edits_normalized' => $editsnormalized,
+                'verbosity_normalized' => $verbositynormalized,
+                'word_count_normalized' => $wordcountnormalized,
+                'sentence_count_normalized' => $sentencecountnormalized,
+                'q_count_normalized' => $qcountnormalized,
                 'all_session_total_active_time' => $allsessiontotalactivetime,
                 'all_session_edits' => $allsessionedits,
                 'all_session_verbosity' => $allsessionverbosity,
@@ -2339,15 +2339,15 @@ class cursive_json_func_data extends external_api {
                 $calculateddata->file_id = $data->file_id;
                 $calculateddata->quality_access = $data->quality_access;
                 $calculateddata->edits = $allsessionedits != 0 ?
-                    round(($editsnormalised / $allsessionedits - 1) * 100, 2) : 0;
+                    round(($editsnormalized / $allsessionedits - 1) * 100, 2) : 0;
                 $calculateddata->verbosity = $allsessionverbosity != 0 ?
-                    round(($verbositynormalised / $allsessionverbosity - 1) * 100, 2) : 0;
+                    round(($verbositynormalized / $allsessionverbosity - 1) * 100, 2) : 0;
                 $calculateddata->word_count = $allsessionwordcount != 0 ?
-                    round(($wordcountnormalised / $allsessionwordcount - 1) * 100, 2) : 0;
+                    round(($wordcountnormalized / $allsessionwordcount - 1) * 100, 2) : 0;
                 $calculateddata->sentence_count = $allsessionsentencecount != 0 ?
-                    round(($sentencecountnormalised / $allsessionsentencecount - 1) * 100, 2) : 0;
+                    round(($sentencecountnormalized / $allsessionsentencecount - 1) * 100, 2) : 0;
                 $calculateddata->q_count = $allsessionqcount != 0 ?
-                    round(($qcountnormalised / $allsessionqcount - 1) * 100, 2) : 0;
+                    round(($qcountnormalized / $allsessionqcount - 1) * 100, 2) : 0;
                 $calculateddata->word_len_mean = $allsessionwordlenmean != 0 ?
                     round(($wordlenmean / $allsessionwordlenmean - 1) * 100, 2) : 0;
                 $calculateddata->sent_word_count_mean = $allsessionsentwordcountmean != 0 ?
