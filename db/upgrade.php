@@ -174,70 +174,70 @@ function xmldb_tiny_cursive_upgrade($oldversion) {
                 'default' => 0,
                 'sequence' => false,
             ],
-            'all_session_total_active_time' => [
+            'all_sessions_total_active_time' => [
                 'type' => XMLDB_TYPE_FLOAT,
                 'precision' => null,
                 'notnull' => XMLDB_NOTNULL,
                 'default' => 0,
                 'sequence' => false,
             ],
-            'all_session_edits' => [
+            'all_sessions_edits' => [
                 'type' => XMLDB_TYPE_FLOAT,
                 'precision' => null,
                 'notnull' => XMLDB_NOTNULL,
                 'default' => 0,
                 'sequence' => false,
             ],
-            'all_session_verbosity' => [
+            'all_sessions_verbosity' => [
                 'type' => XMLDB_TYPE_FLOAT,
                 'precision' => null,
                 'notnull' => XMLDB_NOTNULL,
                 'default' => 0,
                 'sequence' => false,
             ],
-            'all_session_word_count' => [
+            'all_sessions_word_count' => [
                 'type' => XMLDB_TYPE_FLOAT,
                 'precision' => null,
                 'notnull' => XMLDB_NOTNULL,
                 'default' => 0,
                 'sequence' => false,
             ],
-            'all_session_sentence_count' => [
+            'all_sessions_sentence_count' => [
                 'type' => XMLDB_TYPE_FLOAT,
                 'precision' => null,
                 'notnull' => XMLDB_NOTNULL,
                 'default' => 0,
                 'sequence' => false,
             ],
-            'all_session_q_count' => [
+            'all_sessions_q_count' => [
                 'type' => XMLDB_TYPE_FLOAT,
                 'precision' => null,
                 'notnull' => XMLDB_NOTNULL,
                 'default' => 0,
                 'sequence' => false,
             ],
-            'all_session_word_len_mean' => [
+            'all_sessions_word_len_mean' => [
                 'type' => XMLDB_TYPE_FLOAT,
                 'precision' => null,
                 'notnull' => XMLDB_NOTNULL,
                 'default' => 0,
                 'sequence' => false,
             ],
-            'all_session_sent_word_count_mean' => [
+            'all_sessions_sent_word_count_mean' => [
                 'type' => XMLDB_TYPE_FLOAT,
                 'precision' => null,
                 'notnull' => XMLDB_NOTNULL,
                 'default' => 0,
                 'sequence' => false,
             ],
-            'all_session_p_burst_mean' => [
+            'all_sessions_p_burst_mean' => [
                 'type' => XMLDB_TYPE_FLOAT,
                 'precision' => null,
                 'notnull' => XMLDB_NOTNULL,
                 'default' => 0,
                 'sequence' => false,
             ],
-            'all_session_p_burst_cnt' => [
+            'all_sessions_p_burst_cnt' => [
                 'type' => XMLDB_TYPE_FLOAT,
                 'precision' => null,
                 'notnull' => XMLDB_NOTNULL,
