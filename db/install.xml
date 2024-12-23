@@ -89,16 +89,16 @@
         <FIELD NAME="word_count_normalized" TYPE="float" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT=""/>
         <FIELD NAME="sentence_count_normalized" TYPE="float" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT=""/>
         <FIELD NAME="q_count_normalized" TYPE="float" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT=""/>
-        <FIELD NAME="all_session_total_active_time" TYPE="float" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT=""/>
-        <FIELD NAME="all_session_edits" TYPE="float" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT=""/>
-        <FIELD NAME="all_session_verbosity" TYPE="float" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT=""/>
-        <FIELD NAME="all_session_word_count" TYPE="float" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT=""/>
-        <FIELD NAME="all_session_sentence_count" TYPE="float" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT=""/>
-        <FIELD NAME="all_session_q_count" TYPE="float" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT=""/>
-        <FIELD NAME="all_session_word_len_mean" TYPE="float" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT=""/>
-        <FIELD NAME="all_session_sent_word_count_mean" TYPE="float" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT=""/>
-        <FIELD NAME="all_session_p_burst_mean" TYPE="float" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT=""/>
-        <FIELD NAME="all_session_p_burst_cnt" TYPE="float" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT=""/>
+        <FIELD NAME="all_sessions_total_active_time" TYPE="float" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT=""/>
+        <FIELD NAME="all_sessions_edits" TYPE="float" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT=""/>
+        <FIELD NAME="all_sessions_verbosity" TYPE="float" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT=""/>
+        <FIELD NAME="all_sessions_word_count" TYPE="float" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT=""/>
+        <FIELD NAME="all_sessions_sentence_count" TYPE="float" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT=""/>
+        <FIELD NAME="all_sessions_q_count" TYPE="float" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT=""/>
+        <FIELD NAME="all_sessions_word_len_mean" TYPE="float" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT=""/>
+        <FIELD NAME="all_sessions_sent_word_count_mean" TYPE="float" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT=""/>
+        <FIELD NAME="all_sessions_p_burst_mean" TYPE="float" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT=""/>
+        <FIELD NAME="all_sessions_p_burst_cnt" TYPE="float" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT=""/>
 
       </FIELDS>
       <KEYS>
