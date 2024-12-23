@@ -139,35 +139,35 @@ function xmldb_tiny_cursive_upgrade($oldversion) {
 
         // Add new fields as defined in the provided schema.
         $newfields = [
-            'edits_normalised' => [
+            'edits_normalized' => [
                 'type' => XMLDB_TYPE_FLOAT,
                 'precision' => null,
                 'notnull' => XMLDB_NOTNULL,
                 'default' => 0,
                 'sequence' => false,
             ],
-            'verbosity_normalised' => [
+            'verbosity_normalized' => [
                 'type' => XMLDB_TYPE_FLOAT,
                 'precision' => null,
                 'notnull' => XMLDB_NOTNULL,
                 'default' => 0,
                 'sequence' => false,
             ],
-            'word_count_normalised' => [
+            'word_count_normalized' => [
                 'type' => XMLDB_TYPE_FLOAT,
                 'precision' => null,
                 'notnull' => XMLDB_NOTNULL,
                 'default' => 0,
                 'sequence' => false,
             ],
-            'sentence_count_normalised' => [
+            'sentence_count_normalized' => [
                 'type' => XMLDB_TYPE_FLOAT,
                 'precision' => null,
                 'notnull' => XMLDB_NOTNULL,
                 'default' => 0,
                 'sequence' => false,
             ],
-            'q_count_normalised' => [
+            'q_count_normalized' => [
                 'type' => XMLDB_TYPE_FLOAT,
                 'precision' => null,
                 'notnull' => XMLDB_NOTNULL,
