@@ -38,7 +38,7 @@ export default class AnalyticEvents {
                     if (content) content.innerHTML = authIcon.outerHTML;
                     modal.show();
                 }).catch(error => {
-                    console.error("Failed to create modal:", error);
+                    window.console.error("Failed to create modal:", error);
                 });
             });
         }
@@ -47,9 +47,9 @@ export default class AnalyticEvents {
     analytics(userid, templates, context, questionid = '', replayInstances = null, authIcon) {
         document.body.addEventListener('click', function (e) {
             if (e.target && e.target.id === 'analytic' + userid + questionid) {
-                
+
                 const repElement = document.getElementById('rep' + userid + questionid);
-                if (repElement.getAttribute('disabled') === 'true') repElement.setAttribute('disabled','false');
+                if (repElement.getAttribute('disabled') === 'true') repElement.setAttribute('disabled', 'false');
 
                 e.preventDefault();
 
@@ -77,7 +77,7 @@ export default class AnalyticEvents {
                     const firstCell = document.querySelector('#content' + userid + ' .table tbody tr:first-child td:nth-child(2)');
                     if (firstCell) firstCell.innerHTML = authIcon.outerHTML;
                 }).catch(function (error) {
-                    console.error("Failed to render template:", error);
+                    window.console.error("Failed to render template:", error);
                 });
             }
         });
@@ -95,7 +95,7 @@ export default class AnalyticEvents {
             if (e.target && e.target.id === 'diff' + userid + questionid) {
 
                 const repElement = document.getElementById('rep' + userid + questionid);
-                if (repElement.getAttribute('disabled') === 'true') repElement.setAttribute('disabled','false');
+                if (repElement.getAttribute('disabled') === 'true') repElement.setAttribute('disabled', 'false');
 
                 e.preventDefault();
 
@@ -178,7 +178,7 @@ export default class AnalyticEvents {
                             const content = document.getElementById('content' + userid);
                             if (content) content.innerHTML = contents.outerHTML;
                         }).catch(error => {
-                            console.error("Failed to load language strings:", error);
+                            window.console.error("Failed to load language strings:", error);
                             const content = document.getElementById('content' + userid);
                             if (content) content.innerHTML = nodata.outerHTML;
                         });
@@ -200,7 +200,7 @@ export default class AnalyticEvents {
             if (e.target && e.target.id === 'rep' + userid + questionid) {
                 let replyBtn = document.getElementById('rep' + userid + questionid);
 
-                if(replyBtn.getAttribute('disabled') == 'true') return;
+                if (replyBtn.getAttribute('disabled') == 'true') return;
                 replyBtn.setAttribute('disabled', 'true');
 
                 e.preventDefault();

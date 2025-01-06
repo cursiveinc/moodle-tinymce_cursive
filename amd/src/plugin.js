@@ -17,7 +17,7 @@
  * @module     tiny_cursive/plugin
  * @category TinyMCE Editor
  * @copyright  CTI <info@cursivetechnology.com>
- * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
+ * @author Brain Station 23 <elearning@brainstation-23.com>
  */
 
 import {getTinyMCE} from 'editor_tiny/loader';
@@ -37,7 +37,7 @@ export default new Promise((resolve, reject) => {
                     args: { courseid: M.cfg.courseId, cmid: M.cfg.contextInstanceId }
                 }])[0].done((data) => {
                     if (data.status) {
-                        Autosaver.register(editor, data.sync_interval);
+                        Autosaver.register(editor, data.sync_interval, data.userid);
                     }
                 }).fail((error) => {
                     window.console.error('Error getting cursive config:', error);

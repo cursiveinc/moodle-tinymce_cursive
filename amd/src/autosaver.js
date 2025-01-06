@@ -17,16 +17,15 @@
  * @module     tiny_cursive/autosaver
  * @category TinyMCE Editor
  * @copyright  CTI <info@cursivetechnology.com>
- * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
+ * @author Brain Station 23 <elearning@brainstation-23.com>
  */
 
 import { call } from 'core/ajax';
 import { create } from 'core/modal_factory';
 import { get_string as getString } from 'core/str';
 import { save, cancel, hidden } from 'core/modal_events';
-import user from 'tiny_cursive/user';
 
-export const register = (editor, interval) => {
+export const register = (editor, interval, userId) => {
 
     var is_student, intervention, quizSubmit, assignSubmit;
 
@@ -42,17 +41,16 @@ export const register = (editor, interval) => {
     }
 
 
-    var userid = null;
-    var host = null;
-    var courseid = null;
+    var userid = userId;
+    var host = M.cfg.wwwroot;
+    var courseid = M.cfg.courseId;
     var filename = "";
     var ed = "";
     var event = "";
     var recourceId = 0;
     var modulename = "";
     var editorid = editor?.id;
-    let classes = document.body.className.split(' ');
-    var cmid = 0;
+    var cmid = M.cfg.contextInstanceId;
     var questionid = 0;
     var syncInterval = interval ? interval * 1000 : 10000; // Default: Sync Every 10s.
 
@@ -126,9 +124,8 @@ export const register = (editor, interval) => {
                     let parm = new URL(ur);
                     let modulename = "";
                     let editorid = editor?.id;
-                    let classes = document.body.className.split(' ');
-                    let courseid = parseInt(classes.find((classname) => { return classname.startsWith('course-') }).split('-')[1]); // Getting cmid from body classlist.
-                    let cmid = parseInt(classes.find((classname) => { return classname.startsWith('cmid-') }).split('-')[1]); // Getting cmid from body classlist.
+                    let courseid = M.cfg.courseId;
+                    let cmid = M.cfg.contextInstanceId;
 
 
                     if (ur.includes("attempt.php") || ur.includes("forum") || ur.includes("assign")) { } else {
@@ -159,7 +156,7 @@ export const register = (editor, interval) => {
                         resourceid: recourceId,
                         courseid: courseid,
                         usercomment: number,
-                        timemodified: "1121232",
+                        timemodified: Date.now(),
                         editorid: editorid ? editorid : ""
                     });
                     lastEvent = 'save';
@@ -181,11 +178,6 @@ export const register = (editor, interval) => {
         let parm = new URL(ur);
         ed = ed;
         event = event;
-        let bodyid = document.querySelector('body').id;
-
-        if (bodyid == 'page-mod-quiz-attempt' || bodyid == 'page-mod-quiz-summary' || bodyid == 'page-mod-assign-editsubmission' || bodyid == 'page-mod-forum-view' || bodyid == 'page-mod-forum-post') {
-            cmid = parseInt(classes.find((classname) => { return classname.startsWith('cmid-') }).split('-')[1]); // Getting cmid from body classlist.
-        }
 
         if (ur.includes("attempt.php") || ur.includes("forum") || ur.includes("assign")) { } else {
             return false;
@@ -264,10 +256,7 @@ export const register = (editor, interval) => {
         sendKeyEvent("keyDown", editor);
     });
     editor.on('init', () => {
-        let userdata = user.getUserId();
-        userid = userdata.userid;
-        host = userdata.host;
-        courseid = userdata.courseid;
+
     });
 
     async function SyncData() {

@@ -19,22 +19,10 @@
  *
  * @package tiny_cursive
  * @copyright  CTI <info@cursivetechnology.com>
- * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
+ * @author Brain Station 23 <elearning@brainstation-23.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
-
-require_login();
-
-/**
- * Tiny cursive plugin.
- *
- * @package tiny_cursive
- * @copyright  CTI <info@cursivetechnology.com>
- * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
 class tiny_cursive_renderer extends plugin_renderer_base {
     /**
      * timer_report
@@ -63,7 +51,7 @@ class tiny_cursive_renderer extends plugin_renderer_base {
             get_string('module_name', 'tiny_cursive'),
             get_string('last_modified', 'tiny_cursive'),
             get_string('analytics', 'tiny_cursive'),
-            '',
+            get_string("download", 'tiny_cursive'),
         ];
 
         foreach ($data as $user) {
@@ -83,11 +71,10 @@ class tiny_cursive_renderer extends plugin_renderer_base {
             $cm = $modinfo->get_cm($user->cmid);
             $getmodulename = get_coursemodule_from_id($cm?->modname, $user->cmid, 0, false, MUST_EXIST);
 
-            $filep = $CFG->tempdir . '/userdata/' . $user->filename;
-            $filepath = $filep;
+            $filepath = $user->filename;
             $row = [];
             $row[] = $user->fileid;
-            $row[] = $user->firstname . ' ' . $user->lastname ?? '';
+            $row[] = fullname($user);
             $row[] = $user->email;
             $row[] = $getmodulename->name;
             $row[] = date("l jS \of F Y h:i:s A", $user->timemodified);
@@ -232,8 +219,7 @@ class tiny_cursive_renderer extends plugin_renderer_base {
 
             $getmodulename = $cm ? get_coursemodule_from_id($cm->modname, $user->cmid, 0, false, MUST_EXIST) : null;
 
-            $filep = $CFG->tempdir . '/userdata/' . $user->filename;
-            $filepath = $filep;
+            $filepath = $user->filename;
             $row   = [];
             $row[] = $getmodulename ? $getmodulename->name : '';
             $row[] = date("l jS \of F Y h:i:s A", $user->timemodified);

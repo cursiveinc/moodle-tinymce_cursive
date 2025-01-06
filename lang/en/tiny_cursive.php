@@ -19,7 +19,7 @@
  *
  * @package tiny_cursive
  * @copyright  CTI <info@cursivetechnology.com>
- * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
+ * @author Brain Station 23 <elearning@brainstation-23.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -79,6 +79,7 @@ $string['fulname'] = 'Full Name';
 $string['generate'] = 'Generate';
 $string['helplinktext'] = 'Cursive';
 $string['host_domain'] = 'You Host domain.';
+$string['invalidparameters'] = 'Invalid parameters have been given.';
 $string['last_modified'] = 'Last modified';
 $string['learn_more'] = 'Learn More';
 $string['module_name'] = 'Module Name';

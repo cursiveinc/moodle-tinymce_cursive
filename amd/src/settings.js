@@ -17,7 +17,7 @@
  * @module     tiny_cursive/settings
  * @category TinyMCE Editor
  * @copyright  CTI <info@cursivetechnology.com>
- * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
+ * @author Brain Station 23 <elearning@brainstation-23.com>
  */
 
 define(["core/str"], function (str) {
