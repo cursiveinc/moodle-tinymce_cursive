@@ -126,7 +126,7 @@ class tiny_cursive_renderer extends plugin_renderer_base {
         require_once($CFG->dirroot . "/lib/editor/tiny/plugins/cursive/lib.php");
         $courseid = optional_param('courseid', 0, PARAM_INT);
         $svg = $this->output->image_url('analytics', 'tiny_cursive');
-        $totaltime = "0h:0m:0s";
+        $totaltime = "0";
         $icon = '<i class="tiny_cursive-analytics-icon"><img src="'.$svg.'"></i>';
         $user = $DB->get_record('user', ['id' => $userid], '*', MUST_EXIST);
 
