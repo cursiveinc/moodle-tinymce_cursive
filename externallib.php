@@ -705,6 +705,9 @@ class cursive_json_func_data extends external_api {
                      LEFT JOIN {tiny_cursive_writing_diff} diff ON uwr.file_id = diff.file_id
                          WHERE uwr.file_id = :fileid';
                 $report = $DB->get_record_sql($sql, ['fileid' => $filename->file_id]);
+                if (isset($report->effort_ratio)) {
+                    $report->effort_ratio = intval(floatval($report->effort_ratio) * 100);
+                }
                 $data['score'] = $report->score;
                 $data['total_time_seconds'] = $report->total_time_seconds;
                 $data['word_count'] = $report->word_count;
@@ -848,7 +851,9 @@ class cursive_json_func_data extends external_api {
 
         $data = $DB->get_record_sql($attempts, ['id' => $params['id'], 'cmid' => $params['cmid'],
                                     'modulename' => $params['modulename']]);
-
+        if (isset($data->effort_ratio)) {
+            $data->effort_ratio = intval(floatval($data->effort_ratio) * 100);
+        }
         $data = (array) $data;
         $data['first_file'] = 0;
 
@@ -1183,6 +1188,9 @@ class cursive_json_func_data extends external_api {
                     'modulename' => $params['modulename'],
                 ]
             );
+        if (isset($data->effort_ratio)) {
+            $data->effort_ratio = intval(floatval($data->effort_ratio) * 100);
+        }
         $data = (array) $data;
         if (!isset($data['filename'])) {
             $sql = 'SELECT filename, content, id, userid
@@ -1630,7 +1638,9 @@ class cursive_json_func_data extends external_api {
 
         $params = ['fileid' => $vparams['fileid']];
         $rec = $DB->get_record_sql($sql, $params);
-
+        if (isset($rec->effort_ratio)) {
+            $rec->effort_ratio = intval(floatval($rec->effort_ratio) * 100);
+        }
         $sql = 'SELECT id AS fileid
                   FROM {tiny_cursive_files}
                  WHERE userid = :userid ORDER BY id ASC LIMIT 1';
