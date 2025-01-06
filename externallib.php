@@ -43,10 +43,6 @@ require_once(__DIR__ . '/locallib.php');
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class cursive_json_func_data extends external_api {
-
-
-
-
     /**
      * get_user_list_parameters.
      *
@@ -2356,6 +2352,7 @@ class cursive_json_func_data extends external_api {
                 'p_burst_cnt' => new external_value(PARAM_FLOAT, 'Number of pause bursts'),
                 'quality_access' => new external_value(PARAM_INT, 'Quality access'),
             ]),
+
         ]);
     }
 
