@@ -120,8 +120,8 @@ class tiny_cursive_renderer extends plugin_renderer_base {
         global $CFG, $DB, $USER;
         require_once($CFG->dirroot . "/lib/editor/tiny/plugins/cursive/lib.php");
         $courseid = optional_param('courseid', 0, PARAM_INT);
-
-        echo get_string('total_word', 'tiny_cursive') . " $userprofile->word_count</br>";
+        $wordcount = $userprofile->word_count ?? 0;
+        echo get_string('total_word', 'tiny_cursive') . " $wordcount</br>";
         if (isset($userprofile->total_time) && $userprofile->total_time > 0) {
 
             $seconds = $userprofile->total_time;
@@ -137,7 +137,7 @@ class tiny_cursive_renderer extends plugin_renderer_base {
 
         } else {
             // Handle the case when there is no time data.
-            echo get_string('total_time', 'tiny_cursive') . " 0h:0m:0s</br>";
+            echo get_string('total_time', 'tiny_cursive') . ": 0</br>";
             $avgwords = 0;
         }
 
