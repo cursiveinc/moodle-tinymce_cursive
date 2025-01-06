@@ -20,9 +20,9 @@
  * @author Brain Station 23 <elearning@brainstation-23.com>
  */
 
-import {getTinyMCE} from 'editor_tiny/loader';
-import {getPluginMetadata} from 'editor_tiny/utils';
-import {component, pluginName} from './common';
+import { getTinyMCE } from 'editor_tiny/loader';
+import { getPluginMetadata } from 'editor_tiny/utils';
+import { component, pluginName } from './common';
 import * as Autosaver from './autosaver';
 import getConfig from 'core/ajax';
 export default new Promise((resolve, reject) => {
@@ -37,7 +37,10 @@ export default new Promise((resolve, reject) => {
                     args: { courseid: M.cfg.courseId, cmid: M.cfg.contextInstanceId }
                 }])[0].done((data) => {
                     if (data.status) {
-                        Autosaver.register(editor, data.sync_interval, data.userid);
+
+                        if (document.body.id != "page-mod-assign-grader") {
+                            Autosaver.register(editor, data.sync_interval, data.userid);
+                        }
                     }
                 }).fail((error) => {
                     window.console.error('Error getting cursive config:', error);
