@@ -50,5 +50,5 @@ if (!$fname || !$filerow || !$filerow->content) {
     redirect(get_local_referer(false), get_string('filenotfound', 'tiny_cursive'));
 }
 
-echo $filerow->content;
+echo base64_decode($filerow->content);
 die();

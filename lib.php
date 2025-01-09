@@ -170,7 +170,7 @@ function tiny_cursive_upload_multipart_record($filerecord, $filenamewithfullpath
 
         $tempfilepath = tempnam(sys_get_temp_dir(), 'upload');
 
-        $jsoncontent = json_decode($filerecord->content, true);
+        $jsoncontent = json_decode(base64_decode($filerecord->content), true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new Exception("Invalid JSON content in file.");

@@ -1547,7 +1547,7 @@ class cursive_json_func_data extends external_api {
         $data = new stdClass;
         try {
             $filedata = $DB->get_record('tiny_cursive_files', ['filename' => $params['filepath']]);
-            $content = $filedata->content ? $filedata->content : $content = false;
+            $content = $filedata->content ? base64_encode($filedata->content) : $content = false;
             $data->status = true;
 
             if ($content === false) {
@@ -1928,7 +1928,7 @@ class cursive_json_func_data extends external_api {
             'resourceid' => $params['resourceId'],
             'userid' => $USER->id,
         ];
-        
+
         if ($questionid) {
             $conditions['questionid'] = $questionid;
         }
@@ -1937,12 +1937,10 @@ class cursive_json_func_data extends external_api {
 
         if ($record) {
 
-            $temparray = json_decode($record->content, true);
-            $jsondata = json_decode($params['json_data'], true);
+            $temparray = json_decode(base64_decode($record->content), true);
             $mergecontent = array_merge($temparray, $jsondata);
-            $record->content = json_encode($mergecontent);
-            $record->uploaded = 0;
-            $DB->update_record($table, $record);
+            $DB->set_field('tiny_cursive_files', 'content', base64_encode(json_encode($mergecontent)), ['id' => $record->id]);
+            $DB->set_field('tiny_cursive_files', 'uploaded', 0, ['id' => $record->id]);
 
             return 'true';
         } else {
@@ -1954,7 +1952,7 @@ class cursive_json_func_data extends external_api {
             $dataobj->courseid = $courseid;
             $dataobj->timemodified = time();
             $dataobj->filename = $fname;
-            $dataobj->content = $params['json_data'];
+            $dataobj->content = base64_encode($params['json_data']);
             $dataobj->questionid = $questionid ?? 0;
             $dataobj->uploaded = 0;
             $DB->insert_record($table, $dataobj);
