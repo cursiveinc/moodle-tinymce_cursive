@@ -1895,23 +1895,16 @@ class cursive_json_func_data extends external_api {
 
         $courseid = 0;
 
-        $userdata = [];
         if ($params['cmid']) {
             $cm = $DB->get_record('course_modules', ['id' => $params['cmid']]);
             $courseid = $cm->course;
-            $userdata["courseId"] = $courseid;
 
-            // Get course context.
             $context = context_module::instance($params['cmid']);
             self::validate_context($context);
             require_capability('tiny/cursive:write', $context);
 
-        } else {
-            $userdata["courseId"] = 0;
         }
 
-        $userdata["clientId"] = $CFG->wwwroot;
-        $userdata["personId"] = $USER->id;
         $editoridarr = explode(':', $params['editorid']);
         $questionid = 0;
         if (count($editoridarr) > 1) {
@@ -1928,37 +1921,29 @@ class cursive_json_func_data extends external_api {
         }
 
         $table = 'tiny_cursive_files';
-        $inp = '';
 
+        $conditions = [
+            'cmid' => $params['cmid'],
+            'modulename' => $params['modulename'],
+            'resourceid' => $params['resourceId'],
+            'userid' => $USER->id,
+        ];
+        
         if ($questionid) {
-            $inp = $DB->get_record($table, [
-                'cmid' => $params['cmid'],
-                'modulename' => $params['modulename'],
-                'resourceid' => $params['resourceId'],
-                'userid' => $USER->id,
-                'questionid' => $questionid,
-            ]);
-        } else {
-            $inp = $DB->get_record($table, [
-                'cmid' => $params['cmid'],
-                'modulename' => $params['modulename'],
-                'resourceid' => $params['resourceId'],
-                'userid' => $USER->id,
-            ]);
+            $conditions['questionid'] = $questionid;
         }
+        $record = $DB->get_record($table, $conditions, 'id, content');
+        $jsondata = json_decode($params['json_data'], true);
 
-        $temparray = [];
-        if ($inp) {
+        if ($record) {
 
-            $temparray = json_decode($inp->content, true);
+            $temparray = json_decode($record->content, true);
             $jsondata = json_decode($params['json_data'], true);
-            foreach ($jsondata as $value) {
-                $userdata = $value;
-                array_push($temparray, $userdata);
-            }
-            $inp->content = json_encode($temparray);
-            $inp->uploaded = 0;
-            $DB->update_record($table, $inp);
+            $mergecontent = array_merge($temparray, $jsondata);
+            $record->content = json_encode($mergecontent);
+            $record->uploaded = 0;
+            $DB->update_record($table, $record);
+
             return 'true';
         } else {
             $dataobj = new stdClass();
