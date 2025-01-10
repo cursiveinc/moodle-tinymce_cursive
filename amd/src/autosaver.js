@@ -67,7 +67,7 @@ export const register = (editor, interval, userId) => {
         }
     };
 
-    if (document.getElementById('page-mod-assign-editsubmission')) {
+    if (document.getElementById('page-mod-assign-editsubmission') || document.getElementById('page-mod-forum-post') || document.getElementById('page-mod-forum-view')) {
         if (assignSubmit) {
             assignSubmit.addEventListener('click', async function (e) {
                 e.preventDefault();
