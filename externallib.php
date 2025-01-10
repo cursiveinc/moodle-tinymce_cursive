@@ -1547,7 +1547,7 @@ class cursive_json_func_data extends external_api {
         $data = new stdClass;
         try {
             $filedata = $DB->get_record('tiny_cursive_files', ['filename' => $params['filepath']]);
-            $content = $filedata->content ? base64_encode($filedata->content) : $content = false;
+            $content = $filedata->content ? base64_decode($filedata->content) : $content = false;
             $data->status = true;
 
             if ($content === false) {
