@@ -209,34 +209,35 @@ export const register = (editor, interval, userId) => {
             questionid = editorid.split(':')[1].split('_')[0];
             filename = `${userid}_${recourceId}_${cmid}_${questionid}_${modulename}_attempt`;
         }
+        if (ed.key !== "Process") {
+            if (localStorage.getItem(filename)) {
 
-        if (localStorage.getItem(filename)) {
-
-            let data = JSON.parse(localStorage.getItem(filename));
-            data.push({
-                resourceId: recourceId,
-                key: ed.key,
-                keyCode: ed.keyCode,
-                event: event,
-                courseId: courseid,
-                unixTimestamp: Date.now(),
-                clientId: host,
-                personId: userid
-            });
-            localStorage.setItem(filename, JSON.stringify(data));
-        } else {
-            let data = [];
-            data.push({
-                resourceId: recourceId,
-                key: ed.key,
-                keyCode: ed.keyCode,
-                event: event,
-                courseId: courseid,
-                unixTimestamp: Date.now(),
-                clientId: host,
-                personId: userid
-            });
-            localStorage.setItem(filename, JSON.stringify(data));
+                let data = JSON.parse(localStorage.getItem(filename));
+                data.push({
+                    resourceId: recourceId,
+                    key: ed.key,
+                    keyCode: ed.keyCode,
+                    event: event,
+                    courseId: courseid,
+                    unixTimestamp: Date.now(),
+                    clientId: host,
+                    personId: userid
+                });
+                localStorage.setItem(filename, JSON.stringify(data));
+            } else {
+                let data = [];
+                data.push({
+                    resourceId: recourceId,
+                    key: ed.key,
+                    keyCode: ed.keyCode,
+                    event: event,
+                    courseId: courseid,
+                    unixTimestamp: Date.now(),
+                    clientId: host,
+                    personId: userid
+                });
+                localStorage.setItem(filename, JSON.stringify(data));
+            }
         }
     };
     editor.on('keyUp', (editor) => {
