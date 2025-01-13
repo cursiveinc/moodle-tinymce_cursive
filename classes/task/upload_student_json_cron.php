@@ -19,7 +19,7 @@
  *
  * @package tiny_cursive
  * @copyright  CTI <info@cursivetechnology.com>
- * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
+ * @author Brain Station 23 <elearning@brainstation-23.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -30,7 +30,7 @@ namespace tiny_cursive\task;
  *
  * @package tiny_cursive
  * @copyright  CTI <info@cursivetechnology.com>
- * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
+ * @author Brain Station 23 <elearning@brainstation-23.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class upload_student_json_cron extends \core\task\scheduled_task {
@@ -73,7 +73,6 @@ class upload_student_json_cron extends \core\task\scheduled_task {
                 FROM {tiny_cursive_files} tcf
                 WHERE tcf.timemodified > tcf.uploaded";
         $filerecords = $DB->get_records_sql($sql);
-        $dirname = $CFG->tempdir . '/userdata/';
 
         $table = 'tiny_cursive_files';
         foreach ($filerecords as $filerecord) {
@@ -99,15 +98,7 @@ class upload_student_json_cron extends \core\task\scheduled_task {
                 $answer = tiny_cursive_get_user_forum_posts($filerecord->userid, $filerecord->courseid, $filerecord->resourceid);
             }
 
-            $filepath = $dirname . $filerecord->filename;
-
-            if (file_exists($filepath)) {
-                $filedata = file_get_contents($filepath);
-                $filerecord->content = base64_encode($filedata);
-                $DB->update_record($table, $filerecord);
-            }
-
-            $uploaded = tiny_cursive_upload_multipart_record($filerecord, $filepath, $wstoken, $answer);
+            $uploaded = tiny_cursive_upload_multipart_record($filerecord, $filerecord->filename, $wstoken, $answer);
             if ($uploaded) {
                 $filerecord->uploaded = strtotime(date('Y-m-d H:i:s'));
                 $DB->update_record($table, $filerecord);

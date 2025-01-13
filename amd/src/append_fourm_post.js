@@ -17,7 +17,7 @@
  * @module     tiny_cursive/append_fourm_post
  * @category TinyMCE Editor
  * @copyright  CTI <info@cursivetechnology.com>
- * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
+ * @author Brain Station 23 <elearning@brainstation-23.com>
  */
 
 define(["core/ajax", "core/str", "core/templates", "./replay", "./analytic_button", "./analytic_events"], function (
@@ -33,11 +33,11 @@ define(["core/ajax", "core/str", "core/templates", "./replay", "./analytic_butto
     window.video_playback = function (mid, filepath) {
         if (filepath !== '') {
             const replay = new Replay(
-                elementId = 'content' + mid,
-                filePath = filepath,
-                speed = 10,
-                loop = false,
-                controllerId = 'player_' + mid
+                'content' + mid,
+                filepath,
+                10,
+                false,
+                'player_' + mid
             );
             replayInstances[mid] = replay;
         }
@@ -66,6 +66,7 @@ define(["core/ajax", "core/str", "core/templates", "./replay", "./analytic_butto
 
                 if (replyButton.length > 0) {
                     replyButton.forEach(button => {
+
                         button.addEventListener('click', function (event) {
                             event.preventDefault();
                             const url = button.getAttribute('href');
@@ -75,12 +76,7 @@ define(["core/ajax", "core/str", "core/templates", "./replay", "./analytic_butto
                 }
 
                 const ids = document.getElementById(entry.id).getAttribute('data-post-id');
-                const anchorTag = document.querySelector('a.nav-link.active.active_tree_node[href*="mod/forum/view.php?id="]');
-                let cmid = 0;
-                if (anchorTag) {
-                    const hrefValue = anchorTag.getAttribute('href');
-                    cmid = hrefValue.match(/id=(\d+)/)[1];
-                }
+                var cmid = M.cfg.contextInstanceId;
 
                 let args = { id: ids, modulename: "forum", cmid: cmid };
                 let methodname = 'cursive_get_forum_comment_link';

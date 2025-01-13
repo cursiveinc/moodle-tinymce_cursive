@@ -53,6 +53,7 @@ function get_user_attempts_data($userid, $courseid, $moduleid, $orderby = 'id', 
 
     $sql = "SELECT uf.id AS fileid, u.id AS usrid, uw.id AS uniqueid,
                    u.firstname, u.lastname, u.email, uf.courseid,
+                   u.firstnamephonetic, u.lastnamephonetic, u.middlename, u.alternatename,
                    uf.id AS attemptid, uf.timemodified, uf.cmid AS cmid,
                    uf.filename, uw.total_time_seconds AS total_time_seconds,
                    uw.key_count AS key_count, uw.keys_per_minute AS keys_per_minute,
@@ -252,23 +253,23 @@ function get_user_submissions_data($resourceid, $modulename, $cmid, $courseid = 
 
     // Execute the SQL query using Moodle's database abstraction layer.
     $data = $DB->get_record_sql($sql, $params);
+    if (isset($data->effort_ratio)) {
+        $data->effort_ratio = intval(floatval($data->effort_ratio) * 100);
+    }
     $data = (array)$data;
 
     if (!isset($data['filename'])) {
-        $sql = 'SELECT id as fileid, userid, filename
+        $sql = 'SELECT id as fileid, userid, filename, content
                   FROM {tiny_cursive_files}
                  WHERE userid = :userid
-                   AND cmid = :cmid
-                   AND modulename = :modulename';
+                       AND cmid = :cmid
+                       AND modulename = :modulename';
         $filename = $DB->get_record_sql($sql, ['userid' => $resourceid, 'cmid' => $cmid, 'modulename' => $modulename]);
 
         if ($filename) {
-            $filep = $CFG->tempdir . '/userdata/' . $filename->filename;
-            $data['filename'] = $filep;
+            $data['filename'] = $filename->filename;
             $data['file_id'] = $filename->fileid ?? '';
         }
-    } else {
-        $data['filename'] = $CFG->tempdir . '/userdata/' . $data['filename'];
     }
 
     if ($data['filename']) {
@@ -301,7 +302,8 @@ function tiny_cursive_get_cmid($courseid) {
               FROM {course_modules} cm
          LEFT JOIN {modules} m ON m.id = cm.module
          LEFT JOIN {course} c ON c.id = cm.course
-             WHERE cm.course = :courseid LIMIT 1";
+             WHERE cm.course = :courseid
+                   AND cm.deletioninprogress = 0 LIMIT 1";
 
     $params = ['courseid' => $courseid];
     $cm = $DB->get_record_sql($sql, $params);
@@ -327,22 +329,3 @@ function create_token_for_user() {
     return $token;
 }
 
-
-/**
- * Method filestream
- *
- * @param $file $file [explicite description]
- * @param $fname $fname [explicite description]
- *
- * @return string
- */
-function file_stream($file, $fname) {
-
-    if (file_exists($file)) {
-        $inp = file_get_contents($file);
-    } else {
-        $inp = base64_decode($file);
-    }
-
-    return $inp;
-}

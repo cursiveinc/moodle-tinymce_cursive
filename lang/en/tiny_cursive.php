@@ -19,7 +19,7 @@
  *
  * @package tiny_cursive
  * @copyright  CTI <info@cursivetechnology.com>
- * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
+ * @author Brain Station 23 <elearning@brainstation-23.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -62,7 +62,7 @@ $string['download'] = 'Download';
 $string['download_attempt_json'] = 'Download Attempt JSON';
 $string['download_csv'] = 'Download cumulative Report';
 $string['editspastesai'] = 'Edits/Pastes/AI  ';
-$string['effort_ratio'] = 'Effort Ratio';
+$string['effort_ratio'] = 'Effort';
 $string['effort_ratio_desc'] = 'Total characters from attributed effort / total characters in submission';
 $string['email'] = 'Email';
 $string['email_exist'] = 'Email does not exist';
@@ -79,6 +79,7 @@ $string['fulname'] = 'Full Name';
 $string['generate'] = 'Generate';
 $string['helplinktext'] = 'Cursive';
 $string['host_domain'] = 'You Host domain.';
+$string['invalidparameters'] = 'Invalid parameters have been given.';
 $string['last_modified'] = 'Last modified';
 $string['learn_more'] = 'Learn More';
 $string['module_name'] = 'Module Name';

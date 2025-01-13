@@ -19,7 +19,7 @@
  *
  * @package tiny_cursive
  * @copyright  CTI <info@cursivetechnology.com>
- * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
+ * @author Brain Station 23 <elearning@brainstation-23.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -40,7 +40,6 @@ $capabilities = [
         'archetypes' => [
             'manager' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
-            'teacher' => CAP_ALLOW,
         ],
 
     ],

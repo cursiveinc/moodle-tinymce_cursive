@@ -92,30 +92,16 @@ class observers {
                 $userid = $eventdata['userid'];
                 $cmid = $eventdata['contextinstanceid'];
                 $resourceid = $eventdata['objectid'];
-                $dirname = $CFG->tempdir . "/userdata/";
                 $fname = $userid . '_' . $resourceid . '_' . $cmid . '_attempt' . '.json';
-                $sourcefile = $dirname . $rec->filename;
-                $desfilename = $dirname . $fname;
-                $inp = file_exists($desfilename) ? file_get_contents($desfilename) : null;
-                $temparray = null;
-                if ($inp) {
-                    $temparray = json_decode($inp, true);
-                    $merged = json_encode(
-                        array_merge($temparray, json_decode(file_get_contents($sourcefile))));
-                    file_put_contents($desfilename, $merged);
-                    unlink($sourcefile);
-                    $DB->delete_records($table, ['id' => $rec->id]);
-                } else {
-                    rename($sourcefile, $desfilename);
-                    $dataobj = new \stdClass();
-                    $dataobj->userid = $userid;
-                    $dataobj->id = $rec->id;
-                    $dataobj->cmid = $cmid;
-                    $dataobj->courseid = $eventdata['courseid'];
-                    $dataobj->resourceid = $resourceid;
-                    $dataobj->filename = $fname;
-                    $DB->update_record($table, $dataobj, true);
-                }
+
+                $dataobj = new \stdClass();
+                $dataobj->userid = $userid;
+                $dataobj->id = $rec->id;
+                $dataobj->cmid = $cmid;
+                $dataobj->courseid = $eventdata['courseid'];
+                $dataobj->resourceid = $resourceid;
+                $dataobj->filename = $fname;
+                $DB->update_record($table, $dataobj, true);
             }
         }
     }
@@ -206,11 +192,6 @@ class observers {
         foreach ($fileids as $file) {
             $DB->delete_records('tiny_cursive_user_writing', ['file_id' => $file->id]);
             $DB->delete_records('tiny_cursive_writing_diff', ['file_id' => $file->id]);
-
-            $filepath = $CFG->tempdir . "/userdata/" . $file->filename;
-            if (file_exists($filepath)) {
-                unlink($filepath);
-            }
         }
     }
 }
