@@ -34,9 +34,6 @@ function xmldb_tiny_cursive_install() {
     enable_webservice();
     enable_webservice_protocol('rest');
     create_cursive_field();
-    $enablededitors = explode(',', get_config('core', 'texteditors'));
-    $enablededitors = array_diff($enablededitors, ['atto', 'textarea']);
-    set_config('texteditors', implode(',', $enablededitors));
 }
 /**
  * Enable web services in Moodle
@@ -105,7 +102,7 @@ function create_cursive_field() {
                 'required' => 0,
                 'uniquevalues' => 0,
                 'options' => "Enabled\nDisabled\n",
-                'defaultvalue' => 'Disabled',
+                'defaultvalue' => 'Enabled',
                 'locked' => 0,
                 'visibility' => 2,
             ]),
