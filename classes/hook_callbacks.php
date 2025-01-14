@@ -135,7 +135,11 @@ class hook_callbacks {
             '1' => get_string('enabled', 'tiny_cursive'),
         ]);
         $default = get_config('tiny_cursive', "cursive-$COURSE->id");
-        $mform->setDefault('cursive_status', $default);
+        if ($default === false) {
+            $mform->setDefault('cursive_status', '1');
+        } else {
+            $mform->setDefault('cursive_status', $default);
+        }
     }
 
     /**
