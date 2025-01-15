@@ -32,7 +32,7 @@ export const register = (editor, interval, userId) => {
     var intervention = jQuery('#body').hasClass('intervention');
     var userid = userId;
     var host = M.cfg.wwwroot;
-    var courseid = M.courseId;
+    var courseid = M.cfg.courseId;
     var filename = "";
     var quizSubmit = jQuery('#mod_quiz-next-nav');
     var ed = "";
