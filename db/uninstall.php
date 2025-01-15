@@ -28,5 +28,13 @@
  * Tiny cursive uninstall.
  */
 function xmldb_tiny_cursive_uninstall() {
+    global $DB;
+
+    $field = $DB->get_record('customfield_field', ['shortname' => 'cursive_status']);
+    if ($field) {
+        $DB->delete_records('customfield_data', ['fieldid' => $field->id]);
+        $DB->delete_records('customfield_field', ['id' => $field->id]);
+    }
+    
     return true;
 }

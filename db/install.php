@@ -102,7 +102,7 @@ function create_cursive_field() {
                 'required' => 0,
                 'uniquevalues' => 0,
                 'options' => "Enabled\nDisabled\n",
-                'defaultvalue' => 'Disabled',
+                'defaultvalue' => 'Enabled',
                 'locked' => 0,
                 'visibility' => 2,
             ]),
