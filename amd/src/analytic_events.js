@@ -94,16 +94,33 @@ export default class AnalyticEvents {
                 args: {fileid: fileid},
             }])[0].done(response => {
                 let responsedata = JSON.parse(response.data);
-                if (responsedata[0]) {
-                    let submittedText = atob(responsedata[0].submitted_text);
+                if (responsedata) {
+                    let submittedText = atob(responsedata.submitted_text);
 
                     // Fetch the dynamic strings
                     Str.get_strings([
-                        {key: 'original_text', component: 'tiny_cursive'},
-                        {key: 'editspastesai', component: 'tiny_cursive'}
+                        { key: 'original_text', component: 'tiny_cursive' },
+                        { key: 'editspastesai', component: 'tiny_cursive' }
                     ]).done(strings => {
                         const originalTextString = strings[0];
                         const editsPastesAIString = strings[1];
+
+                        const commentBox = $('<div class="p-2 border rounded mb-2">');
+                        var pasteCountDiv = $('<div></div>');
+                        pasteCountDiv.append('<div><strong>Paste Count :</strong> ' + responsedata.commentscount + '</div>');
+                    
+                        var commentsDiv = $('<div class="border-bottom"></div>');
+                        commentsDiv.append('<strong>Comments :</strong>');
+                    
+                        var commentsList = $('<div></div>');
+                    
+                        let comments = responsedata.comments;
+                        for (let index in comments) {
+                            var commentDiv = $('<div class="shadow-sm p-1 my-1"></div>').text(comments[index].usercomment);
+                            commentsList.append(commentDiv);
+                        }
+                        commentBox.append(pasteCountDiv).append(commentsDiv).append(commentsList);
+                        
 
                         const $legend = $('<div class="d-flex p-2 border rounded mb-2">');
 
@@ -127,7 +144,7 @@ export default class AnalyticEvents {
                             $('<div>').attr('id', 'tiny_cursive-reconstructed_text').html(JSON.parse(submittedText))
                         );
 
-                        contents.append($legend, textBlock2);
+                        contents.append(commentBox,$legend, textBlock2);
                         $('#content' + userid).html(contents); // Update content
                     }).fail(error => {
                         window.console.error("Failed to load language strings:", error);
