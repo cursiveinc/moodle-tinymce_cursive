@@ -1931,7 +1931,7 @@ class cursive_json_func_data extends external_api {
         $userdata["clientId"] = $CFG->wwwroot;
         $userdata["personId"] = $USER->id;
         $editoridarr = explode(':', $params['editorid']);
-
+        $questionid = "";
         if (count($editoridarr) > 1) {
             $uniqueid = substr($editoridarr[0] . "\n", 1);
             $slot = substr($editoridarr[1] . "\n", 0, -11);
@@ -1939,14 +1939,11 @@ class cursive_json_func_data extends external_api {
             $question = $quba->get_question($slot, false);
             $questionid = $question->id;
         }
-        $dirname = make_temp_directory('userdata');
 
         $fname = $USER->id . '_' . $params['resourceId'] . '_' . $params['cmid'] . '_attempt' . '.json';
         if ($questionid) {
             $fname = $USER->id . '_' . $params['resourceId'] . '_' . $params['cmid'] . '_' . $questionid . '_attempt' . '.json';
         }
-        // File path.
-        $filename = $dirname . '/' . $fname;
 
         $table = 'tiny_cursive_files';
         $inp = '';

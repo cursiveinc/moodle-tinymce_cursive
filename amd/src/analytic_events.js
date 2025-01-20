@@ -243,10 +243,10 @@ export default class AnalyticEvents {
                             if (!metricsData) {
                                 $('#content' + userid).html(nodata);
                             }
-
+                            //  metricsData.p_burst_cnt,'P-burst Count', metricsData.total_active_time, 'Total Active Time',
                             var originalData = [
-                                metricsData.word_len_mean, metricsData.edits, metricsData.p_burst_cnt, metricsData.p_burst_mean,
-                                metricsData.q_count, metricsData.sentence_count, metricsData.total_active_time,
+                                metricsData.word_len_mean, metricsData.edits, metricsData.p_burst_mean,
+                                metricsData.q_count, metricsData.sentence_count,
                                 metricsData.verbosity, metricsData.word_count, metricsData.sent_word_count_mean
                             ];
 
@@ -255,11 +255,9 @@ export default class AnalyticEvents {
                                 labels: [
                                     'Average Word Length',
                                     'Edits',
-                                    'P-burst Count',
                                     'P-Burst Mean',
                                     'Q Count',
                                     'Sentence Count',
-                                    'Total Active Time',
                                     'Verbosity',
                                     'Word Count',
                                     'Word Count per Sentence Mean'
@@ -367,7 +365,7 @@ export default class AnalyticEvents {
                                     // Draw the background rectangles for each tick.
                                     tickArray.forEach(tick => {
                                         ctx.fillStyle = 'rgba(0, 0, 0, 0.02)';
-                                        ctx.fillRect(0, y.getPixelForValue(tick) + 63, x.width + x.width + 21, segmentPixel);
+                                        ctx.fillRect(0, y.getPixelForValue(tick) + 80, x.width + x.width + 21, segmentPixel);
                                     });
                                 }
                             };

@@ -181,7 +181,8 @@ export const register = (editor, interval, userId) => {
             return false;
         }
         // eslint-disable-next-line
-        if (ur.includes("forum") || ur.includes("assign")) {
+        if (ur.includes("forum") && !ur.includes("assign")) {
+           recourceId = parm.searchParams.get('edit');
         } else {
 
             recourceId = parm.searchParams.get('attempt');
