@@ -83,84 +83,92 @@ export const register = (editor, interval, userId) => {
     });
 
     const getModal = (e) => {
-        return create({
-            type: 'SAVE_CANCEL',
-            title: getString('tiny_cursive', 'tiny_cursive'),
-            body: '<textarea  class="form-control inputUrl" value="" id="inputUrl" placeholder="sourceurl"></textarea>',
 
-            removeOnClose: true,
-        })
-            .done(modal => {
-                modal.getRoot().append('<style>.close{ display: none ! important; }</style>');
-                modal.show();
-                var lastEvent = '';
-                // eslint-disable-next-line
-                modal.getRoot().on(save, function() {
-                    var number = document.getElementById("inputUrl").value;
-                    if (number === "" || number === null || number === undefined) {
-                        editor.execCommand('Undo');
-                        // eslint-disable-next-line
-                        alert("You cannot paste text without providing source");
-                    } else {
-                        editor.execCommand('Paste');
-                    }
-                    let ur = e.srcElement.baseURI;
-                    let recourceId = 0;
-                    let parm = new URL(ur);
-                    let modulename = "";
-                    let editorid = editor?.id;
-                    let courseid = M.cfg.courseId;
-                    let cmid = M.cfg.contextInstanceId;
+        Promise.all([
+            getString('tiny_cursive_srcurl', 'tiny_cursive'),
+            getString('tiny_cursive_srcurl_des', 'tiny_cursive')
+        ]).then(function([title, titledes]) {
 
+            return create({
+                type: 'SAVE_CANCEL',
+                title: `<div><div style='color:dark;font-weight:500;line-height:0.5'>${title}</div><span style='color: gray;font-weight: 400;line-height: 1.2;font-size: 14px;display: inline-block;margin-top: .5rem;'>${titledes}</span></div>`,
+                body: '<textarea  class="form-control inputUrl" value="" id="inputUrl" placeholder="Write your comment, links or informations here.."></textarea>',
+    
+                removeOnClose: true,
+            })
+                .done(modal => {
+                    modal.getRoot().append('<style>.close{ display: none ! important; }</style>');
+                    modal.show();
+                    var lastEvent = '';
                     // eslint-disable-next-line
-                    if (ur.includes("attempt.php") || ur.includes("forum") || ur.includes("assign")) { } else {
-                        return false;
-                    }
-
-                    if (!ur.includes("forum") && !ur.includes("assign")) {
-                        recourceId = parm.searchParams.get('attempt');
-                    }
-
-                    if (recourceId === null) {
-                        recourceId = 0;
-                    }
-                    if (ur.includes("forum")) {
-                        modulename = "forum";
-                    }
-                    if (ur.includes("assign")) {
-                        modulename = "assign";
-                    }
-                    if (ur.includes("attempt")) {
-                        modulename = "quiz";
-                    }
-                    if (cmid === null) {
-                        cmid = 0;
-                    }
-
-                    postOne('cursive_user_comments', {
-                        modulename: modulename,
-                        cmid: cmid,
-                        resourceid: recourceId,
-                        courseid: courseid,
-                        usercomment: number,
-                        timemodified: Date.now(),
-                        editorid: editorid ? editorid : ""
+                    modal.getRoot().on(save, function() {
+                        var number = document.getElementById("inputUrl").value;
+                        if (number === "" || number === null || number === undefined) {
+                            editor.execCommand('Undo');
+                            // eslint-disable-next-line
+                            alert("You cannot paste text without providing source");
+                        } else {
+                            editor.execCommand('Paste');
+                        }
+                        let ur = e.srcElement.baseURI;
+                        let recourceId = 0;
+                        let parm = new URL(ur);
+                        let modulename = "";
+                        let editorid = editor?.id;
+                        let courseid = M.cfg.courseId;
+                        let cmid = M.cfg.contextInstanceId;
+    
+                        // eslint-disable-next-line
+                        if (ur.includes("attempt.php") || ur.includes("forum") || ur.includes("assign")) { } else {
+                            return false;
+                        }
+    
+                        if (!ur.includes("forum") && !ur.includes("assign")) {
+                            recourceId = parm.searchParams.get('attempt');
+                        }
+    
+                        if (recourceId === null) {
+                            recourceId = 0;
+                        }
+                        if (ur.includes("forum")) {
+                            modulename = "forum";
+                        }
+                        if (ur.includes("assign")) {
+                            modulename = "assign";
+                        }
+                        if (ur.includes("attempt")) {
+                            modulename = "quiz";
+                        }
+                        if (cmid === null) {
+                            cmid = 0;
+                        }
+    
+                        postOne('cursive_user_comments', {
+                            modulename: modulename,
+                            cmid: cmid,
+                            resourceid: recourceId,
+                            courseid: courseid,
+                            usercomment: number,
+                            timemodified: Date.now(),
+                            editorid: editorid ? editorid : ""
+                        });
+                        lastEvent = 'save';
+                        modal.destroy();
                     });
-                    lastEvent = 'save';
-                    modal.destroy();
-                });
-                modal.getRoot().on(cancel, function() {
-
-                    editor.execCommand('Undo');
-                    lastEvent = 'cancel';
-                });
-                modal.getRoot().on(hidden, function() {
-                    if (lastEvent != 'cancel' && lastEvent != 'save') {
+                    modal.getRoot().on(cancel, function() {
+    
                         editor.execCommand('Undo');
-                    }
+                        lastEvent = 'cancel';
+                    });
+                    modal.getRoot().on(hidden, function() {
+                        if (lastEvent != 'cancel' && lastEvent != 'save') {
+                            editor.execCommand('Undo');
+                        }
+                    });
+                    return modal;
                 });
-                return modal;
-            });
+        });
+        
     };
     // eslint-disable-next-line
     const sendKeyEvent = (events, eds) => {
@@ -173,7 +181,8 @@ export const register = (editor, interval, userId) => {
             return false;
         }
         // eslint-disable-next-line
-        if (ur.includes("forum") || ur.includes("assign")) {
+        if (ur.includes("forum") && !ur.includes("assign")) {
+           recourceId = parm.searchParams.get('edit');
         } else {
 
             recourceId = parm.searchParams.get('attempt');
