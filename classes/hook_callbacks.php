@@ -50,10 +50,10 @@ class hook_callbacks {
     public static function before_footer_html_generation(before_footer_html_generation $hook) {
         global $PAGE, $COURSE, $USER, $CFG;
         require_once($CFG->dirroot . '/lib/editor/tiny/plugins/cursive/locallib.php');
-        $cmid = isset($COURSE->id) ? tiny_cursive_get_cmid($COURSE->id) : 0;
 
         if (!empty($COURSE) && !during_initial_install() && get_config('tiny_cursive', "cursive-$COURSE->id")) {
 
+            $cmid = isset($COURSE->id) ? tiny_cursive_get_cmid($COURSE->id) : 0;
             $confidencethreshold = get_config('tiny_cursive', 'confidence_threshold');
             $confidencethreshold = !empty($confidencethreshold) ? floatval($confidencethreshold) : 0.65;
             $showcomments = get_config('tiny_cursive', 'showcomments');
@@ -113,13 +113,7 @@ class hook_callbacks {
                         break;
                 }
             }
-            if (
-                $PAGE->bodyid == 'page-mod-quiz-attempt' || $PAGE->bodyid == 'page-mod-quiz-summary'
-                || $PAGE->bodyid == 'page-mod-assign-editsubmission' || $PAGE->bodyid == 'page-mod-forum-view'
-                || $PAGE->bodyid == 'page-mod-forum-post'
-            ) {
-                $PAGE->requires->js_call_amd('tiny_cursive/user', 'setUserId', [$USER->id, $CFG->wwwroot, $COURSE->id]);
-            }
+
         }
     }
 
@@ -141,7 +135,11 @@ class hook_callbacks {
             '1' => get_string('enabled', 'tiny_cursive'),
         ]);
         $default = get_config('tiny_cursive', "cursive-$COURSE->id");
-        $mform->setDefault('cursive_status', $default);
+        if ($default === false) {
+            $mform->setDefault('cursive_status', '1');
+        } else {
+            $mform->setDefault('cursive_status', $default);
+        }
     }
 
     /**

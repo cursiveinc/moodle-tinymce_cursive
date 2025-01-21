@@ -20,9 +20,9 @@
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  */
 
-import { getTinyMCE } from 'editor_tiny/loader';
-import { getPluginMetadata } from 'editor_tiny/utils';
-import { component, pluginName } from './common';
+import {getTinyMCE} from 'editor_tiny/loader';
+import {getPluginMetadata} from 'editor_tiny/utils';
+import {component, pluginName} from './common';
 import * as Autosaver from './autosaver';
 import getConfig from 'core/ajax';
 export default new Promise((resolve, reject) => {
@@ -35,10 +35,10 @@ export default new Promise((resolve, reject) => {
 
                 getConfig.call([{
                     methodname: "cursive_get_config",
-                    args: { courseid: M.cfg.courseId, cmid: M.cfg.contextInstanceId }
+                    args: {courseid: M.cfg.courseId, cmid: M.cfg.contextInstanceId}
                 }])[0].done((data) => {
                     if (data.status) {
-                        Autosaver.register(editor, data.sync_interval);
+                        Autosaver.register(editor, data.sync_interval, data.userid);
                     }
                 }).fail((error) => {
                     window.console.error('Error getting cursive config:', error);
@@ -47,6 +47,7 @@ export default new Promise((resolve, reject) => {
                 return pluginMetadata;
             });
             resolve(pluginName);
+            return true;
         })
         .catch((error) => {
             reject(error);

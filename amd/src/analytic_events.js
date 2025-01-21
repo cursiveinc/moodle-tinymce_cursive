@@ -20,21 +20,23 @@
  * @copyright  2024 CTI <your@email.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-import MyModal from "./analytic_modal";
-import { call as getContent } from "core/ajax";
+
+import myModal from "./analytic_modal";
+import {call as getContent} from "core/ajax";
 import $ from 'jquery';
 import * as Str from 'core/str';
 import Chart from 'core/chartjs';
 export default class AnalyticEvents {
 
     createModal(userid, context, questionid = '', authIcon) {
-        $('#analytics' + userid + questionid).on('click', function (e) {
+        $('#analytics' + userid + questionid).on('click', function(e) {
             e.preventDefault();
 
             // Create Moodle modal
-            MyModal.create({ templateContext: context }).then(modal => {
+            myModal.create({templateContext: context}).then(modal => {
                 $('#content' + userid + ' .table tbody tr:first-child td:nth-child(2)').html(authIcon);
                 modal.show();
+                return true;
             }).catch(error => {
                 window.window.console.error("Failed to create modal:", error);
             });
@@ -42,7 +44,7 @@ export default class AnalyticEvents {
     }
 
     analytics(userid, templates, context, questionid = '', replayInstances = null, authIcon) {
-        $('body').on('click', '#analytic' + userid + questionid, function (e) {
+        $('body').on('click', '#analytic' + userid + questionid, function(e) {
             $('#rep' + userid + questionid).prop('disabled', false);
             $('#quality' + userid + questionid).prop('disabled', false);
             e.preventDefault();
@@ -54,11 +56,11 @@ export default class AnalyticEvents {
             $('.tiny_cursive-nav-tab').find('.active').removeClass('active');
             $(this).addClass('active'); // Add 'active' class to the clicked element
 
-            templates.render('tiny_cursive/analytics_table', context).then(function (html) {
+            templates.render('tiny_cursive/analytics_table', context).then(function(html) {
                 $('#content' + userid).html(html);
                 $('#content' + userid + ' .table tbody tr:first-child td:nth-child(2)').html(authIcon);
-
-            }).fail(function (error) {
+                return true;
+            }).fail(function(error) {
                 window.console.error("Failed to render template:", error);
             });
         });
@@ -72,14 +74,14 @@ export default class AnalyticEvents {
         nodata.style.fontWeight = '500';
         nodata.textContent = "no data received yet";
 
-        $('body').on('click', '#diff' + userid + questionid, function (e) {
+        $('body').on('click', '#diff' + userid + questionid, function(e) {
             $('#rep' + userid + questionid).prop('disabled', false);
             $('#quality' + userid + questionid).prop('disabled', false);
             e.preventDefault();
             $('#content' + userid).html($('<div>').addClass('d-flex justify-content-center my-5')
                 .append($('<div>').addClass('tiny_cursive-loader')));
             $('.tiny_cursive-nav-tab').find('.active').removeClass('active');
-            $(this).addClass('active'); // Add 'active' class to the clicked element
+            $(this).addClass('active');
             if (replayInstances && replayInstances[userid]) {
                 replayInstances[userid].stopReplay();
             }
@@ -89,11 +91,11 @@ export default class AnalyticEvents {
             }
             getContent([{
                 methodname: 'cursive_get_writing_differences',
-                args: { fileid: fileid },
+                args: {fileid: fileid},
             }])[0].done(response => {
                 let responsedata = JSON.parse(response.data);
-                if (responsedata[0]) {
-                    let submitted_text = atob(responsedata[0].submitted_text);
+                if (responsedata) {
+                    let submittedText = atob(responsedata.submitted_text);
 
                     // Fetch the dynamic strings
                     Str.get_strings([
@@ -103,29 +105,46 @@ export default class AnalyticEvents {
                         const originalTextString = strings[0];
                         const editsPastesAIString = strings[1];
 
+                        const commentBox = $('<div class="p-2 border rounded mb-2">');
+                        var pasteCountDiv = $('<div></div>');
+                        pasteCountDiv.append('<div><strong>Paste Count :</strong> ' + responsedata.commentscount + '</div>');
+                    
+                        var commentsDiv = $('<div class="border-bottom"></div>');
+                        commentsDiv.append('<strong>Comments :</strong>');
+                    
+                        var commentsList = $('<div></div>');
+                    
+                        let comments = responsedata.comments;
+                        for (let index in comments) {
+                            var commentDiv = $('<div class="shadow-sm p-1 my-1"></div>').text(comments[index].usercomment);
+                            commentsList.append(commentDiv);
+                        }
+                        commentBox.append(pasteCountDiv).append(commentsDiv).append(commentsList);
+                        
+
                         const $legend = $('<div class="d-flex p-2 border rounded mb-2">');
 
                         // Create the first legend item
-                        const $attributedItem = $('<div>', { class: 'tiny_cursive-legend-item' });
-                        const $attributedBox = $('<div>', { class: 'tiny_cursive-box attributed' });
+                        const $attributedItem = $('<div>', {"class": "tiny_cursive-legend-item"});
+                        const $attributedBox = $('<div>', {"class": "tiny_cursive-box attributed"});
                         const $attributedText = $('<span>').text(originalTextString);
                         $attributedItem.append($attributedBox).append($attributedText);
 
                         // Create the second legend item
-                        const $unattributedItem = $('<div>', { class: 'tiny_cursive-legend-item' });
-                        const $unattributedBox = $('<div>', { class: 'tiny_cursive-box tiny_cursive_added' });
+                        const $unattributedItem = $('<div>', {"class": 'tiny_cursive-legend-item'});
+                        const $unattributedBox = $('<div>', {"class": 'tiny_cursive-box tiny_cursive_added'});
                         const $unattributedText = $('<span>').text(editsPastesAIString);
                         $unattributedItem.append($unattributedBox).append($unattributedText);
 
-                        // Append the legend items to the legend container
+                        // Append the legend items to the legend container.
                         $legend.append($attributedItem).append($unattributedItem);
 
                         let contents = $('<div>').addClass('tiny_cursive-comparison-content');
                         let textBlock2 = $('<div>').addClass('tiny_cursive-text-block').append(
-                            $('<div>').attr('id', 'tiny_cursive-reconstructed_text').html(JSON.parse(submitted_text))
+                            $('<div>').attr('id', 'tiny_cursive-reconstructed_text').html(JSON.parse(submittedText))
                         );
 
-                        contents.append($legend, textBlock2);
+                        contents.append(commentBox,$legend, textBlock2);
                         $('#content' + userid).html(contents); // Update content
                     }).fail(error => {
                         window.console.error("Failed to load language strings:", error);
@@ -142,7 +161,7 @@ export default class AnalyticEvents {
     }
 
     replyWriting(userid, filepath, questionid = '', replayInstances = null) {
-        $('body').on('click', '#rep' + userid + questionid, function (e) {
+        $('body').on('click', '#rep' + userid + questionid, function(e) {
             $(this).prop('disabled', true);
             $('#quality' + userid + questionid).prop('disabled', false);
             e.preventDefault();
@@ -172,7 +191,7 @@ export default class AnalyticEvents {
         nodata.style.fontWeight = '500';
         nodata.textContent = "no data received yet";
 
-        $('body').on('click', '#quality' + userid + questionid, function (e) {
+        $('body').on('click', '#quality' + userid + questionid, function(e) {
 
             $(this).prop('disabled', true);
             $('#rep' + userid + questionid).prop('disabled', false);
@@ -182,7 +201,7 @@ export default class AnalyticEvents {
 
             let res = getContent([{
                 methodname: 'cursive_get_quality_metrics',
-                args: { file_id: context.tabledata.file_id ?? userid, cmid: cmid },
+                args: {"file_id": context.tabledata.file_id ?? userid, cmid: cmid},
             }]);
 
             const content = document.getElementById('content' + userid);
@@ -200,7 +219,7 @@ export default class AnalyticEvents {
                 replayInstances[userid].stopReplay();
             }
 
-            templates.render('tiny_cursive/quality_chart', context).then(function (html) {
+            templates.render('tiny_cursive/quality_chart', context).then(function(html) {
                 const content = document.getElementById('content' + userid);
 
                 res[0].done(response => {
@@ -209,19 +228,25 @@ export default class AnalyticEvents {
                         let proUser = metricsData.quality_access;
 
                         if (!proUser) {
-                            templates.render('tiny_cursive/upgrade_to_pro', []).then(function (html) {
+                            // eslint-disable-next-line promise/no-nesting
+                            templates.render('tiny_cursive/upgrade_to_pro', []).then(function(html) {
                                 $('#content' + userid).html(html);
-                            }).fail(function (error) {
+                                return true;
+                                }).fail(function(error) {
                                 window.console.error(error);
                             });
                         } else {
 
-                            if (content) { content.innerHTML = html; }
-                            if (!metricsData) { $('#content' + userid).html(nodata); }
-
+                            if (content) {
+                                content.innerHTML = html;
+                            }
+                            if (!metricsData) {
+                                $('#content' + userid).html(nodata);
+                            }
+                            //  metricsData.p_burst_cnt,'P-burst Count', metricsData.total_active_time, 'Total Active Time',
                             var originalData = [
-                                metricsData.word_len_mean, metricsData.edits, metricsData.p_burst_cnt, metricsData.p_burst_mean,
-                                metricsData.q_count, metricsData.sentence_count, metricsData.total_active_time,
+                                metricsData.word_len_mean, metricsData.edits, metricsData.p_burst_mean,
+                                metricsData.q_count, metricsData.sentence_count,
                                 metricsData.verbosity, metricsData.word_count, metricsData.sent_word_count_mean
                             ];
 
@@ -230,11 +255,9 @@ export default class AnalyticEvents {
                                 labels: [
                                     'Average Word Length',
                                     'Edits',
-                                    'P-burst Count',
                                     'P-Burst Mean',
                                     'Q Count',
                                     'Sentence Count',
-                                    'Total Active Time',
                                     'Verbosity',
                                     'Word Count',
                                     'Word Count per Sentence Mean'
@@ -249,7 +272,7 @@ export default class AnalyticEvents {
                                             return d;
                                         }
                                     }),
-                                    backgroundColor: function (context) {
+                                    backgroundColor: function(context) {
                                         // Apply green or gray depending on value.
                                         const value = context.raw;
 
@@ -269,7 +292,7 @@ export default class AnalyticEvents {
                             const drawPercentage = {
                                 id: 'drawPercentage',
                                 afterDraw: (chart) => {
-                                    const { ctx, data } = chart;
+                                    const {ctx, data} = chart;
                                     ctx.save();
                                     let value;
                                     chart.getDatasetMeta(0).data.forEach((dataPoint, index) => {
@@ -293,7 +316,7 @@ export default class AnalyticEvents {
                                             } else {
                                                 ctx.fillText(value + '%', dataPoint.x + 5, dataPoint.y + 5);
                                             }
-
+                                        // eslint-disable-next-line no-empty
                                         } else if (value == 0 || value == undefined) {
                                         } else if (value > 100) {
                                             ctx.fillStyle = 'white';
@@ -324,7 +347,7 @@ export default class AnalyticEvents {
                             const chartAreaBg = {
                                 id: 'chartAreaBg',
                                 beforeDraw: (chart) => {
-                                    const { ctx, scales: { x, y } } = chart;
+                                    const {ctx, scales: {x, y}} = chart;
                                     ctx.save();
 
                                     const segmentPixel = y.getPixelForValue(y.ticks[0].value) -
@@ -342,7 +365,7 @@ export default class AnalyticEvents {
                                     // Draw the background rectangles for each tick.
                                     tickArray.forEach(tick => {
                                         ctx.fillStyle = 'rgba(0, 0, 0, 0.02)';
-                                        ctx.fillRect(0, y.getPixelForValue(tick) + 63, x.width + x.width + 21, segmentPixel);
+                                        ctx.fillRect(0, y.getPixelForValue(tick) + 80, x.width + x.width + 21, segmentPixel);
                                     });
                                 }
                             };
@@ -368,7 +391,7 @@ export default class AnalyticEvents {
                                             min: -100,
                                             max: 100,
                                             ticks: {
-                                                callback: function (value) {
+                                                callback: function(value) {
                                                     if (value === -100 || value === 100) {
                                                         return value + '%';
                                                     } else if (value === 0) {
@@ -377,7 +400,7 @@ export default class AnalyticEvents {
                                                     return '';
                                                 },
                                                 display: true,
-                                                font: function (context) {
+                                                font: function(context) {
                                                     if (context && context.tick && context.tick.value === 0) {
                                                         return {
                                                             weight: 'bold',
@@ -396,7 +419,7 @@ export default class AnalyticEvents {
                                             },
                                             grid: {
                                                 display: true,
-                                                color: function (context) {
+                                                color: function(context) {
                                                     return context.tick.value === 0 ? 'black' : '#eaeaea';
                                                 },
                                                 tickLength: 0,
@@ -435,7 +458,7 @@ export default class AnalyticEvents {
                                             yAlign: 'bottom',
                                             xAlign: 'center',
                                             callbacks: {
-                                                label: function (context) {
+                                                label: function(context) {
                                                     const originalValue = originalData[context.dataIndex];
                                                     return originalValue; // Show the original value.
                                                 },
@@ -451,7 +474,8 @@ export default class AnalyticEvents {
                     $('#content' + userid).html(nodata);
                     throw new Error('Error: no data received yet', error);
                 });
-            }).catch(function (error) {
+                return true;
+            }).catch(function(error) {
                 window.console.error("Failed to render template:", error);
             });
 
@@ -462,28 +486,28 @@ export default class AnalyticEvents {
 
     formatedTime(data) {
         if (data.total_time_seconds) {
-            let total_time_seconds = data.total_time_seconds;
-            let hours = Math.floor(total_time_seconds / 3600).toString().padStart(2, 0);
-            let minutes = Math.floor((total_time_seconds % 3600) / 60).toString().padStart(2, 0);
-            let seconds = (total_time_seconds % 60).toString().padStart(2, 0);
+            let totalTimeSeconds = data.total_time_seconds;
+            let hours = Math.floor(totalTimeSeconds / 3600).toString().padStart(2, 0);
+            let minutes = Math.floor((totalTimeSeconds % 3600) / 60).toString().padStart(2, 0);
+            let seconds = (totalTimeSeconds % 60).toString().padStart(2, 0);
             return `${hours}h ${minutes}m ${seconds}s`;
         } else {
             return "0h 0m 0s";
         }
     }
 
-    authorshipStatus(firstFile, score, score_setting) {
+    authorshipStatus(firstFile, score, scoreSetting) {
         var icon = 'fa fa-circle-o';
         var color = 'font-size:32px;color:black';
-        var score = parseFloat(score);
+            score = parseFloat(score);
 
         if (firstFile) {
             icon = 'fa fa-solid fa-info-circle';
             color = 'font-size:32px;color:#000000';
-        } else if (score >= score_setting) {
+        } else if (score >= scoreSetting) {
             icon = 'fa fa-check-circle';
             color = 'font-size:32px;color:green';
-        } else if (score < score_setting) {
+        } else if (score < scoreSetting) {
             icon = 'fa fa-question-circle';
             color = 'font-size:32px;color:#A9A9A9';
         }

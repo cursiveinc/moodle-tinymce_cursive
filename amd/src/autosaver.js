@@ -20,20 +20,19 @@
  * @author kuldeep singh <mca.kuldeep.sekhon@gmail.com>
  */
 
-import { call } from 'core/ajax';
-import { create } from 'core/modal_factory';
-import { get_string as getString } from 'core/str';
-import { save, cancel, hidden } from 'core/modal_events';
+import {call} from 'core/ajax';
+import {create} from 'core/modal_factory';
+import {get_string as getString} from 'core/str';
+import {save, cancel, hidden} from 'core/modal_events';
 import jQuery from 'jquery';
-import user from 'tiny_cursive/user';
 
-export const register = (editor, interval) => {
+export const register = (editor, interval, userId) => {
 
-    var is_student = !(jQuery('#body').hasClass('teacher_admin'));
+    var isStudent = !(jQuery('#body').hasClass('teacher_admin'));
     var intervention = jQuery('#body').hasClass('intervention');
-    var userid = null;
-    var host = null;
-    var courseid = null;
+    var userid = userId;
+    var host = M.cfg.wwwroot;
+    var courseid = M.cfg.courseId;
     var filename = "";
     var quizSubmit = jQuery('#mod_quiz-next-nav');
     var ed = "";
@@ -41,14 +40,12 @@ export const register = (editor, interval) => {
     var recourceId = 0;
     var modulename = "";
     var editorid = editor?.id;
-    let bodyid = jQuery('body').attr('class');
-    var classes = bodyid.split(' ');
-    var cmid = 0;
+    var cmid = M.cfg.contextInstanceId;
     var questionid = 0;
     let assignSubmit = jQuery('#id_submitbutton');
     var syncInterval = interval ? interval * 1000 : 10000; // Default: Sync Every 10s.
 
-    const postOne = async (methodname, args) => {
+    const postOne = async(methodname, args) => {
         try {
             const response = await call([{
                 methodname,
@@ -61,10 +58,11 @@ export const register = (editor, interval) => {
         }
     };
 
-    assignSubmit.on('click', async function (e) {
+    assignSubmit.on('click', async function(e) {
         e.preventDefault();
         if (filename) {
-            SyncData().then(() => {
+            // eslint-disable-next-line
+            syncData().then(() => {
                 assignSubmit.off('click').click();
             });
         } else {
@@ -72,10 +70,11 @@ export const register = (editor, interval) => {
         }
     });
 
-    quizSubmit.on('click', async function (e) {
+    quizSubmit.on('click', async function(e) {
         e.preventDefault();
         if (filename) {
-            SyncData().then(() => {
+            // eslint-disable-next-line
+            syncData().then(() => {
                 quizSubmit.off('click').click();
             });
         } else {
@@ -84,105 +83,106 @@ export const register = (editor, interval) => {
     });
 
     const getModal = (e) => {
-        return create({
-            type: 'SAVE_CANCEL',
-            title: getString('tiny_cursive', 'tiny_cursive'),
-            body: '<textarea  class="form-control inputUrl" value="" id="inputUrl" placeholder="sourceurl"></textarea>',
 
-            removeOnClose: true,
-        })
-            .done(modal => {
-                modal.getRoot().append('<style>.close{ display: none ! important; }</style>');
-                modal.show();
-                var lastEvent = '';
-                modal.getRoot().on(save, function () {
-                    var number = document.getElementById("inputUrl").value;
-                    if (number === "" || number === null || number === undefined) {
-                        editor.execCommand('Undo');
-                        alert("You cannot paste text without providing source");
-                    } else {
-                        editor.execCommand('Paste');
-                    }
-                    let ur = e.srcElement.baseURI;
-                    let recourceId = 0;
-                    let parm = new URL(ur);
-                    let modulename = "";
-                    let editorid = editor?.id;
-                    let bodyid = jQuery('body').attr('class');
-                    let classes = bodyid.split(' ');
-                    let courseid = parseInt(classes.find((classname) => {
-                        return classname.startsWith('course-');
-                    }).split('-')[1]); // Getting cmid from body classlist.
-                    let cmid = parseInt(classes.find((classname) => {
-                        return classname.startsWith('cmid-');
-                    }).split('-')[1]); // Getting cmid from body classlist.
+        Promise.all([
+            getString('tiny_cursive_srcurl', 'tiny_cursive'),
+            getString('tiny_cursive_srcurl_des', 'tiny_cursive')
+        ]).then(function([title, titledes]) {
 
-
-                    if (ur.includes("attempt.php") || ur.includes("forum") || ur.includes("assign")) { } else {
-                        return false;
-                    }
-
-                    if (!ur.includes("forum") && !ur.includes("assign")) {
-                        recourceId = parm.searchParams.get('attempt');
-                    }
-
-                    if (recourceId === null) {
-                        recourceId = 0;
-                    }
-                    if (ur.includes("forum")) {
-                        modulename = "forum";
-                    }
-                    if (ur.includes("assign")) {
-                        modulename = "assign";
-                    }
-                    if (ur.includes("attempt")) {
-                        modulename = "quiz";
-                    }
-                    if (cmid === null) { cmid = 0; }
-
-                    postOne('cursive_user_comments', {
-                        modulename: modulename,
-                        cmid: cmid,
-                        resourceid: recourceId,
-                        courseid: courseid,
-                        usercomment: number,
-                        timemodified: Date.now(),
-                        editorid: editorid ? editorid : ""
+            return create({
+                type: 'SAVE_CANCEL',
+                title: `<div><div style='color:dark;font-weight:500;line-height:0.5'>${title}</div><span style='color: gray;font-weight: 400;line-height: 1.2;font-size: 14px;display: inline-block;margin-top: .5rem;'>${titledes}</span></div>`,
+                body: '<textarea  class="form-control inputUrl" value="" id="inputUrl" placeholder="Write your comment, links or informations here.."></textarea>',
+    
+                removeOnClose: true,
+            })
+                .done(modal => {
+                    modal.getRoot().append('<style>.close{ display: none ! important; }</style>');
+                    modal.show();
+                    var lastEvent = '';
+                    // eslint-disable-next-line
+                    modal.getRoot().on(save, function() {
+                        var number = document.getElementById("inputUrl").value;
+                        if (number === "" || number === null || number === undefined) {
+                            editor.execCommand('Undo');
+                            // eslint-disable-next-line
+                            alert("You cannot paste text without providing source");
+                        } else {
+                            editor.execCommand('Paste');
+                        }
+                        let ur = e.srcElement.baseURI;
+                        let recourceId = 0;
+                        let parm = new URL(ur);
+                        let modulename = "";
+                        let editorid = editor?.id;
+                        let courseid = M.cfg.courseId;
+                        let cmid = M.cfg.contextInstanceId;
+    
+                        // eslint-disable-next-line
+                        if (ur.includes("attempt.php") || ur.includes("forum") || ur.includes("assign")) { } else {
+                            return false;
+                        }
+    
+                        if (!ur.includes("forum") && !ur.includes("assign")) {
+                            recourceId = parm.searchParams.get('attempt');
+                        }
+    
+                        if (recourceId === null) {
+                            recourceId = 0;
+                        }
+                        if (ur.includes("forum")) {
+                            modulename = "forum";
+                        }
+                        if (ur.includes("assign")) {
+                            modulename = "assign";
+                        }
+                        if (ur.includes("attempt")) {
+                            modulename = "quiz";
+                        }
+                        if (cmid === null) {
+                            cmid = 0;
+                        }
+    
+                        postOne('cursive_user_comments', {
+                            modulename: modulename,
+                            cmid: cmid,
+                            resourceid: recourceId,
+                            courseid: courseid,
+                            usercomment: number,
+                            timemodified: Date.now(),
+                            editorid: editorid ? editorid : ""
+                        });
+                        lastEvent = 'save';
+                        modal.destroy();
                     });
-                    lastEvent = 'save';
-                    modal.destroy();
+                    modal.getRoot().on(cancel, function() {
+    
+                        editor.execCommand('Undo');
+                        lastEvent = 'cancel';
+                    });
+                    modal.getRoot().on(hidden, function() {
+                        if (lastEvent != 'cancel' && lastEvent != 'save') {
+                            editor.execCommand('Undo');
+                        }
+                    });
+                    return modal;
                 });
-                modal.getRoot().on(cancel, function () {
-
-                    editor.execCommand('Undo');
-                    lastEvent = 'cancel';
-                });
-                modal.getRoot().on(hidden, function () {
-                    if (lastEvent != 'cancel' && lastEvent != 'save') { editor.execCommand('Undo'); }
-                });
-                return modal;
-            });
+        });
+        
     };
+    // eslint-disable-next-line
     const sendKeyEvent = (events, eds) => {
         let ur = eds.srcElement.baseURI;
         let parm = new URL(ur);
         ed = eds;
         event = events;
-        let bodyid = jQuery('body').attr('id');
-
-        if (bodyid == 'page-mod-quiz-attempt' || bodyid == 'page-mod-quiz-summary' ||
-            bodyid == 'page-mod-assign-editsubmission' || bodyid == 'page-mod-forum-view' ||
-            bodyid == 'page-mod-forum-post') {
-            cmid = parseInt(classes.find((classname) => {
-                return classname.startsWith('cmid-');
-            }).split('-')[1]); // Getting cmid from body classlist.
-        }
-
+        // eslint-disable-next-line
         if (ur.includes("attempt.php") || ur.includes("forum") || ur.includes("assign")) { } else {
             return false;
         }
-        if (ur.includes("forum") || ur.includes("assign")) {
-
+        // eslint-disable-next-line
+        if (ur.includes("forum") && !ur.includes("assign")) {
+           recourceId = parm.searchParams.get('edit');
         } else {
 
             recourceId = parm.searchParams.get('attempt');
@@ -243,35 +243,32 @@ export const register = (editor, interval) => {
     editor.on('keyUp', (editor) => {
         sendKeyEvent("keyUp", editor);
     });
-    editor.on('Paste', async (e) => {
-        if (is_student && intervention) {
+    editor.on('Paste', async(e) => {
+        if (isStudent && intervention) {
             getModal(e);
         }
     });
-    editor.on('Redo', async (e) => {
-        if (is_student && intervention) {
+    editor.on('Redo', async(e) => {
+        if (isStudent && intervention) {
             getModal(e);
         }
     });
     editor.on('keyDown', (editor) => {
         sendKeyEvent("keyDown", editor);
     });
+    // eslint-disable-next-line
     editor.on('init', () => {
-        let userdata = user.getUserId();
-        userid = userdata.userid;
-        host = userdata.host;
-        courseid = userdata.courseid;
     });
 
     /**
- * Synchronizes data from localStorage to server
- * @async
- * @function SyncData
- * @description Retrieves stored keypress data from localStorage and sends it to server
- * @returns {Promise} Returns response from server if data exists and is successfully sent
- * @throws {Error} Logs error to console if data submission fails
- */
-    async function SyncData() {
+     * Synchronizes data from localStorage to server
+     * @async
+     * @function SyncData
+     * @description Retrieves stored keypress data from localStorage and sends it to server
+     * @returns {Promise} Returns response from server if data exists and is successfully sent
+     * @throws {Error} Logs error to console if data submission fails
+     */
+    async function syncData() {
 
         let data = localStorage.getItem(filename);
 
@@ -280,6 +277,7 @@ export const register = (editor, interval) => {
         } else {
             localStorage.removeItem(filename);
             try {
+                // eslint-disable-next-line
                 return await postOne('cursive_write_local_to_json', {
                     key: ed.key,
                     event: event,
@@ -288,7 +286,7 @@ export const register = (editor, interval) => {
                     cmid: cmid,
                     modulename: modulename,
                     editorid: editorid,
-                    json_data: data,
+                    "json_data": data,
                 });
             } catch (error) {
                 window.console.error('Error submitting data:', error);
@@ -297,8 +295,8 @@ export const register = (editor, interval) => {
     }
 
     window.addEventListener('unload', () => {
-        SyncData();
+        syncData();
     });
 
-    setInterval(SyncData, syncInterval);
+    setInterval(syncData, syncInterval);
 };
