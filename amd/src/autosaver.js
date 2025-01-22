@@ -37,7 +37,7 @@ export const register = (editor, interval, userId) => {
     var quizSubmit = jQuery('#mod_quiz-next-nav');
     var ed = "";
     var event = "";
-    var recourceId = 0;
+    var resourceId = 0;
     var modulename = "";
     var editorid = editor?.id;
     var cmid = M.cfg.contextInstanceId;
@@ -111,7 +111,7 @@ export const register = (editor, interval, userId) => {
                             editor.execCommand('Paste');
                         }
                         let ur = e.srcElement.baseURI;
-                        let recourceId = 0;
+                        let resourceId = 0;
                         let parm = new URL(ur);
                         let modulename = "";
                         let editorid = editor?.id;
@@ -124,17 +124,18 @@ export const register = (editor, interval, userId) => {
                         }
     
                         if (!ur.includes("forum") && !ur.includes("assign")) {
-                            recourceId = parm.searchParams.get('attempt');
+                            resourceId = parm.searchParams.get('attempt');
                         }
     
-                        if (recourceId === null) {
-                            recourceId = 0;
+                        if (resourceId === null) {
+                            resourceId = 0;
                         }
                         if (ur.includes("forum")) {
                             modulename = "forum";
                         }
                         if (ur.includes("assign")) {
                             modulename = "assign";
+                            resourceId = cmid;
                         }
                         if (ur.includes("attempt")) {
                             modulename = "quiz";
@@ -146,7 +147,7 @@ export const register = (editor, interval, userId) => {
                         postOne('cursive_user_comments', {
                             modulename: modulename,
                             cmid: cmid,
-                            resourceid: recourceId,
+                            resourceid: resourceId,
                             courseid: courseid,
                             usercomment: number,
                             timemodified: Date.now(),
@@ -182,14 +183,14 @@ export const register = (editor, interval, userId) => {
         }
         // eslint-disable-next-line
         if (ur.includes("forum") && !ur.includes("assign")) {
-           recourceId = parm.searchParams.get('edit');
+           resourceId = parm.searchParams.get('edit');
         } else {
 
-            recourceId = parm.searchParams.get('attempt');
+            resourceId = parm.searchParams.get('attempt');
         }
-        if (recourceId === null) {
+        if (resourceId === null) {
 
-            recourceId = 0;
+            resourceId = 0;
         }
 
         if (ur.includes("forum")) {
@@ -197,16 +198,17 @@ export const register = (editor, interval, userId) => {
         }
         if (ur.includes("assign")) {
             modulename = "assign";
+            resourceId = cmid;
         }
         if (ur.includes("attempt")) {
             modulename = "quiz";
         }
 
-        filename = `${userid}_${recourceId}_${cmid}_${modulename}_attempt`;
+        filename = `${userid}_${resourceId}_${cmid}_${modulename}_attempt`;
 
         if (modulename === 'quiz') {
             questionid = editorid.split(':')[1].split('_')[0];
-            filename = `${userid}_${recourceId}_${cmid}_${questionid}_${modulename}_attempt`;
+            filename = `${userid}_${resourceId}_${cmid}_${questionid}_${modulename}_attempt`;
 
         }
 
@@ -214,7 +216,7 @@ export const register = (editor, interval, userId) => {
 
             let data = JSON.parse(localStorage.getItem(filename));
             data.push({
-                resourceId: recourceId,
+                resourceId: resourceId,
                 key: ed.key,
                 keyCode: ed.keyCode,
                 event: event,
@@ -227,7 +229,7 @@ export const register = (editor, interval, userId) => {
         } else {
             let data = [];
             data.push({
-                resourceId: recourceId,
+                resourceId: resourceId,
                 key: ed.key,
                 keyCode: ed.keyCode,
                 event: event,
@@ -282,7 +284,7 @@ export const register = (editor, interval, userId) => {
                     key: ed.key,
                     event: event,
                     keyCode: ed.keyCode,
-                    resourceId: recourceId,
+                    resourceId: resourceId,
                     cmid: cmid,
                     modulename: modulename,
                     editorid: editorid,
