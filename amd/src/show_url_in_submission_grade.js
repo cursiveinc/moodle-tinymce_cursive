@@ -166,8 +166,9 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
                     };
 
                     let authIcon = myEvents.authorshipStatus(data.data.first_file, data.data.score, scoreSetting);
+
                     myEvents.createModal(userid, context, '', authIcon);
-                    myEvents.analytics(userid, templates, context, '', replayInstances, '', authIcon);
+                    myEvents.analytics(userid, templates, context, '', replayInstances, authIcon);
                     myEvents.checkDiff(userid, data.data.file_id, '', replayInstances);
                     myEvents.replyWriting(userid, filepath, '', replayInstances);
                     myEvents.quality(userid, templates, context, '', replayInstances, M.cfg.contextInstanceId);

@@ -34,6 +34,7 @@ function xmldb_tiny_cursive_install() {
     enable_webservice();
     enable_webservice_protocol('rest');
     create_cursive_field();
+
 }
 /**
  * Enable web services in Moodle
