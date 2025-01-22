@@ -35,6 +35,6 @@ function xmldb_tiny_cursive_uninstall() {
         $DB->delete_records('customfield_data', ['fieldid' => $field->id]);
         $DB->delete_records('customfield_field', ['id' => $field->id]);
     }
-    
+
     return true;
 }
