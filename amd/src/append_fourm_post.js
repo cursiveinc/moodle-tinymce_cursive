@@ -26,8 +26,7 @@ define(["core/ajax", "core/str", "core/templates", "./replay", "./analytic_butto
     templates,
     Replay,
     analyticButton,
-    AnalyticEvents,
-) {
+    AnalyticEvents) {
     const replayInstances = {};
 
     window.video_playback = function (mid, filepath) {

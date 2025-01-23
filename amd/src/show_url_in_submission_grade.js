@@ -205,7 +205,7 @@ define([
 
                 const authIcon = myEvents.authorshipStatus(data.data.first_file, data.data.score, score_setting);
                 myEvents.createModal(userid, context, '', authIcon);
-                myEvents.analytics(userid, templates, context, '', replayInstances, '', authIcon);
+                myEvents.analytics(userid, templates, context, '', replayInstances, authIcon);
                 myEvents.checkDiff(userid, data.data.file_id, '', replayInstances);
                 myEvents.replyWriting(userid, filepath, '', replayInstances);
             });

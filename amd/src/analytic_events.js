@@ -128,8 +128,8 @@ export default class AnalyticEvents {
                     args: { fileid: fileid },
                 }])[0].done(response => {
                     let responsedata = JSON.parse(response.data);
-                    if (responsedata[0]) {
-                        let submitted_text = atob(responsedata[0].submitted_text);
+                    if (responsedata) {
+                        let submittedText = atob(responsedata.submitted_text);
 
                         // Fetch the dynamic strings
                         Str.get_strings([
@@ -139,6 +139,31 @@ export default class AnalyticEvents {
                             const originalTextString = strings[0];
                             const editsPastesAIString = strings[1];
 
+                            const commentBox = document.createElement('div');
+                            commentBox.className = 'p-2 border rounded mb-2';
+
+                            const pasteCountDiv = document.createElement('div');
+                            pasteCountDiv.innerHTML = `<div><strong>Paste Count :</strong> ${responsedata.commentscount}</div>`;
+
+                            const commentsDiv = document.createElement('div');
+                            commentsDiv.className = 'border-bottom';
+                            commentsDiv.innerHTML = '<strong>Comments :</strong>';
+
+                            const commentsList = document.createElement('div');
+
+                            const comments = responsedata.comments;
+                            for (let index in comments) {
+                                const commentDiv = document.createElement('div');
+                                commentDiv.className = 'shadow-sm p-1 my-1';
+                                commentDiv.textContent = comments[index].usercomment;
+                                commentsList.appendChild(commentDiv);
+                            }
+
+                            commentBox.appendChild(pasteCountDiv);
+                            commentBox.appendChild(commentsDiv);
+                            commentBox.appendChild(commentsList);
+
+                            
                             const legend = document.createElement('div');
                             legend.className = 'd-flex p-2 border rounded mb-2';
 
@@ -170,8 +195,9 @@ export default class AnalyticEvents {
                             contents.className = 'tiny_cursive-comparison-content';
                             let textBlock2 = document.createElement('div');
                             textBlock2.className = 'tiny_cursive-text-block';
-                            textBlock2.innerHTML = `<div id="tiny_cursive-reconstructed_text">${JSON.parse(submitted_text)}</div>`;
-
+                            textBlock2.innerHTML = `<div id="tiny_cursive-reconstructed_text">${JSON.parse(submittedText)}</div>`;
+                            
+                            contents.appendChild(commentBox);
                             contents.appendChild(legend);
                             contents.appendChild(textBlock2);
 
