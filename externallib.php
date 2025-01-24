@@ -1792,16 +1792,16 @@ class cursive_json_func_data extends external_api {
         $params = ['fileid' => $vparams['fileid']];
         $data = $DB->get_record_sql($sql, $params);
         if ($data) {
-        $comments = $DB->get_records(
-            'tiny_cursive_comments',
-            [
-                'resourceid' => $data->resourceid,
-                'modulename' => $data->modulename,
-                'cmid' => $data->cmid,
-                'userid' => $data->userid,
-                'questionid' => $data->questionid
-            ],
-        );
+            $comments = $DB->get_records(
+                'tiny_cursive_comments',
+                [
+                    'resourceid' => $data->resourceid,
+                    'modulename' => $data->modulename,
+                    'cmid' => $data->cmid,
+                    'userid' => $data->userid,
+                    'questionid' => $data->questionid
+                ],
+            );
         $data->comments = $comments;
         }
 
