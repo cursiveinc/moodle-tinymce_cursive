@@ -382,6 +382,7 @@ function tiny_cursive_before_footer() {
                     break;
             }
         }
+
     }
 }
 

@@ -829,7 +829,7 @@ class cursive_json_func_data extends external_api {
         self::validate_context($context);
         require_capability('tiny/cursive:view', $context);
 
-        $conditions = ["resourceid" => $params['id']];
+        $conditions = ["resourceid" => $params['id'], 'modulename' => "forum"];
         $table = 'tiny_cursive_comments';
         $recs = $DB->get_records($table, $conditions);
 
@@ -1778,28 +1778,30 @@ class cursive_json_func_data extends external_api {
         self::validate_context($context);
         require_capability("tiny/cursive:writingreport", $context);
 
-        $sql = "SELECT WD.*, CF.cmid, CF.resourceid, CF.modulename, COUNT(CC.id) AS commentscount, CF.userid
+        $sql = "SELECT WD.*, CF.cmid, CF.resourceid, CF.modulename, COUNT(CC.id) AS commentscount, CF.userid, CF.questionid
                   FROM {tiny_cursive_writing_diff} WD
                   JOIN {tiny_cursive_files} CF ON CF.id = WD.file_id
              LEFT JOIN {tiny_cursive_comments} CC ON CC.resourceid = CF.resourceid 
                                                 AND CC.modulename = CF.modulename 
                                                 AND CC.cmid = CF.cmid
                                                 AND CC.userid = CF.userid
+                                                AND CC.questionid = CF.questionid
                  WHERE WD.file_id = :fileid
               GROUP BY WD.id, CF.cmid, CF.resourceid, CF.modulename";
 
         $params = ['fileid' => $vparams['fileid']];
         $data = $DB->get_record_sql($sql, $params);
         if ($data) {
-            $comments = $DB->get_records(
-                'tiny_cursive_comments',
-                [
-                    'resourceid' => $data->resourceid,
-                    'modulename' => $data->modulename,
-                    'cmid' => $data->cmid,
-                    'userid' => $data->userid
-                ],
-            );
+        $comments = $DB->get_records(
+            'tiny_cursive_comments',
+            [
+                'resourceid' => $data->resourceid,
+                'modulename' => $data->modulename,
+                'cmid' => $data->cmid,
+                'userid' => $data->userid,
+                'questionid' => $data->questionid
+            ],
+        );
         $data->comments = $comments;
         }
 
