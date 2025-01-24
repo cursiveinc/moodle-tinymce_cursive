@@ -46,7 +46,13 @@ class observers {
         global $DB;
         $eventdata = $event->get_data();
         $table = 'tiny_cursive_comments';
-        $conditions = ["userid" => $eventdata['userid'], "modulename" => 'forum', 'resourceid' => 0];
+        $conditions = [
+            "userid" => $eventdata['userid'],
+            "modulename" => 'forum',
+            'resourceid' => 0,
+            'courseid' => $eventdata['courseid'],
+            'cmid' => $eventdata['contextinstanceid']
+        ];
         $recs = $DB->get_records($table, $conditions);
         if ($recs) {
             foreach ($recs as $rec) {
@@ -85,6 +91,8 @@ class observers {
             "userid" => $eventdata['userid'],
             "modulename" => 'forum',
             'resourceid' => 0,
+            'courseid' => $eventdata['courseid'],
+            'cmid' => $eventdata['contextinstanceid']
         ];
         $recs = $DB->get_records($table, $conditions);
         if ($recs) {
@@ -149,6 +157,8 @@ class observers {
             "userid" => $eventdata['userid'],
             "modulename" => 'forum',
             'resourceid' => 0,
+            'courseid' => $eventdata['courseid'],
+            'cmid' => $eventdata['contextinstanceid']
         ];
         $recs = $DB->get_records($table, $conditions);
         if ($recs) {
