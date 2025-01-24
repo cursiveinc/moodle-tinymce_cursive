@@ -122,7 +122,9 @@ export const register = (editor, interval, userId) => {
                         if (ur.includes("attempt.php") || ur.includes("forum") || ur.includes("assign")) { } else {
                             return false;
                         }
-    
+                        if (ur.includes("forum") && !ur.includes("assign")) {
+                            resourceId = parm.searchParams.get('edit');
+                         }
                         if (!ur.includes("forum") && !ur.includes("assign")) {
                             resourceId = parm.searchParams.get('attempt');
                         }
