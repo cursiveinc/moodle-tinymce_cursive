@@ -67,7 +67,7 @@ class hook_callbacks {
             $PAGE->requires->js_call_amd('tiny_cursive/settings', 'init', [$showcomments, $userrole]);
 
             $context = context_module::instance($cmid);
-            $capcheck = has_capability('tiny/cursive:view', $context, $USER->id);
+            $capcheck = has_capability('tiny/cursive:writingreport', $context, $USER->id);
 
             if ($capcheck) {
                 switch ($PAGE->bodyid) {
