@@ -86,13 +86,14 @@ export const register = (editor, interval, userId) => {
 
         Promise.all([
             getString('tiny_cursive_srcurl', 'tiny_cursive'),
-            getString('tiny_cursive_srcurl_des', 'tiny_cursive')
-        ]).then(function([title, titledes]) {
+            getString('tiny_cursive_srcurl_des', 'tiny_cursive'),
+            getString('tiny_cursive_placeholder', 'tiny_cursive')
+        ]).then(function([title, titledes, placeholder]) {
 
             return create({
                 type: 'SAVE_CANCEL',
                 title: `<div><div style='color:dark;font-weight:500;line-height:0.5'>${title}</div><span style='color: gray;font-weight: 400;line-height: 1.2;font-size: 14px;display: inline-block;margin-top: .5rem;'>${titledes}</span></div>`,
-                body: '<textarea  class="form-control inputUrl" value="" id="inputUrl" placeholder="Write your comment, links or informations here.."></textarea>',
+                body: `<textarea  class="form-control inputUrl" value="" id="inputUrl" placeholder="${placeholder}"></textarea>`,
     
                 removeOnClose: true,
             })
@@ -122,7 +123,9 @@ export const register = (editor, interval, userId) => {
                         if (ur.includes("attempt.php") || ur.includes("forum") || ur.includes("assign")) { } else {
                             return false;
                         }
-    
+                        if (ur.includes("forum") && !ur.includes("assign")) {
+                            resourceId = parm.searchParams.get('edit');
+                         }
                         if (!ur.includes("forum") && !ur.includes("assign")) {
                             resourceId = parm.searchParams.get('attempt');
                         }
