@@ -74,6 +74,7 @@ define(["jquery", "core/ajax", "core/str", "core/templates", "./replay", "./anal
 
                 var ids = $("#" + entry.id).data("post-id");
                 var cmid = M.cfg.contextInstanceId;
+
                 let args = {id: ids, modulename: "forum", cmid: cmid};
                 let methodname = 'cursive_get_forum_comment_link';
                 let com = AJAX.call([{methodname, args}]);
