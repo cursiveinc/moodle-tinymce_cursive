@@ -99,16 +99,33 @@ export default class AnalyticEvents {
                 args: {fileid: fileid},
             }])[0].done(response => {
                 let responsedata = JSON.parse(response.data);
-                if (responsedata[0]) {
-                    let submittedText = atob(responsedata[0].submitted_text);
+                if (responsedata) {
+                    let submittedText = atob(responsedata.submitted_text);
 
                     // Fetch the dynamic strings
                     Str.get_strings([
-                        {key: 'original_text', component: 'tiny_cursive'},
-                        {key: 'editspastesai', component: 'tiny_cursive'}
+                        { key: 'original_text', component: 'tiny_cursive' },
+                        { key: 'editspastesai', component: 'tiny_cursive' }
                     ]).done(strings => {
                         const originalTextString = strings[0];
                         const editsPastesAIString = strings[1];
+
+                        const commentBox = $('<div class="p-2 border rounded mb-2">');
+                        var pasteCountDiv = $('<div></div>');
+                        pasteCountDiv.append('<div><strong>Paste Count :</strong> ' + responsedata.commentscount + '</div>');
+                    
+                        var commentsDiv = $('<div class="border-bottom"></div>');
+                        commentsDiv.append('<strong>Comments :</strong>');
+                    
+                        var commentsList = $('<div></div>');
+                    
+                        let comments = responsedata.comments;
+                        for (let index in comments) {
+                            var commentDiv = $('<div class="shadow-sm p-1 my-1"></div>').text(comments[index].usercomment);
+                            commentsList.append(commentDiv);
+                        }
+                        commentBox.append(pasteCountDiv).append(commentsDiv).append(commentsList);
+                        
 
                         const $legend = $('<div class="d-flex p-2 border rounded mb-2">');
 
@@ -132,7 +149,7 @@ export default class AnalyticEvents {
                             $('<div>').attr('id', 'tiny_cursive-reconstructed_text').html(JSON.parse(submittedText))
                         );
 
-                        contents.append($legend, textBlock2);
+                        contents.append(commentBox,$legend, textBlock2);
                         $('#content' + userid).html(contents); // Update content
                     }).fail(error => {
                         window.console.error("Failed to load language strings:", error);
@@ -231,10 +248,10 @@ export default class AnalyticEvents {
                             if (!metricsData) {
                                 $('#content' + userid).html(nodata);
                             }
-
+                            //  metricsData.p_burst_cnt,'P-burst Count', metricsData.total_active_time, 'Total Active Time',
                             var originalData = [
-                                metricsData.word_len_mean, metricsData.edits, metricsData.p_burst_cnt, metricsData.p_burst_mean,
-                                metricsData.q_count, metricsData.sentence_count, metricsData.total_active_time,
+                                metricsData.word_len_mean, metricsData.edits, metricsData.p_burst_mean,
+                                metricsData.q_count, metricsData.sentence_count,
                                 metricsData.verbosity, metricsData.word_count, metricsData.sent_word_count_mean
                             ];
 
@@ -243,11 +260,9 @@ export default class AnalyticEvents {
                                 labels: [
                                     'Average Word Length',
                                     'Edits',
-                                    'P-burst Count',
                                     'P-Burst Mean',
                                     'Q Count',
                                     'Sentence Count',
-                                    'Total Active Time',
                                     'Verbosity',
                                     'Word Count',
                                     'Word Count per Sentence Mean'
@@ -355,7 +370,7 @@ export default class AnalyticEvents {
                                     // Draw the background rectangles for each tick.
                                     tickArray.forEach(tick => {
                                         ctx.fillStyle = 'rgba(0, 0, 0, 0.02)';
-                                        ctx.fillRect(0, y.getPixelForValue(tick) + 63, x.width + x.width + 21, segmentPixel);
+                                        ctx.fillRect(0, y.getPixelForValue(tick) + 80, x.width + x.width + 21, segmentPixel);
                                     });
                                 }
                             };
