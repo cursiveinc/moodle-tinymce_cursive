@@ -22,7 +22,7 @@
 
 define(["core/config", "core/str"], function (mdlcfg, Str) {
     var usersTable = {
-        init: async function (page) {
+        init: async function(page) {
             await usersTable.appendTable(page);
         },
         appendTable: async function () {
