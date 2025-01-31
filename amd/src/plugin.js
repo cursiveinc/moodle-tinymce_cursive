@@ -26,6 +26,12 @@ import {component, pluginName} from './common';
 import * as Autosaver from './autosaver';
 import getConfig from 'core/ajax';
 export default new Promise((resolve, reject) => {
+    const page = [
+        'page-mod-assign-editsubmission',
+        'page-mod-quiz-attempt',
+        'page-mod-forum-view',
+        'page-mod-forum-post'];
+
     Promise.all([
         getTinyMCE(),
         getPluginMetadata(component, pluginName),
@@ -37,7 +43,7 @@ export default new Promise((resolve, reject) => {
                     methodname: "cursive_get_config",
                     args: {courseid: M.cfg.courseId, cmid: M.cfg.contextInstanceId}
                 }])[0].done((data) => {
-                    if (data.status) {
+                    if (data.status && page.includes(document.body.id)) {
                         Autosaver.register(editor, data.sync_interval, data.userid);
                     }
                 }).fail((error) => {
