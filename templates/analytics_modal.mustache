@@ -160,7 +160,7 @@ Example context (json):
                                         tiny_cursive {{/str}}</p>
                                 </div>
                             </td>
-                            <td> {{tabledata.words_per_minute}}</td>
+                            <td> {{tabledata.words_per_minute}} {{#tabledata.words_per_minute}}WPM{{/tabledata.words_per_minute}}</td>
                         </tr>
                         <tr>
                             <td>
@@ -191,7 +191,7 @@ Example context (json):
                                             fill="black" />
                                     </svg>
                                 </div>
-                                <div> {{#str}}backspace, tiny_cursive {{/str}} <p>{{#str}}backspace, tiny_cursive
+                                <div> {{#str}}backspace, tiny_cursive {{/str}} <p>{{#str}}backspace_desc, tiny_cursive
                                         {{/str}}</p>
                                 </div>
                             </td>
