@@ -49,7 +49,7 @@ define([
             );
             replayInstances[mid] = replay;
         } else {
-            templates.render('tiny_cursive/no_submission').then(html => {
+            templates.render('tiny_cursive/no_submission',{}).then(html => {
                 document.getElementById('content' + mid).innerHTML = html;
             }).catch(e => window.console.error(e));
         }

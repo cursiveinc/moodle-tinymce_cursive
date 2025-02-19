@@ -294,7 +294,11 @@ function get_user_submissions_data($resourceid, $modulename, $cmid, $courseid = 
 }
 
 /**
- * get_user_submissions_data
+ * Get the first available course module ID for a given course
+ *
+ * @param int $courseid The ID of the course to get module ID for
+ * @return int The course module ID if found, 0 otherwise
+ * @throws dml_exception
  */
 function tiny_cursive_get_cmid($courseid) {
     global $DB;
@@ -315,17 +319,38 @@ function tiny_cursive_get_cmid($courseid) {
  * Create a token for a given user
  *
  * @package tiny_cursive
- * @param int $userid The ID of the user to create the token for
  * @return string The created token
  */
 function create_token_for_user() {
-    global $DB;
-    $amdinid = get_admin();
+    global $DB, $CFG, $USER;
+    require_once($CFG->libdir . '/externallib.php');
 
-    $serviceshortname = 'cursive_json_service'; // Replace with your service shortname.
+    $token = '';
+    $serviceshortname = 'cursive_json_service';
     $service = $DB->get_record('external_services', ['shortname' => $serviceshortname]);
-    $token = util::generate_token(EXTERNAL_TOKEN_PERMANENT, $service, $amdinid->id, context_system::instance());
+    $token = external_generate_token(EXTERNAL_TOKEN_PERMANENT, $service, $USER->id,
+     context_system::instance());
 
     return $token;
 }
 
+/**
+ * Check the status of Tiny Cursive for a given course
+ *
+ * @param int $courseid The ID of the course to check status for
+ * @return bool Returns true if Tiny Cursive is enabled for the course, false otherwise
+ * @throws dml_exception
+ */
+function tiny_cursive_status($courseid) {
+    global $DB;
+    $value = $DB->get_record('customfield_data', ['instanceid' => $courseid], 'value');
+    $name = "cursive-$courseid";
+        if (isset($value->value) && $value->value === '2') {
+            set_config($name, false, 'tiny_cursive');
+            return false;
+        } else {
+            set_config($name, true, 'tiny_cursive');
+            return true;
+        }
+    
+}

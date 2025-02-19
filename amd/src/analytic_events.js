@@ -20,9 +20,10 @@
  * @copyright  2024 CTI <your@email.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-import MyModal from "./analytic_modal";
+import myModal from "./analytic_modal";
 import { call as getContent } from "core/ajax";
 import * as Str from 'core/str';
+import ModalFactory from 'core/modal_factory';
 
 export default class AnalyticEvents {
 
@@ -33,10 +34,11 @@ export default class AnalyticEvents {
                 e.preventDefault();
 
                 // Create Moodle modal
-                MyModal.create({ templateContext: context }).then(modal => {
+                ModalFactory.create({type: myModal.TYPE, templateContext: context}).then(modal => {
+                    modal.show();
                     const content = document.querySelector('#content' + userid + ' .table tbody tr:first-child td:nth-child(2)');
                     if (content) content.innerHTML = authIcon.outerHTML;
-                    modal.show();
+
                 }).catch(error => {
                     window.console.error("Failed to create modal:", error);
                 });
