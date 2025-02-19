@@ -90,7 +90,9 @@ function tiny_cursive_extend_navigation_course(\navigation_node $navigation, \st
 
     $url = new moodle_url($CFG->wwwroot . '/lib/editor/tiny/plugins/cursive/tiny_cursive_report.php', ['courseid' => $course->id]);
     $cmid = tiny_cursive_get_cmid($course->id);
-    if ($cmid && get_config('tiny_cursive', "cursive-$course->id")) {
+    $cursive = tiny_cursive_status($course->id);
+
+    if ($cmid && $cursive) {
         $context = context_module::instance($cmid);
         $hascap = has_capability("tiny/cursive:editsettings", $context);
         if ($hascap) {
@@ -306,6 +308,83 @@ function tiny_cursive_get_user_essay_quiz_responses($userid, $courseid, $resourc
     return $result->responsesummary ?? "";
 }
 
+/**
+ * tiny_cursive_before_footer
+ *
+ * @return void
+ * @throws coding_exception
+ * @throws dml_exception
+ */
+function tiny_cursive_before_footer() {
+    global $PAGE, $COURSE, $USER, $CFG;
+        require_once($CFG->dirroot . '/lib/editor/tiny/plugins/cursive/locallib.php');
+        $cmid = isset($COURSE->id) ? tiny_cursive_get_cmid($COURSE->id) : 0;
+        $cursive = tiny_cursive_status($COURSE->id);
+
+    if (!empty($COURSE) && $cmid && $cursive) {
+
+        $confidencethreshold = get_config('tiny_cursive', 'confidence_threshold');
+        $confidencethreshold = !empty($confidencethreshold) ? floatval($confidencethreshold) : 0.65;
+        $showcomments = get_config('tiny_cursive', 'showcomments');
+
+        $context = context_course::instance($COURSE->id);
+        $userrole = '';
+        if (has_capability('report/courseoverview:view', $context, $USER->id, false) || is_siteadmin()) {
+            $userrole = 'teacher_admin';
+        }
+
+        $PAGE->requires->js_call_amd('tiny_cursive/settings', 'init', [$showcomments, $userrole]);
+
+        $context = context_module::instance($cmid);
+        $capcheck = has_capability('tiny/cursive:writingreport', $context, $USER->id);
+
+        if ($capcheck) {
+            switch ($PAGE->bodyid) {
+                case 'page-mod-forum-discuss':
+                case 'page-mod-forum-view':
+                    $PAGE->requires->js_call_amd(
+                        'tiny_cursive/append_fourm_post',
+                        'init',
+                        [$confidencethreshold, $showcomments],
+                    );
+                    break;
+
+                case 'page-mod-assign-grader':
+                    $PAGE->requires->js_call_amd(
+                        'tiny_cursive/show_url_in_submission_grade',
+                        'init',
+                        [$confidencethreshold, $showcomments],
+                    );
+                    break;
+
+                case 'page-mod-assign-grading':
+                    $PAGE->requires->js_call_amd(
+                        'tiny_cursive/append_submissions_table',
+                        'init',
+                        [$confidencethreshold, $showcomments],
+                    );
+                    break;
+
+                case 'page-mod-quiz-review':
+                    $PAGE->requires->js_call_amd(
+                        'tiny_cursive/show_url_in_quiz_detail',
+                        'init',
+                        [$confidencethreshold, $showcomments],
+                    );
+                    break;
+
+                case 'page-course-view-participants':
+                    $PAGE->requires->js_call_amd(
+                        'tiny_cursive/append_participants_table',
+                        'init',
+                        [$confidencethreshold, $showcomments],
+                    );
+                    break;
+            }
+        }
+
+    }
+}
 /**
  * Method tiny_cursive_get_user_onlinetext_assignments
  *

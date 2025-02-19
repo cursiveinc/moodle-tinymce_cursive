@@ -32,6 +32,8 @@
  */
 function xmldb_tiny_cursive_upgrade($oldversion) {
     global $DB;
+    require_once(__DIR__ . '/install.php');
+    create_cursive_field();
 
     $dbman = $DB->get_manager();
 

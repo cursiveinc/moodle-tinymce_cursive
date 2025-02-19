@@ -49,7 +49,7 @@ define([
             replayInstances[mid] = replay;
         }
         else {
-            templates.render('tiny_cursive/no_submission').then(html => {
+            templates.render('tiny_cursive/no_submission',{}).then(html => {
                 const contentElement = document.getElementById('content' + mid);
                 if (contentElement) {
                     contentElement.innerHTML = html;
