@@ -287,6 +287,7 @@ export const register = (editor, interval, userId) => {
             return;
         } else {
             localStorage.removeItem(filename);
+            let originalText = editor.getContent({ format: 'text' });
             try {
                 return await postOne('cursive_write_local_to_json', {
                     key: ed.key,
@@ -297,6 +298,7 @@ export const register = (editor, interval, userId) => {
                     modulename: modulename,
                     editorid: editorid,
                     json_data: data,
+                    originalText: originalText
                 });
             } catch (error) {
                 console.error('Error submitting data:', error);

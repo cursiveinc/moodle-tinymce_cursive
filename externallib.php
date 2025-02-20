@@ -1872,6 +1872,7 @@ class cursive_json_func_data extends external_api {
                 'modulename' => new external_value(PARAM_TEXT, 'Modulename', VALUE_DEFAULT, ""),
                 'editorid' => new external_value(PARAM_TEXT, 'editorid', VALUE_DEFAULT, ""),
                 'json_data' => new external_value(PARAM_TEXT, 'JSON Data', VALUE_DEFAULT, ""),
+                "originalText" => new external_value(PARAM_TEXT, 'original submission Text', VALUE_DEFAULT, ""),
             ]
         );
     }
@@ -1891,7 +1892,7 @@ class cursive_json_func_data extends external_api {
      * @return string
      */
     public static function write_local_to_json($resourceid, $key, $keycode , $event,
-                                                $cmid, $modulename, $editorid, $jsondata) {
+                                                $cmid, $modulename, $editorid, $jsondata, $originaltext) {
 
         global $USER, $DB, $CFG;
 
@@ -1906,6 +1907,7 @@ class cursive_json_func_data extends external_api {
                 'modulename' => $modulename,
                 'editorid' => $editorid,
                 'json_data' => $jsondata,
+                'originalText' => $originaltext
             ]
         );
 
@@ -1961,6 +1963,7 @@ class cursive_json_func_data extends external_api {
             $temparray = json_decode(base64_decode($record->content), true);
             $mergecontent = array_merge($temparray, $jsondata);
             $DB->set_field('tiny_cursive_files', 'content', base64_encode(json_encode($mergecontent)), ['id' => $record->id]);
+            $DB->set_field('tiny_cursive_files', 'original_content', $params['originalText'], ['id' => $record->id]);
             $DB->set_field('tiny_cursive_files', 'uploaded', 0, ['id' => $record->id]);
 
             return 'true';
@@ -1974,6 +1977,7 @@ class cursive_json_func_data extends external_api {
             $dataobj->timemodified = time();
             $dataobj->filename = $fname;
             $dataobj->content = base64_encode($params['json_data']);
+            $dataobj->original_content = $params['originalText'];
             $dataobj->questionid = $questionid ?? 0;
             $dataobj->uploaded = 0;
             $DB->insert_record($table, $dataobj);
