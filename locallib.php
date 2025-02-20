@@ -440,13 +440,17 @@ function tiny_cursive_check_subscriptions() {
  */
 function tiny_cursive_status($courseid) {
     global $DB;
-    $value = $DB->get_record('customfield_data', ['instanceid' => $courseid], 'value');
-    if ($value) {
-        if ( $value->value == null || $value->value === '2') {
-            return false;
-        } else {
-            return true;
-        }
+    $sql = "SELECT cfd.intvalue as value
+              FROM {customfield_data} cfd
+              JOIN {customfield_field} cff ON cff.id = cfd.fieldid
+             WHERE cff.shortname = 'cursive_status' 
+                   AND cfd.instanceid = :instanceid";
+    $value = $DB->get_record_sql($sql, ['instanceid' => $courseid]);
+
+    if ($value->value === '2') {
+        return false;
+    } else {
+        return true;
     }
-    return false;
+
 }
