@@ -343,7 +343,12 @@ function create_token_for_user() {
  */
 function tiny_cursive_status($courseid) {
     global $DB;
-    $value = $DB->get_record('customfield_data', ['instanceid' => $courseid], 'value');
+    $sql = "SELECT cfd.intvalue as value
+              FROM {customfield_data} cfd
+              JOIN {customfield_field} cff ON cff.id = cfd.fieldid
+             WHERE cff.shortname = 'cursive_status' 
+                   AND cfd.instanceid = :instanceid";
+    $value = $DB->get_record_sql($sql, ['instanceid' => $courseid]);
     $name = "cursive-$courseid";
         if (isset($value->value) && $value->value === '2') {
             set_config($name, false, 'tiny_cursive');
