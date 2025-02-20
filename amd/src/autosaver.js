@@ -281,6 +281,7 @@ export const register = (editor, interval, userId) => {
             return;
         } else {
             localStorage.removeItem(filename);
+            let originalText = editor.getContent({ format: 'text' });
             try {
                 // eslint-disable-next-line
                 return await postOne('cursive_write_local_to_json', {
@@ -292,6 +293,7 @@ export const register = (editor, interval, userId) => {
                     modulename: modulename,
                     editorid: editorid,
                     "json_data": data,
+                    originalText: originalText
                 });
             } catch (error) {
                 window.console.error('Error submitting data:', error);
