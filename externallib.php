@@ -1868,6 +1868,7 @@ class cursive_json_func_data extends external_api {
                 'modulename' => new external_value(PARAM_TEXT, 'Modulename', VALUE_DEFAULT, ""),
                 'editorid' => new external_value(PARAM_TEXT, 'editorid', VALUE_DEFAULT, ""),
                 'json_data' => new external_value(PARAM_TEXT, 'JSON Data', VALUE_DEFAULT, ""),
+                "originalText" => new external_value(PARAM_TEXT, 'original submission Text', VALUE_DEFAULT, ""),
             ],
         );
     }
@@ -1894,6 +1895,7 @@ class cursive_json_func_data extends external_api {
         $modulename = 'quiz',
         $editorid = null,
         $jsondata = [],
+        $originaltext
     ) {
         global $USER, $DB, $CFG;
 
@@ -1908,6 +1910,7 @@ class cursive_json_func_data extends external_api {
                 'modulename' => $modulename,
                 'editorid' => $editorid,
                 'json_data' => $jsondata,
+                'originalText' => $originaltext
             ],
         );
 
@@ -1979,6 +1982,7 @@ class cursive_json_func_data extends external_api {
                 array_push($temparray, $userdata);
             }
             $inp->content = json_encode($temparray);
+            $inp->original_content = $params['originalText'];
             $inp->uploaded = 0;
             $DB->update_record($table, $inp);
             return 'true';
@@ -1992,6 +1996,7 @@ class cursive_json_func_data extends external_api {
             $dataobj->timemodified = time();
             $dataobj->filename = $fname;
             $dataobj->content = $params['json_data'];
+            $dataobj->original_content = $params['originalText'];
             $dataobj->questionid = $questionid ?? 0;
             $dataobj->uploaded = 0;
             $DB->insert_record($table, $dataobj);
