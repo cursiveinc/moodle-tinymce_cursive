@@ -219,14 +219,14 @@ function xmldb_tiny_cursive_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2024060285, 'tiny', 'cursive');
     }
 
-    if ($oldversion < 2024060450) {
+    if ($oldversion < 2024060402) {
         $table = new xmldb_table('tiny_cursive_files');
         $field = new xmldb_field('original_content', XMLDB_TYPE_TEXT,  null, null, false, null, null, 'content');
 
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
-        upgrade_plugin_savepoint(true, 2024060450, 'tiny', 'cursive');
+        upgrade_plugin_savepoint(true, 2024060402, 'tiny', 'cursive');
     }
 
     return true;
